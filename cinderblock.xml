@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Videodrömm"
+	id="io.github.videodromm"
+	author="Bruce Lane"
+	license="GNU Affero General Public License v3.0"
+	summary="Videodrömm block for Cinder 0.9"
+	url="https://github.com/videodromm/Cinder-Videodromm"
+	git="git://github.com/videodromm/Cinder-Videodromm.git"
+	>
+	<supports os="msw" />
+	<includePath>include</includePath>
+	<includePath>src</includePath>
+	<headerPattern>include/*.h</headerPattern>
+	<sourcePattern>src/*.cpp</sourcePattern>
+	<sourcePattern>src/*.c</sourcePattern>
+</block>
+<template>templates/Videodrömm/template.xml</template>
+</cinder>

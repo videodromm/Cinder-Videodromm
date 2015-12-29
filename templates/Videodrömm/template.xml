@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<template name="Reymenta: Basic" parent="org.libcinder.apptemplates.basicopengl">
+	<requires>fr.batchass.reymenta</requires>
+	<source replaceContents="true" replaceName="true">src/_TBOX_PREFIX_App.cpp</source>
+	<asset>assets/precision.inc</asset>
+	<asset>assets/passthru.vert</asset>
+	<asset>assets/passthru.frag</asset>
+	<asset>assets/reymenta.jpg</asset>
+</template>
+</cinder>
