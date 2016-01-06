@@ -18,6 +18,9 @@
 	<headerPattern>include/*.h</headerPattern>
 	<sourcePattern>src/*.cpp</sourcePattern>
 	<sourcePattern>src/*.c</sourcePattern>
+	<platform os="msw">
+		<libraryPath>lib</libraryPath>
+	</platform>
 </block>
 <template>templates/Videodromm/template.xml</template>
 </cinder>
