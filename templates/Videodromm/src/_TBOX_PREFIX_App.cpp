@@ -4,7 +4,6 @@
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 
-
 using namespace ci;
 using namespace ci::app;
 
@@ -12,37 +11,32 @@ class _TBOX_PREFIX_App : public App {
 
 public:
 
-    void setup();
-    void draw();
-    void update();
-    void mouseDown(MouseEvent event);
+    void setup() override;
+    void draw() override;
+    void update() override;
+    void mouseDown(MouseEvent event) override;
+
 };
 
-// -------- SPOUT -------------
+
 void _TBOX_PREFIX_App::setup()
 {
-    
+
 }
 
 void _TBOX_PREFIX_App::update()
 {
-    
 
 }
-
-
 
 void _TBOX_PREFIX_App::mouseDown(MouseEvent event)
 {
     
 }
-// ----------------------------
-
 
 void _TBOX_PREFIX_App::draw()
 {
 
-   
 }
 
 
