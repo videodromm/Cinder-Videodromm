@@ -2,7 +2,6 @@
 #include "cinder/Cinder.h"
 #include "cinder/app/App.h"
 #include "cinder/ImageIo.h"
-#include "VDLog.h"
 #include "cinder/Utilities.h"
 
 // parameters
