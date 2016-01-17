@@ -677,5 +677,298 @@ void VDRouter::sendJSON(string params) {
 
 
 void VDRouter::update() {
+	// websockets
+	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
+	{
+		if (mVDSettings->mIsWebSocketsServer)
+		{
+			mServer.poll();
+		}
+		else
+		{
+			if (clientConnected)
+			{
+				mClient.poll();
+				/*double e = getElapsedSeconds();
+				if (e - mPingTime > 20.0) {
+				mClient.ping();
+				mPingTime = e;
+				}*/
 
+			}
+		}
+	}
+	/*
+	// check for mouse moved message
+	if(m.getAddress() == "/mouse/position"){
+	// both the arguments are int32's
+	Vec2i pos = Vec2i( m.getArgAsInt32(0), m.getArgAsInt32(1));
+	Vec2f mouseNorm = Vec2f( pos ) / getWindowSize();
+	Vec2f mouseVel = Vec2f( pos - pMouse ) / getWindowSize();
+	addToFluid( mouseNorm, mouseVel, true, true );
+	pMouse = pos;
+	if ( m.getArgAsInt32(2) == 1 )
+	{
+	mMouseDown = true;
+	}
+	else
+	{
+	mMouseDown = false;
+	}
+	if ( mMouseDown )
+	{
+	mArcball.mouseDown( pos );
+	mCurrentMouseDown = mInitialMouseDown = pos;
+	}
+	}
+	// check for mouse button message
+	else if(m.getAddress() == "/mouse/button"){
+	// the single argument is a string
+	Vec2i pos = Vec2i( m.getArgAsInt32(0), m.getArgAsInt32(1));
+	mArcball.mouseDown( pos );
+	mCurrentMouseDown = mInitialMouseDown = pos;
+	if ( m.getArgAsInt32(2) == 1 )
+	{
+	mMouseDown = true;
+	}
+	else
+	{
+	mMouseDown = false;
+	}
+	}
+	else if(m.getAddress() == "/fluid/drawfluid"){
+	drawFluid = !drawFluid;
+	}
+	else if(m.getAddress() == "/fluid/drawfluidtex"){
+	drawFluidTex = !drawFluidTex;
+	}
+	else if(m.getAddress() == "/fluid/drawparticles"){
+	drawParticles = ! drawParticles;
+	}
+	else if(m.getAddress() == "/fluid/randomizecolor"){
+	fluidSolver.randomizeColor();
+	}
+	else if(m.getAddress() == "/window/position"){
+	// window position
+	setWindowPos(m.getArgAsInt32(0), m.getArgAsInt32(1));
+	}
+	else if(m.getAddress() == "/window/setfullscreen"){
+	// fullscreen
+	//setFullScreen( ! isFullScreen() );
+	}
+	else if(m.getAddress() == "/quit"){
+	quitProgram();
+	}
+	else{
+	// unrecognized message
+	//cout << "not recognized:" << m.getAddress() << endl;
+
+	}
+
+	}*/
+	// osc
+	while (mOSCReceiver.hasWaitingMessages())
+	{
+		osc::Message message;
+		bool routeMessage = false;
+		mOSCReceiver.getNextMessage(&message);
+		for (int a = 0; a < MAX; a++)
+		{
+			iargs[a] = 0;
+			fargs[a] = 0.0;
+			sargs[a] = "";
+		}
+		int skeletonIndex = 0;
+		int jointIndex = 0;
+		string oscAddress = message.getAddress();
+
+		int numArgs = message.getNumArgs();
+		// get arguments
+		for (int i = 0; i < message.getNumArgs(); i++)
+		{
+			if (i < MAX)
+			{
+				if (message.getArgType(i) == osc::TYPE_INT32) {
+					try
+					{
+						iargs[i] = message.getArgAsInt32(i);
+						sargs[i] = toString(iargs[i]);
+					}
+					catch (...) {
+						cout << "Exception reading argument as int32" << std::endl;
+					}
+				}
+				if (message.getArgType(i) == osc::TYPE_FLOAT) {
+					try
+					{
+						fargs[i] = message.getArgAsFloat(i);
+						sargs[i] = toString(fargs[i]);
+					}
+					catch (...) {
+						cout << "Exception reading argument as float" << std::endl;
+					}
+				}
+				if (message.getArgType(i) == osc::TYPE_STRING) {
+					try
+					{
+						sargs[i] = message.getArgAsString(i);
+					}
+					catch (...) {
+						cout << "Exception reading argument as string" << std::endl;
+					}
+				}
+			}
+		}
+
+		if (oscAddress == "/cc")
+		{
+			mVDSettings->controlValues[iargs[0]] = fargs[1];
+			updateParams(iargs[0], fargs[1]);
+		}
+		else if (oscAddress == "/live/beat")
+		{
+			mVDSettings->iBeat = iargs[0];
+			routeMessage = true;
+		}
+		else if (oscAddress == "/live/tempo")
+		{
+			mVDSettings->mTempo = fargs[0];
+			routeMessage = true;
+		}
+		else if (oscAddress == "/live/track/meter")
+		{
+			mVDSettings->liveMeter = fargs[2];
+			routeMessage = true;
+		}
+		else if (oscAddress == "/live/name/trackblock")
+		{
+			mVDSettings->mTrackName = sargs[0];
+			for (int a = 0; a < MAX; a++)
+			{
+				tracks[a] = sargs[a];
+			}
+
+		}
+		else if (oscAddress == "/live/play")
+		{
+			osc::Message m;
+			m.setAddress("/reymenta/tracklist");
+
+			for (int a = 0; a < MAX; a++)
+			{
+				if (tracks[a] != "") m.addStringArg(tracks[a]);
+			}
+			mOSCSender.sendMessage(m);
+
+		}
+		else if (oscAddress == "/sumMovement")
+		{
+			float sumMovement = fargs[0];
+			//exposure
+			mVDSettings->controlValues[14] = sumMovement;
+			//greyScale
+			if (sumMovement < 0.1)
+			{
+				mVDSettings->iGreyScale = 1.0f;
+			}
+			else
+			{
+				mVDSettings->iGreyScale = 0.0f;
+			}
+		}
+		else if (oscAddress == "/handsHeadHeight")
+		{
+			float handsHeadHeight = fargs[0];
+			if (handsHeadHeight > 0.3)
+			{
+				// glitch
+				mVDSettings->controlValues[45] = 1.0f;
+			}
+			else
+			{
+				// glitch
+				mVDSettings->controlValues[45] = 0.0f;
+			}
+			// background red
+			mVDSettings->controlValues[5] = handsHeadHeight*3.0;
+		}
+		else if (oscAddress == "/centerXY")
+		{
+			float x = fargs[0];
+			float y = fargs[1];
+			// background green
+			mVDSettings->controlValues[6] = y;
+			// green
+			mVDSettings->controlValues[2] = x;
+		}
+		else if (oscAddress == "/selectShader")
+		{
+			//selectShader(iargs[0], iargs[1]);
+		}
+
+		else if (oscAddress == "/joint")
+		{
+			skeletonIndex = iargs[0];
+			jointIndex = iargs[1];
+			if (jointIndex < 20)
+			{
+				skeleton[jointIndex] = ivec4(iargs[2], iargs[3], iargs[4], iargs[5]);
+			}
+		}
+		else
+		{
+			console() << "OSC message received: " << oscAddress << std::endl;
+			// is it a layer msg?
+			int layer = 0;
+			unsigned layerFound = oscAddress.find("layer");
+			if (layerFound == 1)
+			{
+				unsigned clipFound = oscAddress.find("/clip");
+				if (clipFound == 7) // layer must be < 10
+				{
+					cout << "clipFound " << clipFound;
+					layer = atoi(oscAddress.substr(6, 1).c_str());
+					int clip = atoi(oscAddress.substr(12, 1).c_str());
+					string fileName = toString((layer * 10) + clip) + ".fragjson";
+					fs::path fragFile = getAssetPath("") / "shaders" / "fragjson" / fileName;
+					if (fs::exists(fragFile))
+					{
+						//mShaders->loadFragJson(fragFile.string());
+					}
+				}
+				else
+				{
+					if (clipFound == 8)
+					{
+						layer = atoi(oscAddress.substr(6, 2).c_str());
+					}
+				}
+				// connect or preview
+				unsigned connectFound = oscAddress.find("connect");
+				if (connectFound != string::npos) cout << "connectFound " << connectFound;
+			}
+			//if ( layerFound != string::npos ) cout << "layerFound " << layerFound;
+
+			unsigned found = oscAddress.find_last_of("/");
+			int name = atoi(oscAddress.substr(found + 1).c_str());
+		}
+		stringstream ss;
+		ss << message.getRemoteIp() << " adr:" << oscAddress << " ";
+		for (int a = 0; a < MAX; a++)
+		{
+			ss << a << ":" << sargs[a] << " ";
+		}
+		ss << std::endl;
+		mVDSettings->newMsg = true;
+		mVDSettings->mMsg = ss.str();
+		// filter messages
+		if (routeMessage)
+		{
+			// avoid LiveOSC infinite loop
+			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender.sendMessage(message);
+			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort2 != 9000) mOSCSender2.sendMessage(message);
+
+		}
+
+	}
 }
