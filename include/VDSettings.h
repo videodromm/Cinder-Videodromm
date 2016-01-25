@@ -102,7 +102,7 @@ namespace VideoDromm {
 		// OSC
 		bool						mOSCEnabled;
 		std::string					mOSCDestinationHost;
-		int							mOSCDestinationPort;
+		uint16_t					mOSCDestinationPort;
 		std::string					mOSCDestinationHost2;
 		int							mOSCDestinationPort2;
 		int							mOSCReceiverPort;

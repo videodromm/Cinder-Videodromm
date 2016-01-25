@@ -15,10 +15,14 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 	// OSC
 	if (mVDSettings->mOSCEnabled) {
 		// OSC sender with broadcast = true
-		mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
-		mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
+		osc::UdpSocketRef mSocket(new udp::socket(App::get()->io_service(), udp::endpoint(udp::v4(), 10000)));
+		mSocket->set_option(asio::socket_base::broadcast(true));
+		mOSCSender = new osc::SenderUdp(10000, mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort);
+		//mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
+		//mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
 		// OSC receiver
-		mOSCReceiver.setup(mVDSettings->mOSCReceiverPort);
+		//mOSCReceiver.setup(mVDSettings->mOSCReceiverPort);
+		mOSCReceiver = new osc::ReceiverUdp(10001);
 	}
 	// ws
 	clientConnected = false;
@@ -827,6 +831,7 @@ void VDRouter::update() {
 		}
 		else if (oscAddress == "/live/beat")
 		{
+			if (iargs[0]>344) iargs[0]-=300;
 			mVDSettings->iBeat = iargs[0];
 			routeMessage = true;
 		}

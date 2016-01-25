@@ -12,8 +12,8 @@
 #include "CinderMidi.h"
 
 // OSC
-#include "OscListener.h"
-#include "OSCSender.h"
+#include "Osc.h"
+#define USE_UDP 1
 
 // WebSockets
 #include "WebSocketClient.h"
@@ -22,6 +22,8 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+using namespace asio;
+using namespace asio::ip;
 
 namespace VideoDromm
 {
@@ -110,9 +112,15 @@ namespace VideoDromm
 		void						serverDisconnect();
 		double						mPingTime;
 		// osc
-		osc::Listener 				mOSCReceiver;
-		osc::Sender					mOSCSender;
-		osc::Sender					mOSCSender2;
+#if USE_UDP
+		osc::ReceiverUdp			*mOSCReceiver;
+#else
+		osc::ReceiverTcp			mOSCReceiver;
+#endif
+		//osc::Listener 				mOSCReceiver;
+		osc::SenderUdp				*mOSCSender;
+
+		// now using broadcast osc::SenderUdp				mOSCSender2;
 		static const int			MAX = 16;
 		int							iargs[MAX];
 		float						fargs[MAX];
