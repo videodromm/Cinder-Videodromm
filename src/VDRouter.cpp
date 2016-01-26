@@ -15,11 +15,14 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 	// OSC
 	if (mVDSettings->mOSCEnabled) {
 		// OSC sender with broadcast
-		osc::UdpSocketRef mSocket(new udp::socket(App::get()->io_service(), udp::endpoint(udp::v4(), mVDSettings->mOSCDestinationPort)));
-		mSocket->set_option(asio::socket_base::broadcast(true));
-		mOSCSender = shared_ptr<osc::SenderUdp>(new osc::SenderUdp(mSocket, udp::endpoint(address_v4::broadcast(), mVDSettings->mOSCDestinationPort)));
-		//mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
-		//mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
+		if (mVDSettings->mIsOSCSender) {
+			osc::UdpSocketRef mSocket(new udp::socket(App::get()->io_service(), udp::endpoint(udp::v4(), mVDSettings->mOSCDestinationPort)));
+			mSocket->set_option(asio::socket_base::broadcast(true));
+			mOSCSender = shared_ptr<osc::SenderUdp>(new osc::SenderUdp(mSocket, udp::endpoint(address_v4::broadcast(), mVDSettings->mOSCDestinationPort)));
+			mOSCSender->bind();
+			//mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
+			//mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
+		}
 		// OSC receiver
 #if USE_UDP
 		mOSCReceiver = shared_ptr<osc::ReceiverUdp>(new osc::ReceiverUdp(mVDSettings->mOSCReceiverPort));
