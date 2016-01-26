@@ -122,6 +122,8 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 				skeleton[jointIndex] = ivec4(msg[2].int32(), msg[3].int32(), msg[4].int32(), msg[5].int32());
 			}
 		});
+		mOSCReceiver->bind();
+		mOSCReceiver->listen();
 		// ws
 		clientConnected = false;
 		if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
