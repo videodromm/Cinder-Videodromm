@@ -104,8 +104,8 @@ namespace VideoDromm {
 		std::string					mOSCDestinationHost;
 		uint16_t					mOSCDestinationPort;
 		std::string					mOSCDestinationHost2;
-		int							mOSCDestinationPort2;
-		int							mOSCReceiverPort;
+		uint16_t					mOSCDestinationPort2;
+		uint16_t					mOSCReceiverPort;
 		// log to console
 		std::string					mMsg;
 		bool						newMsg;

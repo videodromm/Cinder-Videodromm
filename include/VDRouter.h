@@ -31,6 +31,14 @@ namespace VideoDromm
 	typedef std::shared_ptr<class VDRouter> VDRouterRef;
 	// midi
 	typedef std::shared_ptr<class MIDI> MIDIRef;
+	// stores the pointer to the ReceiverUdp or ReceiverTcp instance
+#if USE_UDP
+	typedef std::shared_ptr<class osc::ReceiverUdp> ReceiverRef;
+#else
+	typedef std::shared_ptr<class osc::ReceiverTcp> ReceiverRef;
+#endif
+	// stores the pointer to the SenderUdp instance
+	typedef std::shared_ptr<class osc::SenderUdp> SenderRef; 
 
 	struct midiInput
 	{
@@ -112,19 +120,15 @@ namespace VideoDromm
 		void						serverDisconnect();
 		double						mPingTime;
 		// osc
-#if USE_UDP
-		osc::ReceiverUdp			*mOSCReceiver;
-#else
-		osc::ReceiverTcp			mOSCReceiver;
-#endif
-		//osc::Listener 				mOSCReceiver;
-		osc::SenderUdp				*mOSCSender;
+		ReceiverRef					mOSCReceiver;
+
+		SenderRef					mOSCSender;
 
 		// now using broadcast osc::SenderUdp				mOSCSender2;
 		static const int			MAX = 16;
-		int							iargs[MAX];
-		float						fargs[MAX];
-		string						sargs[MAX];
+		//int							iargs[MAX];
+		//float						fargs[MAX];
+		//string						sargs[MAX];
 		// ableton liveOSC
 		string						tracks[MAX];
 	};
