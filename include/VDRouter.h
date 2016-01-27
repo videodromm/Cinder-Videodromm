@@ -3,9 +3,9 @@
 #include "cinder/app/App.h"
 #include "cinder/Json.h"
 
-// parameters
+// Settings
 #include "VDSettings.h"
-// logger
+// Logger
 #include "VDLog.h"
 
 // MIDI
