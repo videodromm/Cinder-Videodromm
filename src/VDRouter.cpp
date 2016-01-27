@@ -14,119 +14,130 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 	}
 	// OSC
 	if (mVDSettings->mOSCEnabled) {
-		// OSC sender with broadcast
 		if (mVDSettings->mIsOSCSender) {
+			// OSC sender with broadcast
 			osc::UdpSocketRef mSocket(new udp::socket(App::get()->io_service(), udp::endpoint(udp::v4(), mVDSettings->mOSCDestinationPort)));
 			mSocket->set_option(asio::socket_base::broadcast(true));
 			mOSCSender = shared_ptr<osc::SenderUdp>(new osc::SenderUdp(mSocket, udp::endpoint(address_v4::broadcast(), mVDSettings->mOSCDestinationPort)));
 			mOSCSender->bind();
+#if ! USE_UDP
+			mOSCSender->connect();
+#endif
 			//mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
 			//mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
+			osc::Message msg("/start");
+			msg.append(1);
+			msg.append(2);
+
+			mOSCSender->send(msg);
 		}
-		// OSC receiver
+		else {
+			// OSC receiver
 #if USE_UDP
-		mOSCReceiver = shared_ptr<osc::ReceiverUdp>(new osc::ReceiverUdp(mVDSettings->mOSCReceiverPort));
+			mOSCReceiver = shared_ptr<osc::ReceiverUdp>(new osc::ReceiverUdp(mVDSettings->mOSCReceiverPort));
 #else
-		mOSCReceiver = shared_ptr<osc::ReceiverTcp>(new osc::ReceiverTcp(mVDSettings->mOSCReceiverPort));
+			mOSCReceiver = shared_ptr<osc::ReceiverTcp>(new osc::ReceiverTcp(mVDSettings->mOSCReceiverPort));
 #endif
 
-		mOSCReceiver->setListener("/cc",
-			[&](const osc::Message &msg){
-			mVDSettings->controlValues[msg[0].int32()] = msg[1].flt();
-			updateParams(msg[0].int32(), msg[1].flt());
-		});
-		mOSCReceiver->setListener("/live/beat",
-			[&](const osc::Message &msg){
-			mVDSettings->iBeat = msg[0].int32();
-			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-		});
-		mOSCReceiver->setListener("/live/tempo",
-			[&](const osc::Message &msg){
-			mVDSettings->mTempo = msg[0].flt();
-			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-		});
-		mOSCReceiver->setListener("/live/track/meter",
-			[&](const osc::Message &msg){
-			mVDSettings->liveMeter = msg[2].flt();
-			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-		});
-		mOSCReceiver->setListener("/live/name/trackblock",
-			[&](const osc::Message &msg){
-			mVDSettings->mTrackName = msg[0].string();
-			for (int a = 0; a < MAX; a++)
-			{
-				tracks[a] = msg[a].string();
-			}
+			mOSCReceiver->setListener("/cc",
+				[&](const osc::Message &msg){
+				mVDSettings->controlValues[msg[0].int32()] = msg[1].flt();
+				updateParams(msg[0].int32(), msg[1].flt());
+			});
+			mOSCReceiver->setListener("/live/beat",
+				[&](const osc::Message &msg){
+				mVDSettings->iBeat = msg[0].int32();
+				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
+			});
+			mOSCReceiver->setListener("/live/tempo",
+				[&](const osc::Message &msg){
+				mVDSettings->mTempo = msg[0].flt();
+				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
+			});
+			mOSCReceiver->setListener("/live/track/meter",
+				[&](const osc::Message &msg){
+				mVDSettings->liveMeter = msg[2].flt();
+				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
+			});
+			mOSCReceiver->setListener("/live/name/trackblock",
+				[&](const osc::Message &msg){
+				mVDSettings->mTrackName = msg[0].string();
+				for (int a = 0; a < MAX; a++)
+				{
+					tracks[a] = msg[a].string();
+				}
 
-		});
-		mOSCReceiver->setListener("/live/play",
-			[&](const osc::Message &msg){
-			osc::Message m;
-			m.setAddress("/tracklist");
+			});
+			mOSCReceiver->setListener("/live/play",
+				[&](const osc::Message &msg){
+				osc::Message m;
+				m.setAddress("/tracklist");
 
-			for (int a = 0; a < MAX; a++)
-			{
-				if (tracks[a] != "") m.append(tracks[a]);
-			}
-			mOSCSender->send(m);
+				for (int a = 0; a < MAX; a++)
+				{
+					if (tracks[a] != "") m.append(tracks[a]);
+				}
+				mOSCSender->send(m);
 
-		});
-		mOSCReceiver->setListener("/sumMovement",
-			[&](const osc::Message &msg){
-			float sumMovement = msg[0].flt();
-			//exposure
-			mVDSettings->controlValues[14] = sumMovement;
-			//greyScale
-			if (sumMovement < 0.1)
-			{
-				mVDSettings->iGreyScale = 1.0f;
-			}
-			else
-			{
-				mVDSettings->iGreyScale = 0.0f;
-			}
-		});
-		mOSCReceiver->setListener("/handsHeadHeight",
-			[&](const osc::Message &msg){
-			float handsHeadHeight = msg[0].flt();
-			if (handsHeadHeight > 0.3)
-			{
-				// glitch
-				mVDSettings->controlValues[45] = 1.0f;
-			}
-			else
-			{
-				// glitch
-				mVDSettings->controlValues[45] = 0.0f;
-			}
-			// background red
-			mVDSettings->controlValues[5] = handsHeadHeight*3.0;
-		});
-		mOSCReceiver->setListener("/centerXY",
-			[&](const osc::Message &msg){
-			float x = msg[0].flt();
-			float y = msg[1].flt();
-			// background green
-			mVDSettings->controlValues[6] = y;
-			// green
-			mVDSettings->controlValues[2] = x;
-		});
-		mOSCReceiver->setListener("/selectShader",
-			[&](const osc::Message &msg){
-			//selectShader(msg[0].int32(), msg[1].int32());
-		});
+			});
+			mOSCReceiver->setListener("/sumMovement",
+				[&](const osc::Message &msg){
+				float sumMovement = msg[0].flt();
+				//exposure
+				mVDSettings->controlValues[14] = sumMovement;
+				//greyScale
+				if (sumMovement < 0.1)
+				{
+					mVDSettings->iGreyScale = 1.0f;
+				}
+				else
+				{
+					mVDSettings->iGreyScale = 0.0f;
+				}
+			});
+			mOSCReceiver->setListener("/handsHeadHeight",
+				[&](const osc::Message &msg){
+				float handsHeadHeight = msg[0].flt();
+				if (handsHeadHeight > 0.3)
+				{
+					// glitch
+					mVDSettings->controlValues[45] = 1.0f;
+				}
+				else
+				{
+					// glitch
+					mVDSettings->controlValues[45] = 0.0f;
+				}
+				// background red
+				mVDSettings->controlValues[5] = handsHeadHeight*3.0;
+			});
+			mOSCReceiver->setListener("/centerXY",
+				[&](const osc::Message &msg){
+				float x = msg[0].flt();
+				float y = msg[1].flt();
+				// background green
+				mVDSettings->controlValues[6] = y;
+				// green
+				mVDSettings->controlValues[2] = x;
+			});
+			mOSCReceiver->setListener("/selectShader",
+				[&](const osc::Message &msg){
+				//selectShader(msg[0].int32(), msg[1].int32());
+			});
 
-		mOSCReceiver->setListener("/joint",
-			[&](const osc::Message &msg){
-			int skeletonIndex = msg[0].int32();
-			int jointIndex = msg[1].int32();
-			if (jointIndex < 20)
-			{
-				skeleton[jointIndex] = ivec4(msg[2].int32(), msg[3].int32(), msg[4].int32(), msg[5].int32());
-			}
-		});
-		mOSCReceiver->bind();
-		mOSCReceiver->listen();
+			mOSCReceiver->setListener("/joint",
+				[&](const osc::Message &msg){
+				int skeletonIndex = msg[0].int32();
+				int jointIndex = msg[1].int32();
+				if (jointIndex < 20)
+				{
+					skeleton[jointIndex] = ivec4(msg[2].int32(), msg[3].int32(), msg[4].int32(), msg[5].int32());
+				}
+			});
+			mOSCReceiver->bind();
+			mOSCReceiver->listen();
+		}
+
 		// ws
 		clientConnected = false;
 		if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
@@ -876,110 +887,110 @@ void VDRouter::update() {
 	// osc
 	while (mOSCReceiver.hasWaitingMessages())
 	{
-		osc::Message message;
-		bool routeMessage = false;
-		mOSCReceiver.getNextMessage(&message);
-		for (int a = 0; a < MAX; a++)
-		{
-			iargs[a] = 0;
-			fargs[a] = 0.0;
-			sargs[a] = "";
-		}
-		string oscAddress = message.getAddress();
+	osc::Message message;
+	bool routeMessage = false;
+	mOSCReceiver.getNextMessage(&message);
+	for (int a = 0; a < MAX; a++)
+	{
+	iargs[a] = 0;
+	fargs[a] = 0.0;
+	sargs[a] = "";
+	}
+	string oscAddress = message.getAddress();
 
-		int numArgs = message.getNumArgs();
-		// get arguments
-		for (int i = 0; i < message.getNumArgs(); i++)
-		{
-			if (i < MAX)
-			{
-				if (message.getArgType(i) == osc::TYPE_INT32) {
-					try
-					{
-						iargs[i] = message.getArgAsInt32(i);
-						sargs[i] = toString(iargs[i]);
-					}
-					catch (...) {
-						cout << "Exception reading argument as int32" << std::endl;
-					}
-				}
-				if (message.getArgType(i) == osc::TYPE_FLOAT) {
-					try
-					{
-						fargs[i] = message.getArgAsFloat(i);
-						sargs[i] = toString(fargs[i]);
-					}
-					catch (...) {
-						cout << "Exception reading argument as float" << std::endl;
-					}
-				}
-				if (message.getArgType(i) == osc::TYPE_STRING) {
-					try
-					{
-						sargs[i] = message.getArgAsString(i);
-					}
-					catch (...) {
-						cout << "Exception reading argument as string" << std::endl;
-					}
-				}
-			}
-		}
+	int numArgs = message.getNumArgs();
+	// get arguments
+	for (int i = 0; i < message.getNumArgs(); i++)
+	{
+	if (i < MAX)
+	{
+	if (message.getArgType(i) == osc::TYPE_INT32) {
+	try
+	{
+	iargs[i] = message.getArgAsInt32(i);
+	sargs[i] = toString(iargs[i]);
+	}
+	catch (...) {
+	cout << "Exception reading argument as int32" << std::endl;
+	}
+	}
+	if (message.getArgType(i) == osc::TYPE_FLOAT) {
+	try
+	{
+	fargs[i] = message.getArgAsFloat(i);
+	sargs[i] = toString(fargs[i]);
+	}
+	catch (...) {
+	cout << "Exception reading argument as float" << std::endl;
+	}
+	}
+	if (message.getArgType(i) == osc::TYPE_STRING) {
+	try
+	{
+	sargs[i] = message.getArgAsString(i);
+	}
+	catch (...) {
+	cout << "Exception reading argument as string" << std::endl;
+	}
+	}
+	}
+	}
 
 
 
-		{
-			console() << "OSC message received: " << oscAddress << std::endl;
-			// is it a layer msg?
-			int layer = 0;
-			unsigned layerFound = oscAddress.find("layer");
-			if (layerFound == 1)
-			{
-				unsigned clipFound = oscAddress.find("/clip");
-				if (clipFound == 7) // layer must be < 10
-				{
-					cout << "clipFound " << clipFound;
-					layer = atoi(oscAddress.substr(6, 1).c_str());
-					int clip = atoi(oscAddress.substr(12, 1).c_str());
-					string fileName = toString((layer * 10) + clip) + ".fragjson";
-					fs::path fragFile = getAssetPath("") / "shaders" / "fragjson" / fileName;
-					if (fs::exists(fragFile))
-					{
-						//mShaders->loadFragJson(fragFile.string());
-					}
-				}
-				else
-				{
-					if (clipFound == 8)
-					{
-						layer = atoi(oscAddress.substr(6, 2).c_str());
-					}
-				}
-				// connect or preview
-				unsigned connectFound = oscAddress.find("connect");
-				if (connectFound != string::npos) cout << "connectFound " << connectFound;
-			}
-			//if ( layerFound != string::npos ) cout << "layerFound " << layerFound;
+	{
+	console() << "OSC message received: " << oscAddress << std::endl;
+	// is it a layer msg?
+	int layer = 0;
+	unsigned layerFound = oscAddress.find("layer");
+	if (layerFound == 1)
+	{
+	unsigned clipFound = oscAddress.find("/clip");
+	if (clipFound == 7) // layer must be < 10
+	{
+	cout << "clipFound " << clipFound;
+	layer = atoi(oscAddress.substr(6, 1).c_str());
+	int clip = atoi(oscAddress.substr(12, 1).c_str());
+	string fileName = toString((layer * 10) + clip) + ".fragjson";
+	fs::path fragFile = getAssetPath("") / "shaders" / "fragjson" / fileName;
+	if (fs::exists(fragFile))
+	{
+	//mShaders->loadFragJson(fragFile.string());
+	}
+	}
+	else
+	{
+	if (clipFound == 8)
+	{
+	layer = atoi(oscAddress.substr(6, 2).c_str());
+	}
+	}
+	// connect or preview
+	unsigned connectFound = oscAddress.find("connect");
+	if (connectFound != string::npos) cout << "connectFound " << connectFound;
+	}
+	//if ( layerFound != string::npos ) cout << "layerFound " << layerFound;
 
-			unsigned found = oscAddress.find_last_of("/");
-			int name = atoi(oscAddress.substr(found + 1).c_str());
-		}
-		stringstream ss;
-		ss << message.getRemoteIp() << " adr:" << oscAddress << " ";
-		for (int a = 0; a < MAX; a++)
-		{
-			ss << a << ":" << sargs[a] << " ";
-		}
-		ss << std::endl;
-		mVDSettings->newMsg = true;
-		mVDSettings->mMsg = ss.str();
-		// filter messages
-		if (routeMessage)
-		{
-			// avoid LiveOSC infinite loop
-			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender.sendMessage(message);
-			if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort2 != 9000) mOSCSender2.sendMessage(message);
+	unsigned found = oscAddress.find_last_of("/");
+	int name = atoi(oscAddress.substr(found + 1).c_str());
+	}
+	stringstream ss;
+	ss << message.getRemoteIp() << " adr:" << oscAddress << " ";
+	for (int a = 0; a < MAX; a++)
+	{
+	ss << a << ":" << sargs[a] << " ";
+	}
+	ss << std::endl;
+	mVDSettings->newMsg = true;
+	mVDSettings->mMsg = ss.str();
+	// filter messages
+	if (routeMessage)
+	{
+	// avoid LiveOSC infinite loop
+	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender.sendMessage(message);
+	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort2 != 9000) mOSCSender2.sendMessage(message);
 
-		}
-		*/
-	
+	}
+	*/
+
 }
