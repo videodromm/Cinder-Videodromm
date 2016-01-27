@@ -1,3 +1,5 @@
+// from https://github.com/num3ric/Cinder-LiveJsonParam
+
 #include "LiveParam.h"
 #include "cinder/Filesystem.h"
 #include <fstream>
