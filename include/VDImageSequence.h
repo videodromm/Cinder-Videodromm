@@ -16,48 +16,33 @@ namespace VideoDromm
 	// stores the pointer to the VDImageSequence instance
 	typedef std::shared_ptr<class VDImageSequence> VDImageSequenceRef;
 	// structure for loaded image files
-	struct sequence {
-		string						filePath;
-		char						folder[32];
-		string						prefix;
-		string						ext;
-		int							numberOfDigits;
-		int							nextIndexFrameToTry;
-		int							currentLoadedFrame;
-		int							index;
-		int							framesLoaded;
-		int							playheadPosition;
-		bool						loadingPaused;
-		bool						loadingFilesComplete;
-		bool						playing;
-		int							speed;
-		vector<ci::gl::TextureRef>	sequenceTextures;
-	};
+	//struct sequence {
+	//};
 	class VDImageSequence {
-	public:		
-		VDImageSequence(VDSettingsRef aVDSettings);
+	public:
+		VDImageSequence(VDSettingsRef aVDSettings, string aFilePath, int aIndex);
 
-		static VDImageSequenceRef		create(VDSettingsRef aVDSettings)
+		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, string aFilePath, int aIndex)
 		{
-			return shared_ptr<VDImageSequence>(new VDImageSequence( aVDSettings));
+			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aFilePath, aIndex));
 		}
 		void						update();
-		void						createFromDir(string filePath, int index);
-		void						playSequence(int textureIndex);
-		void						stopSequence(int textureIndex);
-		void						pauseSequence(int textureIndex);
-		void						toggleLoadingFromDisk(int textureIndex);
+		//void						createFromDir(string filePath, int index);
+		void						playSequence();
+		void						stopSequence();
+		void						pauseSequence();
+		void						toggleLoadingFromDisk();
 		void						stopLoading();
-		int							getPlayheadPosition(int textureIndex);
-		void						setPlayheadPosition(int textureIndex, int position);
+		int							getPlayheadPosition();
+		void						setPlayheadPosition(int position);
 
-		int							getSpeed(int textureIndex);
-		void						setSpeed(int textureIndex, int speed);
-		void						reverseSequence(int textureIndex);
-		bool						isLoadingFromDisk(int textureIndex);
-		bool						isSequence(int textureIndex);
-		int							getMaxFrames(int textureIndex);
-		ci::gl::TextureRef			getCurrentSequenceTexture(int sequenceIndex);
+		int							getSpeed();
+		void						setSpeed(int speed);
+		void						reverseSequence();
+		bool						isLoadingFromDisk();
+		bool						isValid(){ return mFramesLoaded > 0; };
+		int							getMaxFrames();
+		ci::gl::TextureRef			getCurrentSequenceTexture();
 
 	private:
 		// Settings
@@ -65,9 +50,23 @@ namespace VideoDromm
 
 		vector<Texta>				textas;
 		int							playheadFrameInc;
-		vector<sequence>			sequences;
-		void						loadNextImageFromDisk(int currentSeq);
-		void						updateSequence(int sequenceIndex);
+		void						loadNextImageFromDisk();
+		void						updateSequence();
+		string						mFilePath;
+		char						mFolder[32];
+		string						mPrefix;
+		string						mExt;
+		int							mNumberOfDigits;
+		int							mNextIndexFrameToTry;
+		int							mCurrentLoadedFrame;
+		int							mIndex;
+		int							mFramesLoaded;
+		int							mPlayheadPosition;
+		bool						mLoadingPaused;
+		bool						mLoadingFilesComplete;
+		bool						mPlaying;
+		int							mSpeed;
+		vector<ci::gl::TextureRef>	mSequenceTextures;
 
 	};
 
