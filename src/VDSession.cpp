@@ -64,7 +64,8 @@ void VDSession::reset()
 	// parameters exposed in json file
 	mFlipV = false;
 	mFlipH = false;
-
+	mBpm = 160;
+	mFpb = 16;
 	resetSomeParams();
 
 

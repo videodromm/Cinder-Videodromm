@@ -27,16 +27,20 @@ namespace VideoDromm {
 		void						reset();
 		void						resetSomeParams();
 
-
-		// fbo 
-		bool						mFlipV;
-		bool						mFlipH;
+		float						getBpm() { return mBpm; };
+		float						getFpb() { return mFpb; };
 
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
 		const string				sessionFileName = "VDSession.json";
 		fs::path					sessionPath;
+		// fbo 
+		bool						mFlipV;
+		bool						mFlipH;
+		// tempo
+		float						mBpm, mFpb;
+
 	};
 
 }

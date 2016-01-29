@@ -5,8 +5,7 @@ using namespace VideoDromm;
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	JsonBag::add(&mBackgroundColor, "background_color");
-	JsonBag::add(&mBpm, "bpm");
-	JsonBag::add(&mFpb, "fpb");
+	JsonBag::add(&mExposure, "exposure");
 
 }
 void VDAnimation::load() {

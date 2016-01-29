@@ -31,14 +31,13 @@ namespace VideoDromm
 		void						load();
 		void						save();
 		Color						getBackgroundColor() { return mBackgroundColor; };
-		float						getBpm() { return mBpm; };
-		float						getFpb() { return mFpb; };
+		float						getExposure() { return mExposure; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
 		// Live json params
 		Param<Color>				mBackgroundColor;
-		Param<float>				mBpm, mFpb;
+		Param<float>				mExposure;
 	};
 
 
