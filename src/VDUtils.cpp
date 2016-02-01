@@ -285,10 +285,10 @@ int VDUtils::getWindowsResolution()
 		}
 	}
 	mVDSettings->mRenderY = 0;
-	CI_LOG_V("Window " + toString(mVDSettings->mDisplayCount) + ": " + toString(mVDSettings->mRenderWidth) + "x" + toString(mVDSettings->mRenderHeight));
+	CI_LOG_V("Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(mVDSettings->mRenderWidth) + "x" + toString(mVDSettings->mRenderHeight));
 
-	CI_LOG_V(" mMainDisplayWidth" + toString(mVDSettings->mMainDisplayWidth) + " mMainDisplayHeight" + toString(mVDSettings->mMainDisplayHeight));
-	CI_LOG_V(" mRenderX" + toString(mVDSettings->mRenderX) + " mRenderY" + toString(mVDSettings->mRenderY));
+	CI_LOG_V(" mMainDisplayWidth:" + toString(mVDSettings->mMainDisplayWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainDisplayHeight));
+	CI_LOG_V(" mRenderX:" + toString(mVDSettings->mRenderX) + " mRenderY:" + toString(mVDSettings->mRenderY));
 	mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;
@@ -435,4 +435,10 @@ void VDUtils::setTimeFactor(const int &aTimeFactor)
 		mVDSettings->iTimeFactor = 1.0;
 		break;
 	}
+}
+fs::path VDUtils::getPath(string path)
+{
+	fs::path p = app::getAssetPath("");
+	if (path.length() > 0) { p += fs::path("/" + path); }
+	return p;
 }

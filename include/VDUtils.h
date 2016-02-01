@@ -91,7 +91,8 @@ namespace VideoDromm
 		// tempo
 		void						tapTempo();
 		void						setTimeFactor(const int &aTimeFactor);
-
+		// file system
+		fs::path					getPath(string path);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

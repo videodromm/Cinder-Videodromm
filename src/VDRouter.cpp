@@ -20,9 +20,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 			mSocket->set_option(asio::socket_base::broadcast(true));
 			mOSCSender = shared_ptr<osc::SenderUdp>(new osc::SenderUdp(mSocket, udp::endpoint(address_v4::broadcast(), mVDSettings->mOSCDestinationPort)));
 			mOSCSender->bind();
-#if ! USE_UDP
-			mOSCSender->connect();
-#endif
+
 			//mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
 			//mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
 			osc::Message msg("/start");
@@ -43,6 +41,16 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 				[&](const osc::Message &msg){
 				mVDSettings->controlValues[msg[0].int32()] = msg[1].flt();
 				updateParams(msg[0].int32(), msg[1].flt());
+			});
+			mOSCReceiver->setListener("/backgroundcolor",
+				[&](const osc::Message &msg){
+				// background red
+				mVDSettings->controlValues[5] = msg[0].flt();
+				// background green
+				mVDSettings->controlValues[6] = msg[1].flt();
+				// background blue
+				mVDSettings->controlValues[7] = msg[2].flt();
+
 			});
 			mOSCReceiver->setListener("/live/beat",
 				[&](const osc::Message &msg){
@@ -248,7 +256,7 @@ void VDRouter::midiListener(midi::MidiMessage msg)
 		midiControl = msg.Control;
 		midiValue = msg.Value;
 		midiNormalizedValue = lmap<float>(midiValue, 0.0, 127.0, 0.0, 1.0);
-		if (mVDSettings->mOSCEnabled) {
+		if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
 			updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
 		}
 		else {
