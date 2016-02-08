@@ -71,7 +71,7 @@ VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, string aFilePath, in
 						noValidFile = false;
 						mSequenceTextures.clear();
 						// reset playhead to the start
-						mPlayheadPosition = 0;
+						//mPlayheadPosition = 0;
 						mLoadingFilesComplete = false;
 						//textas[seq.index].sequenceIndex = sequences.size() - 1;
 						//sprintf_s(textas[seq.index].name, "%s", seq.folder);
@@ -100,7 +100,7 @@ void VDImageSequence::loadNextImageFromDisk() {
 				sprintf(restOfFileName, "%03d", mNextIndexFrameToTry);
 			}
 
-			fs::path fileToLoad = mFilePath + mPrefix + restOfFileName + "." + mExt;
+			fs::path fileToLoad = mFilePath + "/" + mPrefix + restOfFileName + "." + mExt;
 			if (fs::exists(fileToLoad)) {
 
 				mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(fileToLoad)));
@@ -134,7 +134,7 @@ void VDImageSequence::updateSequence() {
 			if (newPosition > mSequenceTextures.size() - 1) newPosition = 0;
 		}
 		else {
-			newPosition = (int)mVDSettings->iBeat % (mSequenceTextures.size());
+			newPosition = (int)(mVDSettings->iBeat % mSequenceTextures.size());
 		}
 		mPlayheadPosition = max(0, min(newPosition, (int)mSequenceTextures.size() - 1));
 	}
@@ -143,13 +143,10 @@ void VDImageSequence::updateSequence() {
 void VDImageSequence::update() {
 
 	updateSequence();
-	if (!mLoadingFilesComplete) {
-		loadNextImageFromDisk();
-
-	}
 }
 //Begins playback of sequence
 void VDImageSequence::playSequence() {
+
 	mPlaying = true;
 }
 // Pauses playback
@@ -177,6 +174,9 @@ int VDImageSequence::getPlayheadPosition() {
 void VDImageSequence::setPlayheadPosition(int position) {
 
 	mPlayheadPosition = max(0, min(position, (int)mSequenceTextures.size() - 1));
+	if (!mLoadingFilesComplete) {
+		loadNextImageFromDisk();
+	}
 }
 
 void VDImageSequence::reverseSequence() {
@@ -204,6 +204,7 @@ ci::gl::TextureRef VDImageSequence::getCurrentSequenceTexture() {
 	if (mPlayheadPosition > mFramesLoaded) {
 		//error
 	}
+
 	return mSequenceTextures[mPlayheadPosition];
 }
 void VDImageSequence::stopLoading() {

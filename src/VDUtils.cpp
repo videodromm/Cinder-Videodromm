@@ -40,8 +40,8 @@ VDUtils::VDUtils(VDSettingsRef aVDSettings)
 	tRotationSpeed = autoRotationSpeed = false;
 	// tempo
 	counter = 0;
-	//startTime = timer.getSeconds();
-	//currentTime = timer.getSeconds();
+	startTime = timer.getSeconds();
+	currentTime = timer.getSeconds();
 	mVDSettings->iDeltaTime = 60 / mVDSettings->mTempo;
 	previousTime = 0.0f;
 	beatIndex = 0;
@@ -107,7 +107,10 @@ void VDUtils::update()
 		if (mVDSettings->iTempoTime < previousTime)
 		{
 			beatIndex++;
-			if (beatIndex > 3) beatIndex = 0;
+			if (beatIndex > 3) {
+				beatIndex = 0;
+				mVDSettings->iBeat++;
+			} 
 		}
 		previousTime = mVDSettings->iTempoTime;
 
