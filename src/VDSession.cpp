@@ -39,20 +39,29 @@ bool VDSession::save()
 	return true;
 }
 
-bool VDSession::restore()
+void VDSession::restore()
 {
 	// check to see if json file exists
+	if (!fs::exists(sessionPath)) {
+		return;
+	}
 
-	if (fs::exists(sessionPath)) {
-		// if it does, restore
-		
-		return true;
-		
+	try {
+		JsonTree doc(loadFile(sessionPath));
+		/*JsonTree params(doc.getChild("params"));
+		for (JsonTree::ConstIter item = params.begin(); item != params.end(); ++item) {
+			const auto& name = item->getKey();
+			if (mItems.count(name)) {
+				mItems.at(name)->load(name, item);
+			}
+			
+		}*/
 	}
-	else {
-		// if it doesn't, return false
-		return false;
+	catch (const JsonTree::ExcJsonParserError&)  {
+		//CI_LOG_E("Failed to parse json file.");
 	}
+	//"sequence_folder" : "mandalas"
+
 }
 
 void VDSession::resetSomeParams() {

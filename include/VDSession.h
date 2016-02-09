@@ -23,7 +23,7 @@ namespace VideoDromm {
 		VDSession(VDSettingsRef aVDSettings);
 		static VDSessionRef			create(VDSettingsRef aVDSettings);
 		bool						save();
-		bool						restore();
+		void						restore();
 		void						reset();
 		void						resetSomeParams();
 

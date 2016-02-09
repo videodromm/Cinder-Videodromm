@@ -107,7 +107,7 @@ namespace live {
 		}
 		
 		void save() const;
-		void load();
+		void load(ci::fs::path aJsonFilePath);
 	private:	
 		JsonBag();
 		void removeTarget( void *target ) override;
@@ -120,6 +120,7 @@ namespace live {
 		friend JsonBag* bag();
 		
 		ci::fs::path	mJsonFilePath;
+
 	};
 
 } //namespace live

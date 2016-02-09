@@ -14,8 +14,13 @@ std::once_flag JsonBag::mOnceFlag;
 
 JsonBag::JsonBag()
 {
-	mJsonFilePath = app::getAssetPath("") / "live_params.json";
-	
+	// needs to call load() to init
+}
+
+void JsonBag::load(ci::fs::path aJsonFilePath)
+{
+	mJsonFilePath = aJsonFilePath;
+
 	// Create json file if it doesn't already exist.
 	if( ! fs::exists( mJsonFilePath ) ) {
 		std::ofstream oStream( mJsonFilePath.string() );
@@ -24,25 +29,8 @@ JsonBag::JsonBag()
 	
 	wd::watch( mJsonFilePath, [this]( const fs::path &absolutePath )
 	{
-		this->load();
-	} );
-}
-
-void JsonBag::save() const
-{
-	JsonTree doc;
-	JsonTree params = JsonTree::makeArray( "params" );
-	
-	for( const auto& item : mItems ) {
-		item.second->save( item.first, &params );
-	}
-	
-	doc.pushBack( params );
-	doc.write( writeFile( mJsonFilePath ), JsonTree::WriteOptions() );
-}
-
-void JsonBag::load()
-{
+		//this->load();
+	} );	
 	if( ! fs::exists( mJsonFilePath ) ) {
 		return;
 	}
@@ -64,6 +52,20 @@ void JsonBag::load()
 	}
 }
 
+void JsonBag::save() const
+{
+	JsonTree doc;
+	JsonTree params = JsonTree::makeArray( "params" );
+	
+	for( const auto& item : mItems ) {
+		item.second->save( item.first, &params );
+	}
+	
+	doc.pushBack( params );
+	doc.write( writeFile( mJsonFilePath ), JsonTree::WriteOptions() );
+}
+
+
 void JsonBag::removeTarget( void *target )
 {
 	if( ! target )
@@ -82,7 +84,7 @@ JsonBag* live::bag()
 {
 	std::call_once(JsonBag::mOnceFlag,
 				   [] {
-					   JsonBag::mInstance.reset( new JsonBag );
+		JsonBag::mInstance.reset(new JsonBag());
 				   });
 	
 	return JsonBag::mInstance.get();
