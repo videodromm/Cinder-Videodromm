@@ -15,19 +15,16 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDImageSequence instance
 	typedef std::shared_ptr<class VDImageSequence> VDImageSequenceRef;
-	// structure for loaded image files
-	//struct sequence {
-	//};
+
 	class VDImageSequence {
 	public:
-		VDImageSequence(VDSettingsRef aVDSettings, string aFilePath, int aIndex);
+		VDImageSequence(VDSettingsRef aVDSettings, string aFilePath);
 
-		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, string aFilePath, int aIndex)
+		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, string aFilePath)
 		{
-			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aFilePath, aIndex));
+			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aFilePath));
 		}
 		void						update();
-		//void						createFromDir(string filePath, int index);
 		void						playSequence();
 		void						stopSequence();
 		void						pauseSequence();
@@ -48,7 +45,6 @@ namespace VideoDromm
 		// Settings
 		VDSettingsRef				mVDSettings;
 
-		vector<Texta>				textas;
 		int							playheadFrameInc;
 		void						loadNextImageFromDisk();
 		void						updateSequence();
@@ -59,7 +55,6 @@ namespace VideoDromm
 		int							mNumberOfDigits;
 		int							mNextIndexFrameToTry;
 		int							mCurrentLoadedFrame;
-		int							mIndex;
 		int							mFramesLoaded;
 		int							mPlayheadPosition;
 		bool						mLoadingPaused;
