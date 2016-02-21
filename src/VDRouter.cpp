@@ -36,11 +36,15 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 #else
 			mOSCReceiver = shared_ptr<osc::ReceiverTcp>(new osc::ReceiverTcp(mVDSettings->mOSCReceiverPort));
 #endif
-
+			
 			mOSCReceiver->setListener("/cc",
 				[&](const osc::Message &msg){
 				mVDSettings->controlValues[msg[0].int32()] = msg[1].flt();
 				updateParams(msg[0].int32(), msg[1].flt());
+			});
+			mOSCReceiver->setListener("/Freq1",
+				[&](const osc::Message &msg){
+				float f1 = msg[0].flt();
 			});
 			mOSCReceiver->setListener("/backgroundcolor",
 				[&](const osc::Message &msg){
@@ -758,6 +762,17 @@ void VDRouter::wsConnect()
 				{
 					// fragment shader from live coding
 					//mBatchass->getShadersRef()->loadLiveShader(msg);
+
+				}
+				else if (first == "/")
+				{
+					// osc from videodromm-nodejs-router
+					int f = msg.size();
+					const char c = msg[9];
+					int s = msg[12];
+					int t = msg[13];
+					int u = msg[14];
+					CI_LOG_V(msg);
 
 				}
 			}
