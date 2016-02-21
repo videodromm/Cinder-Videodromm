@@ -6,15 +6,13 @@ TODO pass the folder to loadfrom in the constructor
 */
 using namespace VideoDromm;
 
-VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, string aFilePath, int aIndex) {
+VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, string aFilePath) {
 	mVDSettings = aVDSettings;
 	mFilePath = aFilePath;
-	mIndex = aIndex;
 
 	// Loads all files contained in the supplied folder and creates Textures from them
 	// init the sequence
 	playheadFrameInc = 1;
-	mIndex = 0;
 	mLoadingFilesComplete = true;
 	mLoadingPaused = false;
 	mFramesLoaded = 0;
@@ -73,9 +71,6 @@ VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, string aFilePath, in
 						// reset playhead to the start
 						//mPlayheadPosition = 0;
 						mLoadingFilesComplete = false;
-						//textas[seq.index].sequenceIndex = sequences.size() - 1;
-						//sprintf_s(textas[seq.index].name, "%s", seq.folder);
-						//textas[seq.index].isSequence = true;
 						loadNextImageFromDisk();
 						mPlaying = true;
 					}
@@ -83,7 +78,6 @@ VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, string aFilePath, in
 			}
 		}
 	}
-	//sequences[0].sequenceTextures.push_back(gl::Texture::create(loadImage(loadAsset("logo/videodromm-logo.png"))));
 }
 void VDImageSequence::loadNextImageFromDisk() {
 	if (!mLoadingPaused) {
