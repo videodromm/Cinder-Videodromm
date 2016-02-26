@@ -91,25 +91,25 @@ JsonBag* live::bag()
 }
 
 template<>
-void Param<bool>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<bool>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	tree->addChild( ci::JsonTree( name, ci::toString( mValue ) ) );
 }
 
 template<>
-void Param<int>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<int>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	tree->addChild( ci::JsonTree( name, ci::toString( mValue ) ) );
 }
 
 template<>
-void Param<float>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<float>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	tree->addChild( ci::JsonTree( name, ci::toString( mValue ) ) );
 }
 
 template<>
-void Param<glm::vec2>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<glm::vec2>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	auto v = ci::JsonTree::makeArray( name );
 	v.pushBack( ci::JsonTree( "x", ci::toString( mValue.x ) ) );
@@ -118,7 +118,7 @@ void Param<glm::vec2>::save( const std::string& name, ci::JsonTree* tree ) const
 }
 
 template<>
-void Param<glm::vec3>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<glm::vec3>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	auto v = ci::JsonTree::makeArray( name );
 	v.pushBack( ci::JsonTree( "x", ci::toString( mValue.x ) ) );
@@ -128,7 +128,7 @@ void Param<glm::vec3>::save( const std::string& name, ci::JsonTree* tree ) const
 }
 
 template<>
-void Param<glm::vec4>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<glm::vec4>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	auto v = ci::JsonTree::makeArray( name );
 	v.pushBack( ci::JsonTree( "x", ci::toString( mValue.x ) ) );
@@ -139,7 +139,7 @@ void Param<glm::vec4>::save( const std::string& name, ci::JsonTree* tree ) const
 }
 
 template<>
-void Param<glm::quat>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<glm::quat>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	auto v = ci::JsonTree::makeArray( name );
 	v.pushBack( ci::JsonTree( "w", ci::toString( mValue.w ) ) );
@@ -151,7 +151,7 @@ void Param<glm::quat>::save( const std::string& name, ci::JsonTree* tree ) const
 }
 
 template<>
-void Param<ci::Color>::save( const std::string& name, ci::JsonTree* tree ) const
+void Parameter<ci::Color>::save( const std::string& name, ci::JsonTree* tree ) const
 {
 	auto v = ci::JsonTree::makeArray( name );
 	v.pushBack( ci::JsonTree( "r", ci::toString( mValue.r ) ) );
@@ -161,25 +161,25 @@ void Param<ci::Color>::save( const std::string& name, ci::JsonTree* tree ) const
 }
 
 template<>
-void Param<bool>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<bool>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	update( iter->getValue<bool>() );
 }
 
 template<>
-void Param<int>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<int>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	update( iter->getValue<int>() );
 }
 
 template<>
-void Param<float>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<float>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	update( iter->getValue<float>() );
 }
 
 template<>
-void Param<glm::vec2>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<glm::vec2>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	glm::vec2 v;
 	v.x = iter->getChild( "x" ).getValue<float>();
@@ -188,7 +188,7 @@ void Param<glm::vec2>::load( const std::string& name, ci::JsonTree::ConstIter& i
 }
 
 template<>
-void Param<glm::vec3>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<glm::vec3>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	glm::vec3 v;
 	v.x = iter->getChild( "x" ).getValue<float>();
@@ -198,7 +198,7 @@ void Param<glm::vec3>::load( const std::string& name, ci::JsonTree::ConstIter& i
 }
 
 template<>
-void Param<glm::vec4>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<glm::vec4>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	glm::vec4 v;
 	v.x = iter->getChild( "x" ).getValue<float>();
@@ -209,7 +209,7 @@ void Param<glm::vec4>::load( const std::string& name, ci::JsonTree::ConstIter& i
 }
 
 template<>
-void Param<glm::quat>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<glm::quat>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	glm::quat q;
 	q.w = iter->getChild( "w" ).getValue<float>();
@@ -220,7 +220,7 @@ void Param<glm::quat>::load( const std::string& name, ci::JsonTree::ConstIter& i
 }
 
 template<>
-void Param<ci::Color>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
+void Parameter<ci::Color>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
 	ci::Color c;
 	c.r = iter->getChild( "r" ).getValue<float>();

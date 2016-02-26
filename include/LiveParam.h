@@ -44,13 +44,13 @@ namespace live {
 	};
 	
 	template<typename T>
-	class Param : public boost::noncopyable, public ParamBase {
+	class Parameter : public boost::noncopyable, public ParamBase {
 	public:
-		Param()
+		Parameter()
 		: ParamBase(), mValue()
 		{ }
 		
-		Param( T value )
+		Parameter( T value )
 		: ParamBase( &mValue ), mValue( value )
 		{ }
 		
@@ -60,7 +60,7 @@ namespace live {
 		
 		operator const T&() const { return mValue; }
 		
-		Param<T>& operator=( T value ) { mValue = value; return *this; }
+		Parameter<T>& operator=( T value ) { mValue = value; return *this; }
 		
 		const T&	value() const { return mValue; }
 		T&			value() { return mValue; }
@@ -96,7 +96,7 @@ namespace live {
 	class JsonBag : public boost::noncopyable, public ParamOwner {
 	public:		
 		template<typename T>
-		static void add( Param<T> *param,
+		static void add( Parameter<T> *param,
 						 const std::string &key,
 						 const std::function<void()> &updateFn = [](){} )
 		{

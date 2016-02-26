@@ -1,9 +1,5 @@
 #include "VDFbo.h"
-/*
-TODO load each file between two ticks
-TODO ensure an image texture exists
-TODO pass the folder to loadfrom in the constructor
-*/
+
 using namespace VideoDromm;
 
 VDFbo::VDFbo(VDSettingsRef aVDSettings, string aName) {

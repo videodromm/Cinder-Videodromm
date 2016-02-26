@@ -94,8 +94,8 @@ namespace VideoDromm
 		// Settings
 		VDSettingsRef				mVDSettings;
 		// Live json params
-		Param<Color>				mBackgroundColor;
-		Param<float>				mExposure;
+		Parameter<Color>			mBackgroundColor;
+		Parameter<float>			mExposure;
 		// timed animation
 		ci::Timer					timer;
 		std::deque <double>			buffer;
