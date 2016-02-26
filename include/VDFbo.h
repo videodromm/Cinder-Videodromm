@@ -18,11 +18,11 @@ namespace VideoDromm
 
 	class VDFbo {
 	public:
-		VDFbo(VDSettingsRef aVDSettings, string aName);
+		VDFbo(VDSettingsRef aVDSettings, string aName, int aWidth, int aHeight);
 
-		static VDFboRef		create(VDSettingsRef aVDSettings, string aName)
+		static VDFboRef		create(VDSettingsRef aVDSettings, string aName, int aWidth, int aHeight)
 		{
-			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aName));
+			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aName, aWidth, aHeight));
 		}
 		gl::FboRef					getFboRef();
 		ci::gl::TextureRef			getFboTexture();
@@ -35,8 +35,10 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		gl::FboRef					mFbo;
 		string						mName;
-		static const int			FBO_WIDTH = 640, FBO_HEIGHT = 480;
-
+		bool						mFlipV;
+		bool						mFlipH;
+		int							mWidth;
+		int							mHeight;
 	};
 
 

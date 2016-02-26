@@ -20,20 +20,22 @@ namespace VideoDromm {
 
 	typedef std::shared_ptr<class VDSettings> VDSettingsRef;
 	//! struct for textures 
+	/* obsolete
 	struct Texta
 	{
 		char						name[32];
 		int							sequenceIndex;
 		bool						isSequence;
-	};
+	};*/
 	//! struct for fbos 
+	/* obsolete 
 	struct FrameBuffa
 	{
 		char						name[32];
 		gl::FboRef					fbo;
 		bool						isFlipV;
 		bool						isFlipH;
-	};
+	};*/
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures 
 	struct Sender
 	{

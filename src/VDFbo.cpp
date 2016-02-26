@@ -2,13 +2,17 @@
 
 using namespace VideoDromm;
 
-VDFbo::VDFbo(VDSettingsRef aVDSettings, string aName) {
+VDFbo::VDFbo(VDSettingsRef aVDSettings, string aName, int aWidth, int aHeight) {
 	mVDSettings = aVDSettings;
 	mName = aName;
+	mWidth = aWidth;
+	mHeight = aHeight;
 	// fbo
 	gl::Fbo::Format format;
 	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	mFbo = gl::Fbo::create(FBO_WIDTH, FBO_HEIGHT, format.depthTexture());
+	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+	mFlipV = false;
+	mFlipH = false;
 }
 
 ci::gl::TextureRef VDFbo::getFboTexture() {
