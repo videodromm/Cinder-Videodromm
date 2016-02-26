@@ -12,7 +12,7 @@ VDHapMovie::VDHapMovie(VDSettingsRef aVDSettings, string aFilePath) {
 	// Loads all files contained in the supplied folder and creates Textures from them
 	// init the Movie
 	playheadFrameInc = 1;
-	mIndex = 0;
+	//mIndex = 0;
 	mFramesLoaded = 0;
 	mCurrentLoadedFrame = 0;
 	mPlaying = false;
