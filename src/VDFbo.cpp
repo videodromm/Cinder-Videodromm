@@ -15,7 +15,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, string aName, int aWidth, int aHeight) {
 	mFlipH = false;
 }
 
-ci::gl::TextureRef VDFbo::getFboTexture() {
+ci::gl::TextureRef VDFbo::getTexture() {
 
 	return mFbo->getColorTexture();
 }

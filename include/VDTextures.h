@@ -33,24 +33,7 @@ namespace VideoDromm
 	// stores the pointer to the VDTextures instance
 	typedef std::shared_ptr<class VDTextures> VDTexturesRef;
 	typedef std::chrono::high_resolution_clock Clock;
-	// structure for loaded image files
-	struct sequence {
-		string						filePath;
-		char						folder[32];
-		string						prefix;
-		string						ext;
-		int							numberOfDigits;
-		int							nextIndexFrameToTry;
-		int							currentLoadedFrame;
-		int							index;
-		int							framesLoaded;
-		int							playheadPosition;
-		bool						loadingPaused;
-		bool						loadingFilesComplete;
-		bool						playing;
-		float						speed;
-		vector<ci::gl::TextureRef>		sequenceTextures;
-	};
+
 	class VDTextures {
 	public:
 		VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef);
@@ -61,7 +44,7 @@ namespace VideoDromm
 		}
 
 		ci::gl::TextureRef			getWarpTexture(int index);
-		WarpFbo						getWarpFbo(int index) { return mVDSettings->mWarpFbos[min((int)(mVDSettings->mWarpFbos.size() - 1), index)]; };
+		//WarpFbo						getWarpFbo(int index) { return mVDSettings->mWarpFbos[min((int)(mVDSettings->mWarpFbos.size() - 1), index)]; };
 		void						renderWarpFbos();
 		// shaders
 		void						renderShadaThumbFbo();

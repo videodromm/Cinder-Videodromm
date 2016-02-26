@@ -25,11 +25,13 @@ namespace VideoDromm
 			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aName, aWidth, aHeight));
 		}
 		gl::FboRef					getFboRef();
-		ci::gl::TextureRef			getFboTexture();
+		ci::gl::TextureRef			getTexture();
 		ivec2						getSize();
 		Area						getBounds();
 		GLuint						getId();
 		string						getName();
+		bool						isFlipH() { return mFlipH; };
+		bool						isFlipV() { return mFlipV; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

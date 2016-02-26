@@ -64,7 +64,7 @@ void VDUtils::setup()
 void VDUtils::createWarpFbos()
 {
 	// vector + dynamic resize
-	for (int a = 0; a < 12; a++)
+	/*for (int a = 0; a < 12; a++)
 	{
 		WarpFbo newWarpFbo;
 		if (a == 0)
@@ -82,7 +82,7 @@ void VDUtils::createWarpFbos()
 			newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
 		}
 		mVDSettings->mWarpFbos.push_back(newWarpFbo);
-	}
+	}*/
 }
 
 

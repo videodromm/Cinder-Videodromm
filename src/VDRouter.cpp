@@ -354,13 +354,13 @@ void VDRouter::updateParams(int iarg0, float farg1)
 		// select index
 		mVDSettings->selectedWarp = iarg0 - 21;
 	}
-	if (iarg0 > 30 && iarg0 < 39)
+	/*if (iarg0 > 30 && iarg0 < 39)
 	{
 		// select input
 		mVDSettings->mWarpFbos[mVDSettings->selectedWarp].textureIndex = iarg0 - 31;
 		// activate
 		mVDSettings->mWarpFbos[mVDSettings->selectedWarp].active = !mVDSettings->mWarpFbos[mVDSettings->selectedWarp].active;
-	}
+	}*/
 	if (iarg0 > 40 && iarg0 < 49)
 	{
 		// low row 

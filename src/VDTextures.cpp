@@ -14,13 +14,13 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
 	/*FrameBuffa mixFbo;
 	mixFbo.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 	sprintf_s(mixFbo.name, "mix");
-	mixFbo.isFlipV = false;
-	mixFbo.isFlipH = false;
+	mixFbo->isFlipV() = false;
+	mixFbo->isFlipH() = false;
 	mVDFbos.push_back(mixFbo);*/
 	// audio fbo at index 1 (was 6!?)
 	mVDFbos.push_back(VDFbo::create(mVDSettings, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 	//sprintf_s(mVDFbos[mVDSettings->mAudioFboIndex].name, "audio");// = gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-	//mVDFbos[mVDSettings->mAudioFboIndex].isFlipV = true;//.getTexture(0).setFlipped(true);
+	//mVDFbos[mVDSettings->mAudioFboIndex]->isFlipV() = true;//.getTexture(0).setFlipped(true);
 
 	// preview fbo at index 5
 	//mVDFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));//640x480
@@ -30,16 +30,16 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
 		/*FrameBuffa fb;
 		fb.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		sprintf_s(fb.name, "fbo%d", m);
-		fb.isFlipV = false;
-		fb.isFlipH = false;
+		fb->isFlipV() = false;
+		fb->isFlipH() = false;
 		mVDFbos.push_back(fb);*/
 		//thumb fbo
 		/* TODO
 		FrameBuffa tfb;
 		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
 		sprintf_s(tfb.name, "thumbfbo%d", m);
-		tfb.isFlipV = false;
-		tfb.isFlipH = false;
+		tfb->isFlipV() = false;
+		tfb->isFlipH() = false;
 		mThumbFbos.push_back(tfb);*/
 		//mVDFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		//mThumbFbos.push_back(gl::Fbo(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
@@ -177,11 +177,11 @@ void VDTextures::flipTexture(int index)
 }
 void VDTextures::flipFboV(int index)
 {
-	//mVDFbos[index].isFlipV = !mVDFbos[index].isFlipV;
+	//mVDFbos[index]->isFlipV() = !mVDFbos[index]->isFlipV();
 }
 void VDTextures::flipFboH(int index)
 {
-	//mVDFbos[index].isFlipH = !mVDFbos[index].isFlipH;
+	//mVDFbos[index]->isFlipH() = !mVDFbos[index]->isFlipH();
 }
 /*void VDTextures::setCurrentFboIndex(int aFbo)
 {
@@ -198,11 +198,11 @@ ci::gl::TextureRef VDTextures::getTexture(int index)
 	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
 	return sTextures[index];
 }
-ci::gl::TextureRef VDTextures::getWarpTexture(int index)
+/*ci::gl::TextureRef VDTextures::getWarpTexture(int index)
 {
 	if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
-	return mVDSettings->mWarpFbos[index].fbo->getColorTexture();
-}
+	return mVDSettings->mWarpFbos[index]->getTexture();
+}*/
 void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 {
 	if (index < sTextures.size())
@@ -213,7 +213,7 @@ void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
-	return mVDFbos[index]->getFboTexture();
+	return mVDFbos[index]->getTexture();
 }
 GLuint VDTextures::getFboTextureId(int index)
 {
@@ -352,8 +352,8 @@ void VDTextures::renderShadaThumbFbo()
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iBeat", mVDSettings->iBeat);
 	aShader->uniform("iSeed", mVDSettings->iSeed);
-	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mMixFboIndex].isFlipH);
-	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mMixFboIndex].isFlipV);
+	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mMixFboIndex]->isFlipH());
+	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mMixFboIndex]->isFlipV());
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
 		getTexture(m)->bind(m);
@@ -374,8 +374,8 @@ void VDTextures::renderShadaThumbFbo()
 		FrameBuffa tfb;
 		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
 		sprintf_s(tfb.name, "new");
-		tfb.isFlipV = false;
-		tfb.isFlipH = false;
+		tfb->isFlipV() = false;
+		tfb->isFlipH() = false;
 		mThumbFbos.push_back(tfb);
 	}
 	if (currentShadaThumbIndex > mVDShaders->getCount() - 1)
@@ -397,7 +397,7 @@ void VDTextures::draw()
 	* start of mLibraryFbos[mVDSettings->mLeftFboIndex]
 	*/
 
-	mVDFbos[mVDSettings->mLeftFboIndex]->bindFramebuffer();
+	mVDFbos[mVDSettings->mLeftFboIndex]->getFboRef()->bindFramebuffer();
 	//gl::setViewport(mVDFbos[mVDSettings->mLeftFboIndex].fbo.getBounds());
 
 	// clear the FBO
@@ -456,8 +456,8 @@ void VDTextures::draw()
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iBeat", mVDSettings->iBeat);
 	aShader->uniform("iSeed", mVDSettings->iSeed);
-	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mLeftFboIndex].isFlipH);
-	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mLeftFboIndex].isFlipV);
+	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mLeftFboIndex]->isFlipH());
+	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mLeftFboIndex]->isFlipV());
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
@@ -465,7 +465,7 @@ void VDTextures::draw()
 	}
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 	// stop drawing into the FBO
-	mVDFbos[mVDSettings->mLeftFboIndex].fbo->unbindFramebuffer();
+	mVDFbos[mVDSettings->mLeftFboIndex]->getFboRef()->unbindFramebuffer();
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
@@ -473,7 +473,7 @@ void VDTextures::draw()
 	}
 
 	//aShader->unbind();
-	sTextures[6] = mVDFbos[mVDSettings->mLeftFboIndex].fbo->getColorTexture();
+	sTextures[6] = mVDFbos[mVDSettings->mLeftFboIndex]->getTexture();
 	/*
 	* end of mLibraryFbos[mVDSettings->mLeftFboIndex]
 	***********************************************/
@@ -483,7 +483,7 @@ void VDTextures::draw()
 	* start of mLibraryFbos[mVDSettings->mRightFboIndex]
 	*/
 
-	mVDFbos[mVDSettings->mRightFboIndex].fbo->bindFramebuffer();
+	mVDFbos[mVDSettings->mRightFboIndex]->getFboRef()->bindFramebuffer();
 	//gl::setViewport(mVDFbos[mVDSettings->mRightFboIndex].fbo.getBounds());
 
 	// clear the FBO
@@ -542,8 +542,8 @@ void VDTextures::draw()
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iBeat", mVDSettings->iBeat);
 	aShader->uniform("iSeed", mVDSettings->iSeed);
-	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mRightFboIndex].isFlipH);
-	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mRightFboIndex].isFlipV);
+	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mRightFboIndex]->isFlipH());
+	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mRightFboIndex]->isFlipV());
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
@@ -551,7 +551,7 @@ void VDTextures::draw()
 	}
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 	// stop drawing into the FBO
-	mVDFbos[mVDSettings->mRightFboIndex].fbo->unbindFramebuffer();
+	mVDFbos[mVDSettings->mRightFboIndex]->getFboRef()->unbindFramebuffer();
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
@@ -559,7 +559,7 @@ void VDTextures::draw()
 	}
 
 	//aShader->unbind();
-	sTextures[7] = mVDFbos[mVDSettings->mRightFboIndex].fbo->getColorTexture();
+	sTextures[7] = mVDFbos[mVDSettings->mRightFboIndex]->getTexture();
 	/*
 	* end of mLibraryFbos[mVDSettings->mRightFboLibraryIndex]
 	***********************************************/
@@ -571,7 +571,7 @@ void VDTextures::draw()
 		* start of mVDFbos[mVDSettings->mWarp1FboIndex]
 		*/
 
-		mVDFbos[mVDSettings->mWarp1FboIndex].fbo->bindFramebuffer();
+		mVDFbos[mVDSettings->mWarp1FboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mWarp1FboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -630,8 +630,8 @@ void VDTextures::draw()
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
-		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mWarp1FboIndex].isFlipH);
-		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mWarp1FboIndex].isFlipV);
+		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mWarp1FboIndex]->isFlipH());
+		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mWarp1FboIndex]->isFlipV());
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -639,7 +639,7 @@ void VDTextures::draw()
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
-		mVDFbos[mVDSettings->mWarp1FboIndex].fbo->unbindFramebuffer();
+		mVDFbos[mVDSettings->mWarp1FboIndex]->getFboRef()->unbindFramebuffer();
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -647,7 +647,7 @@ void VDTextures::draw()
 		}
 
 		//aShader->unbind();
-		sTextures[8] = mVDFbos[mVDSettings->mWarp1FboIndex].fbo->getColorTexture();
+		sTextures[8] = mVDFbos[mVDSettings->mWarp1FboIndex]->getTexture();
 
 		/*
 		* end of mVDFbos[mVDSettings->mWarp1FboIndex]
@@ -657,7 +657,7 @@ void VDTextures::draw()
 		* start of mVDFbos[mVDSettings->mWarp2FboIndex]
 		*/
 
-		mVDFbos[mVDSettings->mWarp2FboIndex].fbo->bindFramebuffer();
+		mVDFbos[mVDSettings->mWarp2FboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mWarp2FboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -716,8 +716,8 @@ void VDTextures::draw()
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
-		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mWarp2FboIndex].isFlipH);
-		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mWarp2FboIndex].isFlipV);
+		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mWarp2FboIndex]->isFlipH());
+		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mWarp2FboIndex]->isFlipV());
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -725,7 +725,7 @@ void VDTextures::draw()
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
-		mVDFbos[mVDSettings->mWarp2FboIndex].fbo->unbindFramebuffer();
+		mVDFbos[mVDSettings->mWarp2FboIndex]->getFboRef()->unbindFramebuffer();
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -733,7 +733,7 @@ void VDTextures::draw()
 		}
 
 		//aShader->unbind();
-		sTextures[9] = mVDFbos[mVDSettings->mWarp2FboIndex].fbo->getColorTexture();
+		sTextures[9] = mVDFbos[mVDSettings->mWarp2FboIndex]->getTexture();
 
 		/*
 		* end of mVDFbos[mVDSettings->mWarp2FboIndex]
@@ -746,7 +746,7 @@ void VDTextures::draw()
 		/***********************************************
 		* start of mLibraryFbos[mVDSettings->mCurrentPreviewFboIndex]
 		*/
-		mVDFbos[mVDSettings->mCurrentPreviewFboIndex].fbo->bindFramebuffer();
+		mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mCurrentPreviewFboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -806,8 +806,8 @@ void VDTextures::draw()
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
-		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mCurrentPreviewFboIndex].isFlipH);
-		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mCurrentPreviewFboIndex].isFlipV);
+		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->isFlipH());
+		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->isFlipV());
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -815,7 +815,7 @@ void VDTextures::draw()
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
-		mVDFbos[mVDSettings->mCurrentPreviewFboIndex].fbo->unbindFramebuffer();
+		mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getFboRef()->unbindFramebuffer();
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -824,7 +824,7 @@ void VDTextures::draw()
 
 		//aShader->unbind();
 
-		sTextures[4] = mVDFbos[mVDSettings->mCurrentPreviewFboIndex].fbo->getColorTexture();
+		sTextures[4] = mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getTexture();
 		/*
 		* end of mLibraryFbos[mVDSettings->mCurrentPreviewFboIndex]
 		***********************************************/
@@ -837,7 +837,7 @@ void VDTextures::draw()
 		/***********************************************
 		* start of mLibraryFbos[mVDSettings->mLiveFboIndex]
 		*/
-		mVDFbos[mVDSettings->mLiveFboIndex].fbo->bindFramebuffer();
+		mVDFbos[mVDSettings->mLiveFboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mLiveFboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -896,8 +896,8 @@ void VDTextures::draw()
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
-		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mLiveFboIndex].isFlipH);
-		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mLiveFboIndex].isFlipV);
+		aShader->uniform("iFlipH", mVDFbos[mVDSettings->mLiveFboIndex]->isFlipH());
+		aShader->uniform("iFlipV", mVDFbos[mVDSettings->mLiveFboIndex]->isFlipV());
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -905,7 +905,7 @@ void VDTextures::draw()
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
-		mVDFbos[mVDSettings->mLiveFboIndex].fbo->unbindFramebuffer();
+		mVDFbos[mVDSettings->mLiveFboIndex]->getFboRef()->unbindFramebuffer();
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
@@ -914,7 +914,7 @@ void VDTextures::draw()
 
 		//aShader->unbind();
 
-		sTextures[11] = mVDFbos[mVDSettings->mLiveFboIndex].fbo->getColorTexture();
+		sTextures[11] = mVDFbos[mVDSettings->mLiveFboIndex]->getTexture();
 		/*
 		* end of mVDFbos[mVDSettings->mLiveFboIndex]
 		***********************************************/
@@ -929,7 +929,7 @@ void VDTextures::draw()
 	*/
 
 	// draw using the mix shader
-	mVDFbos[mVDSettings->mMixFboIndex].fbo->bindFramebuffer();
+	mVDFbos[mVDSettings->mMixFboIndex]->getFboRef()->bindFramebuffer();
 	//gl::setViewport(mVDFbos[mVDSettings->mMixFboIndex].fbo.getBounds());
 
 	// clear the FBO
@@ -989,8 +989,8 @@ void VDTextures::draw()
 	aShader->uniform("iRedMultiplier", mVDSettings->iRedMultiplier);
 	aShader->uniform("iGreenMultiplier", mVDSettings->iGreenMultiplier);
 	aShader->uniform("iBlueMultiplier", mVDSettings->iBlueMultiplier);
-	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mMixFboIndex].isFlipH);
-	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mMixFboIndex].isFlipV);
+	aShader->uniform("iFlipH", mVDFbos[mVDSettings->mMixFboIndex]->isFlipH());
+	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mMixFboIndex]->isFlipV());
 	aShader->uniform("iParam1", mVDSettings->iParam1);
 	aShader->uniform("iParam2", mVDSettings->iParam2);
 	aShader->uniform("iXorY", mVDSettings->iXorY);
@@ -1000,12 +1000,12 @@ void VDTextures::draw()
 	sTextures[7]->bind(1);
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 	// stop drawing into the FBO
-	mVDFbos[mVDSettings->mMixFboIndex].fbo->unbindFramebuffer();
+	mVDFbos[mVDSettings->mMixFboIndex]->getFboRef()->unbindFramebuffer();
 	sTextures[6]->unbind();
 	sTextures[7]->unbind();
 
 	//aShader->unbind();
-	sTextures[5] = mVDFbos[mVDSettings->mMixFboIndex].fbo->getColorTexture();
+	sTextures[5] = mVDFbos[mVDSettings->mMixFboIndex]->getTexture();
 
 	//}
 	/***********************************************

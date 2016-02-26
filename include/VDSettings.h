@@ -66,14 +66,14 @@ namespace VideoDromm {
 	float						controlValues[18];		// from 0 left to 1 right
 	bool						hasTexture;		// has already a texture? if not the first one is put on left and right
 	bool						active;
-	};*/
+	};
 	struct WarpFbo
 	{
 		ci::gl::FboRef				fbo;
 		int							textureIndex;
 		int							textureMode;	// 0 for input texture, 1 for shader
 		bool						active;
-	};
+	};*/
 
 	class VDSettings
 	{
@@ -256,7 +256,7 @@ namespace VideoDromm {
 		//vector<WarpInput>			warpInputs;
 		//void						setCrossfade(int value) { warpInputs[mVDSettings->selectedWarp].controlValues[18] = value; };
 
-		vector<WarpFbo>				mWarpFbos;
+		//vector<WarpFbo>				mWarpFbos;
 		int							selectedWarp;
 		int							mWarpCount;
 		bool						mOptimizeUI;//mDirectRender, 
