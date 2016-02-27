@@ -69,7 +69,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
 	audioTex.isSequence = false;
 	textas.push_back(audioTex);
 	sTextures.push_back(gl::Texture::create(dTexture, 0x1909, 512, 2));//GL_LUMINANCE
-*/
+	*/
 	fs::path localFile;
 	for (int j = 0; j < mVDSettings->MAX - 1; j++)
 	{
@@ -108,15 +108,16 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
 }
 /*char* VDTextures::getTextureName(int index) {
 	return textas[index].name;
-}
-void VDTextures::setTextureName(int index, char* name) {
+	}
+	void VDTextures::setTextureName(int index, char* name) {
 	sprintf_s(textas[index].name, name);
 
-}
-char* VDTextures::getFboName(int index) {
-	return mVDFbos[index].name;
-}*/
+	}
+	*/
+const char* VDTextures::getFboName(int index) {
 
+	return mVDFbos[index]->getName().c_str();
+}
 /*void VDTextures::createWarpInput()
 {
 WarpInput newWarpInput;
@@ -200,8 +201,8 @@ ci::gl::TextureRef VDTextures::getTexture(int index)
 }
 /*ci::gl::TextureRef VDTextures::getWarpTexture(int index)
 {
-	if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
-	return mVDSettings->mWarpFbos[index]->getTexture();
+if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
+return mVDSettings->mWarpFbos[index]->getTexture();
 }*/
 void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 {
@@ -223,15 +224,20 @@ GLuint VDTextures::getFboTextureId(int index)
 
 /*ci::gl::FboRef VDTextures::getFbo(int index)
 {
-	// fbo
-	return mVDFbos[index].fbo;
-}
+// fbo
+return mVDFbos[index].fbo;
+}*/
 GLuint VDTextures::getShaderThumbTextureId(int index)
 {
-	if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
+	/* TODO if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
+	return  mThumbFbos[index].fbo->getId();*/
+	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
+	return  mVDFbos[index]->getId();
+}
+char* VDTextures::getTextureName(int index) {
+	return "textodo";
+}
 
-	return  mThumbFbos[index].fbo->getId();
-}*/
 void VDTextures::loadImageFile(int index, string aFile)
 {
 	try
@@ -356,7 +362,7 @@ void VDTextures::renderShadaThumbFbo()
 	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mMixFboIndex]->isFlipV());
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-		getTexture(m)->bind(m);
+	getTexture(m)->bind(m);
 	}
 
 	gl::clear(Color(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));
@@ -371,16 +377,16 @@ void VDTextures::renderShadaThumbFbo()
 	currentShadaThumbIndex++;
 	// mThumbFbos must equal mFragmentShaders size
 	if (mThumbFbos.size() < mVDShaders->getCount()) {
-		FrameBuffa tfb;
-		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		sprintf_s(tfb.name, "new");
-		tfb->isFlipV() = false;
-		tfb->isFlipH() = false;
-		mThumbFbos.push_back(tfb);
+	FrameBuffa tfb;
+	tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
+	sprintf_s(tfb.name, "new");
+	tfb->isFlipV() = false;
+	tfb->isFlipH() = false;
+	mThumbFbos.push_back(tfb);
 	}
 	if (currentShadaThumbIndex > mVDShaders->getCount() - 1)
 	{
-		currentShadaThumbIndex = 0;
+	currentShadaThumbIndex = 0;
 	}*/
 }
 

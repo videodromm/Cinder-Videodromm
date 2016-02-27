@@ -67,7 +67,7 @@ namespace VideoDromm
 		//int							getThumbsFboCount() { return mThumbFbos.size(); };
 		void						flipFboV(int index);
 		void						flipFboH(int index);
-		char*						getFboName(int index);
+		const char*					getFboName(int index);
 
 		// shaders
 		GLuint						getShaderThumbTextureId(int index);

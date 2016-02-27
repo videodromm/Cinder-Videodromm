@@ -371,58 +371,42 @@ void VDRouter::updateParams(int iarg0, float farg1)
 
 void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5)
 {
-	osc::Message m;
-	//m.setAddress(controlType);
+	osc::Message m(controlType);
 	m.append(iarg0);
 	m.append(iarg1);
 	m.append(iarg2);
 	m.append(iarg3);
 	m.append(iarg4);
 	m.append(iarg5);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort);
 	mOSCSender->send(m);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2);
-	//mOSCSender2.sendMessage(m);
 }
 void VDRouter::sendOSCStringMessage(string controlType, int iarg0, string sarg1, string sarg2, string sarg3, string sarg4, string sarg5)
 {
-	osc::Message m;
-	m.setAddress(controlType);
+	osc::Message m(controlType);
 	m.append(iarg0);
 	if (sarg1 != "") m.append(sarg1);
 	if (sarg2 != "") m.append(sarg2);
 	if (sarg3 != "") m.append(sarg3);
 	if (sarg4 != "") m.append(sarg4);
 	if (sarg5 != "") m.append(sarg5);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort);
 	mOSCSender->send(m);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2);
-	//mOSCSender2.sendMessage(m);
 }
 void VDRouter::sendOSCColorMessage(string controlType, float val)
 {
-	osc::Message m;
-	m.setAddress(controlType);
+	osc::Message m(controlType);
 	m.append(val);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort);
 	mOSCSender->send(m);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2);
-	//mOSCSender2.sendMessage(m);
 }
 void VDRouter::sendOSCFloatMessage(string controlType, int iarg0, float farg1, float farg2, float farg3, float farg4, float farg5)
 {
-	osc::Message m;
-	m.setAddress(controlType);
+	osc::Message m(controlType);
 	m.append(iarg0);
 	m.append(farg1);
 	m.append(farg2);
 	m.append(farg3);
 	m.append(farg4);
 	m.append(farg5);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort);
 	mOSCSender->send(m);
-	//m.setRemoteEndpoint(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2);
-	//mOSCSender2.sendMessage(m);
 }
 void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float farg1, float farg2, float farg3, float farg4, float farg5)
 {
@@ -815,7 +799,22 @@ void VDRouter::sendJSON(string params) {
 
 	}
 }
-
+void VDRouter::colorWrite()
+{
+	if (mVDSettings->mOSCEnabled)
+	{
+		sendOSCColorMessage("/fr", mVDSettings->controlValues[1]);
+		sendOSCColorMessage("/fg", mVDSettings->controlValues[2]);
+		sendOSCColorMessage("/fb", mVDSettings->controlValues[3]);
+		sendOSCColorMessage("/fa", mVDSettings->controlValues[4]);
+	}
+	char col[8];
+	int r = mVDSettings->controlValues[1] * 255;
+	int g = mVDSettings->controlValues[2] * 255;
+	int b = mVDSettings->controlValues[3] * 255;
+	sprintf_s(col, sizeof(col), "#%02X%02X%02X", r, g, b);
+	wsWrite(col);
+}
 
 void VDRouter::update() {
 	// websockets
