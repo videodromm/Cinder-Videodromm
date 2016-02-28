@@ -36,7 +36,13 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 #else
 			mOSCReceiver = shared_ptr<osc::ReceiverTcp>(new osc::ReceiverTcp(mVDSettings->mOSCReceiverPort));
 #endif
-			
+			/* TODO
+			Load addresses from json file
+			for (auto & address : jsonList["addresses"]) {
+				mOSCReceiver->setListener(address.getValue(), myFuncForLayerClips);
+			}
+			TODO use pattern matching 
+			mOSCReceiver->setListener("/layer1/clip*", myFuncForLayerClips);*/
 			mOSCReceiver->setListener("/cc",
 				[&](const osc::Message &msg){
 				mVDSettings->controlValues[msg[0].int32()] = msg[1].flt();
@@ -801,8 +807,7 @@ void VDRouter::sendJSON(string params) {
 }
 void VDRouter::colorWrite()
 {
-	if (mVDSettings->mOSCEnabled)
-	{
+	if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
 		sendOSCColorMessage("/fr", mVDSettings->controlValues[1]);
 		sendOSCColorMessage("/fg", mVDSettings->controlValues[2]);
 		sendOSCColorMessage("/fb", mVDSettings->controlValues[3]);
