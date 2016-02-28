@@ -377,8 +377,8 @@ void VDSettings::resetSomeParams() {
 	maxEyePointZ = 0.0;
 	tEyePointZ = autoEyePointZ = false;
 	// unicorns
-	iTempoTime = iBadTv = 0.0;
-	iTimeFactor = iParam1 = iParam2 = 1.0f;
+	iBadTv = 0.0;
+	iParam1 = iParam2 = 1.0f;
 	iGlobalTime = iSpeedMultiplier = 1.0f;
 
 	iGreyScale = false;
@@ -506,10 +506,6 @@ void VDSettings::reset()
 		iFreqs[i] = i;
 	}
 
-	// tempo
-	mTempo = 166.0;
-	mUseTimeWithTempo = false;
-	iDeltaTime = 60 / mTempo;
 	// shader uniforms
 	iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 	for (int i = 0; i < 4; i++)

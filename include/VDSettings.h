@@ -134,12 +134,7 @@ namespace VideoDromm {
 		int							mCount;
 		bool						mLockFR, mLockFG, mLockFB, mLockFA, mLockBR, mLockBG, mLockBB, mLockBA;
 		string						mImageFile;
-		// tap tempo
-		float						mTempo;
-		float						iDeltaTime;
-		float						iTempoTime;
-		float						iTimeFactor;
-		bool						mUseTimeWithTempo;
+
 		// shader uniforms	
 		float						iGlobalTime;        // shader playback time (in seconds)
 		float						iSpeedMultiplier;        // speed multiplier
@@ -159,8 +154,6 @@ namespace VideoDromm {
 		float						iParam2;
 		bool						iXorY;
 		float						iBadTv;
-		const int					maxBlendMode = 28;
-		const float					maxExposure = 3.0;
 
 		string						mAssetsPath;
 		bool						iShowFps;

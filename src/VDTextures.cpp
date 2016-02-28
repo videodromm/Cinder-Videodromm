@@ -2,11 +2,11 @@
 
 using namespace VideoDromm;
 
-VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
+VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef)
 {
 	mVDSettings = aVDSettings;
 	mVDShaders = aShadersRef;
-
+	mVDAnimation = aAnimationRef;
 	CI_LOG_V("VDTextures constructor");
 	// Fbos
 	// mix fbo at index 0
@@ -341,7 +341,7 @@ void VDTextures::renderShadaThumbFbo()
 	aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 	aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 	aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+	aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 	aShader->uniform("iFade", (int)mVDSettings->iFade);
 	aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 	aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -355,7 +355,7 @@ void VDTextures::renderShadaThumbFbo()
 	aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 	aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 	aShader->uniform("iFps", mVDSettings->iFps);
-	aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+	aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iBeat", mVDSettings->iBeat);
 	aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -445,7 +445,7 @@ void VDTextures::draw()
 	aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 	aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 	aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+	aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 	aShader->uniform("iFade", (int)mVDSettings->iFade);
 	aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 	aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -459,7 +459,7 @@ void VDTextures::draw()
 	aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 	aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 	aShader->uniform("iFps", mVDSettings->iFps);
-	aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+	aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iBeat", mVDSettings->iBeat);
 	aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -531,7 +531,7 @@ void VDTextures::draw()
 	aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 	aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 	aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+	aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 	aShader->uniform("iFade", (int)mVDSettings->iFade);
 	aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 	aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -545,7 +545,7 @@ void VDTextures::draw()
 	aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 	aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 	aShader->uniform("iFps", mVDSettings->iFps);
-	aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+	aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iBeat", mVDSettings->iBeat);
 	aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -619,7 +619,7 @@ void VDTextures::draw()
 		aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 		aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 		aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-		aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+		aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 		aShader->uniform("iFade", (int)mVDSettings->iFade);
 		aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 		aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -633,7 +633,7 @@ void VDTextures::draw()
 		aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 		aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 		aShader->uniform("iFps", mVDSettings->iFps);
-		aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+		aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -705,7 +705,7 @@ void VDTextures::draw()
 		aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 		aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 		aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-		aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+		aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 		aShader->uniform("iFade", (int)mVDSettings->iFade);
 		aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 		aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -719,7 +719,7 @@ void VDTextures::draw()
 		aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 		aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 		aShader->uniform("iFps", mVDSettings->iFps);
-		aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+		aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -795,7 +795,7 @@ void VDTextures::draw()
 		aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 		aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 		aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-		aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+		aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 		aShader->uniform("iFade", (int)mVDSettings->iFade);
 		aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 		aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -809,7 +809,7 @@ void VDTextures::draw()
 		aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 		aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 		aShader->uniform("iFps", mVDSettings->iFps);
-		aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+		aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -885,7 +885,7 @@ void VDTextures::draw()
 		aShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
 		aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 		aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-		aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+		aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 		aShader->uniform("iFade", (int)mVDSettings->iFade);
 		aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 		aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -899,7 +899,7 @@ void VDTextures::draw()
 		aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 		aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 		aShader->uniform("iFps", mVDSettings->iFps);
-		aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+		aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 		aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 		aShader->uniform("iBeat", mVDSettings->iBeat);
 		aShader->uniform("iSeed", mVDSettings->iSeed);
@@ -973,7 +973,7 @@ void VDTextures::draw()
 	aShader->uniform("iCrossfade", mVDSettings->controlValues[18]);
 	aShader->uniform("iPixelate", mVDSettings->controlValues[15]);
 	aShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	aShader->uniform("iDeltaTime", mVDSettings->iDeltaTime);
+	aShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 	aShader->uniform("iFade", (int)mVDSettings->iFade);
 	aShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
 	aShader->uniform("iLight", (int)mVDSettings->iLight);
@@ -987,7 +987,7 @@ void VDTextures::draw()
 	aShader->uniform("iDebug", (int)mVDSettings->iDebug);
 	aShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
 	aShader->uniform("iFps", mVDSettings->iFps);
-	aShader->uniform("iTempoTime", mVDSettings->iTempoTime);
+	aShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
 	aShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
 	aShader->uniform("iTrixels", mVDSettings->controlValues[16]);
 	aShader->uniform("iGridSize", mVDSettings->controlValues[17]);

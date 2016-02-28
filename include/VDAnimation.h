@@ -33,11 +33,19 @@ namespace VideoDromm
 		void						save();
 		Color						getBackgroundColor() { return mBackgroundColor; };
 		float						getExposure() { return mExposure; };
+		const int					maxBlendMode = 28;
+		// tap tempo
+		float						mTempo;
+		float						iDeltaTime;
+		float						iTempoTime;
+		float						iTimeFactor;
+		bool						mUseTimeWithTempo;
 		// exposure
 		float						defaultExposure;
 		float						minExposure;
 		bool						tExposure;
 		bool						autoExposure;
+		const float					maxExposure = 3.0;
 		//zoom
 		float						defaultZoom;
 		float						minZoom;

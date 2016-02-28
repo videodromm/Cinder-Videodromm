@@ -5,8 +5,8 @@
 
 // Settings
 #include "VDSettings.h"
-// Logger
-#include "VDLog.h"
+// Animation
+#include "VDAnimation.h"
 
 // MIDI
 #include "CinderMidi.h"
@@ -48,10 +48,10 @@ namespace VideoDromm
 
 	class VDRouter {
 	public:
-		VDRouter(VDSettingsRef aVDSettings);
-		static VDRouterRef	create(VDSettingsRef aVDSettings)
+		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef);
+		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef)
 		{
-			return shared_ptr<VDRouter>(new VDRouter(aVDSettings));
+			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aAnimationRef));
 		}
 		void						update();
 		void						shutdown();
@@ -85,6 +85,8 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
+		// Animation
+		VDAnimationRef				mVDAnimation;
 		// MIDI
 		vector<midiInput>			mMidiInputs;
 		void						midiListener(midi::MidiMessage msg);

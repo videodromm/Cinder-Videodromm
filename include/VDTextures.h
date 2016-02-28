@@ -18,6 +18,8 @@
 #include "VDSettings.h"
 // shaders
 #include "VDShaders.h"
+// Animation
+#include "VDAnimation.h"
 // fbo
 #include "VDFbo.h"
 // Logger
@@ -36,11 +38,11 @@ namespace VideoDromm
 
 	class VDTextures {
 	public:
-		VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef);
+		VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef);
 		virtual					~VDTextures();
-		static VDTexturesRef	create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
+		static VDTexturesRef	create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef)
 		{
-			return shared_ptr<VDTextures>(new VDTextures(aVDSettings, aShadersRef));
+			return shared_ptr<VDTextures>(new VDTextures(aVDSettings, aShadersRef, aAnimationRef));
 		}
 
 		ci::gl::TextureRef			getWarpTexture(int index);
@@ -88,6 +90,8 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Shaders
 		VDShadersRef				mVDShaders;
+		// Animation
+		VDAnimationRef				mVDAnimation;
 		// Fbos
 		vector<VDFboRef>			mVDFbos;
 

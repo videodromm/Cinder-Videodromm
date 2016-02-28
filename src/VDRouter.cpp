@@ -2,8 +2,10 @@
 
 using namespace VideoDromm;
 
-VDRouter::VDRouter(VDSettingsRef aVDSettings) {
+VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef) {
 	mVDSettings = aVDSettings;
+	mVDAnimation = aAnimationRef;
+
 	CI_LOG_V("VDRouter constructor");
 	// kinect
 	for (int i = 0; i < 20; i++)
@@ -67,7 +69,8 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 			});
 			mOSCReceiver->setListener("/live/tempo",
 				[&](const osc::Message &msg){
-				mVDSettings->mTempo = msg[0].flt();
+				// Animation
+				mVDAnimation->mTempo = msg[0].flt();
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
 			mOSCReceiver->setListener("/live/track/meter",
@@ -330,13 +333,13 @@ void VDRouter::updateParams(int iarg0, float farg1)
 		{
 			// right arrow
 			mVDSettings->iBlendMode--;
-			if (mVDSettings->iBlendMode < 0) mVDSettings->iBlendMode = mVDSettings->maxBlendMode;
+			if (mVDSettings->iBlendMode < 0) mVDSettings->iBlendMode = mVDAnimation->maxBlendMode;
 		}
 		if (iarg0 == 62)
 		{
 			// left arrow
 			mVDSettings->iBlendMode++;
-			if (mVDSettings->iBlendMode > mVDSettings->maxBlendMode) mVDSettings->iBlendMode = 0;
+			if (mVDSettings->iBlendMode > mVDAnimation->maxBlendMode) mVDSettings->iBlendMode = 0;
 		}
 	}
 	if (iarg0 > 0 && iarg0 < 9)
@@ -351,7 +354,7 @@ void VDRouter::updateParams(int iarg0, float farg1)
 		// audio multfactor
 		if (iarg0 == 13) mVDSettings->controlValues[iarg0] = (farg1 + 0.01) * 10;
 		// exposure
-		if (iarg0 == 14) mVDSettings->controlValues[iarg0] = (farg1 + 0.01) * mVDSettings->maxExposure;
+		if (iarg0 == 14) mVDSettings->controlValues[iarg0] = (farg1 + 0.01) * mVDAnimation->maxExposure;
 	}
 	// buttons
 	if (iarg0 > 20 && iarg0 < 29)

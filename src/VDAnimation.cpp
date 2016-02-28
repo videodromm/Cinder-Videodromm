@@ -6,10 +6,48 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	JsonBag::add(&mBackgroundColor, "background_color");
 	JsonBag::add(&mExposure, "exposure");
-	mVDSettings->iDeltaTime = 60 / mVDSettings->mTempo;
+	// zoom
+	defaultZoom = 1.0f;
+	minZoom = 0.1;
+	maxZoom = 3.0;
+	tZoom = autoZoom = false;
+	// exposure
+	defaultExposure = 1.0;
+	minExposure = 0.0001;
+
+	tExposure = autoExposure = false;
+	// Chromatic
+	defaultChromatic = 0.0;
+	minChromatic = 0.0;
+	maxChromatic = 1.0;
+	tChromatic = autoChromatic = false;
+	// ratio
+	defaultRatio = 20.0;
+	minRatio = 0.00000000001;
+	maxRatio = 20.0;
+	tRatio = autoRatio = false;
+	// z position
+	defaultZPos = -0.7;
+	minZPos = -1.0;
+	maxZPos = 1.0;
+	tZPos = autoZPos = false;
+	// RotationSpeed
+	defaultRotationSpeed = 0.0;
+	minRotationSpeed = -2.0;
+	maxRotationSpeed = 2.0;
+	tRotationSpeed = autoRotationSpeed = false;
+
+	iDeltaTime = 60 / mTempo;
 	previousTime = 0.0f;
 	beatIndex = 0;
 	counter = 0;
+	iTempoTime = 0.0;
+	iTimeFactor = 1.0f;
+	// tempo
+	mTempo = 166.0;
+	mUseTimeWithTempo = false;
+	iDeltaTime = 60 / mTempo;
+
 	load();
 }
 void VDAnimation::load() {
@@ -91,32 +129,38 @@ void VDAnimation::resetRatio()
 }
 #pragma endregion utility
 void VDAnimation::update() {
+	if (mVDSettings->controlValues[12] == 0.0) mVDSettings->controlValues[12] = 0.01;
+	if (mVDSettings->iGreyScale)
+	{
+		mVDSettings->controlValues[1] = mVDSettings->controlValues[2] = mVDSettings->controlValues[3];
+		mVDSettings->controlValues[5] = mVDSettings->controlValues[6] = mVDSettings->controlValues[7];
+	}
 #pragma region animation
 	// check this line position: can't remember
 	currentTime = timer.getSeconds();
 
 	int time = (currentTime - startTime)*1000000.0;
-	int elapsed = mVDSettings->iDeltaTime*1000000.0;
+	int elapsed = iDeltaTime*1000000.0;
 	if (elapsed > 0)
 	{
 		double modulo = (time % elapsed) / 1000000.0;
-		mVDSettings->iTempoTime = (float)modulo;
-		if (mVDSettings->iTempoTime < previousTime)
+		iTempoTime = (float)modulo;
+		if (iTempoTime < previousTime)
 		{
 			beatIndex++;
 			if (beatIndex > 3) beatIndex = 0;
 		}
-		previousTime = mVDSettings->iTempoTime;
+		previousTime = iTempoTime;
 
 		//(modulo < 0.1) ? tempoMvg->setNameColor(ColorA::white()) : tempoMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
 		// exposure
 		if (tExposure)
 		{
-			mVDSettings->controlValues[14] = (modulo < 0.1) ? mVDSettings->maxExposure : minExposure;
+			mVDSettings->controlValues[14] = (modulo < 0.1) ? maxExposure : minExposure;
 		}
 		else
 		{
-			mVDSettings->controlValues[14] = autoExposure ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, minExposure, mVDSettings->maxExposure) : mVDSettings->controlValues[14];
+			mVDSettings->controlValues[14] = autoExposure ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minExposure, maxExposure) : mVDSettings->controlValues[14];
 			//mVDSettings->controlValues[14] = autoExposure ? (sin(getElapsedFrames() / (mVDSettings->controlValues[12] + 1.0))) : mVDSettings->controlValues[14];
 		}
 		// zoom
@@ -126,7 +170,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[22] = autoZoom ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, minZoom, maxZoom) : mVDSettings->controlValues[22];
+			mVDSettings->controlValues[22] = autoZoom ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minZoom, maxZoom) : mVDSettings->controlValues[22];
 		}
 		// ratio
 		if (tRatio)
@@ -135,7 +179,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[11] = autoRatio ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, minRatio, maxRatio) : mVDSettings->controlValues[11];
+			mVDSettings->controlValues[11] = autoRatio ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minRatio, maxRatio) : mVDSettings->controlValues[11];
 		}
 		// Chromatic
 		if (tChromatic)
@@ -144,7 +188,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[10] = autoChromatic ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, minChromatic, maxChromatic) : mVDSettings->controlValues[10];
+			mVDSettings->controlValues[10] = autoChromatic ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minChromatic, maxChromatic) : mVDSettings->controlValues[10];
 		}
 		// RotationSpeed
 		if (tRotationSpeed)
@@ -153,7 +197,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[19] = autoRotationSpeed ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, minRotationSpeed, maxRotationSpeed) : mVDSettings->controlValues[19];
+			mVDSettings->controlValues[19] = autoRotationSpeed ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minRotationSpeed, maxRotationSpeed) : mVDSettings->controlValues[19];
 		}
 		// ZPos
 		if (tZPos)
@@ -162,7 +206,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[9] = autoZPos ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, minZPos, maxZPos) : mVDSettings->controlValues[9];
+			mVDSettings->controlValues[9] = autoZPos ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minZPos, maxZPos) : mVDSettings->controlValues[9];
 		}
 
 		// Front Red
@@ -172,7 +216,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[1] = mVDSettings->mLockFR ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[1];
+			mVDSettings->controlValues[1] = mVDSettings->mLockFR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[1];
 		}
 		// Front Green
 		if (mVDSettings->tFG)
@@ -181,7 +225,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[2] = mVDSettings->mLockFG ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[2];
+			mVDSettings->controlValues[2] = mVDSettings->mLockFG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[2];
 		}
 		// front blue
 		if (mVDSettings->tFB)
@@ -190,7 +234,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[3] = mVDSettings->mLockFB ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[3];
+			mVDSettings->controlValues[3] = mVDSettings->mLockFB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[3];
 		}
 		// front alpha
 		if (mVDSettings->tFA)
@@ -199,7 +243,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[4] = mVDSettings->mLockFA ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[4];
+			mVDSettings->controlValues[4] = mVDSettings->mLockFA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[4];
 		}
 		// 
 		if (mVDSettings->tBR)
@@ -208,7 +252,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[5] = mVDSettings->mLockBR ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[5];
+			mVDSettings->controlValues[5] = mVDSettings->mLockBR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[5];
 		}
 		// 
 		if (mVDSettings->tBG)
@@ -217,7 +261,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[6] = mVDSettings->mLockBG ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[6];
+			mVDSettings->controlValues[6] = mVDSettings->mLockBG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[6];
 		}
 		// 
 		if (mVDSettings->tBB)
@@ -226,7 +270,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[7] = mVDSettings->mLockBB ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[7];
+			mVDSettings->controlValues[7] = mVDSettings->mLockBB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[7];
 		}
 		// 
 		if (mVDSettings->tBA)
@@ -235,7 +279,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->controlValues[8] = mVDSettings->mLockBA ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[8];
+			mVDSettings->controlValues[8] = mVDSettings->mLockBA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : mVDSettings->controlValues[8];
 		}
 		if (mVDSettings->autoInvert)
 		{
@@ -248,7 +292,7 @@ void VDAnimation::update() {
 		}
 		else
 		{
-			mVDSettings->mCamEyePointZ = mVDSettings->autoEyePointZ ? lmap<float>(mVDSettings->iTempoTime, 0.00001, mVDSettings->iDeltaTime, mVDSettings->minEyePointZ, mVDSettings->maxEyePointZ) : mVDSettings->mCamEyePointZ;
+			mVDSettings->mCamEyePointZ = mVDSettings->autoEyePointZ ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, mVDSettings->minEyePointZ, mVDSettings->maxEyePointZ) : mVDSettings->mCamEyePointZ;
 		}
 
 	}
@@ -285,42 +329,42 @@ void VDAnimation::calculateTempo()
 		tAverage += buffer[i];
 	}
 	averageTime = (double)(tAverage / buffer.size());
-	mVDSettings->iDeltaTime = averageTime;
-	mVDSettings->mTempo = 60 / averageTime;
+	iDeltaTime = averageTime;
+	mTempo = 60 / averageTime;
 }
 void VDAnimation::setTimeFactor(const int &aTimeFactor)
 {
 	switch (aTimeFactor)
 	{
 	case 0:
-		mVDSettings->iTimeFactor = 0.0001;
+		iTimeFactor = 0.0001;
 		break;
 	case 1:
-		mVDSettings->iTimeFactor = 0.125;
+		iTimeFactor = 0.125;
 		break;
 	case 2:
-		mVDSettings->iTimeFactor = 0.25;
+		iTimeFactor = 0.25;
 		break;
 	case 3:
-		mVDSettings->iTimeFactor = 0.5;
+		iTimeFactor = 0.5;
 		break;
 	case 4:
-		mVDSettings->iTimeFactor = 0.75;
+		iTimeFactor = 0.75;
 		break;
 	case 5:
-		mVDSettings->iTimeFactor = 1.0;
+		iTimeFactor = 1.0;
 		break;
 	case 6:
-		mVDSettings->iTimeFactor = 2.0;
+		iTimeFactor = 2.0;
 		break;
 	case 7:
-		mVDSettings->iTimeFactor = 4.0;
+		iTimeFactor = 4.0;
 		break;
 	case 8:
-		mVDSettings->iTimeFactor = 16.0;
+		iTimeFactor = 16.0;
 		break;
 	default:
-		mVDSettings->iTimeFactor = 1.0;
+		iTimeFactor = 1.0;
 		break;
 	}
 }
