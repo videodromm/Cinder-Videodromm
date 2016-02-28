@@ -98,6 +98,7 @@ namespace VideoDromm
 		// tempo
 		void						tapTempo();
 		void						setTimeFactor(const int &aTimeFactor);
+		int							iBar;
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

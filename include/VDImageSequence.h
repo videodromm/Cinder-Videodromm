@@ -6,6 +6,8 @@
 
 // Settings
 #include "VDSettings.h"
+// Animation
+#include "VDAnimation.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -18,11 +20,11 @@ namespace VideoDromm
 
 	class VDImageSequence {
 	public:
-		VDImageSequence(VDSettingsRef aVDSettings, string aFilePath);
+		VDImageSequence(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, string aFilePath);
 
-		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, string aFilePath)
+		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, string aFilePath)
 		{
-			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aFilePath));
+			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aAnimationRef, aFilePath));
 		}
 		void						update();
 		void						playSequence();
@@ -44,6 +46,8 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
+		// Animation
+		VDAnimationRef				mVDAnimation;
 
 		int							playheadFrameInc;
 		void						loadNextImageFromDisk();

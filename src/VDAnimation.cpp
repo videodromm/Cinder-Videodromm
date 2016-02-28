@@ -47,7 +47,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mTempo = 166.0;
 	mUseTimeWithTempo = false;
 	iDeltaTime = 60 / mTempo;
-
+	iBar = 0;
 	load();
 }
 void VDAnimation::load() {
@@ -149,6 +149,7 @@ void VDAnimation::update() {
 		{
 			beatIndex++;
 			if (beatIndex > 3) beatIndex = 0;
+			iBar++;
 		}
 		previousTime = iTempoTime;
 
