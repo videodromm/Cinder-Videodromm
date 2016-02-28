@@ -138,7 +138,7 @@ void VDImageSequence::updateSequence() {
 void VDImageSequence::update() {
 
 	updateSequence();
-	if (!mLoadingFilesComplete) loadNextImageFromDisk();
+	//if (!mLoadingFilesComplete) loadNextImageFromDisk();
 }
 //Begins playback of sequence
 void VDImageSequence::playSequence() {
@@ -196,7 +196,7 @@ void VDImageSequence::toggleLoadingFromDisk() {
 }
 
 ci::gl::TextureRef VDImageSequence::getTexture() {
-
+	//if (!mLoadingFilesComplete) loadNextImageFromDisk();
 	if (mPlayheadPosition > mFramesLoaded) {
 		//error
 	}

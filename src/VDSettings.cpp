@@ -59,6 +59,14 @@ bool VDSettings::save()
 	MainWindowHeight.setAttribute("value", toString(mMainWindowHeight));
 	settings.push_back(MainWindowHeight);
 
+	XmlTree MainWindowX("MainWindowX", "");
+	MainWindowX.setAttribute("value", toString(mMainWindowX));
+	settings.push_back(MainWindowX);
+
+	XmlTree MainWindowY("MainWindowY", "");
+	MainWindowY.setAttribute("value", toString(mMainWindowY));
+	settings.push_back(MainWindowY);
+
 	XmlTree RenderWidth("RenderWidth", "");
 	RenderWidth.setAttribute("value", toString(mRenderWidth));
 	settings.push_back(RenderWidth);
@@ -299,6 +307,7 @@ bool VDSettings::restore()
 				XmlTree UseLineIn = settings.getChild("UseLineIn");
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
 			}
+			iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 			// if AutoLayout is false we have to read the custom screen layout
 			if (mAutoLayout)
 			{
@@ -309,7 +318,7 @@ bool VDSettings::restore()
 				mRenderHeight =768;
 				mRenderX = 1024;
 				mRenderY = 0;
-				iResolution = vec3(mRenderWidth, mRenderHeight, 1.0);
+				iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 			}
 			else
 			{
@@ -320,6 +329,14 @@ bool VDSettings::restore()
 				if (settings.hasChild("MainWindowHeight")) {
 					XmlTree MainWindowHeight = settings.getChild("MainWindowHeight");
 					mMainWindowHeight = MainWindowHeight.getAttributeValue<int>("value");
+				}
+				if (settings.hasChild("MainWindowX")) {
+					XmlTree MainWindowX = settings.getChild("MainWindowX");
+					mMainWindowX = MainWindowX.getAttributeValue<int>("value");
+				}
+				if (settings.hasChild("MainWindowY")) {
+					XmlTree MainWindowY = settings.getChild("MainWindowY");
+					mMainWindowY = MainWindowY.getAttributeValue<int>("value");
 				}
 				if (settings.hasChild("RenderWidth")) {
 					XmlTree RenderWidth = settings.getChild("RenderWidth");
@@ -337,7 +354,6 @@ bool VDSettings::restore()
 					XmlTree RenderY = settings.getChild("RenderY");
 					mRenderY = RenderY.getAttributeValue<int>("value");
 				}
-				iResolution = vec3(mRenderWidth, mRenderHeight, 1.0);
 
 			}
 			return true;
@@ -437,14 +453,13 @@ void VDSettings::reset()
 	mInfo = "";
 	mTrackName = "";
 	iTrack = 0;
-	// parameters not exposed in XML
 	mMainWindowX = 0;
 	mMainWindowY = 0;
 	mMainWindowWidth = 1280;
 	mMainWindowHeight = 720;
-	// render widths
 	mRenderWidth = 1024;
 	mRenderHeight = 768;
+	// parameters not exposed in XML
 	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = mWarp1RenderXY = mWarp2RenderXY = vec2(0.0f);
 	mRenderPosXY = vec2(0.0, 320.0);
 	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
@@ -496,14 +511,14 @@ void VDSettings::reset()
 	mUseTimeWithTempo = false;
 	iDeltaTime = 60 / mTempo;
 	// shader uniforms
-	iResolution = vec3(mRenderWidth, mRenderHeight, 1.0);
+	iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 	for (int i = 0; i < 4; i++)
 	{
 		iChannelTime[i] = i;
 	}
 	for (int i = 0; i < MAX; i++)
 	{
-		iChannelResolution[i] = vec3(mRenderWidth, mRenderHeight, 1.0);
+		iChannelResolution[i] = vec3(mFboWidth, mFboHeight, 1.0);
 	}
 	controlValues[18] = controlValues[21] = 1.0;
 #ifdef _DEBUG
