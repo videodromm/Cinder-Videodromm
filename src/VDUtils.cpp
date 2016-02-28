@@ -264,31 +264,34 @@ int VDUtils::getWindowsResolution()
 	mVDSettings->mDisplayCount = 0;
 	int w = Display::getMainDisplay()->getWidth();
 	int h = Display::getMainDisplay()->getHeight();
+
 	// Display sizes
-	mVDSettings->mMainDisplayWidth = w;
-	mVDSettings->mMainDisplayHeight = h;
 	if (mVDSettings->mAutoLayout)
 	{
+		mVDSettings->mMainWindowWidth = w;
+		mVDSettings->mMainWindowHeight = h;
+		mVDSettings->mRenderX = mVDSettings->mMainWindowWidth;
 		// for MODE_MIX and triplehead(or doublehead), we only want 1/3 of the screen centered	
 		for (auto display : Display::getDisplays())
 		{
-			mVDSettings->mDisplayCount++;
-		}
-	}
-	else
-	{
-		mVDSettings->mRenderX = mVDSettings->mMainDisplayWidth;
-		for (auto display : Display::getDisplays())
-		{
+			CI_LOG_V("Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
 			mVDSettings->mDisplayCount++;
 			mVDSettings->mRenderWidth = display->getWidth();
 			mVDSettings->mRenderHeight = display->getHeight();
 		}
 	}
-	mVDSettings->mRenderY = 0;
-	CI_LOG_V("Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(mVDSettings->mRenderWidth) + "x" + toString(mVDSettings->mRenderHeight));
+	else
+	{
+		for (auto display : Display::getDisplays())
+		{
+			CI_LOG_V("Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
+			mVDSettings->mDisplayCount++;
 
-	CI_LOG_V(" mMainDisplayWidth:" + toString(mVDSettings->mMainDisplayWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainDisplayHeight));
+		}
+	}
+	mVDSettings->mRenderY = 0;
+
+	CI_LOG_V(" mMainDisplayWidth:" + toString(mVDSettings->mMainWindowWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainWindowHeight));
 	CI_LOG_V(" mRenderX:" + toString(mVDSettings->mRenderX) + " mRenderY:" + toString(mVDSettings->mRenderY));
 	mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
