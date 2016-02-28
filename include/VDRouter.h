@@ -85,8 +85,6 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Logger
-		VDLogRef					mLog;
 		// MIDI
 		vector<midiInput>			mMidiInputs;
 		void						midiListener(midi::MidiMessage msg);

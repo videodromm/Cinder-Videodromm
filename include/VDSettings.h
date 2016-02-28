@@ -122,7 +122,6 @@ namespace VideoDromm {
 		vec2						mCamPosXY;
 		vec2						mRenderResoXY;
 		bool						mAutoLayout;
-		bool						mCustomLayout;
 		bool						mStandalone;
 
 		// code editor

@@ -114,7 +114,8 @@ void VDImageSequence::loadNextImageFromDisk() {
 			mVDSettings->newMsg = true;
 			// increment counter for next filename
 			mNextIndexFrameToTry++;
-			if (mNextIndexFrameToTry > 9999) mLoadingFilesComplete = true;
+			if (mNextIndexFrameToTry > 9999 && mNumberOfDigits == 4) mLoadingFilesComplete = true;
+			if (mNextIndexFrameToTry > 999 && mNumberOfDigits == 3) mLoadingFilesComplete = true;
 		}
 	}
 }
@@ -137,6 +138,7 @@ void VDImageSequence::updateSequence() {
 void VDImageSequence::update() {
 
 	updateSequence();
+	if (!mLoadingFilesComplete) loadNextImageFromDisk();
 }
 //Begins playback of sequence
 void VDImageSequence::playSequence() {
@@ -193,7 +195,7 @@ void VDImageSequence::toggleLoadingFromDisk() {
 	mLoadingPaused = !mLoadingPaused;
 }
 
-ci::gl::TextureRef VDImageSequence::getCurrentSequenceTexture() {
+ci::gl::TextureRef VDImageSequence::getTexture() {
 
 	if (mPlayheadPosition > mFramesLoaded) {
 		//error

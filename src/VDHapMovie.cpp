@@ -107,7 +107,7 @@ void VDHapMovie::setSpeed(int speed) {
 }
 
 
-ci::gl::TextureRef VDHapMovie::getCurrentMovieTexture() {
+ci::gl::TextureRef VDHapMovie::getTexture() {
 
 	if (mPlayheadPosition > mFramesLoaded) {
 		//error

@@ -39,7 +39,7 @@ namespace VideoDromm
 		bool						isLoadingFromDisk();
 		bool						isValid(){ return mFramesLoaded > 0; };
 		int							getMaxFrames();
-		ci::gl::TextureRef			getCurrentSequenceTexture();
+		ci::gl::TextureRef			getTexture();
 
 	private:
 		// Settings

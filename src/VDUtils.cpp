@@ -5,8 +5,6 @@ using namespace VideoDromm;
 VDUtils::VDUtils(VDSettingsRef aVDSettings)
 {
 	mVDSettings = aVDSettings;
-	// instanciate the logger class
-	mLog = VDLog::create();
 	CI_LOG_V("VDUtils constructor");
 	// zoom
 	defaultZoom = 1.0f;
@@ -269,7 +267,7 @@ int VDUtils::getWindowsResolution()
 	// Display sizes
 	mVDSettings->mMainDisplayWidth = w;
 	mVDSettings->mMainDisplayHeight = h;
-	if (mVDSettings->mCustomLayout)
+	if (mVDSettings->mAutoLayout)
 	{
 		// for MODE_MIX and triplehead(or doublehead), we only want 1/3 of the screen centered	
 		for (auto display : Display::getDisplays())

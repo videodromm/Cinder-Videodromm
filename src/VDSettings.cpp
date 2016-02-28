@@ -47,10 +47,6 @@ bool VDSettings::save()
 	AutoLayout.setAttribute("value", toString(mAutoLayout));
 	settings.push_back(AutoLayout);
 
-	XmlTree CustomLayout("CustomLayout", "");
-	CustomLayout.setAttribute("value", toString(mCustomLayout));
-	settings.push_back(CustomLayout);
-
 	XmlTree Standalone("Standalone", "");
 	Standalone.setAttribute("value", toString(mStandalone));
 	settings.push_back(Standalone);
@@ -291,10 +287,6 @@ bool VDSettings::restore()
 				XmlTree WindowSize = settings.getChild("WindowSize");
 				mWindowSize = WindowSize.getAttributeValue<int>("value");
 			}
-			if (settings.hasChild("CustomLayout")) {
-				XmlTree CustomLayout = settings.getChild("CustomLayout");
-				mCustomLayout = CustomLayout.getAttributeValue<bool>("value");
-			}
 			if (settings.hasChild("Info")) {
 				XmlTree Info = settings.getChild("Info");
 				mInfo = Info.getAttributeValue<string>("value");
@@ -308,7 +300,18 @@ bool VDSettings::restore()
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
 			}
 			// if AutoLayout is false we have to read the custom screen layout
-			if (!mAutoLayout)
+			if (mAutoLayout)
+			{
+				// init, overriden by GetWindowsResolution
+				mMainWindowWidth = 1024;
+				mMainWindowHeight = 768;
+				mRenderWidth = 1024;
+				mRenderHeight =768;
+				mRenderX = 1024;
+				mRenderY = 0;
+				iResolution = vec3(mRenderWidth, mRenderHeight, 1.0);
+			}
+			else
 			{
 				if (settings.hasChild("MainWindowWidth")) {
 					XmlTree MainWindowWidth = settings.getChild("MainWindowWidth");
@@ -429,7 +432,7 @@ void VDSettings::reset()
 {
 	// parameters exposed in XML
 	mMIDIOpenAllInputPorts = mRenderThumbs = mAutoLayout = mShowUI = mCursorVisible = true;
-	mStandalone = mCustomLayout = false;
+	mStandalone = false;
 	mOutputVideoResolution = 1024;
 	mInfo = "";
 	mTrackName = "";

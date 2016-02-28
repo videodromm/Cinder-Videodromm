@@ -96,8 +96,6 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Logger
-		VDLogRef					mLog;
 		// tempo
 		void						calculateTempo();
 		std::deque <double>			buffer;

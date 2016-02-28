@@ -39,7 +39,7 @@ namespace VideoDromm
 		void						setSpeed(int speed);
 		bool						isValid(){ return mFramesLoaded > 0; };
 		int							getMaxFrames();
-		ci::gl::TextureRef			getCurrentMovieTexture();
+		ci::gl::TextureRef			getTexture();
 
 	private:
 		// Settings

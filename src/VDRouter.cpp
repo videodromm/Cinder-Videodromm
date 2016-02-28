@@ -4,8 +4,6 @@ using namespace VideoDromm;
 
 VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
-	// instanciate the logger class
-	mLog = VDLog::create();
 	CI_LOG_V("VDRouter constructor");
 	// kinect
 	for (int i = 0; i < 20; i++)
@@ -95,7 +93,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings) {
 				{
 					if (tracks[a] != "") m.append(tracks[a]);
 				}
-				mOSCSender->send(m);
+				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(m);
 
 			});
 			mOSCReceiver->setListener("/sumMovement",
@@ -280,6 +278,7 @@ void VDRouter::midiListener(midi::MidiMessage msg)
 		midiPitch = msg.Pitch;
 		midiVelocity = msg.Velocity;
 		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
+		mVDSettings->controlValues[14] = 1.0f + midiNormalizedValue; // quick hack!
 		break;
 	case MIDI_NOTE_OFF:
 		midiControlType = "/off";

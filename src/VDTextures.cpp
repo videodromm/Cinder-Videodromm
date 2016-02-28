@@ -83,7 +83,8 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef)
 		}
 		else
 		{
-			gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")));
+			//gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")));
+			gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")), gl::Texture::Format().loadTopDown());
 			sTextures.push_back(img);
 		}
 		/*Texta tex;
