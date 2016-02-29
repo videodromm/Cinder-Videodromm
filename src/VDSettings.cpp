@@ -447,8 +447,8 @@ void VDSettings::resetSomeParams() {
 void VDSettings::reset()
 {
 	// parameters exposed in XML
-	mMIDIOpenAllInputPorts = mRenderThumbs = mAutoLayout = mShowUI = mCursorVisible = true;
-	mStandalone = false;
+	mMIDIOpenAllInputPorts = mAutoLayout = mShowUI = mCursorVisible = true;
+	mRenderThumbs = mStandalone = false;
 	mOutputVideoResolution = 1024;
 	mInfo = "";
 	mTrackName = "";
@@ -585,7 +585,7 @@ void VDSettings::reset()
 	mCamera.setEyePoint(vec3(mCamEyePointXY.x, mCamEyePointXY.y, mCamEyePointZ));
 	//mCamera.setCenterOfInterestPoint(vec3(0.f, 0.f, 0.f));
 
-	mUIRefresh = 1;
+	mUIZoom = 1;
 
 	// midi
 	mMIDIEnabled = true;

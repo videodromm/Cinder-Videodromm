@@ -66,7 +66,7 @@ namespace VideoDromm
 		GLuint						getFboTextureId(int index);
 		ci::gl::FboRef				getFbo(int index);
 		int							getFboCount() { return mVDFbos.size(); };
-		//int							getThumbsFboCount() { return mThumbFbos.size(); };
+		int							getThumbsFboCount() { return mThumbFbos.size(); };
 		void						flipFboV(int index);
 		void						flipFboH(int index);
 		const char*					getFboName(int index);
@@ -109,7 +109,7 @@ namespace VideoDromm
 		// fbo
 		//vector<FrameBuffa>			mFbos;
 		//! thumb fbos
-		//vector<FrameBuffa>			mThumbFbos;
+		vector<FrameBuffa>			mThumbFbos;
 
 		//! shader fbos
 		//vector<ShadaFbo>			mShadaFbos;

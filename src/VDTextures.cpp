@@ -34,13 +34,13 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 		fb->isFlipH() = false;
 		mVDFbos.push_back(fb);*/
 		//thumb fbo
-		/* TODO
+		
 		FrameBuffa tfb;
 		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
 		sprintf_s(tfb.name, "thumbfbo%d", m);
-		tfb->isFlipV() = false;
-		tfb->isFlipH() = false;
-		mThumbFbos.push_back(tfb);*/
+		tfb.isFlipV = false;
+		tfb.isFlipH = false;
+		mThumbFbos.push_back(tfb);
 		//mVDFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		//mThumbFbos.push_back(gl::Fbo(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 	}
@@ -230,10 +230,8 @@ return mVDFbos[index].fbo;
 }*/
 GLuint VDTextures::getShaderThumbTextureId(int index)
 {
-	/* TODO if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
-	return  mThumbFbos[index].fbo->getId();*/
-	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
-	return  mVDFbos[index]->getId();
+	if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
+	return  mThumbFbos[index].fbo->getId();
 }
 char* VDTextures::getTextureName(int index) {
 	return "textodo";
@@ -301,7 +299,7 @@ void VDTextures::renderWarpFbos()
 void VDTextures::renderShadaThumbFbo()
 {
 	// start profiling
-	/*auto start = Clock::now();
+	auto start = Clock::now();
 	gl::ScopedFramebuffer fbScp(mThumbFbos[currentShadaThumbIndex].fbo);
 	// setup the viewport to match the dimensions of the FBO
 	gl::ScopedViewport scpVp(ivec2(0), mThumbFbos[currentShadaThumbIndex].fbo->getSize());
@@ -363,7 +361,7 @@ void VDTextures::renderShadaThumbFbo()
 	aShader->uniform("iFlipV", mVDFbos[mVDSettings->mMixFboIndex]->isFlipV());
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-	getTexture(m)->bind(m);
+		getTexture(m)->bind(m);
 	}
 
 	gl::clear(Color(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));
@@ -378,17 +376,17 @@ void VDTextures::renderShadaThumbFbo()
 	currentShadaThumbIndex++;
 	// mThumbFbos must equal mFragmentShaders size
 	if (mThumbFbos.size() < mVDShaders->getCount()) {
-	FrameBuffa tfb;
-	tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-	sprintf_s(tfb.name, "new");
-	tfb->isFlipV() = false;
-	tfb->isFlipH() = false;
-	mThumbFbos.push_back(tfb);
+		FrameBuffa tfb;
+		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
+		sprintf_s(tfb.name, "new");
+		tfb.isFlipV = false;
+		tfb.isFlipH = false;
+		mThumbFbos.push_back(tfb);
 	}
 	if (currentShadaThumbIndex > mVDShaders->getCount() - 1)
 	{
-	currentShadaThumbIndex = 0;
-	}*/
+		currentShadaThumbIndex = 0;
+	}
 }
 
 void VDTextures::draw()

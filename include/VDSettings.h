@@ -27,15 +27,14 @@ namespace VideoDromm {
 		int							sequenceIndex;
 		bool						isSequence;
 	};*/
-	//! struct for fbos 
-	/* obsolete 
+	//! struct for thumbs fbos only
 	struct FrameBuffa
 	{
 		char						name[32];
 		gl::FboRef					fbo;
 		bool						isFlipV;
 		bool						isFlipH;
-	};*/
+	};
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures 
 	struct Sender
 	{
@@ -250,7 +249,7 @@ namespace VideoDromm {
 		int							selectedWarp;
 		int							mWarpCount;
 		bool						mOptimizeUI;//mDirectRender, 
-		int							mUIRefresh;
+		int							mUIZoom;
 		int							mCurrentPreviewFboIndex;
 		int							mSphereFboIndex, mMeshFboIndex, mLiveFboIndex, mMixFboIndex, mAudioFboIndex;
 		int							mLeftFboIndex, mRightFboIndex, mVertexSphereFboIndex, mWarp1FboIndex, mWarp2FboIndex, mABPFboIndex;

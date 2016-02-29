@@ -135,6 +135,20 @@ void VDAnimation::update() {
 		mVDSettings->controlValues[1] = mVDSettings->controlValues[2] = mVDSettings->controlValues[3];
 		mVDSettings->controlValues[5] = mVDSettings->controlValues[6] = mVDSettings->controlValues[7];
 	}
+	mVDSettings->iChannelTime[0] = getElapsedSeconds();
+	mVDSettings->iChannelTime[1] = getElapsedSeconds() - 1;
+	mVDSettings->iChannelTime[3] = getElapsedSeconds() - 2;
+	mVDSettings->iChannelTime[4] = getElapsedSeconds() - 3;
+	//
+	if (mUseTimeWithTempo)
+	{
+		mVDSettings->iGlobalTime = iTempoTime*iTimeFactor;
+	}
+	else
+	{
+		mVDSettings->iGlobalTime = getElapsedSeconds();
+	}
+	mVDSettings->iGlobalTime *= mVDSettings->iSpeedMultiplier;
 #pragma region animation
 	// check this line position: can't remember
 	currentTime = timer.getSeconds();
