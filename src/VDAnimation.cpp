@@ -1,11 +1,21 @@
 #include "VDAnimation.h"
 
 using namespace VideoDromm;
-	
+void VDAnimation::setExposure(float aExposure) {
+	mExposure = aExposure;
+}
+
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	JsonBag::add(&mBackgroundColor, "background_color");
-	JsonBag::add(&mExposure, "exposure");
+	JsonBag::add(&mExposure, "exposure", []() {
+		app::console() << "Updated exposure" << endl;
+		
+	});
+	JsonBag::add(&mText, "text", []() { 
+		app::console() << "Updated text" << endl; 
+	});
+
 	// zoom
 	defaultZoom = 1.0f;
 	minZoom = 0.1;
@@ -14,7 +24,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// exposure
 	defaultExposure = 1.0;
 	minExposure = 0.0001;
-
 	tExposure = autoExposure = false;
 	// Chromatic
 	defaultChromatic = 0.0;

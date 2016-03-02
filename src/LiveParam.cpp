@@ -29,7 +29,7 @@ void JsonBag::load(ci::fs::path aJsonFilePath)
 	
 	wd::watch( mJsonFilePath, [this]( const fs::path &absolutePath )
 	{
-		//this->load();
+		this->load(absolutePath);
 	} );	
 	if( ! fs::exists( mJsonFilePath ) ) {
 		return;
@@ -160,6 +160,16 @@ void Parameter<ci::Color>::save( const std::string& name, ci::JsonTree* tree ) c
 	tree->addChild( v );
 }
 
+template<>
+void Parameter<std::string>::save(const std::string& name, ci::JsonTree* tree) const
+{
+	tree->addChild(ci::JsonTree(name, mValue));
+}
+template<>
+void Parameter<std::string>::load(const std::string& name, ci::JsonTree::ConstIter& iter)
+{
+	update(iter->getValue<std::string>());
+}
 template<>
 void Parameter<bool>::load( const std::string& name, ci::JsonTree::ConstIter& iter )
 {
