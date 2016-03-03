@@ -100,6 +100,9 @@ namespace VideoDromm
 		void						tapTempo();
 		void						setTimeFactor(const int &aTimeFactor);
 		int							iBar;
+		// json animation file
+		void						saveAnimation() const;
+		void						saveKeyframe(const std::string &key, Parameter<float> *param);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -117,7 +120,10 @@ namespace VideoDromm
 		double						startTime;
 		float						previousTime;
 		int							beatIndex; //0 to 3
-
+		// json animation file
+		ci::fs::path				mAnimJsonFilePath;
+		std::unordered_map<std::string, ParamBase*>	mTimeEvents;
+		Parameter<float> *param;
 	};
 
 

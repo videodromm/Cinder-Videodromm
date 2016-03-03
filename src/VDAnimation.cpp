@@ -4,9 +4,23 @@ using namespace VideoDromm;
 void VDAnimation::setExposure(float aExposure) {
 	mExposure = aExposure;
 }
+void VDAnimation::saveAnimation() const {
+	JsonTree doc;
+	JsonTree params = JsonTree::makeArray("timedEvents");
 
+	for (const auto& item : mTimeEvents) {
+		item.second->save(item.first, &params);
+	}
+
+	doc.pushBack(params);
+	doc.write(writeFile(mAnimJsonFilePath), JsonTree::WriteOptions());
+}
+void VDAnimation::saveKeyframe(const std::string &key, Parameter<float> *param) {
+	mTimeEvents.emplace(key, param);
+}
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
+	// live json params
 	JsonBag::add(&mBackgroundColor, "background_color");
 	JsonBag::add(&mExposure, "exposure", []() {
 		app::console() << "Updated exposure" << endl;
@@ -15,7 +29,33 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	JsonBag::add(&mText, "text", []() { 
 		app::console() << "Updated text" << endl; 
 	});
+	// json animation
+	mAnimJsonFilePath = getAssetPath("") / "batchass-sky.json"; // TODO  load from settings.xml 
 
+	if (!fs::exists(mAnimJsonFilePath)) {
+		// create if not exists
+		std::ofstream oStream(mAnimJsonFilePath.string());
+		oStream.close();
+	}
+	else {
+		// load if exists
+		try {
+			JsonTree doc(loadFile(mAnimJsonFilePath));
+			JsonTree timedEvents(doc.getChild("timedEvents"));
+			for (JsonTree::ConstIter item = timedEvents.begin(); item != timedEvents.end(); ++item) {
+				const auto& name = item->getKey();
+				if (mTimeEvents.count(name)) {
+					mTimeEvents.at(name)->load(name, item);
+				}
+				else {
+					CI_LOG_E("No item named " + name);
+				}
+			}
+		}
+		catch (const JsonTree::ExcJsonParserError&)  {
+			CI_LOG_E("Failed to parse animation json file.");
+		}
+	}
 	// zoom
 	defaultZoom = 1.0f;
 	minZoom = 0.1;
