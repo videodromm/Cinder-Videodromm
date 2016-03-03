@@ -7,6 +7,13 @@
 #include "cinder/audio/Context.h"
 #include "cinder/audio/MonitorNode.h"
 #include "cinder/audio/Utilities.h"
+
+#include "cinder/audio/Source.h"
+#include "cinder/audio/Target.h"
+#include "cinder/audio/dsp/Converter.h"
+#include "cinder/audio/SamplePlayerNode.h"
+#include "cinder/audio/SampleRecorderNode.h"
+#include "cinder/audio/NodeEffects.h"
 // Settings
 #include "VDSettings.h"
 // Logger
@@ -32,7 +39,7 @@ namespace VideoDromm
 		}
 		ci::gl::TextureRef				getTexture();
 		void							update();
-		//void							loadWaveFile(string aFilePath);
+		void							loadWaveFile(string aFilePath);
 		float*							getSmallSpectrum() { return arr; };
 
 	private:
@@ -41,13 +48,13 @@ namespace VideoDromm
 		// audio
 		audio::InputDeviceNodeRef		mLineIn;
 		audio::MonitorSpectralNodeRef	mMonitorLineInSpectralNode;
-		//audio::MonitorSpectralNodeRef	mMonitorWaveSpectralNode;
+		audio::MonitorSpectralNodeRef	mMonitorWaveSpectralNode;
+		audio::SamplePlayerNodeRef		mSamplePlayerNode;
+		audio::SourceFileRef			mSourceFile;
+		audio::MonitorSpectralNodeRef	mScopeLineInFmt;
 
 		vector<float>					mMagSpectrum;
 
-		//audio::SamplePlayerNodeRef		mSamplePlayerNode;
-		//audio::SourceFileRef			mSourceFile;
-		audio::MonitorSpectralNodeRef	mScopeLineInFmt;
 		float							arr[7];
 		// number of frequency bands of our spectrum
 		static const int				kBands = 1024;
