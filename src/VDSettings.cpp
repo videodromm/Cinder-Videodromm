@@ -453,8 +453,8 @@ void VDSettings::reset()
 	mInfo = "";
 	mTrackName = "";
 	iTrack = 0;
-	mMainWindowX = 0;
-	mMainWindowY = 0;
+	mMainWindowX = mRenderX = 0;
+	mMainWindowY = mRenderY = 0;
 	mMainWindowWidth = 1280;
 	mMainWindowHeight = 720;
 	mRenderWidth = 1024;
