@@ -28,14 +28,18 @@ namespace VideoDromm
 		void						setup();
 		// TODO move to private when shadamixa upgraded
 		void						createWarpFbos();
+		void						splitWarp(int fboWidth, int fboHeight);
 		int							getWindowsResolution();
 		float						formatFloat(float f);
-
+		Area						getSrcAreaLeftOrTop();
+		Area						getSrcAreaRightOrBottom();
 		// file system
 		fs::path					getPath(string path);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
+		Area						mSrcAreaLeftOrTop; // left or top
+		Area						mSrcAreaRightOrBottom; // right or bottom
 
 	};
 }

@@ -248,7 +248,9 @@ namespace VideoDromm {
 		//vector<WarpFbo>				mWarpFbos;
 		int							selectedWarp;
 		int							mWarpCount;
-		bool						mOptimizeUI;//mDirectRender, 
+		bool						mOptimizeUI; 
+		bool						mSplitWarpH;
+		bool						mSplitWarpV;
 		int							mUIZoom;
 		int							mCurrentPreviewFboIndex;
 		int							mSphereFboIndex, mMeshFboIndex, mLiveFboIndex, mMixFboIndex, mAudioFboIndex;

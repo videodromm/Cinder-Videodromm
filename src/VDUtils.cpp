@@ -81,7 +81,43 @@ int VDUtils::getWindowsResolution()
 	mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;
+	splitWarp(mVDSettings->mFboWidth,mVDSettings->mFboHeight);
 	return w;
+}
+void VDUtils::splitWarp(int fboWidth, int fboHeight) {
+
+	int x1 = 0;
+	int y1 = 0;
+	int x2 = fboWidth;
+	int y2 = fboHeight;
+
+	if (mVDSettings->mSplitWarpH) {
+		x2 = (fboWidth / 2) - 1;
+		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
+		x1 = fboWidth / 2;
+		x2 = fboWidth;
+		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
+	}
+	else if (mVDSettings->mSplitWarpV) {
+		int y2 = (fboHeight / 2) - 1;
+		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
+		y1 = fboHeight / 2;
+		y2 = fboHeight;
+		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
+	} 
+	else
+	{
+		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
+		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
+
+	}
+
+}
+Area VDUtils::getSrcAreaLeftOrTop() {
+	return mSrcAreaLeftOrTop;
+}
+Area VDUtils::getSrcAreaRightOrBottom() {
+	return mSrcAreaRightOrBottom;
 }
 
 fs::path VDUtils::getPath(string path)

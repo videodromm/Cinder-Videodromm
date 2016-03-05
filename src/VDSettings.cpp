@@ -179,6 +179,14 @@ bool VDSettings::save()
 	UseLineIn.setAttribute("value", toString(mUseLineIn));
 	settings.push_back(UseLineIn);
 
+	XmlTree SplitWarpH("SplitWarpH", "");
+	SplitWarpH.setAttribute("value", toString(mSplitWarpH));
+	settings.push_back(SplitWarpH);
+
+	XmlTree SplitWarpV("SplitWarpV", "");
+	SplitWarpV.setAttribute("value", toString(mSplitWarpV));
+	settings.push_back(SplitWarpV);
+
 	// write XML file
 	settings.write(writeFile(path));
 
@@ -306,6 +314,14 @@ bool VDSettings::restore()
 			if (settings.hasChild("UseLineIn")) {
 				XmlTree UseLineIn = settings.getChild("UseLineIn");
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
+			}
+			if (settings.hasChild("SplitWarpH")) {
+				XmlTree SplitWarpH = settings.getChild("SplitWarpH");
+				mSplitWarpH = SplitWarpH.getAttributeValue<bool>("value");
+			}
+			if (settings.hasChild("SplitWarpV")) {
+				XmlTree SplitWarpV = settings.getChild("SplitWarpV");
+				mSplitWarpV = SplitWarpV.getAttributeValue<bool>("value");
 			}
 			iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 			// if AutoLayout is false we have to read the custom screen layout
@@ -448,7 +464,7 @@ void VDSettings::reset()
 {
 	// parameters exposed in XML
 	mMIDIOpenAllInputPorts = mAutoLayout = mShowUI = mCursorVisible = true;
-	mRenderThumbs = mStandalone = false;
+	mRenderThumbs = mStandalone = mSplitWarpH = mSplitWarpV = false;
 	mOutputVideoResolution = 1024;
 	mInfo = "";
 	mTrackName = "";
