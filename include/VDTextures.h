@@ -16,10 +16,10 @@
 #include "cinder/Camera.h"
 // Settings
 #include "VDSettings.h"
-// shaders
-#include "VDShaders.h"
 // Animation
 #include "VDAnimation.h"
+// shaders
+#include "VDShaders.h"
 // fbo
 #include "VDFbo.h"
 // Logger
@@ -88,10 +88,10 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Shaders
-		VDShadersRef				mVDShaders;
 		// Animation
 		VDAnimationRef				mVDAnimation;
+		// Shaders
+		VDShadersRef				mVDShaders;
 		// Fbos
 		vector<VDFboRef>			mVDFbos;
 
