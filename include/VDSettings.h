@@ -152,7 +152,7 @@ namespace VideoDromm {
 		float						iParam1;
 		float						iParam2;
 		bool						iXorY;
-		float						iBadTv;
+		ci::Anim<float> 			iBadTv;
 
 		string						mAssetsPath;
 		bool						iShowFps;

@@ -5,10 +5,34 @@ void VDAnimation::setExposure(float aExposure) {
 	mExposure = aExposure;
 }
 
-void VDAnimation::saveKeyframe(std::string &key) {
-	JsonBag::add(&mExposure, key);
+void VDAnimation::saveKeyframe(int frame) {
+	mBadTV.push_back(frame);
 
 }
+void VDAnimation::loadAnimationData() {
+	try {
+		mData = JsonTree(app::loadAsset("animation.json"));
+
+		mBadTV.clear();
+
+		for (const auto &badtv : mData["badtv"]) {
+			int frame = badtv.getValue<int>();
+			mBadTV.push_back(frame);
+		}
+		CI_LOG_V("successfully loaded animation.json");
+	}
+	catch (Exception &exc) {
+		CI_LOG_E(exc.what());
+	}
+}
+int VDAnimation::getBadTV(int frame) {
+	int rtn = 0;
+	for (auto &i : mBadTV) {
+		if (i == frame) rtn = 1;
+	}
+	return rtn;
+}
+
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	// live json params
@@ -63,6 +87,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	iDeltaTime = 60 / mTempo;
 	iBar = 0;
 	load();
+	loadAnimationData();
 }
 void VDAnimation::load() {
 	bag()->load(app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json");

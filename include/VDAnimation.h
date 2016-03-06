@@ -101,7 +101,8 @@ namespace VideoDromm
 		void						setTimeFactor(const int &aTimeFactor);
 		int							iBar;
 		// animation
-		void						saveKeyframe(std::string &key);
+		void						saveKeyframe(int frame);
+		int							getBadTV(int frame);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -119,9 +120,8 @@ namespace VideoDromm
 		double						startTime;
 		float						previousTime;
 		int							beatIndex; //0 to 3
-		
+		JsonTree					mData;
+		void						loadAnimationData();
+		vector<int>					mBadTV;
 	};
-
-
-
 }
