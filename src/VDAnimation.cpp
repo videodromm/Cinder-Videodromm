@@ -5,31 +5,97 @@ void VDAnimation::setExposure(float aExposure) {
 	mExposure = aExposure;
 }
 
-void VDAnimation::saveKeyframe(int frame) {
-	mBadTV.push_back(frame);
+bool VDAnimation::handleKeyDown(KeyEvent &event)
+{
+	bool handled = true;
+	switch (event.getCode()) {
+	case KeyEvent::KEY_s:
+		// save animation
+		save();
+		break;
+	case KeyEvent::KEY_b:
+		// save badtv keyframe
+		mBadTV[getElapsedFrames()-10] = 1.0f;
+		break;
+	default:
+		handled = false;
+	}
+	event.setHandled(handled);
 
+	return event.isHandled();
 }
-void VDAnimation::loadAnimationData() {
-	try {
+bool VDAnimation::handleKeyUp(KeyEvent &event)
+{
+	bool handled = true;
+	switch (event.getCode()) {
+	case KeyEvent::KEY_b:
+		// save badtv keyframe
+		mBadTV[getElapsedFrames()] = 0.0f;
+		break;
+	default:
+		handled = false;
+	}
+	event.setHandled(handled);
+
+	return event.isHandled();
+}
+void VDAnimation::saveAnimation() {
+// new way
+fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+JsonTree doc;
+JsonTree badtv = JsonTree::makeArray("badtv");
+
+for (const auto& item : mBadTV) {
+	badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
+}
+
+doc.pushBack(badtv);
+doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
+}
+void VDAnimation::loadAnimation() {
+	/*try {
 		mData = JsonTree(app::loadAsset("animation.json"));
 
 		mBadTV.clear();
 
 		for (const auto &badtv : mData["badtv"]) {
 			int frame = badtv.getValue<int>();
-			mBadTV.push_back(frame);
+			mBadTV[frame] = 1.0f;
 		}
 		CI_LOG_V("successfully loaded animation.json");
 	}
 	catch (Exception &exc) {
 		CI_LOG_E(exc.what());
+	}*/
+	// new way
+	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+	// Create json file if it doesn't already exist.
+	if (!fs::exists(mJsonFilePath)) {
+		std::ofstream oStream(mJsonFilePath.string());
+		oStream.close();
+	}
+	if (!fs::exists(mJsonFilePath)) {
+		return;
+	}
+	try {
+		JsonTree doc(loadFile(mJsonFilePath));
+		JsonTree badtv(doc.getChild("badtv"));
+		for (JsonTree::ConstIter item = badtv.begin(); item != badtv.end(); ++item) {
+			const auto& key = std::stoi(item->getKey());
+			const auto& value = item->getValue<float>();
+			mBadTV[key] = value;
+
+		}
+	}
+	catch (const JsonTree::ExcJsonParserError&)  {
+		CI_LOG_E("Failed to parse json file.");
 	}
 }
 int VDAnimation::getBadTV(int frame) {
 	int rtn = 0;
-	for (auto &i : mBadTV) {
-		if (i == frame) rtn = 1;
-	}
+	
+	if (mBadTV[frame] != 0) rtn = 1;
+
 	return rtn;
 }
 
@@ -39,10 +105,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	JsonBag::add(&mBackgroundColor, "background_color");
 	JsonBag::add(&mExposure, "exposure", []() {
 		app::console() << "Updated exposure" << endl;
-		
+
 	});
-	JsonBag::add(&mText, "text", []() { 
-		app::console() << "Updated text" << endl; 
+	JsonBag::add(&mText, "text", []() {
+		app::console() << "Updated text" << endl;
 	});
 
 	// zoom
@@ -87,13 +153,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	iDeltaTime = 60 / mTempo;
 	iBar = 0;
 	load();
-	loadAnimationData();
+	loadAnimation();
 }
 void VDAnimation::load() {
 	bag()->load(app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json");
+
 }
 void VDAnimation::save() {
 	bag()->save();
+	saveAnimation();
 }
 #pragma region utility
 void VDAnimation::tempoZoom()

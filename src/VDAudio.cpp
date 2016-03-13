@@ -11,7 +11,15 @@ VDAudio::VDAudio(VDSettingsRef aVDSettings) {
 	// linein
 	if (mVDSettings->mUseLineIn) {
 		try {
+			CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed no put UseLineIn to false in the settings.xml file");
+			// saving UseLineIn = false in case something goes wrong
+			mVDSettings->mUseLineIn = false;
+			mVDSettings->save();
 			mLineIn = ctx->createInputDeviceNode(); //crashes if linein is present but disabled, doesn't go to catch block
+			// saving UseLineIn back to true
+			mVDSettings->mUseLineIn = true;
+			mVDSettings->save();
+			CI_LOG_V("mic/line in opened");
 
 			//*mScopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(512).windowSize(256);
 			auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(mVDSettings->mFftSize).windowSize(mVDSettings->mWindowSize);
