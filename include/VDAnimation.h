@@ -7,6 +7,8 @@
 #include "cinder/json.h"
 // Settings
 #include "VDSettings.h"
+// Session
+#include "VDSession.h"
 // Live json params
 #include "LiveParam.h"
 
@@ -22,11 +24,11 @@ namespace VideoDromm
 
 	class VDAnimation {
 	public:		
-		VDAnimation(VDSettingsRef aVDSettings);
+		VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
 
-		static VDAnimationRef		create(VDSettingsRef aVDSettings)
+		static VDAnimationRef		create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDAnimation>(new VDAnimation( aVDSettings));
+			return shared_ptr<VDAnimation>(new VDAnimation( aVDSettings, aVDSession));
 		}
 		void						update();
 		void						load();
@@ -36,7 +38,7 @@ namespace VideoDromm
 		void						setExposure(float aExposure);
 		const int					maxBlendMode = 28;
 		// tap tempo
-		float						mTempo;
+		//float						mTempo;
 		float						iDeltaTime;
 		float						iTempoTime;
 		float						iTimeFactor;
@@ -108,6 +110,8 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
+		// Session
+		VDSessionRef				mVDSession;
 		// Live json params
 		Parameter<Color>			mBackgroundColor;
 		Parameter<float>			mExposure;
@@ -127,5 +131,6 @@ namespace VideoDromm
 		void						saveAnimation();
 		//map<int, float>				mBadTV;
 		std::unordered_map<int, float>	mBadTV;
+
 	};
 }

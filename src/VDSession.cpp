@@ -21,6 +21,9 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	}
 	else
 	{
+		// Create json file if it doesn't already exist.
+		std::ofstream oStream(sessionPath.string());
+		oStream.close();
 		save();
 	}
 }
@@ -32,9 +35,14 @@ VDSessionRef VDSession::create(VDSettingsRef aVDSettings)
 
 bool VDSession::save()
 {
-
 	// save in sessionPath
+	JsonTree doc;
+	JsonTree settings = JsonTree::makeArray("settings");
 
+	settings.addChild(ci::JsonTree("bpm", ci::toString(mBpm)));
+
+	doc.pushBack(settings);
+	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
 
 	return true;
 }
@@ -48,14 +56,9 @@ void VDSession::restore()
 
 	try {
 		JsonTree doc(loadFile(sessionPath));
-		/*JsonTree params(doc.getChild("params"));
-		for (JsonTree::ConstIter item = params.begin(); item != params.end(); ++item) {
-			const auto& name = item->getKey();
-			if (mItems.count(name)) {
-				mItems.at(name)->load(name, item);
-			}
-			
-		}*/
+		JsonTree settings(doc.getChild("settings"));
+		mBpm = settings.getValueForKey<float>("bpm");
+		mTargetFps = mBpm / 60.0f * mFpb;
 	}
 	catch (const JsonTree::ExcJsonParserError&)  {
 		//CI_LOG_E("Failed to parse json file.");
@@ -66,6 +69,8 @@ void VDSession::restore()
 
 void VDSession::resetSomeParams() {
 	// parameters not exposed in json file
+	mFpb = 16;
+	mTargetFps = mBpm / 60.0f * mFpb;
 }
 
 void VDSession::reset()
@@ -73,8 +78,7 @@ void VDSession::reset()
 	// parameters exposed in json file
 	mFlipV = false;
 	mFlipH = false;
-	mBpm = 160;
-	mFpb = 16;
+	mBpm = 166;
 	resetSomeParams();
 
 

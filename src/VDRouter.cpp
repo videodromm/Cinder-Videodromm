@@ -2,9 +2,10 @@
 
 using namespace VideoDromm;
 
-VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef) {
+VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSessionRef) {
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimationRef;
+	mVDSession = aVDSessionRef;
 
 	CI_LOG_V("VDRouter constructor");
 	// kinect
@@ -70,7 +71,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef) {
 			mOSCReceiver->setListener("/live/tempo",
 				[&](const osc::Message &msg){
 				// Animation
-				mVDAnimation->mTempo = msg[0].flt();
+				mVDSession->setBpm( msg[0].flt() );
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
 			mOSCReceiver->setListener("/live/track/meter",

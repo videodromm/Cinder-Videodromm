@@ -15,7 +15,7 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		break;
 	case KeyEvent::KEY_b:
 		// save badtv keyframe
-		mBadTV[getElapsedFrames()-10] = 1.0f;
+		mBadTV[getElapsedFrames() - 10] = 1.0f;
 		break;
 	default:
 		handled = false;
@@ -40,34 +40,20 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	return event.isHandled();
 }
 void VDAnimation::saveAnimation() {
-// new way
-fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
-JsonTree doc;
-JsonTree badtv = JsonTree::makeArray("badtv");
+	// save 
+	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+	JsonTree doc;
+	JsonTree badtv = JsonTree::makeArray("badtv");
 
-for (const auto& item : mBadTV) {
-	if (item.second>0.0001) badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
-}
+	for (const auto& item : mBadTV) {
+		if (item.second > 0.0001) badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
+	}
 
-doc.pushBack(badtv);
-doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
+	doc.pushBack(badtv);
+	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
 }
 void VDAnimation::loadAnimation() {
-	/*try {
-		mData = JsonTree(app::loadAsset("animation.json"));
 
-		mBadTV.clear();
-
-		for (const auto &badtv : mData["badtv"]) {
-			int frame = badtv.getValue<int>();
-			mBadTV[frame] = 1.0f;
-		}
-		CI_LOG_V("successfully loaded animation.json");
-	}
-	catch (Exception &exc) {
-		CI_LOG_E(exc.what());
-	}*/
-	// new way
 	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
 	// Create json file if it doesn't already exist.
 	if (!fs::exists(mJsonFilePath)) {
@@ -93,14 +79,15 @@ void VDAnimation::loadAnimation() {
 }
 int VDAnimation::getBadTV(int frame) {
 	int rtn = 0;
-	
+
 	if (mBadTV[frame] != 0) rtn = 1;
 
 	return rtn;
 }
 
-VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
+VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
+	mVDSession = aVDSession;
 	// live json params
 	JsonBag::add(&mBackgroundColor, "background_color");
 	JsonBag::add(&mExposure, "exposure", []() {
@@ -147,9 +134,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	iTempoTime = 0.0;
 	iTimeFactor = 1.0f;
 	// tempo
-	mTempo = 166.0;
+	//mTempo = 166.0;
 	mUseTimeWithTempo = false;
-	iDeltaTime = 60 / mTempo;
+	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
 	iBar = 0;
 	load();
 	loadAnimation();
@@ -451,7 +438,7 @@ void VDAnimation::calculateTempo()
 	}
 	averageTime = (double)(tAverage / buffer.size());
 	iDeltaTime = averageTime;
-	mTempo = 60 / averageTime;
+	mVDSession->setBpm( 60 / averageTime);
 }
 void VDAnimation::setTimeFactor(const int &aTimeFactor)
 {

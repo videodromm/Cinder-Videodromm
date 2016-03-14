@@ -5,6 +5,8 @@
 
 // Settings
 #include "VDSettings.h"
+// Session
+#include "VDSession.h"
 // Animation
 #include "VDAnimation.h"
 
@@ -48,10 +50,10 @@ namespace VideoDromm
 
 	class VDRouter {
 	public:
-		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef);
-		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef)
+		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSessionRef);
+		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSessionRef)
 		{
-			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aAnimationRef));
+			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aAnimationRef, aVDSessionRef));
 		}
 		void						update();
 		void						shutdown();
@@ -87,6 +89,8 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Animation
 		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 		// MIDI
 		vector<midiInput>			mMidiInputs;
 		void						midiListener(midi::MidiMessage msg);
