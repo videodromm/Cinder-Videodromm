@@ -30,7 +30,7 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	switch (event.getCode()) {
 	case KeyEvent::KEY_b:
 		// save badtv keyframe
-		mBadTV[getElapsedFrames()] = 0.0f;
+		mBadTV[getElapsedFrames()] = 0.001f;
 		break;
 	default:
 		handled = false;
@@ -46,7 +46,7 @@ JsonTree doc;
 JsonTree badtv = JsonTree::makeArray("badtv");
 
 for (const auto& item : mBadTV) {
-	badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
+	if (item.second>0.0001) badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
 }
 
 doc.pushBack(badtv);
@@ -141,7 +141,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	maxRotationSpeed = 2.0;
 	tRotationSpeed = autoRotationSpeed = false;
 
-	iDeltaTime = 60 / mTempo;
 	previousTime = 0.0f;
 	beatIndex = 0;
 	counter = 0;
@@ -428,7 +427,7 @@ void VDAnimation::tapTempo()
 	timer.stop();
 	timer.start();
 
-	// check for out of time values - less than 50% or more than 150% of from last "TAP and whole time budder is going to be discarded....
+	// check for out of time values - less than 50% or more than 150% of from last "TAP and whole time buffer is going to be discarded....
 	if (counter > 2 && (buffer.back() * 1.5 < currentTime || buffer.back() * 0.5 > currentTime))
 	{
 		buffer.clear();
