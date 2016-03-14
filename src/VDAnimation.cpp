@@ -134,8 +134,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	iTempoTime = 0.0;
 	iTimeFactor = 1.0f;
 	// tempo
-	//mTempo = 166.0;
 	mUseTimeWithTempo = false;
+	// init timer
+	timer.start();
+	startTime = currentTime = timer.getSeconds();
+
 	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
 	iBar = 0;
 	load();
