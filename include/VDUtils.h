@@ -33,7 +33,8 @@ namespace VideoDromm
 		float						formatFloat(float f);
 		Area						getSrcAreaLeftOrTop();
 		Area						getSrcAreaRightOrBottom();
-		void						moveX1SrcAreaLeftOrTop(int x1LeftOrTop);
+		void						moveX1LeftOrTop(int x1);
+		void						moveY1LeftOrTop(int y1);
 		// file system
 		fs::path					getPath(string path);
 	private:
@@ -41,10 +42,14 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		Area						mSrcAreaLeftOrTop; // left or top
 		Area						mSrcAreaRightOrBottom; // right or bottom
-		int							x1;
-		int							y1;
-		int							x2;
-		int							y2;
+		int							x1LeftOrTop;
+		int							y1LeftOrTop;
+		int							x2LeftOrTop;
+		int							y2LeftOrTop;
+		int							x1RightOrBottom;
+		int							y1RightOrBottom;
+		int							x2RightOrBottom;
+		int							y2RightOrBottom;
 
 	};
 }

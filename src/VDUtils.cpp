@@ -6,10 +6,14 @@ VDUtils::VDUtils(VDSettingsRef aVDSettings)
 {
 	mVDSettings = aVDSettings;
 	CI_LOG_V("VDUtils constructor");
-	x1 = 0;
-	y1 = 0;
-	x2 = mVDSettings->mFboWidth;
-	y2 = mVDSettings->mFboHeight;
+	x1LeftOrTop = 0;
+	y1LeftOrTop = 0;
+	x2LeftOrTop = mVDSettings->mFboWidth;
+	y2LeftOrTop = mVDSettings->mFboHeight;
+	x1RightOrBottom = 0;
+	y1RightOrBottom = 0;
+	x2RightOrBottom = mVDSettings->mFboWidth;
+	y2RightOrBottom = mVDSettings->mFboHeight;
 
 }
 float VDUtils::formatFloat(float f)
@@ -90,36 +94,38 @@ int VDUtils::getWindowsResolution()
 	return w;
 }
 void VDUtils::splitWarp(int fboWidth, int fboHeight) {
-
-	x1 = 0;
-	y1 = 0;
-	x2 = fboWidth;
-	y2 = fboHeight;
+	 
+	x1LeftOrTop = x1RightOrBottom =0;
+	y1LeftOrTop = y1RightOrBottom = 0;
+	x2LeftOrTop = x2RightOrBottom = mVDSettings->mFboWidth;
+	y2LeftOrTop = y2RightOrBottom = mVDSettings->mFboHeight;
 
 	if (mVDSettings->mSplitWarpH) {
-		x2 = (fboWidth / 2) - 1;
-		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
-		x1 = fboWidth / 2;
-		x2 = fboWidth;
-		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
+		x2LeftOrTop = (fboWidth / 2) - 1;
+
+		x1RightOrBottom = fboWidth / 2;
+		x2RightOrBottom = fboWidth;
 	}
 	else if (mVDSettings->mSplitWarpV) {
-		int y2 = (fboHeight / 2) - 1;
-		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
-		y1 = fboHeight / 2;
-		y2 = fboHeight;
-		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
+		y2LeftOrTop = (fboHeight / 2) - 1;
+		y1RightOrBottom = fboHeight / 2;
+		y2RightOrBottom = fboHeight;
 	} 
 	else
 	{
-		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
-		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
+		// no change
 	}
+		mSrcAreaLeftOrTop = Area(x1LeftOrTop, y1LeftOrTop, x2LeftOrTop, y2LeftOrTop);
+		mSrcAreaRightOrBottom = Area(x1RightOrBottom, y1RightOrBottom, x2RightOrBottom, y2RightOrBottom);
 
 }
-void VDUtils::moveX1SrcAreaLeftOrTop(int x1LeftOrTop) {
-	x1 = x1LeftOrTop;
-	mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
+void VDUtils::moveX1LeftOrTop(int x1) {
+	x1LeftOrTop = x1;
+	mSrcAreaLeftOrTop = Area(x1LeftOrTop, y1LeftOrTop, x2LeftOrTop, y2LeftOrTop);
+}
+void VDUtils::moveY1LeftOrTop(int y1) {
+	y1LeftOrTop = y1;
+	mSrcAreaLeftOrTop = Area(x1LeftOrTop, y1LeftOrTop, x2LeftOrTop, y2LeftOrTop);
 }
 
 Area VDUtils::getSrcAreaLeftOrTop() {
