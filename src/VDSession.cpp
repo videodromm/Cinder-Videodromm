@@ -47,6 +47,9 @@ bool VDSession::save()
 	assets.addChild(ci::JsonTree("waveplaybackdelay", mWavePlaybackDelay));
 	assets.addChild(ci::JsonTree("moviefile", mMovieFileName));
 	assets.addChild(ci::JsonTree("movieplaybackdelay", mMoviePlaybackDelay));
+	assets.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
+	assets.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
+	assets.addChild(ci::JsonTree("endframe", mEndFrame));
 	doc.pushBack(assets);
 
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
@@ -73,6 +76,9 @@ void VDSession::restore()
 		mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
 		mMovieFileName = assets.getValueForKey<string>("moviefile");
 		mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
+		mFadeInDelay = assets.getValueForKey<int>("fadeindelay");
+		mFadeOutDelay = assets.getValueForKey<int>("fadeoutdelay");
+		mEndFrame = assets.getValueForKey<int>("endframe");
 	}
 	catch (const JsonTree::ExcJsonParserError&)  {
 		//CI_LOG_E("Failed to parse json file.");
@@ -97,6 +103,9 @@ void VDSession::reset()
 	mWavePlaybackDelay = 10;
 	mMovieFileName = "none.mov";
 	mMoviePlaybackDelay = 10;
+	mFadeInDelay= 1;
+	mFadeOutDelay = 1;
+	mEndFrame = 20000;
 	resetSomeParams();
 
 

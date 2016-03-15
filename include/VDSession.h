@@ -30,10 +30,14 @@ namespace VideoDromm {
 		float						getBpm() { return mBpm; };
 		float						getTargetFps() { return mTargetFps; };
 		void						setBpm(float aBpm) { mBpm = aBpm; };
+		int							getEndFrame() { return mEndFrame; };
+		void						setEndFrame(int frame) { mEndFrame = frame; };
 		string						getWaveFileName() { return mWaveFileName; };
 		int							getWavePlaybackDelay() { return mWavePlaybackDelay; };
 		string						getMovieFileName() { return mMovieFileName; };
 		int							getMoviePlaybackDelay() { return mMoviePlaybackDelay; };
+		int							getFadeInDelay() { return mFadeInDelay; };
+		int							getFadeOutDelay() { return mFadeOutDelay; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -52,6 +56,9 @@ namespace VideoDromm {
 		// delay
 		int							mWavePlaybackDelay;
 		int							mMoviePlaybackDelay;
+		int							mFadeInDelay;
+		int							mFadeOutDelay;
+		int							mEndFrame;
 	};
 
 }

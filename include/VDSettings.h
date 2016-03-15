@@ -153,6 +153,7 @@ namespace VideoDromm {
 		float						iParam2;
 		bool						iXorY;
 		ci::Anim<float> 			iBadTv;
+		ci::Anim<float> 			iAlpha;
 
 		string						mAssetsPath;
 		bool						iShowFps;

@@ -22,6 +22,10 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
 
 		break;
+	case KeyEvent::KEY_e:
+		// save end keyframe
+		mVDSession->setEndFrame(getElapsedFrames() - 10);
+		break;
 	case KeyEvent::KEY_g:
 		// glitch
 		mVDSettings->controlValues[45] = 1.0f;

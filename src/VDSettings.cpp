@@ -393,7 +393,8 @@ void VDSettings::resetSomeParams() {
 	maxEyePointZ = 0.0;
 	tEyePointZ = autoEyePointZ = false;
 	// unicorns
-	iBadTv = 0.0;
+	iBadTv = 0.0f;
+	iAlpha = 1.0f;
 	iParam1 = iParam2 = 1.0f;
 	iGlobalTime = iSpeedMultiplier = 1.0f;
 

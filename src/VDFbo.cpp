@@ -12,7 +12,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, string aName, int aWidth, int aHeight) {
 	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
 	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
 	mFlipV = false;
-	mFlipH = false;
+	mFlipH = true;
 }
 
 ci::gl::TextureRef VDFbo::getTexture() {
