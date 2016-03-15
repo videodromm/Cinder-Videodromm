@@ -1,6 +1,7 @@
 #include "VDAnimation.h"
 
 using namespace VideoDromm;
+
 void VDAnimation::setExposure(float aExposure) {
 	mExposure = aExposure;
 }
@@ -16,6 +17,14 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 	case KeyEvent::KEY_b:
 		// save badtv keyframe
 		mBadTV[getElapsedFrames() - 10] = 1.0f;
+		//iBadTvRunning = true;
+		// duration = 0.2
+		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());// .finishFn(resetBadTv);
+
+		break;
+	case KeyEvent::KEY_g:
+		// glitch
+		mVDSettings->controlValues[45] = 1.0f;
 		break;
 	default:
 		handled = false;
@@ -31,6 +40,10 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	case KeyEvent::KEY_b:
 		// save badtv keyframe
 		mBadTV[getElapsedFrames()] = 0.001f;
+		break;
+	case KeyEvent::KEY_g:
+		// glitch
+		mVDSettings->controlValues[45] = 0.0f;
 		break;
 	default:
 		handled = false;
@@ -77,154 +90,12 @@ void VDAnimation::loadAnimation() {
 		CI_LOG_E("Failed to parse json file.");
 	}
 }
-int VDAnimation::getBadTV(int frame) {
-	int rtn = 0;
-
-	if (mBadTV[frame] != 0) rtn = 1;
-
-	return rtn;
-}
-
-VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
-	mVDSettings = aVDSettings;
-	mVDSession = aVDSession;
-	// live json params
-	JsonBag::add(&mBackgroundColor, "background_color");
-	JsonBag::add(&mExposure, "exposure", []() {
-		app::console() << "Updated exposure" << endl;
-
-	});
-	JsonBag::add(&mText, "text", []() {
-		app::console() << "Updated text" << endl;
-	});
-
-	// zoom
-	defaultZoom = 1.0f;
-	minZoom = 0.1;
-	maxZoom = 3.0;
-	tZoom = autoZoom = false;
-	// exposure
-	defaultExposure = 1.0;
-	minExposure = 0.0001;
-	tExposure = autoExposure = false;
-	// Chromatic
-	defaultChromatic = 0.0;
-	minChromatic = 0.0;
-	maxChromatic = 1.0;
-	tChromatic = autoChromatic = false;
-	// ratio
-	defaultRatio = 20.0;
-	minRatio = 0.00000000001;
-	maxRatio = 20.0;
-	tRatio = autoRatio = false;
-	// z position
-	defaultZPos = -0.7;
-	minZPos = -1.0;
-	maxZPos = 1.0;
-	tZPos = autoZPos = false;
-	// RotationSpeed
-	defaultRotationSpeed = 0.0;
-	minRotationSpeed = -2.0;
-	maxRotationSpeed = 2.0;
-	tRotationSpeed = autoRotationSpeed = false;
-
-	previousTime = 0.0f;
-	beatIndex = 0;
-	counter = 0;
-	iTempoTime = 0.0;
-	iTimeFactor = 1.0f;
-	// tempo
-	mUseTimeWithTempo = false;
-	// init timer
-	timer.start();
-	startTime = currentTime = timer.getSeconds();
-
-	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
-	iBar = 0;
-	load();
-	loadAnimation();
-}
-void VDAnimation::load() {
-	bag()->load(app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json");
-
-}
-void VDAnimation::save() {
-	bag()->save();
-	saveAnimation();
-}
-#pragma region utility
-void VDAnimation::tempoZoom()
-{
-	tZoom = !tZoom;
-	if (!tZoom) resetZoom();
-}
-void VDAnimation::resetZoom()
-{
-	autoZoom = false;
-	tZoom = false;
-	mVDSettings->controlValues[22] = defaultZoom;
-}
-
-void VDAnimation::tempoZPos()
-{
-	tZPos = !tZPos;
-	if (!tZPos) resetZPos();
-}
-void VDAnimation::resetZPos()
-{
-	autoZPos = false;
-	tZPos = false;
-	mVDSettings->controlValues[9] = defaultZPos;
-}
-void VDAnimation::tempoRotationSpeed()
-{
-	tRotationSpeed = !tRotationSpeed;
-	if (!tRotationSpeed) resetRotationSpeed();
-}
-void VDAnimation::resetRotationSpeed()
-{
-	autoRotationSpeed = false;
-	tRotationSpeed = false;
-	mVDSettings->controlValues[19] = defaultRotationSpeed;
-}
-
-void VDAnimation::tempoExposure()
-{
-	tExposure = !tExposure;
-	if (!tExposure) resetExposure();
-}
-void VDAnimation::resetExposure()
-{
-	autoExposure = false;
-	tExposure = false;
-	mVDSettings->controlValues[14] = defaultExposure;
-}
-// chromatic
-void VDAnimation::tempoChromatic()
-{
-	tChromatic = !tChromatic;
-	if (!tChromatic) resetChromatic();
-}
-void VDAnimation::resetChromatic()
-{
-	autoChromatic = false;
-	tChromatic = false;
-	mVDSettings->controlValues[10] = defaultChromatic;
-}
-// ratio
-void VDAnimation::tempoRatio()
-{
-	tRatio = !tRatio;
-	if (!tRatio) resetRatio();
-}
-void VDAnimation::resetRatio()
-{
-	autoRatio = false;
-	tRatio = false;
-	mVDSettings->controlValues[11] = defaultRatio;
-}
-#pragma endregion utility
 void VDAnimation::update() {
+
+	if (mBadTV[getElapsedFrames()] != 0) {
+		// duration = 0.2
+		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
+	}
 	if (mVDSettings->controlValues[12] == 0.0) mVDSettings->controlValues[12] = 0.01;
 	if (mVDSettings->iGreyScale)
 	{
@@ -246,7 +117,7 @@ void VDAnimation::update() {
 	}
 	mVDSettings->iGlobalTime *= mVDSettings->iSpeedMultiplier;
 #pragma region animation
-	// check this line position: can't remember
+
 	currentTime = timer.getSeconds();
 
 	int time = (currentTime - startTime)*1000000.0;
@@ -409,6 +280,149 @@ void VDAnimation::update() {
 	}
 #pragma endregion animation
 }
+
+VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
+	mVDSettings = aVDSettings;
+	mVDSession = aVDSession;
+	// live json params
+	JsonBag::add(&mBackgroundColor, "background_color");
+	JsonBag::add(&mExposure, "exposure", []() {
+		app::console() << "Updated exposure" << endl;
+
+	});
+	JsonBag::add(&mText, "text", []() {
+		app::console() << "Updated text" << endl;
+	});
+
+	// zoom
+	defaultZoom = 1.0f;
+	minZoom = 0.1;
+	maxZoom = 3.0;
+	tZoom = autoZoom = false;
+	// exposure
+	defaultExposure = 1.0;
+	minExposure = 0.0001;
+	tExposure = autoExposure = false;
+	// Chromatic
+	defaultChromatic = 0.0;
+	minChromatic = 0.0;
+	maxChromatic = 1.0;
+	tChromatic = autoChromatic = false;
+	// ratio
+	defaultRatio = 20.0;
+	minRatio = 0.00000000001;
+	maxRatio = 20.0;
+	tRatio = autoRatio = false;
+	// z position
+	defaultZPos = -0.7;
+	minZPos = -1.0;
+	maxZPos = 1.0;
+	tZPos = autoZPos = false;
+	// RotationSpeed
+	defaultRotationSpeed = 0.0;
+	minRotationSpeed = -2.0;
+	maxRotationSpeed = 2.0;
+	tRotationSpeed = autoRotationSpeed = false;
+
+	previousTime = 0.0f;
+	beatIndex = 0;
+	counter = 0;
+	iTempoTime = 0.0;
+	iTimeFactor = 1.0f;
+	// tempo
+	mUseTimeWithTempo = false;
+	// init timer
+	timer.start();
+	startTime = currentTime = timer.getSeconds();
+
+	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
+	iBar = 0;
+	//iBadTvRunning = false;
+
+	load();
+	loadAnimation();
+}
+void VDAnimation::load() {
+	bag()->load(app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json");
+
+}
+void VDAnimation::save() {
+	bag()->save();
+	saveAnimation();
+}
+#pragma region utility
+void VDAnimation::tempoZoom()
+{
+	tZoom = !tZoom;
+	if (!tZoom) resetZoom();
+}
+void VDAnimation::resetZoom()
+{
+	autoZoom = false;
+	tZoom = false;
+	mVDSettings->controlValues[22] = defaultZoom;
+}
+
+void VDAnimation::tempoZPos()
+{
+	tZPos = !tZPos;
+	if (!tZPos) resetZPos();
+}
+void VDAnimation::resetZPos()
+{
+	autoZPos = false;
+	tZPos = false;
+	mVDSettings->controlValues[9] = defaultZPos;
+}
+void VDAnimation::tempoRotationSpeed()
+{
+	tRotationSpeed = !tRotationSpeed;
+	if (!tRotationSpeed) resetRotationSpeed();
+}
+void VDAnimation::resetRotationSpeed()
+{
+	autoRotationSpeed = false;
+	tRotationSpeed = false;
+	mVDSettings->controlValues[19] = defaultRotationSpeed;
+}
+
+void VDAnimation::tempoExposure()
+{
+	tExposure = !tExposure;
+	if (!tExposure) resetExposure();
+}
+void VDAnimation::resetExposure()
+{
+	autoExposure = false;
+	tExposure = false;
+	mVDSettings->controlValues[14] = defaultExposure;
+}
+// chromatic
+void VDAnimation::tempoChromatic()
+{
+	tChromatic = !tChromatic;
+	if (!tChromatic) resetChromatic();
+}
+void VDAnimation::resetChromatic()
+{
+	autoChromatic = false;
+	tChromatic = false;
+	mVDSettings->controlValues[10] = defaultChromatic;
+}
+// ratio
+void VDAnimation::tempoRatio()
+{
+	tRatio = !tRatio;
+	if (!tRatio) resetRatio();
+}
+void VDAnimation::resetRatio()
+{
+	autoRatio = false;
+	tRatio = false;
+	mVDSettings->controlValues[11] = defaultRatio;
+}
+#pragma endregion utility
+
 // tempo
 void VDAnimation::tapTempo()
 {

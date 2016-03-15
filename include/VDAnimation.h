@@ -21,7 +21,6 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDAnimation instance
 	typedef std::shared_ptr<class VDAnimation> VDAnimationRef;
-
 	class VDAnimation {
 	public:		
 		VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
@@ -103,7 +102,7 @@ namespace VideoDromm
 		void						setTimeFactor(const int &aTimeFactor);
 		int							iBar;
 		// animation
-		int							getBadTV(int frame);
+		//int							getBadTV(int frame);
 		// keyboard
 		bool						handleKeyDown(KeyEvent &event);
 		bool						handleKeyUp(KeyEvent &event);
@@ -129,7 +128,7 @@ namespace VideoDromm
 		JsonTree					mData;
 		void						loadAnimation();
 		void						saveAnimation();
-		//map<int, float>				mBadTV;
+
 		std::unordered_map<int, float>	mBadTV;
 
 	};

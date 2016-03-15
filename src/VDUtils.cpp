@@ -6,6 +6,11 @@ VDUtils::VDUtils(VDSettingsRef aVDSettings)
 {
 	mVDSettings = aVDSettings;
 	CI_LOG_V("VDUtils constructor");
+	x1 = 0;
+	y1 = 0;
+	x2 = mVDSettings->mFboWidth;
+	y2 = mVDSettings->mFboHeight;
+
 }
 float VDUtils::formatFloat(float f)
 {
@@ -86,10 +91,10 @@ int VDUtils::getWindowsResolution()
 }
 void VDUtils::splitWarp(int fboWidth, int fboHeight) {
 
-	int x1 = 0;
-	int y1 = 0;
-	int x2 = fboWidth;
-	int y2 = fboHeight;
+	x1 = 0;
+	y1 = 0;
+	x2 = fboWidth;
+	y2 = fboHeight;
 
 	if (mVDSettings->mSplitWarpH) {
 		x2 = (fboWidth / 2) - 1;
@@ -109,10 +114,14 @@ void VDUtils::splitWarp(int fboWidth, int fboHeight) {
 	{
 		mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
 		mSrcAreaRightOrBottom = Area(x1, y1, x2, y2);
-
 	}
 
 }
+void VDUtils::moveX1SrcAreaLeftOrTop(int x1LeftOrTop) {
+	x1 = x1LeftOrTop;
+	mSrcAreaLeftOrTop = Area(x1, y1, x2, y2);
+}
+
 Area VDUtils::getSrcAreaLeftOrTop() {
 	return mSrcAreaLeftOrTop;
 }
