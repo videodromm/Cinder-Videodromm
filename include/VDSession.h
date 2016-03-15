@@ -15,7 +15,7 @@ using namespace std;
 namespace VideoDromm {
 
 	typedef std::shared_ptr<class VDSession> VDSessionRef;
-	
+
 
 	class VDSession
 	{
@@ -30,6 +30,10 @@ namespace VideoDromm {
 		float						getBpm() { return mBpm; };
 		float						getTargetFps() { return mTargetFps; };
 		void						setBpm(float aBpm) { mBpm = aBpm; };
+		string						getWaveFileName() { return mWaveFileName; };
+		int							getWavePlaybackDelay() { return mWavePlaybackDelay; };
+		string						getMovieFileName() { return mMovieFileName; };
+		int							getMoviePlaybackDelay() { return mMoviePlaybackDelay; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -42,6 +46,12 @@ namespace VideoDromm {
 		float						mBpm, mFpb;
 		// target fps
 		float						mTargetFps;
+		// file names
+		string						mWaveFileName;
+		string						mMovieFileName;
+		// delay
+		int							mWavePlaybackDelay;
+		int							mMoviePlaybackDelay;
 	};
 
 }

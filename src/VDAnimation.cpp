@@ -19,7 +19,7 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		mBadTV[getElapsedFrames() - 10] = 1.0f;
 		//iBadTvRunning = true;
 		// duration = 0.2
-		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());// .finishFn(resetBadTv);
+		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
 
 		break;
 	case KeyEvent::KEY_g:

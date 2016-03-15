@@ -37,11 +37,18 @@ bool VDSession::save()
 {
 	// save in sessionPath
 	JsonTree doc;
+
 	JsonTree settings = JsonTree::makeArray("settings");
-
-	settings.addChild(ci::JsonTree("bpm", ci::toString(mBpm)));
-
+	settings.addChild(ci::JsonTree("bpm", mBpm));
 	doc.pushBack(settings);
+
+	JsonTree assets = JsonTree::makeArray("assets");
+	assets.addChild(ci::JsonTree("wavefile", mWaveFileName));
+	assets.addChild(ci::JsonTree("waveplaybackdelay", mWavePlaybackDelay));
+	assets.addChild(ci::JsonTree("moviefile", mMovieFileName));
+	assets.addChild(ci::JsonTree("movieplaybackdelay", mMoviePlaybackDelay));
+	doc.pushBack(assets);
+
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
 
 	return true;
@@ -56,9 +63,16 @@ void VDSession::restore()
 
 	try {
 		JsonTree doc(loadFile(sessionPath));
+
 		JsonTree settings(doc.getChild("settings"));
 		mBpm = settings.getValueForKey<float>("bpm");
 		mTargetFps = mBpm / 60.0f * mFpb;
+
+		JsonTree assets(doc.getChild("assets"));
+		mWaveFileName = assets.getValueForKey<string>("wavefile");
+		mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
+		mMovieFileName = assets.getValueForKey<string>("moviefile");
+		mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
 	}
 	catch (const JsonTree::ExcJsonParserError&)  {
 		//CI_LOG_E("Failed to parse json file.");
@@ -79,6 +93,10 @@ void VDSession::reset()
 	mFlipV = false;
 	mFlipH = false;
 	mBpm = 166;
+	mWaveFileName = "none.wav";
+	mWavePlaybackDelay = 10;
+	mMovieFileName = "none.mov";
+	mMoviePlaybackDelay = 10;
 	resetSomeParams();
 
 
