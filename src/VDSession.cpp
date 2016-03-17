@@ -40,6 +40,9 @@ bool VDSession::save()
 
 	JsonTree settings = JsonTree::makeArray("settings");
 	settings.addChild(ci::JsonTree("bpm", mBpm));
+	settings.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
+	settings.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
+	settings.addChild(ci::JsonTree("endframe", mEndFrame));
 	doc.pushBack(settings);
 
 	JsonTree assets = JsonTree::makeArray("assets");
@@ -47,9 +50,6 @@ bool VDSession::save()
 	assets.addChild(ci::JsonTree("waveplaybackdelay", mWavePlaybackDelay));
 	assets.addChild(ci::JsonTree("moviefile", mMovieFileName));
 	assets.addChild(ci::JsonTree("movieplaybackdelay", mMoviePlaybackDelay));
-	assets.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
-	assets.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
-	assets.addChild(ci::JsonTree("endframe", mEndFrame));
 	doc.pushBack(assets);
 
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
@@ -69,6 +69,9 @@ void VDSession::restore()
 
 		JsonTree settings(doc.getChild("settings"));
 		mBpm = settings.getValueForKey<float>("bpm");
+		mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
+		mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
+		mEndFrame = settings.getValueForKey<int>("endframe");
 		mTargetFps = mBpm / 60.0f * mFpb;
 
 		JsonTree assets(doc.getChild("assets"));
@@ -76,9 +79,6 @@ void VDSession::restore()
 		mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
 		mMovieFileName = assets.getValueForKey<string>("moviefile");
 		mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
-		mFadeInDelay = assets.getValueForKey<int>("fadeindelay");
-		mFadeOutDelay = assets.getValueForKey<int>("fadeoutdelay");
-		mEndFrame = assets.getValueForKey<int>("endframe");
 	}
 	catch (const JsonTree::ExcJsonParserError&)  {
 		//CI_LOG_E("Failed to parse json file.");

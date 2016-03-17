@@ -68,6 +68,10 @@ void VDAnimation::saveAnimation() {
 
 	doc.pushBack(badtv);
 	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
+	// backup save
+	string fileName = "animation" + toString(getElapsedFrames()) + ".json";
+	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / fileName;
+	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
 }
 void VDAnimation::loadAnimation() {
 
@@ -91,7 +95,7 @@ void VDAnimation::loadAnimation() {
 		}
 	}
 	catch (const JsonTree::ExcJsonParserError&)  {
-		CI_LOG_E("Failed to parse json file.");
+		CI_LOG_W("Failed to parse json file.");
 	}
 }
 void VDAnimation::update() {
