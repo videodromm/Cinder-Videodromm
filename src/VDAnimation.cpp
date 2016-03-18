@@ -26,6 +26,7 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// save end keyframe
 		mVDSession->setEndFrame(getElapsedFrames() - 10);
 		break;
+
 	case KeyEvent::KEY_g:
 		// glitch
 		mVDSettings->controlValues[45] = 1.0f;
@@ -99,7 +100,13 @@ void VDAnimation::loadAnimation() {
 	}
 }
 void VDAnimation::update() {
-
+	//chromatic
+	if (!mVDSettings->controlValues[42]) {
+		lockChromatic();
+	}
+	else {
+		resetChromatic();
+	}
 	if (mBadTV[getElapsedFrames()] != 0) {
 		// duration = 0.2
 		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
