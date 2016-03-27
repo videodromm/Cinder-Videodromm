@@ -51,7 +51,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			});
 			mOSCReceiver->setListener("/Freq1",
 				[&](const osc::Message &msg){
-				float f1 = msg[0].flt();
+				//float f1 = msg[0].flt();
 			});
 			mOSCReceiver->setListener("/backgroundcolor",
 				[&](const osc::Message &msg){
@@ -66,17 +66,33 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			mOSCReceiver->setListener("/live/beat",
 				[&](const osc::Message &msg){
 				mVDSettings->iBeat = msg[0].int32();
+                if (mVDSettings->mIsWebSocketsServer) {
+                    stringstream aParams;
+                    aParams << "{\"params\" :[{\"name\" : 301,\"value\" : " << mVDSettings->iBeat << "}]}";
+                    wsWrite(aParams.str());
+                }
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
 			mOSCReceiver->setListener("/live/tempo",
 				[&](const osc::Message &msg){
 				// Animation
 				mVDSession->setBpm( msg[0].flt() );
+                    
+                    if (mVDSettings->mIsWebSocketsServer) {
+                        stringstream aParams;
+                        aParams << "{\"params\" :[{\"name\" : 302,\"value\" : " << msg[0].flt() << "}]}";
+                        wsWrite(aParams.str());
+                    }
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
 			mOSCReceiver->setListener("/live/track/meter",
 				[&](const osc::Message &msg){
 				mVDSettings->liveMeter = msg[2].flt();
+                    if (mVDSettings->mIsWebSocketsServer) {
+                        stringstream aParams;
+                        aParams << "{\"params\" :[{\"name\" : 303,\"value\" : " << msg[3].flt() << "}]}";
+                        wsWrite(aParams.str());
+                    }
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
 			mOSCReceiver->setListener("/live/name/trackblock",
@@ -724,12 +740,25 @@ void VDRouter::wsConnect()
 							if (name > mVDSettings->controlValues.size()) {
 								switch (name)
 								{
-								case 300:
-									//selectShader
-									left = jsonElement->getChild("left").getValue<int>();
-									index = jsonElement->getChild("index").getValue<int>();
-									//selectShader(left, index);
-									break;
+                                    case 300:
+                                        //selectShader
+                                        left = jsonElement->getChild("left").getValue<int>();
+                                        index = jsonElement->getChild("index").getValue<int>();
+                                        //selectShader(left, index);
+                                        break;
+                                    case 301:
+                                        //beat
+                                        mVDSettings->iBeat = jsonElement->getChild("value").getValue<int>();
+                                        break;
+                                    case 302:
+                                        //tempo
+                                        mVDSession->setBpm(value);
+                                        break;
+                                    case 303:
+                                        //meter
+                                        mVDSettings->maxVolume = value;
+                                        break;
+                                        
 								default:
 									break;
 								}
