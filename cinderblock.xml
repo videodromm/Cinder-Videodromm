@@ -12,12 +12,10 @@
 	>
 	<requires>org.libcinder.osc</requires>
 	<requires>ocornut.imgui</requires>
-	<requires>org.libcinder.hap2</requires>
 	<requires>org.libcinder.quicktime</requires>
 	<requires>mb.cinder.midi2</requires>
 	<requires>nl.cowlumbus.warping</requires>
 	<requires>com.wk.websocketpp</requires>
-	<requires>fr.batchass.spout</requires>
 	<supports os="msw" />
   	<supports os="macosx" />
     <supports os="ios" />

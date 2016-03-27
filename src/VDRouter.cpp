@@ -820,8 +820,8 @@ void VDRouter::colorWrite()
 	int r = mVDSettings->controlValues[1] * 255;
 	int g = mVDSettings->controlValues[2] * 255;
 	int b = mVDSettings->controlValues[3] * 255;
-	sprintf_s(col, sizeof(col), "#%02X%02X%02X", r, g, b);
-	wsWrite(col);
+	//sprintf_s(col, sizeof(col), "#%02X%02X%02X", r, g, b);
+	//wsWrite(col);
 }
 
 void VDRouter::update() {

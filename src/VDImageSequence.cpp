@@ -27,12 +27,12 @@ VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, VDAnimationRef aAnim
 	mPlayheadPosition = 0;
 
 	mNumberOfDigits = 4;
-	sprintf_s(mFolder, "");
+	//sprintf_s(mFolder, "");
 	// find the folder name for display in the ui
 	if (mFilePath.find_last_of("\\") != std::string::npos) {
 		int slashIndex = mFilePath.find_last_of("\\") + 1;
 		string folder = mFilePath.substr(slashIndex);
-		sprintf_s(mFolder, "%s", folder.c_str());
+		//sprintf_s(mFolder, "%s", folder.c_str());
 	}
 	bool noValidFile = true; // if no valid files in the folder, we keep existing vector
 	bool firstIndexFound = false;

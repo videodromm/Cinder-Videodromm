@@ -37,7 +37,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 		
 		FrameBuffa tfb;
 		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		sprintf_s(tfb.name, "thumbfbo%d", m);
+		//sprintf_s(tfb.name, "thumbfbo%d", m);
 		tfb.isFlipV = false;
 		tfb.isFlipH = false;
 		mThumbFbos.push_back(tfb);
@@ -378,7 +378,7 @@ void VDTextures::renderShadaThumbFbo()
 	if (mThumbFbos.size() < mVDShaders->getCount()) {
 		FrameBuffa tfb;
 		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		sprintf_s(tfb.name, "new");
+		//sprintf_s(tfb.name, "new");
 		tfb.isFlipV = false;
 		tfb.isFlipH = false;
 		mThumbFbos.push_back(tfb);
@@ -1022,7 +1022,7 @@ void VDTextures::draw()
 	auto msdur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
 	//std::cout << msdur.count() << "ms, " << nsdur.count() << "µs" << std::endl;
-	sprintf_s(previewTime, "%2d", msdur.count());
+	//sprintf_s(previewTime, "%2d", msdur.count());
 
 }
 
