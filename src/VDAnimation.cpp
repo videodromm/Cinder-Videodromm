@@ -119,8 +119,8 @@ void VDAnimation::update() {
 	}
 	mVDSettings->iChannelTime[0] = getElapsedSeconds();
 	mVDSettings->iChannelTime[1] = getElapsedSeconds() - 1;
-	mVDSettings->iChannelTime[3] = getElapsedSeconds() - 2;
-	mVDSettings->iChannelTime[4] = getElapsedSeconds() - 3;
+	mVDSettings->iChannelTime[2] = getElapsedSeconds() - 2;
+	mVDSettings->iChannelTime[3] = getElapsedSeconds() - 3;
 	//
 	if (mUseTimeWithTempo)
 	{
