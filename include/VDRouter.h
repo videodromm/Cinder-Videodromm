@@ -11,7 +11,7 @@
 #include "VDAnimation.h"
 
 // MIDI
-#include "CinderMidi.h"
+// MAC rtmidi FIX TODO #include "CinderMidi.h"
 
 // OSC
 #include "Osc.h"
@@ -32,7 +32,7 @@ namespace VideoDromm
 	// stores the pointer to the VDRouter instance
 	typedef std::shared_ptr<class VDRouter> VDRouterRef;
 	// midi
-	typedef std::shared_ptr<class MIDI> MIDIRef;
+	// MAC rtmidi FIX TODO typedef std::shared_ptr<class MIDI> MIDIRef;
 	// stores the pointer to the ReceiverUdp or ReceiverTcp instance
 #if USE_UDP
 	typedef std::shared_ptr<class osc::ReceiverUdp> ReceiverRef;
@@ -61,12 +61,13 @@ namespace VideoDromm
 		void						sendJSON(string params);
 		void						updateParams(int iarg0, float farg1);
 		// MIDI
+        /* MAC rtmidi FIX TODO
 		void						midiSetup();
 		int							getMidiInPortsCount() { return mMidiInputs.size(); };
 		string						getMidiInPortName(int i) { return (i<mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
 		bool						isMidiInConnected(int i) { return (i<mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
 		void						openMidiInPort(int i);
-		void						closeMidiInPort(int i);
+		void						closeMidiInPort(int i);*/
 		// OSC
 		void						setupOSCSender();
 		void						sendOSCIntMessage(string controlType, int iarg0 = 0, int iarg1 = 0, int iarg2 = 0, int iarg3 = 0, int iarg4 = 0, int iarg5 = 0);
@@ -92,7 +93,8 @@ namespace VideoDromm
 		// Session
 		VDSessionRef				mVDSession;
 		// MIDI
-		vector<midiInput>			mMidiInputs;
+		/* MAC rtmidi FIX TODO
+        vector<midiInput>			mMidiInputs;
 		void						midiListener(midi::MidiMessage msg);
 		string						midiControlType;
 		int							midiControl;
@@ -105,7 +107,7 @@ namespace VideoDromm
 		midi::MidiInput				mMidiIn0;
 		midi::MidiInput				mMidiIn1;
 		midi::MidiInput				mMidiIn2;
-		midi::MidiInput				mMidiIn3;
+		midi::MidiInput				mMidiIn3;*/
 		// WebSockets
 		// Web socket client
 		void						wsClientDisconnect();

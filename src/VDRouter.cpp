@@ -162,16 +162,17 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 		clientConnected = false;
 		if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
 		mPingTime = getElapsedSeconds();
-		if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
+		// MAC rtmidi FIX TODO if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
 	}
 }
 
 void VDRouter::shutdown() {
-	mMidiIn0.ClosePort();
-	mMidiIn1.ClosePort();
-	mMidiIn2.ClosePort();
+	// MAC rtmidi FIX TODO mMidiIn0.ClosePort();
+	// MAC rtmidi FIX TODO mMidiIn1.ClosePort();
+	// MAC rtmidi FIX TODO mMidiIn2.ClosePort();
 }
-
+/*
+ // MAC rtmidi FIX TODO
 void VDRouter::midiSetup()
 {
 	stringstream ss;
@@ -296,7 +297,7 @@ void VDRouter::midiListener(midi::MidiMessage msg)
 	ss << "MIDI Chn: " << midiChannel << " type: " << midiControlType << " CC: " << midiControl << " Pitch: " << midiPitch << " Vel: " << midiVelocity << " Val: " << midiValue << " NVal: " << midiNormalizedValue << std::endl;
 	mVDSettings->mMsg = ss.str();
 	mVDSettings->newMsg = true;
-}
+}*/
 void VDRouter::updateParams(int iarg0, float farg1)
 {
 	if (farg1 > 0.1)
