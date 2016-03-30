@@ -47,7 +47,7 @@ namespace VideoDromm
 
 		ci::gl::TextureRef			getWarpTexture(int index);
 		//WarpFbo						getWarpFbo(int index) { return mVDSettings->mWarpFbos[min((int)(mVDSettings->mWarpFbos.size() - 1), index)]; };
-		void						renderWarpFbos();
+		//void						renderWarpFbos();
 		// shaders
 		void						renderShadaThumbFbo();
 		int							currentShadaThumbIndex;
@@ -57,7 +57,7 @@ namespace VideoDromm
 		int							getTextureCount() { return sTextures.size(); };
 		void						flipTexture(int index);
 		void						setTexture(int index, ci::gl::TextureRef texture);
-		char*						getTextureName(int index);
+		string						getTextureName(int index);
 		void						setTextureName(int index, char* name);
 		// from audio
 		void						setAudioTexture(unsigned char *signal);
@@ -66,13 +66,13 @@ namespace VideoDromm
 		GLuint						getFboTextureId(int index);
 		ci::gl::FboRef				getFbo(int index);
 		int							getFboCount() { return mVDFbos.size(); };
-		int							getThumbsFboCount() { return mThumbFbos.size(); };
+		//int							getThumbsFboCount() { return mThumbFbos.size(); };
 		void						flipFboV(int index);
 		void						flipFboH(int index);
-		const char*					getFboName(int index);
+		//const char*					getFboName(int index);
 
 		// shaders
-		GLuint						getShaderThumbTextureId(int index);
+		//GLuint						getShaderThumbTextureId(int index);
 		// spout
 		void						setSenderTextureSize(int index, int width, int height);
 		int							createSpoutTexture(char name[256], unsigned int width, unsigned int height);
@@ -109,7 +109,7 @@ namespace VideoDromm
 		// fbo
 		//vector<FrameBuffa>			mFbos;
 		//! thumb fbos
-		vector<FrameBuffa>			mThumbFbos;
+		//vector<FrameBuffa>			mThumbFbos;
 
 		//! shader fbos
 		//vector<ShadaFbo>			mShadaFbos;

@@ -146,7 +146,7 @@ void VDImageSequence::updateSequence() {
 void VDImageSequence::update() {
 
 	updateSequence();
-	if (!mLoadingFilesComplete) loadNextImageFromDisk();
+	//if (!mLoadingFilesComplete) loadNextImageFromDisk();
 }
 //Begins playback of sequence
 void VDImageSequence::playSequence() {

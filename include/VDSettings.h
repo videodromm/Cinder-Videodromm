@@ -26,7 +26,7 @@ namespace VideoDromm {
 		char						name[32];
 		int							sequenceIndex;
 		bool						isSequence;
-	};*/
+	};
 	//! struct for thumbs fbos only
 	struct FrameBuffa
 	{
@@ -35,6 +35,12 @@ namespace VideoDromm {
 		bool						isFlipV;
 		bool						isFlipH;
 	};
+	struct ShadaFbo
+	{
+	ci::gl::Fbo					fbo;
+	int							shadaIndex;
+	bool						active;
+	};*/
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures 
 	struct Sender
 	{
@@ -43,12 +49,6 @@ namespace VideoDromm {
 		ci::gl::TextureRef			texture;
 		bool						active;
 	};
-	/*struct ShadaFbo
-	{
-	ci::gl::Fbo					fbo;
-	int							shadaIndex;
-	bool						active;
-	};*/
 	struct Shada
 	{
 		gl::GlslProgRef				shader;
@@ -82,8 +82,14 @@ namespace VideoDromm {
 
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
-		static const int			TEXTUREMODEINPUT = 0;
-		static const int			TEXTUREMODESHADER = 1;
+		// texture modes
+		static const int			TEXTUREMODEINPUT = 0;			// spout
+		static const int			TEXTUREMODESHADER = 1;			// shader
+		static const int			TEXTUREMODEIMAGE = 2;			// image
+		static const int			TEXTUREMODEIMAGESEQUENCE = 3;	// image sequence
+		static const int			TEXTUREMODEAUDIO = 4;			// audio spectrum
+		static const int			TEXTUREMODETHUMB = 5;			// thumb
+		static const int			TEXTUREMODEFBO = 6;				// fbo
 
 		bool						save();
 		bool						restore();
