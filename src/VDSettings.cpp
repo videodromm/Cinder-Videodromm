@@ -310,6 +310,11 @@ bool VDSettings::restore()
 			if (settings.hasChild("AssetsPath")) {
 				XmlTree AssetsPath = settings.getChild("AssetsPath");
 				mAssetsPath = AssetsPath.getAttributeValue<string>("value");
+				fs::path mPath = getAssetPath("") / mAssetsPath;
+				if (!fs::exists(mPath)) {
+					// reset path
+					mAssetsPath = "";
+				}
 			}
 			if (settings.hasChild("UseLineIn")) {
 				XmlTree UseLineIn = settings.getChild("UseLineIn");

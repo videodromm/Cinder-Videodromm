@@ -46,10 +46,11 @@ bool VDSession::save()
 	doc.pushBack(settings);
 
 	JsonTree assets = JsonTree::makeArray("assets");
-	assets.addChild(ci::JsonTree("wavefile", mWaveFileName));
+	if (mWaveFileName.length() > 0) assets.addChild(ci::JsonTree("wavefile", mWaveFileName));
 	assets.addChild(ci::JsonTree("waveplaybackdelay", mWavePlaybackDelay));
-	assets.addChild(ci::JsonTree("moviefile", mMovieFileName));
+	if (mMovieFileName.length() > 0) assets.addChild(ci::JsonTree("moviefile", mMovieFileName));
 	assets.addChild(ci::JsonTree("movieplaybackdelay", mMoviePlaybackDelay));
+	if (mImageSequencePath.length() > 0) assets.addChild(ci::JsonTree("imagesequencepath", mImageSequencePath));
 	doc.pushBack(assets);
 
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
@@ -67,24 +68,23 @@ void VDSession::restore()
 	try {
 		JsonTree doc(loadFile(sessionPath));
 
-		JsonTree settings(doc.getChild("settings"));
-		mBpm = settings.getValueForKey<float>("bpm");
-		mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
-		mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
-		mEndFrame = settings.getValueForKey<int>("endframe");
+		JsonTree settings(doc.getChild("settings")); 
+		if (settings.hasChild("bpm")) mBpm = settings.getValueForKey<float>("bpm");
+		if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
+		if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
+		if (settings.hasChild("endframe")) mEndFrame = settings.getValueForKey<int>("endframe");
 		mTargetFps = mBpm / 60.0f * mFpb;
 
 		JsonTree assets(doc.getChild("assets"));
-		mWaveFileName = assets.getValueForKey<string>("wavefile");
-		mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
-		mMovieFileName = assets.getValueForKey<string>("moviefile");
-		mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
+		if (assets.hasChild("wavefile")) mWaveFileName = assets.getValueForKey<string>("wavefile");
+		if (assets.hasChild("waveplaybackdelay")) mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
+		if (assets.hasChild("moviefile")) mMovieFileName = assets.getValueForKey<string>("moviefile");
+		if (assets.hasChild("movieplaybackdelay")) mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
+		if (assets.hasChild("imagesequencepath")) mImageSequencePath = assets.getValueForKey<string>("imagesequencepath");
 	}
 	catch (const JsonTree::ExcJsonParserError&)  {
 		//CI_LOG_E("Failed to parse json file.");
 	}
-	//"sequence_folder" : "mandalas"
-
 }
 
 void VDSession::resetSomeParams() {
@@ -99,13 +99,14 @@ void VDSession::reset()
 	mFlipV = false;
 	mFlipH = false;
 	mBpm = 166;
-	mWaveFileName = "none.wav";
+	mWaveFileName = "";
 	mWavePlaybackDelay = 10;
-	mMovieFileName = "none.mov";
+	mMovieFileName = "";
+	mImageSequencePath = "";
 	mMoviePlaybackDelay = 10;
 	mFadeInDelay= 1;
 	mFadeOutDelay = 1;
-	mEndFrame = 20000;
+	mEndFrame = 20000000;
 	resetSomeParams();
 
 

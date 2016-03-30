@@ -38,6 +38,7 @@ namespace VideoDromm {
 		int							getMoviePlaybackDelay() { return mMoviePlaybackDelay; };
 		int							getFadeInDelay() { return mFadeInDelay; };
 		int							getFadeOutDelay() { return mFadeOutDelay; };
+		string						getImageSequencePath() { return mImageSequencePath; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -50,9 +51,10 @@ namespace VideoDromm {
 		float						mBpm, mFpb;
 		// target fps
 		float						mTargetFps;
-		// file names
+		// files and paths
 		string						mWaveFileName;
 		string						mMovieFileName;
+		string						mImageSequencePath;
 		// delay
 		int							mWavePlaybackDelay;
 		int							mMoviePlaybackDelay;
