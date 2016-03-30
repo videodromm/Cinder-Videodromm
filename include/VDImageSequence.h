@@ -17,6 +17,7 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDImageSequence instance
 	typedef std::shared_ptr<class VDImageSequence> VDImageSequenceRef;
+	typedef std::chrono::high_resolution_clock Clock;
 
 	class VDImageSequence {
 	public:

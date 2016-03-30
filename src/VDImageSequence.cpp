@@ -97,11 +97,17 @@ void VDImageSequence::loadNextImageFromDisk() {
 
 			fs::path fileToLoad = mFilePath + "/" + mPrefix + restOfFileName + "." + mExt;
 			if (fs::exists(fileToLoad)) {
+				// start profiling
+				auto start = Clock::now();
 
 				mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(fileToLoad)));
 				mCurrentLoadedFrame = mFramesLoaded;
 				mFramesLoaded++;
-				mVDSettings->mMsg = fileToLoad.string() + " loaded";
+				auto end = Clock::now();
+				auto nsdur = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+				int micro = nsdur.count();
+
+				mVDSettings->mMsg = fileToLoad.string() + " loaded in ns " + toString(micro);
 			}
 			else {
 
@@ -140,7 +146,7 @@ void VDImageSequence::updateSequence() {
 void VDImageSequence::update() {
 
 	updateSequence();
-	//if (!mLoadingFilesComplete) loadNextImageFromDisk();
+	if (!mLoadingFilesComplete) loadNextImageFromDisk();
 }
 //Begins playback of sequence
 void VDImageSequence::playSequence() {
