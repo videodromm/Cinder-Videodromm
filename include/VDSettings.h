@@ -30,7 +30,7 @@ namespace VideoDromm {
 	//! struct for thumbs fbos only
 	struct FrameBuffa
 	{
-		char						name[32];
+		string						name;
 		gl::FboRef					fbo;
 		bool						isFlipV;
 		bool						isFlipH;

@@ -11,39 +11,16 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	// Fbos
 	// mix fbo at index 0
 	mVDFbos.push_back(VDFbo::create(mVDSettings, "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-	/*FrameBuffa mixFbo;
-	mixFbo.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-	sprintf_s(mixFbo.name, "mix");
-	mixFbo->isFlipV() = false;
-	mixFbo->isFlipH() = false;
-	mVDFbos.push_back(mixFbo);*/
 	// audio fbo at index 1 (was 6!?)
 	mVDFbos.push_back(VDFbo::create(mVDSettings, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-	//sprintf_s(mVDFbos[mVDSettings->mAudioFboIndex].name, "audio");// = gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-	//mVDFbos[mVDSettings->mAudioFboIndex]->isFlipV() = true;//.getTexture(0).setFlipped(true);
 
-	// preview fbo at index 5
-	//mVDFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));//640x480
-	for (size_t m = mVDFbos.size(); m < mVDSettings->MAX; m++) {
-		//fbo
-		mVDFbos.push_back(VDFbo::create(mVDSettings, "fbo" + toString(m), mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-		/*FrameBuffa fb;
-		fb.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		sprintf_s(fb.name, "fbo%d", m);
-		fb->isFlipV() = false;
-		fb->isFlipH() = false;
-		mVDFbos.push_back(fb);*/
-		//thumb fbo
-		
-		FrameBuffa tfb;
-		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		sprintf_s(tfb.name, "thumbfbo%d", m);
-		tfb.isFlipV = false;
-		tfb.isFlipH = false;
-		mThumbFbos.push_back(tfb);
-		//mVDFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-		//mThumbFbos.push_back(gl::Fbo(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-	}
+	//thumb fbo
+	FrameBuffa tfb;
+	tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
+	tfb.name = "thumbfbo0";
+	tfb.isFlipV = false;
+	tfb.isFlipH = false;
+	mThumbFbos.push_back(tfb);
 	currentShadaThumbIndex = 0;
 	// vertex sphere fbo at index 11
 	/*ci::gl::Fbo::Format mFormat;
@@ -378,7 +355,7 @@ void VDTextures::renderShadaThumbFbo()
 	if (mThumbFbos.size() < mVDShaders->getCount()) {
 		FrameBuffa tfb;
 		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		sprintf_s(tfb.name, "new");
+		tfb.name = "new";
 		tfb.isFlipV = false;
 		tfb.isFlipH = false;
 		mThumbFbos.push_back(tfb);
