@@ -54,7 +54,8 @@ namespace VideoDromm
 		// textures
 		void						setTexture(int index, string fileName);
 		ci::gl::TextureRef			getTexture(int index);
-		int							getTextureCount() { return sTextures.size(); };
+		void						setFboTexture(ci::gl::TextureRef aTexture);
+			//int							getTextureCount() { return sTextures.size(); };
 		void						flipTexture(int index);
 		void						setTexture(int index, ci::gl::TextureRef texture);
 		string						getTextureName(int index);
@@ -97,22 +98,10 @@ namespace VideoDromm
 
 		char						buf[32];
 
-		//static const int			mTexturesCount = 12; //match MAX from mVDSettings
-
-		//ci::gl::Texture				previousTexture;
-		//ci::gl::Texture				currentTexture;
 		unsigned char				dTexture[1024];
 		vector<ci::gl::TextureRef>	sTextures;
-		//vector<Texta>				textas;
 		char						spoutSenderName[256];
 		string						fileName;
-		// fbo
-		//vector<FrameBuffa>			mFbos;
-		//! thumb fbos
-		//vector<FrameBuffa>			mThumbFbos;
-
-		//! shader fbos
-		//vector<ShadaFbo>			mShadaFbos;
 		// shaders
 		gl::GlslProgRef				aShader;
 

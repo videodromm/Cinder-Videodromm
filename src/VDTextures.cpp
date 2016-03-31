@@ -8,34 +8,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	mVDShaders = aShadersRef;
 	mVDAnimation = aAnimationRef;
 	CI_LOG_V("VDTextures constructor");
-	// Fbos
-	/*
-		static const int			TEXTUREMODEINPUT = 0;			// spout
-		static const int			TEXTUREMODESHADER = 1;			// shader
-		static const int			TEXTUREMODEIMAGE = 2;			// image
-		static const int			TEXTUREMODEIMAGESEQUENCE = 3;	// image sequence
-		static const int			TEXTUREMODEAUDIO = 4;			// audio spectrum
-		static const int			TEXTUREMODETHUMB = 5;			// thumb
-		static const int			TEXTUREMODEFBO = 6;				// fbo
 
-	*/
-	// mix fbo at index 0
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
-	// left fbo at index 1
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
-	mVDFbos[1]->setShader(mVDShaders->getShader(mVDSettings->mWarp2FragIndex).shader);
-	// right fbo at index 2
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
-	// warp1 fbo at index 3
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
-	// warp2 fbo at index 4
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "warp2", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
-	// preview fbo at index 5
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "preview", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
-	// audio fbo at index 6
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
-	//thumb fbo
-	mVDFbos.push_back(VDFbo::create(mVDSettings, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->TEXTUREMODETHUMB));
 
 	currentShadaThumbIndex = 0;
 	// vertex sphere fbo at index 11
@@ -87,6 +60,38 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 		textas.push_back(tex);*/
 
 	}
+	// Fbos
+	/*
+	static const int			TEXTUREMODEINPUT = 0;			// spout
+	static const int			TEXTUREMODESHADER = 1;			// shader
+	static const int			TEXTUREMODEIMAGE = 2;			// image
+	static const int			TEXTUREMODEIMAGESEQUENCE = 3;	// image sequence
+	static const int			TEXTUREMODEAUDIO = 4;			// audio spectrum
+	static const int			TEXTUREMODETHUMB = 5;			// thumb
+	static const int			TEXTUREMODEFBO = 6;				// fbo
+
+	*/
+	// mix fbo at index 0
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	// left fbo at index 1
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	// right fbo at index 2
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	// warp1 fbo at index 3
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	// warp2 fbo at index 4
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "warp2", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	// preview fbo at index 5
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "preview", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	// audio fbo at index 6
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
+	//thumb fbo
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->TEXTUREMODETHUMB));
+	for (int i = 0; i < mVDFbos.size(); i++)
+	{
+		mVDFbos[i]->setShaderIndex(i);
+	}
+
 	/*sprintf_s(textas[1].name, "img1");
 	sprintf_s(textas[2].name, "img2");
 	sprintf_s(textas[3].name, "img3");
@@ -107,11 +112,11 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	sprintf_s(textas[index].name, name);
 
 	}
-	
-const char* VDTextures::getFboName(int index) {
+
+	const char* VDTextures::getFboName(int index) {
 
 	return mVDFbos[index]->getName().c_str();
-}*/
+	}*/
 /*void VDTextures::createWarpInput()
 {
 WarpInput newWarpInput;
@@ -129,6 +134,12 @@ mMixesFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 void VDTextures::setAudioTexture(unsigned char *signal)
 {
 	sTextures[0] = gl::Texture::create(signal, 0x1909, 512, 2);//GL_LUMINANCE, 512, 2);
+}
+void VDTextures::setFboTexture(ci::gl::TextureRef aTexture) {
+	for (int i = 0; i < mVDFbos.size(); i++)
+	{
+		mVDFbos[i]->setTexture(aTexture);
+	}
 }
 void VDTextures::setTexture(int index, string fileName)
 {
@@ -208,7 +219,7 @@ void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
-	return mVDFbos[index]->getTexture();
+	return mVDFbos[index]->getProcessedTexture();
 }
 GLuint VDTextures::getFboTextureId(int index)
 {
@@ -223,8 +234,8 @@ return mVDFbos[index].fbo;
 }
 GLuint VDTextures::getShaderThumbTextureId(int index)
 {
-	if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
-	return  mThumbFbos[index].fbo->getId();
+if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
+return  mThumbFbos[index].fbo->getId();
 }*/
 string VDTextures::getTextureName(int index) {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
@@ -275,20 +286,20 @@ void VDTextures::update()
 }
 /*void VDTextures::renderWarpFbos()
 {
-	TODO	mVDShaders->getWarpShader();
-	if (mWarp.textureMode == 0)
-	{
-	// 0 for input texture
-	getSenderTexture(mWarp.textureIndex)->bind(0);
-	}
-	else
-	{
-	// 1 for shader
-	getFboTexture(mWarp.textureIndex)->bind(0);
-	}
-	mVDShaders->getWarpShader()->uniform("iAlpha", mVDSettings->controlValues[4]);
-	gl::draw(mMesh);
-	
+TODO	mVDShaders->getWarpShader();
+if (mWarp.textureMode == 0)
+{
+// 0 for input texture
+getSenderTexture(mWarp.textureIndex)->bind(0);
+}
+else
+{
+// 1 for shader
+getFboTexture(mWarp.textureIndex)->bind(0);
+}
+mVDShaders->getWarpShader()->uniform("iAlpha", mVDSettings->controlValues[4]);
+gl::draw(mMesh);
+
 }*/
 void VDTextures::renderShadaThumbFbo()
 {
@@ -372,16 +383,16 @@ void VDTextures::renderShadaThumbFbo()
 	/*
 	TODO
 	if (mThumbFbos.size() < mVDShaders->getCount()) {
-		FrameBuffa tfb;
-		tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		tfb.name = "new";
-		tfb.isFlipV = false;
-		tfb.isFlipH = false;
-		mThumbFbos.push_back(tfb);
+	FrameBuffa tfb;
+	tfb.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
+	tfb.name = "new";
+	tfb.isFlipV = false;
+	tfb.isFlipH = false;
+	mThumbFbos.push_back(tfb);
 	}
 	if (currentShadaThumbIndex > mVDShaders->getCount() - 1)
 	{
-		currentShadaThumbIndex = 0;
+	currentShadaThumbIndex = 0;
 	}*/
 }
 

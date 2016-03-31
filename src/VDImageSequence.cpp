@@ -99,8 +99,8 @@ void VDImageSequence::loadNextImageFromDisk() {
 			if (fs::exists(fileToLoad)) {
 				// start profiling
 				auto start = Clock::now();
-
-				mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(fileToLoad)));
+				
+				mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(fileToLoad), gl::Texture::Format().loadTopDown()) );
 				mCurrentLoadedFrame = mFramesLoaded;
 				mFramesLoaded++;
 				auto end = Clock::now();
