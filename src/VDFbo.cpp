@@ -25,7 +25,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 	std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
 	aShader = gl::GlslProg::create(mPassthruVextexShader, fs);
 	mTexture = gl::Texture::create(loadImage(loadAsset("iam.jpg")));
-	mTexture1 = gl::Texture::create(loadImage(loadAsset("help.jpg")), gl::Texture::Format().loadTopDown());
+	mTexture1 = gl::Texture::create(loadImage(loadAsset("noise.jpg")), gl::Texture::Format().loadTopDown());
 
 }
 void VDFbo::setTexture(ci::gl::TextureRef aTexture) {
@@ -56,6 +56,7 @@ ci::gl::TextureRef VDFbo::getProcessedTexture() {
 	//aShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
 	aShader->uniform("iZoom", 1.0f);
 	aShader->uniform("iChannel0", 0);
+	aShader->uniform("iChannel1", 1);
 	/*aShader->uniform("iChannel0", mVDSettings->iChannels[0]);
 	aShader->uniform("iChannel1", mVDSettings->iChannels[1]);
 	aShader->uniform("iChannel2", mVDSettings->iChannels[2]);
