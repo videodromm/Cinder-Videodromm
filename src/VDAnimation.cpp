@@ -26,7 +26,10 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// save end keyframe
 		mVDSession->setEndFrame(getElapsedFrames() - 10);
 		break;
-
+	case KeyEvent::KEY_t:
+		// trixels
+		mVDSettings->controlValues[16] = mVDSettings->controlValues[16] + 0.05f;
+		break;
 	case KeyEvent::KEY_g:
 		// glitch
 		mVDSettings->controlValues[45] = 1.0f;
@@ -49,6 +52,10 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	case KeyEvent::KEY_g:
 		// glitch
 		mVDSettings->controlValues[45] = 0.0f;
+		break;
+	case KeyEvent::KEY_t:
+		// trixels
+		mVDSettings->controlValues[16] = 0.0f; 
 		break;
 	default:
 		handled = false;
