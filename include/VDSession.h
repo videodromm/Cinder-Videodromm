@@ -39,6 +39,7 @@ namespace VideoDromm {
 		int							getFadeInDelay() { return mFadeInDelay; };
 		int							getFadeOutDelay() { return mFadeOutDelay; };
 		string						getImageSequencePath() { return mImageSequencePath; };
+		int							iBeatsPerBar;
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

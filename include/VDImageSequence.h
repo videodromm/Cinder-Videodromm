@@ -8,6 +8,8 @@
 #include "VDSettings.h"
 // Animation
 #include "VDAnimation.h"
+// Session
+#include "VDSession.h";
 
 using namespace ci;
 using namespace ci::app;
@@ -21,11 +23,11 @@ namespace VideoDromm
 
 	class VDImageSequence {
 	public:
-		VDImageSequence(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, string aFilePath);
+		VDImageSequence(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSession, string aFilePath);
 
-		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, string aFilePath)
+		static VDImageSequenceRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSession, string aFilePath)
 		{
-			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aAnimationRef, aFilePath));
+			return shared_ptr<VDImageSequence>(new VDImageSequence(aVDSettings, aAnimationRef, aVDSession, aFilePath));
 		}
 		void						update();
 		void						playSequence();
@@ -49,6 +51,8 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Animation
 		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 
 		int							playheadFrameInc;
 		void						loadNextImageFromDisk();

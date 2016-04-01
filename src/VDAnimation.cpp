@@ -144,14 +144,24 @@ void VDAnimation::update() {
 
 	int time = (currentTime - startTime)*1000000.0;
 	int elapsed = iDeltaTime*1000000.0;
+	int elapsedBeatPerBar = iDeltaTime/mVDSession->iBeatsPerBar*1000000.0;
+	if (elapsedBeatPerBar > 0)
+	{
+		double moduloBeatPerBar = (time % elapsedBeatPerBar) / 1000000.0;
+		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
+		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
+		{
+			if (iBeatIndex > mVDSession->iBeatsPerBar) iBeatIndex = 1;	
+			iBeatIndex++;
+		}
+		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
+	}
 	if (elapsed > 0)
 	{
 		double modulo = (time % elapsed) / 1000000.0;
 		iTempoTime = (float)modulo;
 		if (iTempoTime < previousTime)
 		{
-			beatIndex++;
-			if (beatIndex > 3) beatIndex = 0;
 			iBar++;
 		}
 		previousTime = iTempoTime;
@@ -347,7 +357,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	tRotationSpeed = autoRotationSpeed = false;
 
 	previousTime = 0.0f;
-	beatIndex = 0;
+	iBeatIndex = 1;
 	counter = 0;
 	iTempoTime = 0.0;
 	iTimeFactor = 1.0f;

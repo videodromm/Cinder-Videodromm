@@ -42,6 +42,7 @@ namespace VideoDromm
 		float						iTempoTime;
 		float						iTimeFactor;
 		bool						mUseTimeWithTempo;
+		float						iTempoTimeBeatPerBar;
 		// exposure
 		float						defaultExposure;
 		float						minExposure;
@@ -101,6 +102,7 @@ namespace VideoDromm
 		void						tapTempo();
 		void						setTimeFactor(const int &aTimeFactor);
 		int							iBar;
+		int							iBeatIndex; //1 to beatsperbar
 		// animation
 		//int							getBadTV(int frame);
 		// keyboard
@@ -124,7 +126,7 @@ namespace VideoDromm
 		double						currentTime;
 		double						startTime;
 		float						previousTime;
-		int							beatIndex; //0 to 3
+		float						previousTimeBeatPerBar;
 		JsonTree					mData;
 		void						loadAnimation();
 		void						saveAnimation();

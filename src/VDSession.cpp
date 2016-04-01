@@ -40,6 +40,7 @@ bool VDSession::save()
 
 	JsonTree settings = JsonTree::makeArray("settings");
 	settings.addChild(ci::JsonTree("bpm", mBpm));
+	settings.addChild(ci::JsonTree("beatsperbar", iBeatsPerBar));
 	settings.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
 	settings.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
 	settings.addChild(ci::JsonTree("endframe", mEndFrame));
@@ -70,6 +71,8 @@ void VDSession::restore()
 
 		JsonTree settings(doc.getChild("settings")); 
 		if (settings.hasChild("bpm")) mBpm = settings.getValueForKey<float>("bpm");
+		if (settings.hasChild("beatsperbar")) iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
+		if (iBeatsPerBar < 1) iBeatsPerBar = 1;
 		if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
 		if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
 		if (settings.hasChild("endframe")) mEndFrame = settings.getValueForKey<int>("endframe");
@@ -99,6 +102,7 @@ void VDSession::reset()
 	mFlipV = false;
 	mFlipH = false;
 	mBpm = 166;
+	iBeatsPerBar = 1;
 	mWaveFileName = "";
 	mWavePlaybackDelay = 10;
 	mMovieFileName = "";

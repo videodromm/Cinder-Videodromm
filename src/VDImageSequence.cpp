@@ -6,9 +6,10 @@ TODO pass the folder to loadfrom in the constructor
 */
 using namespace VideoDromm;
 
-VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, string aFilePath) {
+VDImageSequence::VDImageSequence(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSession, string aFilePath) {
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimationRef;
+	mVDSession =  aVDSession;
 	mFilePath = aFilePath;
 
 	// Loads all files contained in the supplied folder and creates Textures from them
@@ -137,7 +138,7 @@ void VDImageSequence::updateSequence() {
 			if (newPosition > mSequenceTextures.size() - 1) newPosition = 0;
 		}
 		else {
-			newPosition = (int)(mVDAnimation->iBar % mSequenceTextures.size());
+			newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
 		}
 		mPlayheadPosition = max(0, min(newPosition, (int)mSequenceTextures.size() - 1));
 	}
@@ -208,13 +209,11 @@ ci::gl::TextureRef VDImageSequence::getTexture() {
 		//error
 		mPlayheadPosition = 0;
 	}
+	if (!mLoadingFilesComplete) loadNextImageFromDisk();
 	// TODO temporary:
 	if (mPlaying)  {
-		if (!mLoadingFilesComplete) loadNextImageFromDisk();
-		mPlayheadPosition = (int)(mVDAnimation->iBar % mSequenceTextures.size());
-
+		updateSequence();	
 	}
-	mPlayheadPosition = max(0, min(mPlayheadPosition, (int)mSequenceTextures.size() - 1));
 
 	return mSequenceTextures[mPlayheadPosition];
 }
