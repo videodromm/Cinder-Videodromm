@@ -262,7 +262,7 @@ void VDTextures::loadImageFile(int index, string aFile)
 		// try loading image file
 		fs::path imageFile = aFile;
 		if (fs::exists(imageFile)) {
-			if (index > 0) mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, index, aFile, true));
+			if (index > 0) mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, index, aFile, true, false));
 			//sTextures[index] = gl::Texture::create(loadImage(aFile));
 			mVDSettings->isUIDirty = true;		
 		}
