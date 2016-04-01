@@ -210,7 +210,7 @@ ci::gl::TextureRef VDImageSequence::getTexture() {
 		mPlayheadPosition = 0;
 	}
 	if (!mLoadingFilesComplete) loadNextImageFromDisk();
-	// TODO temporary:
+
 	if (mPlaying)  {
 		updateSequence();	
 	}

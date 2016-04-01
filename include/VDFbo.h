@@ -32,10 +32,9 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aShadersRef, aName, aWidth, aHeight, aType));
 		}
-		gl::FboRef					getFboRef();
+		//gl::FboRef					getFboRef();
 		ci::gl::TextureRef			getTexture();
 		void						setTexture(ci::gl::TextureRef aTexture);
-		//ci::gl::TextureRef			getProcessedTexture();
 		ivec2						getSize();
 		Area						getBounds();
 		GLuint						getId();
@@ -53,7 +52,6 @@ namespace VideoDromm
 		VDShadersRef				mVDShaders;
 
 		gl::FboRef					mFbo;
-		//gl::FboRef					mRenderFbo;
 		string						mName;
 		bool						mFlipV;
 		bool						mFlipH;

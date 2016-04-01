@@ -87,7 +87,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 		CI_LOG_V("unable to load shader:" + string(e.what()));
 	}*/
 
-	std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
+	//std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
 	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
 	mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
 	mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
@@ -248,12 +248,9 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iSeed", mVDSettings->iSeed);
 	mShader->uniform("iFlipH", mFlipH);
 	mShader->uniform("iFlipV", mFlipV);
-	//mTexture->bind(0);
-	//mTexture1->bind(1);
 
 	gl::ScopedTextureBind tex(mTexture);
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));	
-	//gl::drawSolidRect(Rectf(2, 2, mWidth*1.9, mHeight*1.9));
 
 	return mFbo->getColorTexture();
 }
@@ -261,10 +258,10 @@ ivec2 VDFbo::getSize() {
 
 	return mFbo->getSize();
 }
-gl::FboRef VDFbo::getFboRef() {
+/*gl::FboRef VDFbo::getFboRef() {
 
 	return mFbo;
-}
+}*/
 Area VDFbo::getBounds() {
 
 	return mFbo->getBounds();

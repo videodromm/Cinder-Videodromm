@@ -36,7 +36,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	textas.push_back(audioTex);
 	sTextures.push_back(gl::Texture::create(dTexture, 0x1909, 512, 2));//GL_LUMINANCE
 	*/
-	fs::path localFile;
+	/*fs::path localFile;
 	for (int j = 0; j < mVDSettings->MAX - 1; j++)
 	{
 		fileName = toString(j) + ".jpg";
@@ -53,13 +53,13 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 			gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")), gl::Texture::Format().loadTopDown());
 			sTextures.push_back(img);
 		}
-		/*Texta tex;
+		Texta tex;
 		sprintf_s(tex.name, "tex%d", j);
 		tex.sequenceIndex = 0;
 		tex.isSequence = false;
-		textas.push_back(tex);*/
+		textas.push_back(tex);
 
-	}
+	}*/
 	// Fbos
 	/*
 	static const int			TEXTUREMODEINPUT = 0;			// spout
@@ -137,19 +137,19 @@ newWarpInput.hasTexture = false;
 warpInputs.push_back(newWarpInput);
 // init mixTextures
 mMixesFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-}*/
+}
 
 void VDTextures::setAudioTexture(unsigned char *signal)
 {
 	sTextures[0] = gl::Texture::create(signal, 0x1909, 512, 2);//GL_LUMINANCE, 512, 2);
-}
+}*/
 void VDTextures::setFboTexture(ci::gl::TextureRef aTexture) {
 	for (int i = 0; i < mVDFbos.size(); i++)
 	{
 		mVDFbos[i]->setTexture(aTexture);
 	}
 }
-void VDTextures::setTexture(int index, string fileName)
+/*void VDTextures::setTexture(int index, string fileName)
 {
 	if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
 	if (index > 0)
@@ -181,7 +181,7 @@ void VDTextures::setTexture(int index, string fileName)
 			CI_LOG_V("Load asset error: " + fileName);
 		}
 	}
-}
+}*/
 void VDTextures::flipTexture(int index)
 {
 	/*sTextures[index].setFlipped(!sTextures[index].isFlipped());
@@ -206,23 +206,28 @@ ci::gl::Texture VDTextures::getFboThumb(int index)
 if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
 return mThumbFbos[index].getTexture();
 }
-*/
+
 ci::gl::TextureRef VDTextures::getTexture(int index)
 {
 	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
 	return sTextures[index];
 }
-/*ci::gl::TextureRef VDTextures::getWarpTexture(int index)
+ci::gl::TextureRef VDTextures::getWarpTexture(int index)
 {
 if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
 return mVDSettings->mWarpFbos[index]->getTexture();
-}*/
+}
 void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 {
 	if (index < sTextures.size())
 	{
 		sTextures[index] = texture;
 	}
+	}*/
+ci::gl::TextureRef VDTextures::getInputTexture(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	return mVDInputTextures[index]->getTexture();
 }
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
@@ -255,8 +260,12 @@ void VDTextures::loadImageFile(int index, string aFile)
 	try
 	{
 		// try loading image file
-		if (index > 0) sTextures[index] = gl::Texture::create(loadImage(aFile));
-		mVDSettings->isUIDirty = true;
+		fs::path imageFile = aFile;
+		if (fs::exists(imageFile)) {
+			if (index > 0) mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, index, aFile, true));
+			//sTextures[index] = gl::Texture::create(loadImage(aFile));
+			mVDSettings->isUIDirty = true;		
+		}
 	}
 	catch (...)
 	{
@@ -1045,11 +1054,11 @@ void VDTextures::draw()
 VDTextures::~VDTextures()
 {
 	CI_LOG_V("VDTextures destructor");
-	sTextures.clear();
+	//sTextures.clear();
 	//sequenceTextures.clear();
 }
 
-
+/*
 void VDTextures::setSenderTextureSize(int index, int width, int height)
 {
 	sTextures[10] = gl::Texture::create(width, height);
@@ -1063,4 +1072,4 @@ int VDTextures::createSpoutTexture(char name[256], unsigned int width, unsigned 
 	memcpy(&spoutSenderName[0], name, strlen(name) + 1);
 	sTextures[10] = gl::Texture::create(width, height);
 	return 10;
-}
+}*/

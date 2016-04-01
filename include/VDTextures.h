@@ -18,8 +18,8 @@
 #include "VDSettings.h"
 // Animation
 #include "VDAnimation.h"
-// shaders
-//#include "VDShaders.h"
+// Input textures
+#include "VDInputTexture.h"
 // fbo
 #include "VDFbo.h"
 // Logger
@@ -52,16 +52,18 @@ namespace VideoDromm
 		void						renderShadaThumbFbo();
 		int							currentShadaThumbIndex;
 		// textures
-		void						setTexture(int index, string fileName);
-		ci::gl::TextureRef			getTexture(int index);
+		//void						setTexture(int index, string fileName);
+		//ci::gl::TextureRef			getTexture(int index);
 		void						setFboTexture(ci::gl::TextureRef aTexture);
 			//int							getTextureCount() { return sTextures.size(); };
 		void						flipTexture(int index);
-		void						setTexture(int index, ci::gl::TextureRef texture);
+		//void						setTexture(int index, ci::gl::TextureRef texture);
 		string						getTextureName(int index);
 		void						setTextureName(int index, char* name);
+		ci::gl::TextureRef			getInputTexture(int index);
+		int							getInputTexturesCount() { return mVDInputTextures.size(); };
 		// from audio
-		void						setAudioTexture(unsigned char *signal);
+		//void						setAudioTexture(unsigned char *signal);
 		// fbos
 		ci::gl::TextureRef			getFboTexture(int index);
 		GLuint						getFboTextureId(int index);
@@ -75,8 +77,8 @@ namespace VideoDromm
 		// shaders
 		//GLuint						getShaderThumbTextureId(int index);
 		// spout
-		void						setSenderTextureSize(int index, int width, int height);
-		int							createSpoutTexture(char name[256], unsigned int width, unsigned int height);
+		//void						setSenderTextureSize(int index, int width, int height);
+		//int							createSpoutTexture(char name[256], unsigned int width, unsigned int height);
 
 		// image
 		void						loadImageFile(int index, string aFile);
@@ -95,11 +97,13 @@ namespace VideoDromm
 		VDShadersRef				mVDShaders;
 		// Fbos
 		vector<VDFboRef>			mVDFbos;
+		// Input textures
+		vector<VDInputTextureRef>	mVDInputTextures;
 
 		char						buf[32];
 
 		unsigned char				dTexture[1024];
-		vector<ci::gl::TextureRef>	sTextures;
+		//vector<ci::gl::TextureRef>	sTextures;
 		char						spoutSenderName[256];
 		string						fileName;
 		// shaders
