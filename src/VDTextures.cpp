@@ -143,11 +143,10 @@ void VDTextures::setAudioTexture(unsigned char *signal)
 {
 	sTextures[0] = gl::Texture::create(signal, 0x1909, 512, 2);//GL_LUMINANCE, 512, 2);
 }*/
-void VDTextures::setFboTexture(ci::gl::TextureRef aTexture) {
-	for (int i = 0; i < mVDFbos.size(); i++)
-	{
-		mVDFbos[i]->setTexture(aTexture);
-	}
+void VDTextures::setFboTexture(int index, ci::gl::TextureRef aTexture) {
+	
+		mVDFbos[index]->setTexture(aTexture);
+	
 }
 /*void VDTextures::setTexture(int index, string fileName)
 {
@@ -254,21 +253,33 @@ string VDTextures::getTextureName(int index) {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
 	return mVDFbos[index]->getName();
 }
+int VDTextures::loadImageSequence(int index, string aFile) {
+	int rtn = 0;
+	// only load image sequence from subfolder in assets folder
+	if (aFile.length() > 0) {
+		fs::path mPath = getAssetPath("") / aFile;
+		// tests for valid path 
+		if (fs::exists(mPath)) {
+			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, mPath.string(), true, true));
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
+			rtn = mVDFbos.size() - 1;
+			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+		}
+	}
+	return rtn;
+}
 
-void VDTextures::loadImageFile(int index, string aFile)
-{
-	try
-	{
+void VDTextures::loadImageFile(int index, string aFile) {
+	try {
 		// try loading image file
 		fs::path imageFile = aFile;
 		if (fs::exists(imageFile)) {
-			if (index > 0) mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, index, aFile, true, false));
+			if (index > 0) mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, false));
 			//sTextures[index] = gl::Texture::create(loadImage(aFile));
 			mVDSettings->isUIDirty = true;		
 		}
 	}
-	catch (...)
-	{
+	catch (...) {
 		CI_LOG_V("Error loading image: " + aFile);
 	}
 }
@@ -293,6 +304,14 @@ void VDTextures::loadMovieFile(int index, string aFile)
 
 void VDTextures::update()
 {
+	for (unsigned int i = 0; i < mVDInputTextures.size(); i++)
+	{
+		if (mVDInputTextures[i]->isSequence()) {
+			mVDInputTextures[i]->update();
+			setFboTexture(mVDInputTextures[i]->getIndex(), mVDInputTextures[i]->getTexture());
+
+		}
+	}
 	//if (mMovie) {
 	//	if (mMovie->hasVisuals()) {
 	//		if (mMovie->isPlaying()) {

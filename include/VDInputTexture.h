@@ -37,6 +37,9 @@ namespace VideoDromm
 		Area						getBounds();
 		GLuint						getId();
 		int							getType() { return mType; };
+		int							getIndex() { return mIndex; };
+		void						setIndex(int aIndex) { mIndex = aIndex; };
+		string						getFolder() { return mFolder; };
 		string						getName();
 		bool						isFlipH() { return mFlipH; };
 		bool						isFlipV() { return mFlipV; };
@@ -63,14 +66,14 @@ namespace VideoDromm
 		// Animation
 		VDAnimationRef				mVDAnimation;
 
-		gl::FboRef					mFbo;
+		//gl::FboRef					mFbo;
 		string						mName;
 		bool						mFlipV;
 		bool						mFlipH;
-		int							mWidth;
-		int							mHeight;
+		//int							mWidth;
+		//int							mHeight;
 		int							mType;
-		int							mIndex;
+		int							mIndex; // check it's fbo index
 		string						mFilePath;
 		bool						mTopDown;
 		bool						mSequence;
@@ -81,7 +84,7 @@ namespace VideoDromm
 		void						loadNextImageFromDisk();
 		void						updateSequence();
 
-		char						mFolder[32];
+		string						mFolder;
 		string						mPrefix;
 		string						mExt;
 		int							mNumberOfDigits;

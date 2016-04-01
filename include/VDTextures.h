@@ -54,7 +54,7 @@ namespace VideoDromm
 		// textures
 		//void						setTexture(int index, string fileName);
 		//ci::gl::TextureRef			getTexture(int index);
-		void						setFboTexture(ci::gl::TextureRef aTexture);
+		void						setFboTexture(int index, ci::gl::TextureRef aTexture);
 			//int							getTextureCount() { return sTextures.size(); };
 		void						flipTexture(int index);
 		//void						setTexture(int index, ci::gl::TextureRef texture);
@@ -84,6 +84,8 @@ namespace VideoDromm
 		void						loadImageFile(int index, string aFile);
 		// quicktime video
 		void						loadMovieFile(int index, string aFile);
+		// image sequence
+		int							loadImageSequence(int index, string aFile);
 		void						update();
 		void						draw();
 		//void						createWarpInput();

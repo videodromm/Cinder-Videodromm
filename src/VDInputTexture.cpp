@@ -11,16 +11,93 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	mSequence = isSequence;
 	CI_LOG_V("VDInputTexture constructor");
 
-	// fbo
-	gl::Fbo::Format format;
-	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-	//mRenderFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
 	mFlipV = false;
 	mFlipH = true;
 
+	// Loads all files contained in the supplied folder and creates Textures from them
+	// init the sequence vars
+	playheadFrameInc = 1;
+	mLoadingFilesComplete = true;
+	mLoadingPaused = false;
+	mFramesLoaded = 0;
+	mCurrentLoadedFrame = 0;
+	mNextIndexFrameToTry = 0;
+	mPlaying = false;
+	mSpeed = 1;
+	mExt = "png";
+	mPrefix = "none";
+	mNextIndexFrameToTry = 0;
+	mPlayheadPosition = 0;
+	mNumberOfDigits = 4;
+
 	if (mSequence) {
-		//TODO
+		// find the folder name for display in the ui
+		if (mFilePath.find_last_of("\\") != std::string::npos) {
+			int slashIndex = mFilePath.find_last_of("\\") + 1;
+			mFolder = mFilePath.substr(slashIndex);
+		}
+		bool noValidFile = true; // if no valid files in the folder, we keep existing vector
+		bool firstIndexFound = false;
+		int i = 0;
+		string anyImagefileName = "";
+		// loading 2000 files takes a while, I load only the first one
+		for (fs::directory_iterator it(mFilePath); it != fs::directory_iterator(); ++it)
+		{
+			if (fs::is_regular_file(*it))
+			{
+				string fileName = it->path().filename().string();
+				if (fileName.find_last_of(".") != std::string::npos) {
+					int dotIndex = fileName.find_last_of(".");
+					mExt = fileName.substr(dotIndex + 1);
+					if (mExt == "png" || mExt == "jpg") {
+						anyImagefileName = fileName;
+					}
+					// get the prefix for the image sequence
+					// the files are named from p0000.jpg to p2253.jpg for instance
+					// sometimes only 3 digits : l000 this time
+					// find the first digit
+					int firstDigit = fileName.find_first_of("0123456789");
+					// if valid image sequence (contains a digit)
+					if (firstDigit > -1) {
+						mNumberOfDigits = dotIndex - firstDigit;
+						int prefixIndex = fileName.find_last_of(".") - mNumberOfDigits;//-4 or -3
+						mPrefix = fileName.substr(0, prefixIndex);
+						if (!firstIndexFound) {
+							firstIndexFound = true;
+							mNextIndexFrameToTry = std::stoi(fileName.substr(prefixIndex, dotIndex));
+						}
+					}
+				}
+				// only if proper image sequence
+				if (firstIndexFound) {
+					if (mExt == "png" || mExt == "jpg") {
+						if (noValidFile) {
+							// we found a valid file
+							noValidFile = false;
+							mSequenceTextures.clear();
+							// reset playhead to the start
+							//mPlayheadPosition = 0;
+							mLoadingFilesComplete = false;
+							loadNextImageFromDisk();
+							mPlaying = true;
+						}
+					}
+				}
+
+			}
+		}
+		// init if no valid file found with the last image found in the folder
+		if (noValidFile) {
+			if (anyImagefileName.length() > 0) {
+				mSequence = false;
+				if (mTopDown) {
+					mTexture = gl::Texture::create(loadImage(anyImagefileName), gl::Texture::Format().loadTopDown());
+				}
+				else {
+					mTexture = gl::Texture::create(loadImage(anyImagefileName));
+				}
+			}
+		}
 	}
 	else {
 		if (mTopDown) {
@@ -122,9 +199,10 @@ void VDInputTexture::updateSequence() {
 }
 
 void VDInputTexture::update() {
-
-	updateSequence();
-	//if (!mLoadingFilesComplete) loadNextImageFromDisk();
+	if (mSequence) {
+		updateSequence();
+		//if (!mLoadingFilesComplete) loadNextImageFromDisk();
+	}
 }
 //Begins playback of sequence
 void VDInputTexture::playSequence() {
