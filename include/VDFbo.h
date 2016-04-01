@@ -9,6 +9,11 @@
 #include "VDSettings.h"
 // shaders
 #include "VDShaders.h"
+// Logger
+#include "VDLog.h"
+
+#pragma warning(push)
+#pragma warning(disable: 4996) // _CRT_SECURE_NO_WARNINGS
 
 using namespace ci;
 using namespace ci::app;
@@ -30,7 +35,7 @@ namespace VideoDromm
 		gl::FboRef					getFboRef();
 		ci::gl::TextureRef			getTexture();
 		void						setTexture(ci::gl::TextureRef aTexture);
-		ci::gl::TextureRef			getProcessedTexture();
+		//ci::gl::TextureRef			getProcessedTexture();
 		ivec2						getSize();
 		Area						getBounds();
 		GLuint						getId();
@@ -39,6 +44,8 @@ namespace VideoDromm
 		bool						isFlipH() { return mFlipH; };
 		bool						isFlipV() { return mFlipV; };
 		void						setShaderIndex(int aShaderIndex);
+		int							loadPixelFragmentShader(string aFilePath);
+		int							setGLSLString(string pixelFrag, string name);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -46,22 +53,33 @@ namespace VideoDromm
 		VDShadersRef				mVDShaders;
 
 		gl::FboRef					mFbo;
-		gl::FboRef					mRenderFbo;
+		//gl::FboRef					mRenderFbo;
 		string						mName;
 		bool						mFlipV;
 		bool						mFlipH;
 		int							mWidth;
 		int							mHeight;
 		int							mType;
-		gl::GlslProgRef				aShader;
-		int							mShaderIndex;
 
-		// temporary
-		// default vertex shader
-		std::string						mPassthruVextexShader;
+		//! Shaders
+		gl::GlslProgRef				mShader;
+		int							mShaderIndex;
+		string						mError;
+		string						mFragFile;
+		string						mFragFileName;
+		string						mShaderName;
+		bool						validFrag;
+		//! default vertex shader
+		std::string					mPassthruVextexShaderString;
+		//! default fragment shader
+		std::string					mPassthruFragmentShaderString;
+		//! passthru shader
+		gl::GlslProgRef				mPassThruShader;
 		// include shader lines
-		std::string						shaderInclude;
-		ci::gl::TextureRef				mTexture, mTexture1;
+		std::string					shaderInclude;
+
+		//! Textures
+		ci::gl::TextureRef			mTexture, mTexture1;
 	};
 
 

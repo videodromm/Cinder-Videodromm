@@ -14,8 +14,41 @@ VDShaders::VDShaders(VDSettingsRef aVDSettings)
 	mShaderIndex = 4;
 	mCurrentPreviewShader = 0;
 	mCurrentRenderShader = 0;
-
-	mPassthruVextexShader = loadString(loadAsset("shadertoy.vert"));
+	validVert = false;
+	validFrag = false;
+	try
+	{
+		fs::path vertexFile = getAssetPath("") / "passthru.vert";
+		if (fs::exists(vertexFile)) {
+			mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
+		}
+		else
+		{
+			CI_LOG_V("passthru.vert does not exist, should quit");
+		}
+		fs::path fragFile = getAssetPath("") / "passthru.frag";
+		if (fs::exists(fragFile)) {
+			mPassthruFragmentShaderString = loadString(loadAsset("passthru.frag"));
+		}
+		else
+		{
+			CI_LOG_V("passthru.frag does not exist, should quit");
+		}
+		mPassThruShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
+		mWarpShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
+		validVert = true;
+		validFrag = true;
+	}
+	catch (gl::GlslProgCompileExc &exc)
+	{
+		mError = string(exc.what());
+		CI_LOG_V("unable to load/compile passthru shader:" + string(exc.what()));
+	}
+	catch (const std::exception &e)
+	{
+		mError = string(e.what());
+		CI_LOG_V("unable to load passthru shader:" + string(e.what()));
+	}
 	//load mix shader
 	try
 	{
@@ -40,38 +73,12 @@ VDShaders::VDShaders(VDSettingsRef aVDSettings)
 		mError = string(e.what());
 		CI_LOG_V("unable to load shader:" + string(e.what()));
 	}
-	//load warp shader
-	try
-	{
-		fs::path warpFragFile = getAssetPath("") / "passthru.frag";
-		if (fs::exists(warpFragFile))
-		{
-			mWarpShader = gl::GlslProg::create(loadAsset("passthru.vert"), loadFile(warpFragFile));
-			mPassThruShader = gl::GlslProg::create(loadAsset("passthru.vert"), loadFile(warpFragFile));
-		}
-		else
-		{
-			CI_LOG_V("passthru.frag does not exist, should quit");
-
-		}
-	}
-	catch (gl::GlslProgCompileExc &exc)
-	{
-		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile shader:" + string(exc.what()));
-	}
-	catch (const std::exception &e)
-	{
-		mError = string(e.what());
-		CI_LOG_V("unable to load shader:" + string(e.what()));
-	}
 
 	// shadertoy include
 	//vs = loadString(loadAsset("live.vert"));
 	shaderInclude = loadString(loadAsset("shadertoy.inc"));
 
-	validFrag = false;
-	validVert = true;
+
 	// live frag file
 	liveFragFile = getAssetPath("") / "live.frag";
 	if (fs::exists(liveFragFile))
@@ -80,7 +87,7 @@ VDShaders::VDShaders(VDSettingsRef aVDSettings)
 		try
 		{
 			mVDSettings->mShaderToLoad = loadString(loadAsset("live.frag"));
-			mLiveShader = gl::GlslProg::create(mPassthruVextexShader, mVDSettings->mShaderToLoad);
+			mLiveShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDSettings->mShaderToLoad);
 			liveError = false;
 		}
 		catch (gl::GlslProgCompileExc exc){
@@ -115,7 +122,7 @@ VDShaders::VDShaders(VDSettingsRef aVDSettings)
 	for (size_t m = mFragmentShaders.size(); m < 8; m++)
 	{
 		Shada newShader;
-		newShader.shader = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("passthru.frag"));
+		newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
 		newShader.name = "passthru.frag";
 		newShader.active = true;
 		mFragmentShaders.push_back(newShader);
@@ -170,7 +177,7 @@ string VDShaders::loadLiveShader(string frag)
 	liveError = true;
 	try
 	{
-		mLiveShader = gl::GlslProg::create(mPassthruVextexShader, frag.c_str());//.c_str()
+		mLiveShader = gl::GlslProg::create(mPassthruVextexShaderString, frag.c_str());
 		liveError = false;
 	}
 	catch (gl::GlslProgCompileExc exc)
@@ -348,7 +355,7 @@ int VDShaders::setGLSLString(string pixelFrag, string name)
 	try
 	{
 		Shada newShader;
-		newShader.shader = gl::GlslProg::create(mPassthruVextexShader, pixelFrag);
+		newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 		newShader.name = name;
 		newShader.active = true;
 		// searching first index of not running shader
@@ -451,7 +458,7 @@ int VDShaders::setGLSLStringAtIndex(string pixelFrag, string name, int index)
 	try
 	{
 		// load the new shader
-		mFragmentShaders[foundIndex].shader = gl::GlslProg::create(mPassthruVextexShader, pixelFrag);
+		mFragmentShaders[foundIndex].shader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 		mFragmentShaders[foundIndex].name = name;
 		mFragmentShaders[foundIndex].active = true;
 
@@ -485,7 +492,7 @@ bool VDShaders::setFragString(string pixelFrag)
 		}
 		else
 		{
-			mFragmentShaders[mCurrentPreviewShader].shader = gl::GlslProg::create(mPassthruVextexShader, pixelFrag);
+			mFragmentShaders[mCurrentPreviewShader].shader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 			mFragmentShaders[mCurrentPreviewShader].name = "some.frag";
 			mFragmentShaders[mCurrentPreviewShader].active = true;
 
@@ -581,7 +588,7 @@ void VDShaders::createThumbsFromDir(string filePath)
 						std::string fs = shaderInclude + loadString(loadFile(it->path()));
 
 						Shada newShader;
-						newShader.shader = gl::GlslProg::create(mPassthruVextexShader, fs.c_str());
+						newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, fs.c_str());
 						newShader.name = fileName;
 						newShader.active = true;
 						mFragmentShaders.push_back(newShader);

@@ -97,8 +97,13 @@ namespace VideoDromm
 		//! find index for insert/update in mFragmentShaders
 		int								findFragmentShaderIndex(int index, string name);
 
-		// default vertex shader
-		std::string						mPassthruVextexShader;
+		//! default vertex shader
+		std::string						mPassthruVextexShaderString;
+		//! default fragment shader
+		std::string						mPassthruFragmentShaderString;
+		//! passthru shader
+		gl::GlslProgRef					mPassThruShader;
+
 		// include shader lines
 		std::string						shaderInclude;
 		// mix shader
@@ -107,8 +112,6 @@ namespace VideoDromm
 		gl::GlslProgRef					mLiveShader;
 		//! warp shader
 		gl::GlslProgRef					mWarpShader;
-		//! PassThru shader
-		gl::GlslProgRef					mPassThruShader;
 
 	};
 }

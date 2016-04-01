@@ -19,7 +19,7 @@
 // Animation
 #include "VDAnimation.h"
 // shaders
-#include "VDShaders.h"
+//#include "VDShaders.h"
 // fbo
 #include "VDFbo.h"
 // Logger
@@ -103,7 +103,7 @@ namespace VideoDromm
 		char						spoutSenderName[256];
 		string						fileName;
 		// shaders
-		gl::GlslProgRef				aShader;
+		//gl::GlslProgRef				aShader;
 
 		// profiling
 		char						previewTime[256];

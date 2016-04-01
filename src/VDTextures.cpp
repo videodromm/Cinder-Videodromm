@@ -87,10 +87,18 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
 	//thumb fbo
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->TEXTUREMODETHUMB));
-	for (int i = 0; i < mVDFbos.size(); i++)
+
+	/*for (int i = 0; i < mVDFbos.size(); i++)
 	{
-		mVDFbos[i]->setShaderIndex(i);
-	}
+
+		fileName = toString(i) + ".glsl";
+		localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
+		if (fs::exists(localFile)) {
+			string shaderPath = localFile.string();
+			mVDFbos[i]->loadPixelFragmentShader(shaderPath);
+
+		}
+	}*/
 
 	/*sprintf_s(textas[1].name, "img1");
 	sprintf_s(textas[2].name, "img2");
@@ -219,7 +227,7 @@ void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
-	return mVDFbos[index]->getProcessedTexture();
+	return mVDFbos[index]->getTexture();
 }
 GLuint VDTextures::getFboTextureId(int index)
 {
@@ -304,7 +312,7 @@ gl::draw(mMesh);
 void VDTextures::renderShadaThumbFbo()
 {
 	// start profiling
-	auto start = Clock::now();
+	/*auto start = Clock::now();
 	gl::ScopedFramebuffer fbScp(mVDFbos[currentShadaThumbIndex]->getFboRef());
 	// setup the viewport to match the dimensions of the FBO
 	gl::ScopedViewport scpVp(ivec2(0), mVDFbos[currentShadaThumbIndex]->getFboRef()->getSize());
@@ -366,7 +374,7 @@ void VDTextures::renderShadaThumbFbo()
 	aShader->uniform("iFlipV", mVDFbos[currentShadaThumbIndex]->isFlipV());
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-		getTexture(m)->bind(m);
+	getTexture(m)->bind(m);
 	}
 
 	gl::clear(Color(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));
@@ -375,7 +383,7 @@ void VDTextures::renderShadaThumbFbo()
 	auto end = Clock::now();
 	auto nsdur = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	int micro = nsdur.count();
-	mVDShaders->setShaderMicroSeconds(currentShadaThumbIndex, micro);
+	mVDShaders->setShaderMicroSeconds(currentShadaThumbIndex, micro);*/
 
 	// increment shada thumb index
 	currentShadaThumbIndex++;
@@ -409,7 +417,7 @@ void VDTextures::draw()
 	* start of mLibraryFbos[mVDSettings->mLeftFboIndex]
 	*/
 
-	mVDFbos[mVDSettings->mLeftFboIndex]->getFboRef()->bindFramebuffer();
+	/*mVDFbos[mVDSettings->mLeftFboIndex]->getFboRef()->bindFramebuffer();
 	//gl::setViewport(mVDFbos[mVDSettings->mLeftFboIndex].fbo.getBounds());
 
 	// clear the FBO
@@ -473,7 +481,7 @@ void VDTextures::draw()
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-		getTexture(m)->bind(m);
+	getTexture(m)->bind(m);
 	}
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 	// stop drawing into the FBO
@@ -481,11 +489,11 @@ void VDTextures::draw()
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-		getTexture(m)->unbind();
+	getTexture(m)->unbind();
 	}
 
 	//aShader->unbind();
-	sTextures[6] = mVDFbos[mVDSettings->mLeftFboIndex]->getTexture();
+	sTextures[6] = mVDFbos[mVDSettings->mLeftFboIndex]->getTexture();*/
 	/*
 	* end of mLibraryFbos[mVDSettings->mLeftFboIndex]
 	***********************************************/
@@ -495,7 +503,7 @@ void VDTextures::draw()
 	* start of mLibraryFbos[mVDSettings->mRightFboIndex]
 	*/
 
-	mVDFbos[mVDSettings->mRightFboIndex]->getFboRef()->bindFramebuffer();
+	/*mVDFbos[mVDSettings->mRightFboIndex]->getFboRef()->bindFramebuffer();
 	//gl::setViewport(mVDFbos[mVDSettings->mRightFboIndex].fbo.getBounds());
 
 	// clear the FBO
@@ -526,7 +534,7 @@ void VDTextures::draw()
 	aShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
 	aShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
 	aShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-	aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
+	aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio);
 	aShader->uniform("width", 1);
 	aShader->uniform("height", 1);
 	aShader->uniform("iRenderXY", mVDSettings->mRightRenderXY);
@@ -559,7 +567,7 @@ void VDTextures::draw()
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-		getTexture(m)->bind(m);
+	getTexture(m)->bind(m);
 	}
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 	// stop drawing into the FBO
@@ -567,11 +575,11 @@ void VDTextures::draw()
 
 	for (size_t m = 0; m < mVDSettings->MAX; m++)
 	{
-		getTexture(m)->unbind();
+	getTexture(m)->unbind();
 	}
 
 	//aShader->unbind();
-	sTextures[7] = mVDFbos[mVDSettings->mRightFboIndex]->getTexture();
+	sTextures[7] = mVDFbos[mVDSettings->mRightFboIndex]->getTexture();*/
 	/*
 	* end of mLibraryFbos[mVDSettings->mRightFboLibraryIndex]
 	***********************************************/
@@ -583,7 +591,7 @@ void VDTextures::draw()
 		* start of mVDFbos[mVDSettings->mWarp1FboIndex]
 		*/
 
-		mVDFbos[mVDSettings->mWarp1FboIndex]->getFboRef()->bindFramebuffer();
+		/*mVDFbos[mVDSettings->mWarp1FboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mWarp1FboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -614,7 +622,7 @@ void VDTextures::draw()
 		aShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
 		aShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
 		aShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-		aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
+		aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio);
 		aShader->uniform("width", 1);
 		aShader->uniform("height", 1);
 		aShader->uniform("iRenderXY", mVDSettings->mWarp1RenderXY);
@@ -647,7 +655,7 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->bind(m);
+		getTexture(m)->bind(m);
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
@@ -655,11 +663,11 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->unbind();
+		getTexture(m)->unbind();
 		}
 
 		//aShader->unbind();
-		sTextures[8] = mVDFbos[mVDSettings->mWarp1FboIndex]->getTexture();
+		sTextures[8] = mVDFbos[mVDSettings->mWarp1FboIndex]->getTexture();*/
 
 		/*
 		* end of mVDFbos[mVDSettings->mWarp1FboIndex]
@@ -668,7 +676,7 @@ void VDTextures::draw()
 		/***********************************************
 		* start of mVDFbos[mVDSettings->mWarp2FboIndex]
 		*/
-
+		/*
 		mVDFbos[mVDSettings->mWarp2FboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mWarp2FboIndex].fbo.getBounds());
 
@@ -700,7 +708,7 @@ void VDTextures::draw()
 		aShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
 		aShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
 		aShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-		aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
+		aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio);
 		aShader->uniform("width", 1);
 		aShader->uniform("height", 1);
 		aShader->uniform("iRenderXY", mVDSettings->mWarp2RenderXY);
@@ -733,7 +741,7 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->bind(m);
+		getTexture(m)->bind(m);
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
@@ -741,11 +749,11 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->unbind();
+		getTexture(m)->unbind();
 		}
 
 		//aShader->unbind();
-		sTextures[9] = mVDFbos[mVDSettings->mWarp2FboIndex]->getTexture();
+		sTextures[9] = mVDFbos[mVDSettings->mWarp2FboIndex]->getTexture();*/
 
 		/*
 		* end of mVDFbos[mVDSettings->mWarp2FboIndex]
@@ -758,7 +766,7 @@ void VDTextures::draw()
 		/***********************************************
 		* start of mLibraryFbos[mVDSettings->mCurrentPreviewFboIndex]
 		*/
-		mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getFboRef()->bindFramebuffer();
+		/*mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mCurrentPreviewFboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -823,7 +831,7 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->bind(m);
+		getTexture(m)->bind(m);
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
@@ -831,12 +839,12 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->unbind();
+		getTexture(m)->unbind();
 		}
 
 		//aShader->unbind();
 
-		sTextures[4] = mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getTexture();
+		sTextures[4] = mVDFbos[mVDSettings->mCurrentPreviewFboIndex]->getTexture();*/
 		/*
 		* end of mLibraryFbos[mVDSettings->mCurrentPreviewFboIndex]
 		***********************************************/
@@ -849,7 +857,7 @@ void VDTextures::draw()
 		/***********************************************
 		* start of mLibraryFbos[mVDSettings->mLiveFboIndex]
 		*/
-		mVDFbos[mVDSettings->mLiveFboIndex]->getFboRef()->bindFramebuffer();
+		/*mVDFbos[mVDSettings->mLiveFboIndex]->getFboRef()->bindFramebuffer();
 		//gl::setViewport(mVDFbos[mVDSettings->mLiveFboIndex].fbo.getBounds());
 
 		// clear the FBO
@@ -913,7 +921,7 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->bind(m);
+		getTexture(m)->bind(m);
 		}
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		// stop drawing into the FBO
@@ -921,12 +929,12 @@ void VDTextures::draw()
 
 		for (size_t m = 0; m < mVDSettings->MAX; m++)
 		{
-			getTexture(m)->unbind();
+		getTexture(m)->unbind();
 		}
 
 		//aShader->unbind();
 
-		sTextures[11] = mVDFbos[mVDSettings->mLiveFboIndex]->getTexture();
+		sTextures[11] = mVDFbos[mVDSettings->mLiveFboIndex]->getTexture();*/
 		/*
 		* end of mVDFbos[mVDSettings->mLiveFboIndex]
 		***********************************************/
@@ -939,7 +947,7 @@ void VDTextures::draw()
 	* first render the 2 frags to fbos (done before)
 	* then use them as textures for the mix shader
 	*/
-
+	/*
 	// draw using the mix shader
 	mVDFbos[mVDSettings->mMixFboIndex]->getFboRef()->bindFramebuffer();
 	//gl::setViewport(mVDFbos[mVDSettings->mMixFboIndex].fbo.getBounds());
@@ -966,7 +974,7 @@ void VDTextures::draw()
 	aShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
 	aShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
 	aShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-	aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
+	aShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio);
 	aShader->uniform("width", 1);
 	aShader->uniform("height", 1);
 	aShader->uniform("iRenderXY", mVDSettings->mRenderXY);
@@ -1018,7 +1026,7 @@ void VDTextures::draw()
 
 	//aShader->unbind();
 	sTextures[5] = mVDFbos[mVDSettings->mMixFboIndex]->getTexture();
-
+	*/
 	//}
 	/***********************************************
 	* mix 2 FBOs end

@@ -87,7 +87,7 @@ int VDUtils::getWindowsResolution()
 
 	CI_LOG_V(" mMainDisplayWidth:" + toString(mVDSettings->mMainWindowWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainWindowHeight));
 	CI_LOG_V(" mRenderX:" + toString(mVDSettings->mRenderX) + " mRenderY:" + toString(mVDSettings->mRenderY));
-	mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
+	//mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;
 	splitWarp(mVDSettings->mFboWidth,mVDSettings->mFboHeight);

@@ -410,6 +410,7 @@ void VDSettings::resetSomeParams() {
 	iTransition = 0;
 	iAnim = 0.0;
 	mTransitionDuration = 2.0f;
+	mTransitionTime = 1.0f;
 
 	// red
 	controlValues[1] = 1.0f;
@@ -484,8 +485,8 @@ void VDSettings::reset()
 	// parameters not exposed in XML
 	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = mWarp1RenderXY = mWarp2RenderXY = vec2(0.0f);
 	mRenderPosXY = vec2(0.0, 320.0);
-	mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
-	mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
+	//mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
+	//mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
 	mPreviewFragXY = vec2(0.0, 0.0);
 	mAspectRatio = 0.75; // ratio 4:3 (0.75) 16:9 (0.5625)
 	mFboWidth = 640;

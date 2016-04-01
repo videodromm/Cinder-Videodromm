@@ -104,10 +104,10 @@ void VDImageSequence::loadNextImageFromDisk() {
 				mCurrentLoadedFrame = mFramesLoaded;
 				mFramesLoaded++;
 				auto end = Clock::now();
-				auto nsdur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-				int micro = nsdur.count();
+				auto msdur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+				int milli = msdur.count();
 
-				mVDSettings->mMsg = fileToLoad.string() + " loaded in ms " + toString(micro);
+				mVDSettings->mMsg = fileToLoad.string() + " loaded in ms " + toString(milli);
 			}
 			else {
 

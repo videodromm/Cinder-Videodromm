@@ -125,7 +125,7 @@ namespace VideoDromm {
 		vec2						mRenderPosXY;
 		vec2						mPreviewFragXY;
 		vec2						mCamPosXY;
-		vec2						mRenderResoXY;
+		//vec2						mRenderResoXY;
 		bool						mAutoLayout;
 		bool						mStandalone;
 
@@ -229,7 +229,7 @@ namespace VideoDromm {
 
 		ci::Anim<float>				mStateTransition;
 
-		ivec2						mRenderResolution;        // render resolution (replaces iResolution which increments magically)
+		//ivec2						mRenderResolution;        // render resolution (replaces iResolution which increments magically)
 		// 
 		bool						mSendToOutput;
 		bool						autoInvert;
