@@ -46,9 +46,9 @@ namespace VideoDromm
 		// image sequence
 		bool						isSequence() { return mSequence; };
 		void						update();
-		void						playSequence();
+		void						playPauseSequence();
+		void						syncToBeat();
 		void						stopSequence();
-		void						pauseSequence();
 		void						toggleLoadingFromDisk();
 		void						stopLoading();
 		int							getPlayheadPosition();
@@ -59,19 +59,16 @@ namespace VideoDromm
 		void						reverseSequence();
 		bool						isLoadingFromDisk();
 		bool						isValid(){ return mFramesLoaded > 0; };
-		int							getMaxFrames();
+		int							getMaxFrame();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
 		// Animation
 		VDAnimationRef				mVDAnimation;
 
-		//gl::FboRef					mFbo;
 		string						mName;
 		bool						mFlipV;
 		bool						mFlipH;
-		//int							mWidth;
-		//int							mHeight;
 		int							mType;
 		int							mIndex; // check it's fbo index
 		string						mFilePath;
@@ -96,6 +93,7 @@ namespace VideoDromm
 		bool						mLoadingFilesComplete;
 		bool						mPlaying;
 		int							mSpeed;
+		bool						mSyncToBeat;
 		vector<ci::gl::TextureRef>	mSequenceTextures;
 	};
 

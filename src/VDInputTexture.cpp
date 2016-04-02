@@ -29,6 +29,7 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	mNextIndexFrameToTry = 0;
 	mPlayheadPosition = 0;
 	mNumberOfDigits = 4;
+	mSyncToBeat = false;
 
 	if (mSequence) {
 		// find the folder name for display in the ui
@@ -192,7 +193,12 @@ void VDInputTexture::updateSequence() {
 			if (newPosition > mSequenceTextures.size() - 1) newPosition = 0;
 		}
 		else {
-			newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
+			if (mSyncToBeat) {
+				newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
+			}
+			else {
+				newPosition = mPlayheadPosition;
+			}
 		}
 		mPlayheadPosition = max(0, min(newPosition, (int)mSequenceTextures.size() - 1));
 	}
@@ -204,15 +210,15 @@ void VDInputTexture::update() {
 		//if (!mLoadingFilesComplete) loadNextImageFromDisk();
 	}
 }
-//Begins playback of sequence
-void VDInputTexture::playSequence() {
+// play/pause sequence
+void VDInputTexture::playPauseSequence() {
 
-	mPlaying = true;
+	mPlaying = !mPlaying;
 }
-// Pauses playback
-void VDInputTexture::pauseSequence() {
+// sync to beat
+void VDInputTexture::syncToBeat() {
 
-	mPlaying = false;
+	mSyncToBeat = !mSyncToBeat;
 }
 
 // Stops playback and resets the playhead to zero
@@ -222,7 +228,7 @@ void VDInputTexture::stopSequence() {
 	mPlayheadPosition = 0;
 }
 
-int VDInputTexture::getMaxFrames() {
+int VDInputTexture::getMaxFrame() {
 
 	return mFramesLoaded;
 }

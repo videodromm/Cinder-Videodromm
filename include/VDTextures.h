@@ -88,6 +88,18 @@ namespace VideoDromm
 		int							loadImageSequence(int index, string aFile);
 		void						update();
 		void						draw();
+		bool						inputTextureIsSequence(int index);
+		bool						inputTextureIsLoadingFromDisk(int index);
+		void						inputTextureToggleLoadingFromDisk(int index);
+		void						inputTexturePlayPauseSequence(int index);
+		void						inputTextureSyncToBeatSequence(int index);
+		void						inputTextureReverseSequence(int index);
+		int							inputTextureGetPlayheadPosition(int index);
+		void						inputTextureSetPlayheadPosition(int index, int position);
+		int							inputTextureGetMaxFrame(int index);
+		int							inputTextureGetSpeed(int index);
+		void						inputTextureSetSpeed(int index, int speed);
+
 		//void						createWarpInput();
 		char*						getPreviewTime() { return previewTime; };
 	private:

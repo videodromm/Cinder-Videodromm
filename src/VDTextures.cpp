@@ -223,11 +223,68 @@ void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 		sTextures[index] = texture;
 	}
 	}*/
+// input textures
 ci::gl::TextureRef VDTextures::getInputTexture(int index)
 {
 	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
 	return mVDInputTextures[index]->getTexture();
 }
+// images sequence
+bool VDTextures::inputTextureIsSequence(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	return mVDInputTextures[index]->isSequence();
+}
+bool VDTextures::inputTextureIsLoadingFromDisk(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	return mVDInputTextures[index]->isLoadingFromDisk();
+}
+void VDTextures::inputTextureToggleLoadingFromDisk(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	mVDInputTextures[index]->toggleLoadingFromDisk();
+}
+void VDTextures::inputTexturePlayPauseSequence(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	mVDInputTextures[index]->playPauseSequence();
+}
+void VDTextures::inputTextureSyncToBeatSequence(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	mVDInputTextures[index]->syncToBeat();
+}
+
+void VDTextures::inputTextureReverseSequence(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	mVDInputTextures[index]->reverseSequence();
+}
+int VDTextures::inputTextureGetPlayheadPosition(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	return mVDInputTextures[index]->getPlayheadPosition();
+}
+void VDTextures::inputTextureSetPlayheadPosition(int index, int position) {
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	mVDInputTextures[index]->setPlayheadPosition(position);
+}
+int VDTextures::inputTextureGetMaxFrame(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	return mVDInputTextures[index]->getMaxFrame();
+}
+int VDTextures::inputTextureGetSpeed(int index)
+{
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	return mVDInputTextures[index]->getSpeed();
+}
+void VDTextures::inputTextureSetSpeed(int index, int speed) {
+	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
+	mVDInputTextures[index]->setSpeed(speed);
+}
+
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
