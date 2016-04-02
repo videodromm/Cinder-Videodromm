@@ -87,8 +87,8 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 		CI_LOG_V("unable to load shader:" + string(e.what()));
 	}*/
 
-	//std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
-	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
+	std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
+	mShader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
 	mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
 	mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
 

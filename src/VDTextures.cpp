@@ -39,25 +39,25 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	/*fs::path localFile;
 	for (int j = 0; j < mVDSettings->MAX - 1; j++)
 	{
-		fileName = toString(j) + ".jpg";
-		localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
-		if (fs::exists(localFile))
-		{
-			gl::TextureRef img = gl::Texture::create(loadImage(localFile));// TODO , gl::Texture::Format().magFilter(GL_LINEAR).minFilter(GL_LINEAR).loadTopDown());
-			//img.setFlipped();
-			sTextures.push_back(img);
-		}
-		else
-		{
-			//gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")));
-			gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")), gl::Texture::Format().loadTopDown());
-			sTextures.push_back(img);
-		}
-		Texta tex;
-		sprintf_s(tex.name, "tex%d", j);
-		tex.sequenceIndex = 0;
-		tex.isSequence = false;
-		textas.push_back(tex);
+	fileName = toString(j) + ".jpg";
+	localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
+	if (fs::exists(localFile))
+	{
+	gl::TextureRef img = gl::Texture::create(loadImage(localFile));// TODO , gl::Texture::Format().magFilter(GL_LINEAR).minFilter(GL_LINEAR).loadTopDown());
+	//img.setFlipped();
+	sTextures.push_back(img);
+	}
+	else
+	{
+	//gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")));
+	gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")), gl::Texture::Format().loadTopDown());
+	sTextures.push_back(img);
+	}
+	Texta tex;
+	sprintf_s(tex.name, "tex%d", j);
+	tex.sequenceIndex = 0;
+	tex.isSequence = false;
+	textas.push_back(tex);
 
 	}*/
 	// Fbos
@@ -88,16 +88,17 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	//thumb fbo
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->TEXTUREMODETHUMB));
 
+
 	/*for (int i = 0; i < mVDFbos.size(); i++)
 	{
 
-		fileName = toString(i) + ".glsl";
-		localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
-		if (fs::exists(localFile)) {
-			string shaderPath = localFile.string();
-			mVDFbos[i]->loadPixelFragmentShader(shaderPath);
+	fileName = toString(i) + ".glsl";
+	localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
+	if (fs::exists(localFile)) {
+	string shaderPath = localFile.string();
+	mVDFbos[i]->loadPixelFragmentShader(shaderPath);
 
-		}
+	}
 	}*/
 
 	/*sprintf_s(textas[1].name, "img1");
@@ -141,45 +142,54 @@ mMixesFbos.push_back(gl::Fbo(mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 
 void VDTextures::setAudioTexture(unsigned char *signal)
 {
-	sTextures[0] = gl::Texture::create(signal, 0x1909, 512, 2);//GL_LUMINANCE, 512, 2);
+sTextures[0] = gl::Texture::create(signal, 0x1909, 512, 2);//GL_LUMINANCE, 512, 2);
 }*/
+int VDTextures::loadPixelFragmentShaderAtIndex(int index, string mFile) {
+	int rtn = -1;
+	
+	fs::path localFile = mFile;
+	if (fs::exists(localFile)) {
+		rtn = mVDFbos[0]->loadPixelFragmentShader(mFile);
+	}
+	return rtn;
+}
 void VDTextures::setFboTexture(int index, ci::gl::TextureRef aTexture) {
-	
-		mVDFbos[index]->setTexture(aTexture);
-	
+
+	mVDFbos[index]->setTexture(aTexture);
+
 }
 /*void VDTextures::setTexture(int index, string fileName)
 {
-	if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
-	if (index > 0)
-	{
-		try
-		{
-			string pathToAssetFile = (getAssetPath("") / fileName).string();
+if (index > mVDSettings->MAX - 1) index = mVDSettings->MAX - 1;
+if (index > 0)
+{
+try
+{
+string pathToAssetFile = (getAssetPath("") / fileName).string();
 
-			if (!fs::exists(pathToAssetFile))
-			{
-				CI_LOG_V("asset file not found: " + fileName);
-			}
-			else
-			{
-				CI_LOG_V("asset found file: " + fileName);
-				if (index < sTextures.size())
-				{
-					sTextures[index] = gl::Texture::create(loadImage(loadAsset(fileName)));
-				}
-				else
-				{
-					sTextures.push_back(gl::Texture::create(loadImage(loadAsset(fileName))));
-				}
-				CI_LOG_V("asset loaded: " + fileName);
-			}
-		}
-		catch (...)
-		{
-			CI_LOG_V("Load asset error: " + fileName);
-		}
-	}
+if (!fs::exists(pathToAssetFile))
+{
+CI_LOG_V("asset file not found: " + fileName);
+}
+else
+{
+CI_LOG_V("asset found file: " + fileName);
+if (index < sTextures.size())
+{
+sTextures[index] = gl::Texture::create(loadImage(loadAsset(fileName)));
+}
+else
+{
+sTextures.push_back(gl::Texture::create(loadImage(loadAsset(fileName))));
+}
+CI_LOG_V("asset loaded: " + fileName);
+}
+}
+catch (...)
+{
+CI_LOG_V("Load asset error: " + fileName);
+}
+}
 }*/
 void VDTextures::flipTexture(int index)
 {
@@ -208,8 +218,8 @@ return mThumbFbos[index].getTexture();
 
 ci::gl::TextureRef VDTextures::getTexture(int index)
 {
-	if (index > sTextures.size() - 1) index = sTextures.size() - 1;
-	return sTextures[index];
+if (index > sTextures.size() - 1) index = sTextures.size() - 1;
+return sTextures[index];
 }
 ci::gl::TextureRef VDTextures::getWarpTexture(int index)
 {
@@ -218,11 +228,11 @@ return mVDSettings->mWarpFbos[index]->getTexture();
 }
 void VDTextures::setTexture(int index, ci::gl::TextureRef texture)
 {
-	if (index < sTextures.size())
-	{
-		sTextures[index] = texture;
-	}
-	}*/
+if (index < sTextures.size())
+{
+sTextures[index] = texture;
+}
+}*/
 // input textures
 ci::gl::TextureRef VDTextures::getInputTexture(int index)
 {
@@ -296,11 +306,7 @@ GLuint VDTextures::getFboTextureId(int index)
 	return mVDFbos[index]->getId();
 }
 
-/*ci::gl::FboRef VDTextures::getFbo(int index)
-{
-// fbo
-return mVDFbos[index].fbo;
-}
+/*
 GLuint VDTextures::getShaderThumbTextureId(int index)
 {
 if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
@@ -333,7 +339,7 @@ void VDTextures::loadImageFile(int index, string aFile) {
 		if (fs::exists(imageFile)) {
 			if (index > 0) mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, false));
 			//sTextures[index] = gl::Texture::create(loadImage(aFile));
-			mVDSettings->isUIDirty = true;		
+			mVDSettings->isUIDirty = true;
 		}
 	}
 	catch (...) {
@@ -363,10 +369,10 @@ void VDTextures::update()
 {
 	for (unsigned int i = 0; i < mVDInputTextures.size(); i++)
 	{
+		// image sequence
 		if (mVDInputTextures[i]->isSequence()) {
 			mVDInputTextures[i]->update();
 			setFboTexture(mVDInputTextures[i]->getIndex(), mVDInputTextures[i]->getTexture());
-
 		}
 	}
 	//if (mMovie) {
@@ -1137,15 +1143,15 @@ VDTextures::~VDTextures()
 /*
 void VDTextures::setSenderTextureSize(int index, int width, int height)
 {
-	sTextures[10] = gl::Texture::create(width, height);
+sTextures[10] = gl::Texture::create(width, height);
 }
 
 int VDTextures::createSpoutTexture(char name[256], unsigned int width, unsigned int height)
 {
-	// replace spout image at index 10
-	CI_LOG_V("createSpoutTexture, replace: " + toString(name));
+// replace spout image at index 10
+CI_LOG_V("createSpoutTexture, replace: " + toString(name));
 
-	memcpy(&spoutSenderName[0], name, strlen(name) + 1);
-	sTextures[10] = gl::Texture::create(width, height);
-	return 10;
+memcpy(&spoutSenderName[0], name, strlen(name) + 1);
+sTextures[10] = gl::Texture::create(width, height);
+return 10;
 }*/
