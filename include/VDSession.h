@@ -7,6 +7,8 @@
 #include "cinder/json.h"
 // Settings
 #include "VDSettings.h"
+// Logger
+#include "VDLog.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -39,7 +41,12 @@ namespace VideoDromm {
 		int							getFadeInDelay() { return mFadeInDelay; };
 		int							getFadeOutDelay() { return mFadeOutDelay; };
 		string						getImageSequencePath() { return mImageSequencePath; };
+		bool						hasImageSequencePath() { return mImageSequencePath.length() > 0; };
 		int							iBeatsPerBar;
+		string						getText() { return mText; };
+		int							getTextStart() { return mTextPlaybackDelay; };
+		int							getTextEnd() { return mTextPlaybackEnd; };
+		bool						hasText() { return mText.length() > 0; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -50,6 +57,7 @@ namespace VideoDromm {
 		bool						mFlipH;
 		// tempo
 		float						mBpm, mFpb;
+		float						mOriginalBpm;
 		// target fps
 		float						mTargetFps;
 		// files and paths
@@ -62,6 +70,10 @@ namespace VideoDromm {
 		int							mFadeInDelay;
 		int							mFadeOutDelay;
 		int							mEndFrame;
+		// font and text 
+		string						mText;
+		int							mTextPlaybackDelay;
+		int							mTextPlaybackEnd;
 	};
 
 }

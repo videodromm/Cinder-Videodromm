@@ -42,7 +42,7 @@ namespace VideoDromm
 		bool							setFragString(string pixelFrag);
 		int								setGLSLString(string pixelFrag, string name);
 		int								setGLSLStringAtIndex(string pixelFrag, string name, int index);
-		int								setGLSLPixelShaderAtIndex(gl::GlslProgRef pixelFrag, string name, int index);
+		// TO CHECK text int								setGLSLPixelShaderAtIndex(gl::GlslProgRef pixelFrag, string name, int index);
 		bool							loadTextFile(string aFilePath);
 
 		string							getFragError();
@@ -69,6 +69,7 @@ namespace VideoDromm
 		void							createThumbsFromDir(string filePath);
 		void							setShaderMicroSeconds(int index, int micro);
 
+		std::string						getShaderString(int index);
 		// get the include shader
 		std::string						getShaderInclude() { return shaderInclude; };
 

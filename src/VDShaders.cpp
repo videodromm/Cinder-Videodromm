@@ -124,6 +124,7 @@ VDShaders::VDShaders(VDSettingsRef aVDSettings)
 		Shada newShader;
 		newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
 		newShader.name = "passthru.frag";
+		newShader.text = mPassthruFragmentShaderString;
 		newShader.active = true;
 		mFragmentShaders.push_back(newShader);
 	}
@@ -357,6 +358,7 @@ int VDShaders::setGLSLString(string pixelFrag, string name)
 		Shada newShader;
 		newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 		newShader.name = name;
+		newShader.text = pixelFrag;
 		newShader.active = true;
 		// searching first index of not running shader
 		if (mFragmentShaders.size() < mVDSettings->MAX)
@@ -377,6 +379,7 @@ int VDShaders::setGLSLString(string pixelFrag, string name)
 			// load the new shader
 			mFragmentShaders[foundIndex].shader = newShader.shader;
 			mFragmentShaders[foundIndex].name = name;
+			mFragmentShaders[foundIndex].text = pixelFrag;
 			mFragmentShaders[foundIndex].active = true;
 		}
 		//preview the new loaded shader
@@ -420,6 +423,7 @@ int VDShaders::findFragmentShaderIndex(int index, string name) {
 		if (index > mFragmentShaders.size() - 1) {
 			Shada newShader;
 			newShader.name = name;
+
 			//newShader.shader = gl::GlslProg::create(mPassthruVextexShader, currentFrag.c_str());
 			newShader.active = true;
 			mFragmentShaders.push_back(newShader);
@@ -433,11 +437,13 @@ int VDShaders::findFragmentShaderIndex(int index, string name) {
 	return foundIndex;
 }
 
+/*
 int VDShaders::setGLSLPixelShaderAtIndex(gl::GlslProgRef pixelFrag, string name, int index) {
 	int foundIndex = findFragmentShaderIndex(index, name);
 
 	// load the new shader
 	mFragmentShaders[foundIndex].shader = pixelFrag;
+	mFragmentShaders[foundIndex].text = pixelFrag->;
 	mFragmentShaders[foundIndex].name = name;
 	mFragmentShaders[foundIndex].active = true;
 
@@ -450,7 +456,7 @@ int VDShaders::setGLSLPixelShaderAtIndex(gl::GlslProgRef pixelFrag, string name,
 	validFrag = true;
 
 	return foundIndex;
-}
+}*/
 
 int VDShaders::setGLSLStringAtIndex(string pixelFrag, string name, int index)
 {
@@ -460,6 +466,7 @@ int VDShaders::setGLSLStringAtIndex(string pixelFrag, string name, int index)
 		// load the new shader
 		mFragmentShaders[foundIndex].shader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 		mFragmentShaders[foundIndex].name = name;
+		mFragmentShaders[foundIndex].text = pixelFrag;
 		mFragmentShaders[foundIndex].active = true;
 
 		//preview the new loaded shader
@@ -494,6 +501,7 @@ bool VDShaders::setFragString(string pixelFrag)
 		{
 			mFragmentShaders[mCurrentPreviewShader].shader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 			mFragmentShaders[mCurrentPreviewShader].name = "some.frag";
+			mFragmentShaders[mCurrentPreviewShader].text = pixelFrag;
 			mFragmentShaders[mCurrentPreviewShader].active = true;
 
 			//if (mVDSettings->mDirectRender) renderPreviewShader();// mFragmentShaders[mCurrentRenderShader] = gl::GlslProg(NULL, currentFrag.c_str());
@@ -588,8 +596,9 @@ void VDShaders::createThumbsFromDir(string filePath)
 						std::string fs = shaderInclude + loadString(loadFile(it->path()));
 
 						Shada newShader;
-						newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, fs.c_str());
+						newShader.shader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
 						newShader.name = fileName;
+						newShader.text = fs;
 						newShader.active = true;
 						mFragmentShaders.push_back(newShader);
 						CI_LOG_V("createThumbsFromDir loaded and compiled " + fileName);
@@ -608,5 +617,9 @@ void VDShaders::createThumbsFromDir(string filePath)
 		}
 	}
 }
+std::string VDShaders::getShaderString(int index) { 
+	if (index > mFragmentShaders.size() - 1) index = mFragmentShaders.size() - 1;
+	return mFragmentShaders[index].text; 
+};
 
 #pragma warning(pop) // _CRT_SECURE_NO_WARNINGS

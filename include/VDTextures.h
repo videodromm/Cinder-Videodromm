@@ -72,6 +72,8 @@ namespace VideoDromm
 		//int							getThumbsFboCount() { return mThumbFbos.size(); };
 		void						flipFboV(int index);
 		void						flipFboH(int index);
+		void						saveThumb(int index);
+		void						setFragForFbo(int fragIndex, int fboIndex);
 		//const char*					getFboName(int index);
 
 		// shaders
@@ -86,6 +88,9 @@ namespace VideoDromm
 		void						loadMovieFile(int index, string aFile);
 		// image sequence
 		int							loadImageSequence(int index, string aFile);
+		// text
+		int							loadText(int index, string text, int start, int end);
+
 		void						update();
 		void						draw();
 		bool						inputTextureIsSequence(int index);

@@ -24,11 +24,11 @@ namespace VideoDromm
 
 	class VDInputTexture {
 	public:
-		VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePath, bool isTopDown, bool isSequence);
+		VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePathOrText, bool isTopDown, int aType);
 
-		static VDInputTextureRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePath, bool isTopDown, bool isSequence)
+		static VDInputTextureRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePathOrText, bool isTopDown, int aType)
 		{
-			return shared_ptr<VDInputTexture>(new VDInputTexture(aVDSettings, aAnimation, aIndex, aFilePath, isTopDown, isSequence));
+			return shared_ptr<VDInputTexture>(new VDInputTexture(aVDSettings, aAnimation, aIndex, aFilePathOrText, isTopDown, aType));
 		}
 
 		ci::gl::TextureRef			getTexture();
@@ -44,7 +44,7 @@ namespace VideoDromm
 		bool						isFlipH() { return mFlipH; };
 		bool						isFlipV() { return mFlipV; };
 		// image sequence
-		bool						isSequence() { return mSequence; };
+		bool						isSequence() { return mIsSequence; };
 		void						update();
 		void						playPauseSequence();
 		void						syncToBeat();
@@ -60,6 +60,8 @@ namespace VideoDromm
 		bool						isLoadingFromDisk();
 		bool						isValid(){ return mFramesLoaded > 0; };
 		int							getMaxFrame();
+		// text
+		bool						isText() { return mIsText; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -71,16 +73,19 @@ namespace VideoDromm
 		bool						mFlipH;
 		int							mType;
 		int							mIndex; // check it's fbo index
-		string						mFilePath;
+		string						mFilePathOrText;
 		bool						mTopDown;
-		bool						mSequence;
 		//! Textures
 		ci::gl::TextureRef			mTexture;
+		// text
+		bool						mIsText;
+
+
 		// Image sequence
 		int							playheadFrameInc;
 		void						loadNextImageFromDisk();
 		void						updateSequence();
-
+		bool						mIsSequence;
 		string						mFolder;
 		string						mPrefix;
 		string						mExt;

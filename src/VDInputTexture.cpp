@@ -2,14 +2,18 @@
 
 using namespace VideoDromm;
 
-VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePath, bool isTopDown, bool isSequence) {
+VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePathOrText, bool isTopDown, int aType) {
+
+	CI_LOG_V("VDInputTexture constructor");
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimation;
 	mIndex = aIndex;
-	mFilePath = aFilePath;
+	mFilePathOrText = aFilePathOrText;
 	mTopDown = isTopDown;
-	mSequence = isSequence;
-	CI_LOG_V("VDInputTexture constructor");
+	mType = aType;
+
+	mIsSequence = (mType == 1);
+	mIsText = (mType == 2);
 
 	mFlipV = false;
 	mFlipH = true;
@@ -31,18 +35,18 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	mNumberOfDigits = 4;
 	mSyncToBeat = false;
 
-	if (mSequence) {
+	if (mIsSequence) {
 		// find the folder name for display in the ui
-		if (mFilePath.find_last_of("\\") != std::string::npos) {
-			int slashIndex = mFilePath.find_last_of("\\") + 1;
-			mFolder = mFilePath.substr(slashIndex);
+		if (mFilePathOrText.find_last_of("\\") != std::string::npos) {
+			int slashIndex = mFilePathOrText.find_last_of("\\") + 1;
+			mFolder = mFilePathOrText.substr(slashIndex);
 		}
 		bool noValidFile = true; // if no valid files in the folder, we keep existing vector
 		bool firstIndexFound = false;
 		int i = 0;
 		string anyImagefileName = "";
 		// loading 2000 files takes a while, I load only the first one
-		for (fs::directory_iterator it(mFilePath); it != fs::directory_iterator(); ++it)
+		for (fs::directory_iterator it(mFilePathOrText); it != fs::directory_iterator(); ++it)
 		{
 			if (fs::is_regular_file(*it))
 			{
@@ -90,7 +94,7 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 		// init if no valid file found with the last image found in the folder
 		if (noValidFile) {
 			if (anyImagefileName.length() > 0) {
-				mSequence = false;
+				mIsSequence = false;
 				if (mTopDown) {
 					mTexture = gl::Texture::create(loadImage(anyImagefileName), gl::Texture::Format().loadTopDown());
 				}
@@ -100,12 +104,22 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 			}
 		}
 	}
+	else if (mIsText) {
+		TextLayout layout;
+		layout.clear(ColorA(0.2f, 0.2f, 0.2f, 0.2f));
+		layout.setFont(Font("FlamingoSolide.otf", 24));
+		layout.setColor(Color(1, 1, 1));
+		layout.addCenteredLine(mFilePathOrText);
+
+		Surface8u rendered = layout.render(true, false);
+		mTexture = gl::Texture2d::create(rendered);
+	}
 	else {
 		if (mTopDown) {
-			mTexture = gl::Texture::create(loadImage(mFilePath), gl::Texture::Format().loadTopDown());
+			mTexture = gl::Texture::create(loadImage(mFilePathOrText), gl::Texture::Format().loadTopDown());
 		}
 		else {
-			mTexture = gl::Texture::create(loadImage(mFilePath));
+			mTexture = gl::Texture::create(loadImage(mFilePathOrText));
 		}
 	}
 
@@ -151,7 +165,7 @@ void VDInputTexture::loadNextImageFromDisk() {
 				sprintf(restOfFileName, "%03d", mNextIndexFrameToTry);
 			}
 
-			fs::path fileToLoad = mFilePath + "/" + mPrefix + restOfFileName + "." + mExt;
+			fs::path fileToLoad = mFilePathOrText + "/" + mPrefix + restOfFileName + "." + mExt;
 			if (fs::exists(fileToLoad)) {
 				// start profiling
 				auto start = Clock::now();
@@ -205,7 +219,7 @@ void VDInputTexture::updateSequence() {
 }
 
 void VDInputTexture::update() {
-	if (mSequence) {
+	if (mIsSequence) {
 		updateSequence();
 		//if (!mLoadingFilesComplete) loadNextImageFromDisk();
 	}
@@ -265,7 +279,7 @@ void VDInputTexture::toggleLoadingFromDisk() {
 	mLoadingPaused = !mLoadingPaused;
 }
 ci::gl::TextureRef VDInputTexture::getTexture() {
-	if (mSequence) {
+	if (mIsSequence) {
 		if (mPlayheadPosition > mFramesLoaded) {
 			//error
 			mPlayheadPosition = 0;

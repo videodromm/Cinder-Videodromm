@@ -39,7 +39,7 @@ bool VDSession::save()
 	JsonTree doc;
 
 	JsonTree settings = JsonTree::makeArray("settings");
-	settings.addChild(ci::JsonTree("bpm", mBpm));
+	settings.addChild(ci::JsonTree("bpm", mOriginalBpm));
 	settings.addChild(ci::JsonTree("beatsperbar", iBeatsPerBar));
 	settings.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
 	settings.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
@@ -52,6 +52,11 @@ bool VDSession::save()
 	if (mMovieFileName.length() > 0) assets.addChild(ci::JsonTree("moviefile", mMovieFileName));
 	assets.addChild(ci::JsonTree("movieplaybackdelay", mMoviePlaybackDelay));
 	if (mImageSequencePath.length() > 0) assets.addChild(ci::JsonTree("imagesequencepath", mImageSequencePath));
+	if (mText.length() > 0) {
+		assets.addChild(ci::JsonTree("text", mText));
+		assets.addChild(ci::JsonTree("textplaybackdelay", mTextPlaybackDelay));
+		assets.addChild(ci::JsonTree("textplaybackend", mTextPlaybackEnd));
+	}
 	doc.pushBack(assets);
 
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
@@ -70,7 +75,7 @@ void VDSession::restore()
 		JsonTree doc(loadFile(sessionPath));
 
 		JsonTree settings(doc.getChild("settings")); 
-		if (settings.hasChild("bpm")) mBpm = settings.getValueForKey<float>("bpm");
+		if (settings.hasChild("bpm")) mBpm = mOriginalBpm = settings.getValueForKey<float>("bpm");
 		if (settings.hasChild("beatsperbar")) iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
 		if (iBeatsPerBar < 1) iBeatsPerBar = 1;
 		if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
@@ -84,15 +89,19 @@ void VDSession::restore()
 		if (assets.hasChild("moviefile")) mMovieFileName = assets.getValueForKey<string>("moviefile");
 		if (assets.hasChild("movieplaybackdelay")) mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
 		if (assets.hasChild("imagesequencepath")) mImageSequencePath = assets.getValueForKey<string>("imagesequencepath");
+		if (assets.hasChild("text")) mText = assets.getValueForKey<string>("text");
+		if (assets.hasChild("textplaybackdelay")) mTextPlaybackDelay = assets.getValueForKey<int>("textplaybackdelay");
+		if (assets.hasChild("textplaybackend")) mTextPlaybackEnd = assets.getValueForKey<int>("textplaybackend");
 	}
-	catch (const JsonTree::ExcJsonParserError&)  {
-		//CI_LOG_E("Failed to parse json file.");
+	catch (const JsonTree::ExcJsonParserError& exc)  {
+		CI_LOG_W(exc.what());
 	}
 }
 
 void VDSession::resetSomeParams() {
 	// parameters not exposed in json file
-	mFpb = 16;
+	mFpb = 16; 
+	mBpm = mOriginalBpm;
 	mTargetFps = mBpm / 60.0f * mFpb;
 }
 
@@ -101,7 +110,7 @@ void VDSession::reset()
 	// parameters exposed in json file
 	mFlipV = false;
 	mFlipH = false;
-	mBpm = 166;
+	mBpm = mOriginalBpm = 166;
 	iBeatsPerBar = 1;
 	mWaveFileName = "";
 	mWavePlaybackDelay = 10;
@@ -111,6 +120,9 @@ void VDSession::reset()
 	mFadeInDelay= 1;
 	mFadeOutDelay = 1;
 	mEndFrame = 20000000;
+	mText = "";
+	mTextPlaybackDelay = 10;
+	mTextPlaybackEnd = 2020000;
 	resetSomeParams();
 
 

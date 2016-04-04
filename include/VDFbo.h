@@ -4,6 +4,7 @@
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Utilities.h"
+#include "cinder/ImageIo.h"
 
 // Settings
 #include "VDSettings.h"
@@ -45,6 +46,7 @@ namespace VideoDromm
 		void						setShaderIndex(int aShaderIndex);
 		int							loadPixelFragmentShader(string aFilePath);
 		int							setGLSLString(string pixelFrag, string name);
+		void						saveThumb();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

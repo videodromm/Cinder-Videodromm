@@ -53,6 +53,7 @@ namespace VideoDromm {
 	{
 		gl::GlslProgRef				shader;
 		string						name;
+		string						text;
 		bool						active;
 		int							microseconds;
 	};

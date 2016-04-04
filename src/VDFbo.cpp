@@ -34,7 +34,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 			CI_LOG_V("passthru.vert does not exist, should quit");
 		}
 		fs::path fragFile = getAssetPath("") / "passthru.frag";
-		if (fs::exists(fragFile)) {		
+		if (fs::exists(fragFile)) {
 			mPassthruFragmentShaderString = loadString(loadAsset("passthru.frag"));
 		}
 		else
@@ -43,7 +43,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 		}
 		mPassThruShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
 		mShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-	
+
 		validFrag = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)
@@ -60,38 +60,39 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 	//load mix shader
 	/*try
 	{
-		fs::path mixFragFile = getAssetPath("") / "mix.frag";
-		if (fs::exists(mixFragFile))
-		{
-			mShader = gl::GlslProg::create(loadAsset("passthru.vert"), loadFile(mixFragFile));
-		}
-		else
-		{
-			mVDSettings->mMsg = "mix.frag does not exist, should quit";
-			mVDSettings->newMsg = true;
-			CI_LOG_V("mix.frag does not exist, should quit");
-		}
+	fs::path mixFragFile = getAssetPath("") / "mix.frag";
+	if (fs::exists(mixFragFile))
+	{
+	mShader = gl::GlslProg::create(loadAsset("passthru.vert"), loadFile(mixFragFile));
+	}
+	else
+	{
+	mVDSettings->mMsg = "mix.frag does not exist, should quit";
+	mVDSettings->newMsg = true;
+	CI_LOG_V("mix.frag does not exist, should quit");
+	}
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
-		mError = string(exc.what());
-		mVDSettings->mMsg = "mix.frag unable to load/compile shader: " + mError;
-		mVDSettings->newMsg = true;
-		CI_LOG_V("unable to load/compile shader:" + string(exc.what()));
+	mError = string(exc.what());
+	mVDSettings->mMsg = "mix.frag unable to load/compile shader: " + mError;
+	mVDSettings->newMsg = true;
+	CI_LOG_V("unable to load/compile shader:" + string(exc.what()));
 	}
 	catch (const std::exception &e)
 	{
-		mError = string(e.what());
-		mVDSettings->mMsg = "mix.frag unable to load shader: " + mError;
-		mVDSettings->newMsg = true;
-		CI_LOG_V("unable to load shader:" + string(e.what()));
+	mError = string(e.what());
+	mVDSettings->mMsg = "mix.frag unable to load shader: " + mError;
+	mVDSettings->newMsg = true;
+	CI_LOG_V("unable to load shader:" + string(e.what()));
 	}*/
 
 	std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
 	mShader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
+	mFragFileName = mName;
 	mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
 	mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
-
+	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
 }
 int VDFbo::loadPixelFragmentShader(string aFilePath)
 {
@@ -150,7 +151,7 @@ int VDFbo::setGLSLString(string pixelFrag, string name)
 	{
 		mShader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
 		mShaderName = name;
-		
+
 		//preview the new loaded shader
 		mVDSettings->mPreviewFragIndex = foundIndex;
 		CI_LOG_V("setGLSLString success");
@@ -178,10 +179,12 @@ void VDFbo::setTexture(ci::gl::TextureRef aTexture) {
 
 void VDFbo::setShaderIndex(int aShaderIndex) {
 	mShaderIndex = aShaderIndex;
+	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mShaderIndex));
+
 }
 /*ci::gl::TextureRef VDFbo::getTexture() {
 	return mFbo->getColorTexture();
-}*/
+	}*/
 ci::gl::TextureRef VDFbo::getTexture() {
 
 	gl::ScopedFramebuffer fbScp(mFbo);
@@ -250,9 +253,26 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iFlipV", mFlipV);
 
 	gl::ScopedTextureBind tex(mTexture);
-	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));	
+	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 
 	return mFbo->getColorTexture();
+}
+void VDFbo::saveThumb()
+{
+
+	string filename;
+	try
+	{
+		filename = mFragFileName + ".jpg";
+		Surface s8(mFbo->getColorTexture()->createSource());
+		writeImage(getAssetPath("") / "thumbs" / filename, s8);
+		CI_LOG_V("saved:" + filename);
+
+	}
+	catch (const std::exception &e)
+	{
+		CI_LOG_V("unable to save:" + filename + string(e.what()));
+	}
 }
 ivec2 VDFbo::getSize() {
 
@@ -261,7 +281,7 @@ ivec2 VDFbo::getSize() {
 /*gl::FboRef VDFbo::getFboRef() {
 
 	return mFbo;
-}*/
+	}*/
 Area VDFbo::getBounds() {
 
 	return mFbo->getBounds();

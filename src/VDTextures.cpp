@@ -74,19 +74,19 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	// mix fbo at index 0
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
 	// left fbo at index 1
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1));
 	// right fbo at index 2
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 2));
 	// warp1 fbo at index 3
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 3));
 	// warp2 fbo at index 4
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "warp2", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "warp2", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 4));
 	// preview fbo at index 5
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "preview", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEFBO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "preview", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 5));
 	// audio fbo at index 6
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 6));
 	//thumb fbo
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->TEXTUREMODETHUMB));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 7));
 
 
 	/*for (int i = 0; i < mVDFbos.size(); i++)
@@ -144,6 +144,10 @@ void VDTextures::setAudioTexture(unsigned char *signal)
 {
 sTextures[0] = gl::Texture::create(signal, 0x1909, 512, 2);//GL_LUMINANCE, 512, 2);
 }*/
+void VDTextures::setFragForFbo(int fragIndex, int fboIndex) {
+
+	mVDFbos[fboIndex]->setShaderIndex(fragIndex);
+}
 int VDTextures::loadPixelFragmentShaderAtIndex(int index, string mFile) {
 	int rtn = -1;
 	
@@ -316,6 +320,19 @@ string VDTextures::getTextureName(int index) {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
 	return mVDFbos[index]->getName();
 }
+int VDTextures::loadText(int index, string text, int start, int end) {
+	int rtn = 0;
+	// only load image sequence from subfolder in assets folder
+	if (text.length() > 0) {
+		
+			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, 2));
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
+			rtn = mVDFbos.size() - 1;
+			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+		
+	}
+	return rtn;
+}
 int VDTextures::loadImageSequence(int index, string aFile) {
 	int rtn = 0;
 	// only load image sequence from subfolder in assets folder
@@ -323,7 +340,7 @@ int VDTextures::loadImageSequence(int index, string aFile) {
 		fs::path mPath = getAssetPath("") / aFile;
 		// tests for valid path 
 		if (fs::exists(mPath)) {
-			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, mPath.string(), true, true));
+			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, mPath.string(), true, 1));
 			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
 			rtn = mVDFbos.size() - 1;
 			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
@@ -345,6 +362,9 @@ void VDTextures::loadImageFile(int index, string aFile) {
 	catch (...) {
 		CI_LOG_V("Error loading image: " + aFile);
 	}
+}
+void VDTextures::saveThumb(int index) {
+	mVDFbos[index]->saveThumb();
 }
 
 void VDTextures::loadMovieFile(int index, string aFile)
