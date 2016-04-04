@@ -89,17 +89,17 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 7));
 
 
-	/*for (int i = 0; i < mVDFbos.size(); i++)
+	for (int i = 6; i < mVDFbos.size(); i++)
 	{
 
-	fileName = toString(i) + ".glsl";
-	localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
-	if (fs::exists(localFile)) {
-	string shaderPath = localFile.string();
-	mVDFbos[i]->loadPixelFragmentShader(shaderPath);
+		fileName = toString(i) + ".glsl";
+		fs::path  localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
+		if (fs::exists(localFile)) {
+			string shaderPath = localFile.string();
+			mVDFbos[i]->loadPixelFragmentShader(shaderPath);
 
+		}
 	}
-	}*/
 
 	/*sprintf_s(textas[1].name, "img1");
 	sprintf_s(textas[2].name, "img2");
@@ -150,7 +150,7 @@ void VDTextures::setFragForFbo(int fragIndex, int fboIndex) {
 }
 int VDTextures::loadPixelFragmentShaderAtIndex(int index, string mFile) {
 	int rtn = -1;
-	
+
 	fs::path localFile = mFile;
 	if (fs::exists(localFile)) {
 		rtn = mVDFbos[0]->loadPixelFragmentShader(mFile);
@@ -324,12 +324,13 @@ int VDTextures::loadText(int index, string text, int start, int end) {
 	int rtn = 0;
 	// only load image sequence from subfolder in assets folder
 	if (text.length() > 0) {
-		
-			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, 2));
-			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
-			rtn = mVDFbos.size() - 1;
-			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
-		
+
+		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, 2));
+		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, text, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, mVDSettings->TEXTUREMODETEXT));
+		rtn = mVDFbos.size() - 1;
+		mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+		mVDFbos[mVDFbos.size() - 1]->setTexture(mVDInputTextures[mVDInputTextures.size() - 1]->getTexture());
+
 	}
 	return rtn;
 }

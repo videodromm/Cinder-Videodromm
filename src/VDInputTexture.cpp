@@ -106,17 +106,25 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	}
 	else if (mIsText) {
 		TextLayout layout;
-		layout.clear(ColorA(0.2f, 0.2f, 0.2f, 0.2f));
-		layout.setFont(Font("FlamingoSolide.otf", 24));
-		layout.setColor(Color(1, 1, 1));
+		layout.clear(ColorA(0.0f, 0.0f, 0.0f, 1.0f));
+		//layout.setFont(Font("Flamingo Solide Normal", 24));
+		fs::path fontFile = getAssetPath("") / "fonts" / "FlamingoSolide.otf";
+		layout.setFont(Font(loadFile(fontFile), 72));
+		//layout.setFont(Font("Arial", 24));
+		layout.setColor(Color(1.0f, 1.0f, 1.0f));
 		layout.addCenteredLine(mFilePathOrText);
+	
+		layout.setFont(Font(loadFile(fontFile), 24));
+		layout.addCenteredLine("W H E N   O N E   S U N   R I S E S");
 
-		Surface8u rendered = layout.render(true, false);
-		mTexture = gl::Texture2d::create(rendered);
+		layout.addCenteredLine("E V E R Y T H I N G   I S   I L L U M I N A T E D");
+
+		Surface8u rendered = layout.render(false, false);
+		mTexture = gl::Texture::create(rendered, gl::Texture::Format().loadTopDown());
 	}
 	else {
 		if (mTopDown) {
-			mTexture = gl::Texture::create(loadImage(mFilePathOrText), gl::Texture::Format().loadTopDown());
+			mTexture = gl::Texture::create(loadImage(mFilePathOrText));
 		}
 		else {
 			mTexture = gl::Texture::create(loadImage(mFilePathOrText));
