@@ -24,6 +24,8 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDFbo instance
 	typedef std::shared_ptr<class VDFbo> VDFboRef;
+	// profiling
+	typedef std::chrono::high_resolution_clock Clock;
 
 	class VDFbo {
 	public:
@@ -47,6 +49,7 @@ namespace VideoDromm
 		int							loadPixelFragmentShader(string aFilePath);
 		int							setGLSLString(string pixelFrag, string name);
 		void						saveThumb();
+		int							getMicroSeconds() { return mMicroSeconds; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -69,6 +72,7 @@ namespace VideoDromm
 		string						mFragFileName;
 		string						mShaderName;
 		bool						validFrag;
+
 		//! default vertex shader
 		std::string					mPassthruVextexShaderString;
 		//! default fragment shader
@@ -80,6 +84,8 @@ namespace VideoDromm
 
 		//! Textures
 		ci::gl::TextureRef			mTexture, mTexture1;
+		// profiling
+		int							mMicroSeconds;
 	};
 
 

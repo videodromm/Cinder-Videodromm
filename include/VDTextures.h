@@ -104,6 +104,7 @@ namespace VideoDromm
 		int							inputTextureGetMaxFrame(int index);
 		int							inputTextureGetSpeed(int index);
 		void						inputTextureSetSpeed(int index, int speed);
+		int							getMicroSeconds(int index);
 		// shaders
 		int							loadPixelFragmentShaderAtIndex(int index, string mFile);
 		//void						createWarpInput();

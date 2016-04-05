@@ -89,7 +89,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 7));
 
 
-	for (int i = 6; i < mVDFbos.size(); i++)
+	for (int i = 1; i < mVDFbos.size(); i++)
 	{
 
 		fileName = toString(i) + ".glsl";
@@ -316,6 +316,10 @@ GLuint VDTextures::getShaderThumbTextureId(int index)
 if (index > mThumbFbos.size() - 1) index = mThumbFbos.size() - 1;
 return  mThumbFbos[index].fbo->getId();
 }*/
+int VDTextures::getMicroSeconds(int index) {
+	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
+	return mVDFbos[index]->getMicroSeconds();
+}
 string VDTextures::getTextureName(int index) {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
 	return mVDFbos[index]->getName();
@@ -421,6 +425,8 @@ mVDShaders->getWarpShader()->uniform("iAlpha", mVDSettings->controlValues[4]);
 gl::draw(mMesh);
 
 }*/
+
+
 void VDTextures::renderShadaThumbFbo()
 {
 	// start profiling

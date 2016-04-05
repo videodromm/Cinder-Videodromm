@@ -93,7 +93,7 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 	// initialize some textures
 	mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
 	mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
-	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
+	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
 }
 int VDFbo::loadPixelFragmentShader(string aFilePath)
 {
@@ -119,6 +119,7 @@ int VDFbo::loadPixelFragmentShader(string aFilePath)
 				mVDSettings->mMsg = name + " loadPixelFragmentShader success";
 				mVDSettings->newMsg = true;
 				//mFragmentShadersNames[rtn] = name;
+				mShader->setLabel(name);
 			}
 		}
 		else
@@ -180,13 +181,15 @@ void VDFbo::setTexture(ci::gl::TextureRef aTexture) {
 
 void VDFbo::setShaderIndex(int aShaderIndex) {
 	mShaderIndex = aShaderIndex;
-	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mShaderIndex));
+	// CHECK mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mShaderIndex));
 
 }
 /*ci::gl::TextureRef VDFbo::getTexture() {
 	return mFbo->getColorTexture();
 	}*/
 ci::gl::TextureRef VDFbo::getTexture() {
+	// start profiling
+	auto start = Clock::now();
 
 	gl::ScopedFramebuffer fbScp(mFbo);
 	gl::clear(Color(0.25, 0.5f, 1.0f));// Color::black());
@@ -254,8 +257,13 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iFlipV", mFlipV);
 
 	gl::ScopedTextureBind tex(mTexture);
+	gl::ScopedTextureBind tex1(mTexture1);
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 
+	// end profiling
+	auto end = Clock::now();
+	auto nsdur = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	mMicroSeconds = nsdur.count();
 	return mFbo->getColorTexture();
 }
 void VDFbo::saveThumb()
