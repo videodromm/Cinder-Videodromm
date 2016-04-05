@@ -162,7 +162,8 @@ void VDAnimation::update() {
 		iTempoTime = (float)modulo;
 		if (iTempoTime < previousTime)
 		{
-			iBar++;
+			//iBar++;
+			mVDSettings->iBeat++;
 		}
 		previousTime = iTempoTime;
 
@@ -368,7 +369,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	startTime = currentTime = timer.getSeconds();
 
 	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
-	iBar = 0;
+	//iBar = 0;
 	//iBadTvRunning = false;
 
 	load();

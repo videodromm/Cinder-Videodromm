@@ -216,7 +216,8 @@ void VDInputTexture::updateSequence() {
 		}
 		else {
 			if (mSyncToBeat) {
-				newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
+				//newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
+				newPosition = (int)(((int)(mVDSettings->iBeat / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
 			}
 			else {
 				newPosition = mPlayheadPosition;

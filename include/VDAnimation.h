@@ -101,7 +101,7 @@ namespace VideoDromm
 		// tempo
 		void						tapTempo();
 		void						setTimeFactor(const int &aTimeFactor);
-		int							iBar;
+		//int							iBar;
 		int							iBeatIndex; //1 to beatsperbar
 		// animation
 		//int							getBadTV(int frame);
