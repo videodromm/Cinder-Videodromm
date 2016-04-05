@@ -11,6 +11,8 @@
 #include "VDLog.h"
 // Animation
 #include "VDAnimation.h"
+// hap codec movie
+#include "MovieHap.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -62,6 +64,8 @@ namespace VideoDromm
 		int							getMaxFrame();
 		// text
 		bool						isText() { return mIsText; };
+		// hap codec movie
+		bool						isMovie() { return mIsMovie; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -80,7 +84,11 @@ namespace VideoDromm
 		// text
 		bool						mIsText;
 
-
+		// hap codec movie
+		qtime::MovieGlHapRef		mMovie;
+		void						loadMovieFile(const fs::path &path);
+		bool						mLoopVideo;
+		bool						mIsMovie;
 		// Image sequence
 		int							playheadFrameInc;
 		void						loadNextImageFromDisk();

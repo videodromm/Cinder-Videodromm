@@ -85,7 +85,7 @@ namespace VideoDromm
 		// image
 		void						loadImageFile(int index, string aFile);
 		// quicktime video
-		void						loadMovieFile(int index, string aFile);
+		int							loadMovie(int index, string aFile);
 		// image sequence
 		int							loadImageSequence(int index, string aFile);
 		// text

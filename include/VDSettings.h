@@ -91,7 +91,8 @@ namespace VideoDromm {
 		static const int			TEXTUREMODEAUDIO = 4;			// audio spectrum
 		static const int			TEXTUREMODETHUMB = 5;			// thumb
 		static const int			TEXTUREMODEFBO = 6;				// fbo
-		static const int			TEXTUREMODETEXT = 7;				// text
+		static const int			TEXTUREMODETEXT = 7;			// text
+		static const int			TEXTUREMODEMOVIE = 8;			// movie
 		bool						save();
 		bool						restore();
 		void						reset();

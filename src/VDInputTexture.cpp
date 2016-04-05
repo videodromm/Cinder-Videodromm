@@ -14,9 +14,16 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 
 	mIsSequence = (mType == 1);
 	mIsText = (mType == 2);
+	mIsMovie = (mType == 3);
+
+	// movie
+	mLoopVideo = false;
 
 	mFlipV = false;
 	mFlipH = true;
+
+	// init the texture whatever happens next
+	mTexture = gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, gl::Texture::Format().loadTopDown());
 
 	// Loads all files contained in the supplied folder and creates Textures from them
 	// init the sequence vars
@@ -113,7 +120,7 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 		//layout.setFont(Font("Arial", 24));
 		layout.setColor(Color(1.0f, 1.0f, 1.0f));
 		layout.addCenteredLine(mFilePathOrText);
-	
+
 		layout.setFont(Font(loadFile(fontFile), 24));
 		layout.addCenteredLine("W H E N   O N E   S U N   R I S E S");
 
@@ -121,6 +128,9 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 
 		Surface8u rendered = layout.render(false, false);
 		mTexture = gl::Texture::create(rendered, gl::Texture::Format().loadTopDown());
+	}
+	else if (mIsMovie) {
+		loadMovieFile(mFilePathOrText);
 	}
 	else {
 		if (mTopDown) {
@@ -132,7 +142,22 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	}
 
 }
-
+void VDInputTexture::loadMovieFile(const fs::path &moviePath)
+{
+	try {
+		mMovie.reset();
+		// load up the movie, set it to loop, and begin playing
+		mMovie = qtime::MovieGlHap::create(moviePath);
+		mLoopVideo = (mMovie->getDuration() < 30.0f);
+		mMovie->setLoop(mLoopVideo);
+		mMovie->play();
+		mTexture = gl::Texture::create(mMovie->getWidth(), mMovie->getHeight(), gl::Texture::Format().loadTopDown());
+	}
+	catch (ci::Exception &e)
+	{
+		CI_LOG_V( "Unable to load the movie." );		
+	}
+}
 
 void VDInputTexture::setTexture(ci::gl::TextureRef aTexture) {
 	mTexture = aTexture;
@@ -299,6 +324,9 @@ ci::gl::TextureRef VDInputTexture::getTexture() {
 			updateSequence();
 		}
 		mTexture = mSequenceTextures[mPlayheadPosition];
+	}
+	else if(mIsMovie) {
+		mTexture = mMovie->getTexture();
 	}
 
 	return mTexture;

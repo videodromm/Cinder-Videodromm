@@ -89,9 +89,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 7));
 
 
-	for (int i = 1; i < mVDFbos.size(); i++)
-	{
-
+	for (int i = 1; i < mVDFbos.size(); i++) {
 		fileName = toString(i) + ".glsl";
 		fs::path  localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
 		if (fs::exists(localFile)) {
@@ -326,15 +324,12 @@ string VDTextures::getTextureName(int index) {
 }
 int VDTextures::loadText(int index, string text, int start, int end) {
 	int rtn = 0;
-	// only load image sequence from subfolder in assets folder
 	if (text.length() > 0) {
-
 		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, 2));
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, text, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, mVDSettings->TEXTUREMODETEXT));
+		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, text, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODETEXT));
 		rtn = mVDFbos.size() - 1;
 		mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
 		mVDFbos[mVDFbos.size() - 1]->setTexture(mVDInputTextures[mVDInputTextures.size() - 1]->getTexture());
-
 	}
 	return rtn;
 }
@@ -354,6 +349,21 @@ int VDTextures::loadImageSequence(int index, string aFile) {
 	return rtn;
 }
 
+int VDTextures::loadMovie(int index, string aFile) {
+	int rtn = 0;
+	// only load image sequence from subfolder in assets folder
+	if (aFile.length() > 0) {
+		//fs::path mPath = getAssetPath("") / aFile;
+		// tests for valid path 
+		if (fs::exists(aFile)) {
+			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, 3));
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMOVIE));
+			rtn = mVDFbos.size() - 1;
+			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+		}
+	}
+	return rtn;
+}
 void VDTextures::loadImageFile(int index, string aFile) {
 	try {
 		// try loading image file
@@ -370,24 +380,6 @@ void VDTextures::loadImageFile(int index, string aFile) {
 }
 void VDTextures::saveThumb(int index) {
 	mVDFbos[index]->saveThumb();
-}
-
-void VDTextures::loadMovieFile(int index, string aFile)
-{
-	//try
-	//{
-	//	mMovieIndex = index;
-	//	// try loading video file
-	//	mMovie = qtime::MovieGl::create(aFile);
-	//	mMovie->setLoop();
-	//	mMovie->play();
-	//}
-	//catch (...)
-	//{
-	//	CI_LOG_V("Error loading video: " + aFile);
-	//	mMovie->reset();
-
-	//}
 }
 
 void VDTextures::update()
