@@ -85,6 +85,7 @@ namespace VideoDromm
 		// audio
 		void						loadWaveFile(string aFilePath);
 		float*						getSmallSpectrum() { return arr; };
+		bool						isAudio() { return mIsAudio; };
 
 	private:
 		// Settings

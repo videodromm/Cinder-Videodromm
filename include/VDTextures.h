@@ -117,6 +117,9 @@ namespace VideoDromm
 		int							getMicroSeconds(int index);
 		// shaders
 		int							loadPixelFragmentShaderAtIndex(int index, string mFile);
+		// audio
+		float*						getSmallSpectrum() { return mVDInputTextures[mVDSettings->TEXTUREMODEAUDIO]->getSmallSpectrum(); };
+
 		//void						createWarpInput();
 		char*						getPreviewTime() { return previewTime; };
 	private:

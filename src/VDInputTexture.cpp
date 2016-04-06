@@ -5,13 +5,13 @@ using namespace VideoDromm;
 VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aFboIndex, string aFilePathOrText, bool isTopDown, int aType) {
 
 	CI_LOG_V("VDInputTexture constructor");
-	CI_LOG_V(aFilePathOrText);
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimation;
 	mFboIndex = aFboIndex;
 	mFilePathOrText = aFilePathOrText;
 	mTopDown = isTopDown;
 	mType = aType;
+	CI_LOG_V(mFilePathOrText);
 
 	//mType = 0 if image
 	mIsSequence = (mType == mVDSettings->TEXTUREMODEIMAGESEQUENCE);
@@ -139,6 +139,43 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	}
 	else if (mIsAudio) {
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+		mTexture = gl::Texture::create(dTexture, 0x1909, 512, 2); //#define GL_LUMINANCE 0x1909
+
+		auto ctx = audio::Context::master();
+		// linein
+		if (mVDSettings->mUseLineIn) {
+			try {
+				CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed so put UseLineIn to false in the settings.xml file");
+				// saving UseLineIn = false in case something goes wrong
+				mVDSettings->mUseLineIn = false;
+				mVDSettings->save();
+				mLineIn = ctx->createInputDeviceNode(); //crashes if linein is present but disabled, doesn't go to catch block
+				// saving UseLineIn back to true
+				mVDSettings->mUseLineIn = true;
+				mVDSettings->save();
+				CI_LOG_V("mic/line in opened");
+
+				//*mScopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(512).windowSize(256);
+				auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(mVDSettings->mFftSize).windowSize(mVDSettings->mWindowSize);
+				mMonitorLineInSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeLineInFmt));
+				mLineIn >> mMonitorLineInSpectralNode;
+
+				mLineIn->enable();
+			}
+			catch (...) {
+				// never called
+				mVDSettings->mUseLineIn = false;
+			}
+		}
+		else {
+			// wave
+			// TODO: it is pretty surprising when you recreate mScope here without checking if there has already been one added.
+			//	- user will no longer see the old mScope, but the context still owns a reference to it, so another gets added each time we call this method.
+			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(2048).windowSize(1024);
+			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
+		}
+
+		ctx->enable();
 	}
 	else { // mType = 0
 		if (mTopDown) {
@@ -321,6 +358,78 @@ void VDInputTexture::update() {
 	if (mIsSequence) {
 		updateSequence();
 		//if (!mLoadingFilesComplete) loadNextImageFromDisk();
+	}
+	if (mIsAudio) {
+		if (mVDSettings->mUseLineIn)
+		{
+			mMagSpectrum = mMonitorLineInSpectralNode->getMagSpectrum();
+		}
+		else
+		{
+			if (mSamplePlayerNode) mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+		}
+
+		if (mMagSpectrum.empty())
+			return;
+
+		unsigned char signal[kBands];
+		mVDSettings->maxVolume = 0.0;
+		size_t mDataSize = mMagSpectrum.size();
+		if (mDataSize > 0 && mDataSize < 2048)
+		{
+			float mv;
+			float db;
+			float maxdb = 0.0f;
+			for (size_t i = 0; i < mDataSize; i++) {
+				float f = mMagSpectrum[i];
+				db = audio::linearToDecibel(f);
+				f = db * mVDSettings->controlValues[13];
+				if (f > mVDSettings->maxVolume)
+				{
+					mVDSettings->maxVolume = f; mv = f;
+				}
+				mVDSettings->mData[i] = f;
+				int ger = f;
+				signal[i] = static_cast<unsigned char>(ger);
+
+				if (db > maxdb) maxdb = db;
+
+				switch (i)
+				{
+				case 11:
+					mVDSettings->iFreqs[0] = f;
+					arr[0] = f;
+					break;
+				case 13:
+					mVDSettings->iFreqs[1] = f;
+					arr[1] = f;
+					break;
+				case 15:
+					mVDSettings->iFreqs[2] = f;
+					arr[2] = f;
+					break;
+				case 18:
+					mVDSettings->iFreqs[3] = f;
+					arr[3] = f;
+					break;
+				case 25:
+					arr[4] = f;
+					break;
+				case 30:
+					arr[5] = f;
+					break;
+				case 35:
+					arr[6] = f;
+					break;
+
+				default:
+					break;
+				}
+
+			}
+			// store it as a 512x2 texture in UPDATE only!!
+			mTexture = gl::Texture::create(signal, 0x1909, 512, 2); //#define GL_LUMINANCE 0x1909
+		}
 	}
 }
 // play/pause sequence

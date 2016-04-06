@@ -18,6 +18,9 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	else {
 		CI_LOG_E("Default input texture not found");
 	}
+
+	// audio texture
+	mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, mVDSettings->TEXTUREMODEAUDIO, "", true, mVDSettings->TEXTUREMODEAUDIO));
 	// init fbos
 	if (mVDSession->hasImageSequencePath()) {
 		loadImageSequence(1, mVDSession->getImageSequencePath());
@@ -363,7 +366,7 @@ void VDTextures::saveThumb(int index) {
 
 void VDTextures::update()
 {
-
+	mVDInputTextures[mVDSettings->TEXTUREMODEAUDIO]->update();
 }
 /*void VDTextures::renderWarpFbos()
 {

@@ -253,6 +253,10 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	if (mVDInputTexture->isSequence()) {
 		mVDInputTexture->update();
 	}
+	// image sequence
+	if (mVDInputTexture->isAudio()) {
+		mVDInputTexture->update();
+	}
 
 
 		// setup the viewport to match the dimensions of the FBO
