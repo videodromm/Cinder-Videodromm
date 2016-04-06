@@ -48,6 +48,12 @@ namespace VideoDromm {
 		int							getTextStart() { return mTextPlaybackDelay; };
 		int							getTextEnd() { return mTextPlaybackEnd; };
 		bool						hasText() { return mText.length() > 0; };
+		// shaders
+		bool						hasShaderLeft() { return mShaderLeft.length() > 0; };
+		bool						hasShaderRight() { return mShaderRight.length() > 0; };
+		string						getShaderLeft() { return mShaderLeft; };
+		string						getShaderRight() { return mShaderRight; };
+
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -75,6 +81,9 @@ namespace VideoDromm {
 		string						mText;
 		int							mTextPlaybackDelay;
 		int							mTextPlaybackEnd;
+		// shaders
+		string						mShaderLeft;
+		string						mShaderRight;
 	};
 
 }

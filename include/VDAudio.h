@@ -14,6 +14,7 @@
 #include "cinder/audio/SamplePlayerNode.h"
 #include "cinder/audio/SampleRecorderNode.h"
 #include "cinder/audio/NodeEffects.h"
+#include "cinder/Rand.h"
 // Settings
 #include "VDSettings.h"
 // Logger

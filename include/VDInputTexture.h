@@ -4,7 +4,18 @@
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Utilities.h"
+// audio
+#include "cinder/audio/Context.h"
+#include "cinder/audio/MonitorNode.h"
+#include "cinder/audio/Utilities.h"
 
+#include "cinder/audio/Source.h"
+#include "cinder/audio/Target.h"
+#include "cinder/audio/dsp/Converter.h"
+#include "cinder/audio/SamplePlayerNode.h"
+#include "cinder/audio/SampleRecorderNode.h"
+#include "cinder/audio/NodeEffects.h"
+#include "cinder/Rand.h"
 // Settings
 #include "VDSettings.h"
 // Logger
@@ -45,6 +56,8 @@ namespace VideoDromm
 		string						getName();
 		bool						isFlipH() { return mFlipH; };
 		bool						isFlipV() { return mFlipV; };
+		int							getTextureWidth();
+		int							getTextureHeight();
 		// image sequence
 		bool						isSequence() { return mIsSequence; };
 		void						update();
@@ -69,9 +82,10 @@ namespace VideoDromm
 		void						rewindMovie();
 		void						fastforwardMovie();
 		float						movieTime;
+		// audio
+		void						loadWaveFile(string aFilePath);
+		float*						getSmallSpectrum() { return arr; };
 
-		int							getTextureWidth();
-		int							getTextureHeight();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -116,6 +130,23 @@ namespace VideoDromm
 		int							mSpeed;
 		bool						mSyncToBeat;
 		vector<ci::gl::TextureRef>	mSequenceTextures;
+		// audio
+		audio::InputDeviceNodeRef		mLineIn;
+		audio::MonitorSpectralNodeRef	mMonitorLineInSpectralNode;
+		audio::MonitorSpectralNodeRef	mMonitorWaveSpectralNode;
+		audio::SamplePlayerNodeRef		mSamplePlayerNode;
+		audio::SourceFileRef			mSourceFile;
+		audio::MonitorSpectralNodeRef	mScopeLineInFmt;
+
+		vector<float>					mMagSpectrum;
+
+		float							arr[7];
+		// number of frequency bands of our spectrum
+		static const int				kBands = 1024;
+
+		// audio texture
+		unsigned char					dTexture[1024];
+		bool							mIsAudio;
 	};
 
 

@@ -7,7 +7,7 @@
 #include "cinder/app/App.h"
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
-#include "cinder/Rand.h"
+//#include "cinder/Rand.h"
 #include "cinder/Utilities.h"
 #include "cinder/Filesystem.h"
 #include "cinder/Capture.h"

@@ -4,14 +4,14 @@ using namespace VideoDromm;
 
 VDAudio::VDAudio(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
-
+	for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
 	mTexture = gl::Texture::create(dTexture, 0x1909, 512, 2); //#define GL_LUMINANCE 0x1909
 
 	auto ctx = audio::Context::master();
 	// linein
 	if (mVDSettings->mUseLineIn) {
 		try {
-			CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed no put UseLineIn to false in the settings.xml file");
+			CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed so put UseLineIn to false in the settings.xml file");
 			// saving UseLineIn = false in case something goes wrong
 			mVDSettings->mUseLineIn = false;
 			mVDSettings->save();

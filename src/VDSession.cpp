@@ -57,6 +57,8 @@ bool VDSession::save()
 		assets.addChild(ci::JsonTree("textplaybackdelay", mTextPlaybackDelay));
 		assets.addChild(ci::JsonTree("textplaybackend", mTextPlaybackEnd));
 	}
+	if (mShaderLeft.length() > 0) assets.addChild(ci::JsonTree("ShaderLeft", mShaderLeft));
+	if (mShaderRight.length() > 0) assets.addChild(ci::JsonTree("ShaderRight", mShaderRight));
 	doc.pushBack(assets);
 
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
@@ -92,6 +94,8 @@ void VDSession::restore()
 		if (assets.hasChild("text")) mText = assets.getValueForKey<string>("text");
 		if (assets.hasChild("textplaybackdelay")) mTextPlaybackDelay = assets.getValueForKey<int>("textplaybackdelay");
 		if (assets.hasChild("textplaybackend")) mTextPlaybackEnd = assets.getValueForKey<int>("textplaybackend");
+		if (assets.hasChild("ShaderLeft")) mShaderLeft = assets.getValueForKey<string>("ShaderLeft");
+		if (assets.hasChild("ShaderRight")) mShaderRight = assets.getValueForKey<string>("ShaderRight");
 	}
 	catch (const JsonTree::ExcJsonParserError& exc)  {
 		CI_LOG_W(exc.what());
@@ -123,6 +127,9 @@ void VDSession::reset()
 	mText = "";
 	mTextPlaybackDelay = 10;
 	mTextPlaybackEnd = 2020000;
+	mShaderLeft = "";
+	mShaderRight = "";
+
 	resetSomeParams();
 
 

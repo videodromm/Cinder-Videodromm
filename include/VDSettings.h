@@ -84,15 +84,18 @@ namespace VideoDromm {
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
 		// texture modes
-		static const int			TEXTUREMODEINPUT = 0;			// spout
-		static const int			TEXTUREMODESHADER = 1;			// shader
-		static const int			TEXTUREMODEIMAGE = 2;			// image
-		static const int			TEXTUREMODEIMAGESEQUENCE = 3;	// image sequence
-		static const int			TEXTUREMODEAUDIO = 4;			// audio spectrum
-		static const int			TEXTUREMODETHUMB = 5;			// thumb
-		static const int			TEXTUREMODEFBO = 6;				// fbo
-		static const int			TEXTUREMODETEXT = 7;			// text
-		static const int			TEXTUREMODEMOVIE = 8;			// movie
+		static const int			TEXTUREMODEMIX = 0;				// mix two shaders
+		static const int			TEXTUREMODEAUDIO = 1;			// audio spectrum
+		static const int			TEXTUREMODELEFT = 2;			// left
+		static const int			TEXTUREMODERIGHT = 3;			// right
+		static const int			TEXTUREMODEINPUT = 4;			// spout
+		static const int			TEXTUREMODESHADER = 5;			// shader
+		static const int			TEXTUREMODEIMAGE = 6;			// image
+		static const int			TEXTUREMODEIMAGESEQUENCE = 7;	// image sequence
+		static const int			TEXTUREMODETHUMB = 8;			// thumb
+		static const int			TEXTUREMODEFBO = 9;				// fbo
+		static const int			TEXTUREMODETEXT = 10;			// text
+		static const int			TEXTUREMODEMOVIE = 11;			// movie
 		bool						save();
 		bool						restore();
 		void						reset();

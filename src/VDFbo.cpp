@@ -117,7 +117,12 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTexture
 	//mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
 	//mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
 	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
-	usePassthruShader();
+	if (mType == mVDSettings->TEXTUREMODEMIX) {
+		useMixShader();
+	}
+	else {
+		usePassthruShader();
+	}
 }
 void VDFbo::useMixShader() {
 	mShaderName = "mix";

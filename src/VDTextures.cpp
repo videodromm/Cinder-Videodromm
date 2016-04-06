@@ -13,7 +13,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	// init inputTextures
 	fs::path imageFile = getAssetPath("") / "0.jpg";
 	if (fs::exists(imageFile)) {
-		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, 0, imageFile.string(), true, 0));// type 0 = image
+		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, 0, imageFile.string(), true, mVDSettings->TEXTUREMODEIMAGE));
 	}
 	else {
 		CI_LOG_E("Default input texture not found");
@@ -29,24 +29,32 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 		fs::path movieFile = getAssetPath("") / mVDSettings->mAssetsPath / mVDSession->getMovieFileName();
 		loadMovie(3, movieFile.string());
 	}
-	currentShadaThumbIndex = 0;
 
 	// mix fbo at index 0
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 0));
-	// left fbo at index 1
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1));
-	fs::path  localFile = getAssetPath("") / mVDSettings->mAssetsPath / "1.glsl";
-	if (fs::exists(localFile)) {
-		string shaderPath = localFile.string();
-		mVDFbos[1]->loadPixelFragmentShader(shaderPath);
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMIX));
+	// audio fbo at index 1
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
+
+	if (mVDSession->hasShaderLeft()) {
+		fs::path shaderLeftFile = getAssetPath("") / mVDSettings->mAssetsPath / mVDSession->getShaderLeft();
+		if (fs::exists(shaderLeftFile)) {
+			// left fbo at index 1
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODELEFT));
+			string shaderPathLeft = shaderLeftFile.string();
+			mVDFbos[1]->loadPixelFragmentShader(shaderPathLeft);
+		}
 	}
-	// right fbo at index 2
-	/*mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 2));
-	localFile = getAssetPath("") / mVDSettings->mAssetsPath / "2.glsl";
-	if (fs::exists(localFile)) {
-	string shaderPath = localFile.string();
-	mVDFbos[2]->loadPixelFragmentShader(shaderPath);
+	if (mVDSession->hasShaderRight()) {
+		fs::path shaderRightFile = getAssetPath("") / mVDSettings->mAssetsPath / mVDSession->getShaderRight();
+		if (fs::exists(shaderRightFile)) {
+			// right fbo at index 2
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODERIGHT));
+			string shaderPathRight = shaderRightFile.string();
+			mVDFbos[2]->loadPixelFragmentShader(shaderPathRight);
+		}
 	}
+	currentShadaThumbIndex = 0;
+	/*
 	// warp1 fbo at index 3
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 3));
 	// warp2 fbo at index 4
@@ -73,18 +81,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 		ci::gl::Fbo::Format mFormat;
 		mVDFbos[mVDSettings->mVertexSphereFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, mFormat);
 
-		//const char* fboNames[] = { "mix", "", "", "", "", "", "", "", "", "", "audio", "", "1", "2", "3", "4" };
-		sprintf_s(mVDFbos[1].name, "left");
-		sprintf_s(mVDFbos[2].name, "right");
-		sprintf_s(mVDFbos[3].name, "warp1");
-		sprintf_s(mVDFbos[4].name, "warp2");
-		sprintf_s(mVDFbos[5].name, "preview");
-		sprintf_s(mVDFbos[6].name, "abp");
-		sprintf_s(mVDFbos[7].name, "live");
-		sprintf_s(mVDFbos[8].name, "sphere");
-		sprintf_s(mVDFbos[9].name, "mesh");
-		sprintf_s(mVDFbos[11].name, "vtxsphere");
-
+		
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
 		// store it as a 512x2 texture in the first texture
 		Texta audioTex;
@@ -94,51 +91,8 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 		textas.push_back(audioTex);
 		sTextures.push_back(gl::Texture::create(dTexture, 0x1909, 512, 2));//GL_LUMINANCE
 		*/
-	/*fs::path localFile;
-	for (int j = 0; j < mVDSettings->MAX - 1; j++)
-	{
-	fileName = toString(j) + ".jpg";
-	localFile = getAssetPath("") / mVDSettings->mAssetsPath / fileName;
-	if (fs::exists(localFile))
-	{
-	gl::TextureRef img = gl::Texture::create(loadImage(localFile));// TODO , gl::Texture::Format().magFilter(GL_LINEAR).minFilter(GL_LINEAR).loadTopDown());
-	//img.setFlipped();
-	sTextures.push_back(img);
-	}
-	else
-	{
-	//gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")));
-	gl::TextureRef img = gl::Texture::create(loadImage(loadAsset("videodromm-logo.png")), gl::Texture::Format().loadTopDown());
-	sTextures.push_back(img);
-	}
-	Texta tex;
-	sprintf_s(tex.name, "tex%d", j);
-	tex.sequenceIndex = 0;
-	tex.isSequence = false;
-	textas.push_back(tex);
+	
 
-	}
-	// Fbos
-
-	static const int			TEXTUREMODEINPUT = 0;			// spout
-	static const int			TEXTUREMODESHADER = 1;			// shader
-	static const int			TEXTUREMODEIMAGE = 2;			// image
-	static const int			TEXTUREMODEIMAGESEQUENCE = 3;	// image sequence
-	static const int			TEXTUREMODEAUDIO = 4;			// audio spectrum
-	static const int			TEXTUREMODETHUMB = 5;			// thumb
-	static const int			TEXTUREMODEFBO = 6;				// fbo
-
-	sprintf_s(textas[1].name, "img1");
-	sprintf_s(textas[2].name, "img2");
-	sprintf_s(textas[3].name, "img3");
-	sprintf_s(textas[4].name, "4pvwFbo");
-	sprintf_s(textas[5].name, "5mixFbo");
-	sprintf_s(textas[6].name, "6leftFbo");
-	sprintf_s(textas[7].name, "7rightFbo");
-	sprintf_s(textas[8].name, "8warp1Fbo");
-	sprintf_s(textas[9].name, "9warp2Fbo");
-	sprintf_s(textas[10].name, "10spout");
-	sprintf_s(textas[11].name, "11LiveFbo");*/
 	//gl::enableDepthWrite();
 }
 /*char* VDTextures::getTextureName(int index) {
@@ -231,7 +185,6 @@ ci::gl::TextureRef VDTextures::getInputTexture(int index) {
 	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
 	return mVDInputTextures[index]->getTexture();
 }
-
 
 // images sequence
 bool VDTextures::inputTextureIsSequence(int index)
@@ -341,7 +294,7 @@ string VDTextures::getTextureName(int index) {
 int VDTextures::loadText(int index, string text, int start, int end) {
 	int rtn = 0;
 	if (text.length() > 0) {
-		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, 2));
+		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, mVDSettings->TEXTUREMODETEXT));
 		int inputTextureIndex = mVDInputTextures.size() - 1;
 		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[inputTextureIndex], text, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODETEXT));
 		rtn = mVDFbos.size() - 1;
@@ -357,7 +310,7 @@ int VDTextures::loadImageSequence(int index, string aFile) {
 		fs::path mPath = getAssetPath("") / aFile;
 		// tests for valid path 
 		if (fs::exists(mPath)) {
-			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, mPath.string(), true, 1));
+			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, mPath.string(), true, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
 			int inputTextureIndex = mVDInputTextures.size() - 1;
 			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[inputTextureIndex], mVDInputTextures[inputTextureIndex]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
 			rtn = mVDFbos.size() - 1;
@@ -374,7 +327,7 @@ int VDTextures::loadMovie(int index, string aFile) {
 		//fs::path mPath = getAssetPath("") / aFile;
 		// tests for valid path 
 		if (fs::exists(aFile)) {
-			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, 3));
+			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, mVDSettings->TEXTUREMODEMOVIE));
 			movieInputTextureIndex = mVDInputTextures.size() - 1;
 			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[movieInputTextureIndex], mVDInputTextures[movieInputTextureIndex]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMOVIE));
 			rtn = mVDFbos.size() - 1;

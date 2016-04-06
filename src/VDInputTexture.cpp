@@ -5,6 +5,7 @@ using namespace VideoDromm;
 VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aFboIndex, string aFilePathOrText, bool isTopDown, int aType) {
 
 	CI_LOG_V("VDInputTexture constructor");
+	CI_LOG_V(aFilePathOrText);
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimation;
 	mFboIndex = aFboIndex;
@@ -13,9 +14,10 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	mType = aType;
 
 	//mType = 0 if image
-	mIsSequence = (mType == 1);
-	mIsText = (mType == 2);
-	mIsMovie = (mType == 3);
+	mIsSequence = (mType == mVDSettings->TEXTUREMODEIMAGESEQUENCE);
+	mIsText = (mType == mVDSettings->TEXTUREMODETEXT);
+	mIsMovie = (mType == mVDSettings->TEXTUREMODEMOVIE);
+	mIsAudio = (mType == mVDSettings->TEXTUREMODEAUDIO);
 
 	// movie
 	mLoopVideo = false;
@@ -135,6 +137,9 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	else if (mIsMovie) {
 		loadMovieFile(mFilePathOrText);
 	}
+	else if (mIsAudio) {
+		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+	}
 	else { // mType = 0
 		if (mTopDown) {
 			mTexture = gl::Texture::create(loadImage(mFilePathOrText));
@@ -145,6 +150,38 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	}
 
 }
+void VDInputTexture::loadWaveFile(string aFilePath)
+{
+	try {
+		if (fs::exists(aFilePath))		{
+			auto ctx = audio::master();
+			mSourceFile = audio::load(loadFile(aFilePath), audio::master()->getSampleRate());
+			mSamplePlayerNode = ctx->makeNode(new audio::FilePlayerNode(mSourceFile, false));
+			mSamplePlayerNode->setLoopEnabled(false);
+			mSamplePlayerNode >> mMonitorWaveSpectralNode >> ctx->getOutput();
+			mSamplePlayerNode->enable();
+			//ctx->enable();
+
+			// or connect in series (it is added to the Context's 'auto pulled list')
+			//mSamplePlayerNode >> ctx->getOutput();
+			mSamplePlayerNode->seek(0);
+
+			auto filePlayer = dynamic_pointer_cast<audio::FilePlayerNode>(mSamplePlayerNode);
+			CI_ASSERT_MSG(filePlayer, "expected sample player to be either BufferPlayerNode or FilePlayerNode");
+
+			filePlayer->setSourceFile(mSourceFile);
+
+			//audio::master()->printGraph();
+
+			mSamplePlayerNode->start();
+			mVDSettings->mUseLineIn = false;
+		}
+	}
+	catch (...) {
+
+	}
+}
+
 void VDInputTexture::loadMovieFile(const fs::path &moviePath)
 {
 	try {
