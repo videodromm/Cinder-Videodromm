@@ -7,15 +7,15 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTexture
 	mVDShaders = aShadersRef;
 	mVDInputTexture = aInputTexture;
 	mName = aName;
-	mWidth = aWidth;
-	mHeight = aHeight;
+	mWidth = mVDInputTexture->getTextureWidth();
+	mHeight = mVDInputTexture->getTextureHeight();
 	mType = aType;
 	CI_LOG_V("VDFbo constructor");
 
 	// fbo
 	gl::Fbo::Format format;
 	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());//
 	//mRenderFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
 	mFlipV = false;
 	mFlipH = true;
@@ -111,6 +111,9 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTexture
 	// initialize default texture
 	mTextureRight = mVDInputTexture->getTexture();
 	mTextureLeft = mVDInputTexture->getTexture();
+	mWidth = mVDInputTexture->getTextureWidth();
+	mHeight = mVDInputTexture->getTextureHeight();
+
 	//mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
 	//mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
 	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
@@ -205,7 +208,12 @@ int VDFbo::setGLSLString(string pixelFrag, string name)
 	}
 	return foundIndex;
 }
-
+ci::gl::TextureRef VDFbo::getTextureRight() {
+	return mTextureRight;
+}
+ci::gl::TextureRef VDFbo::getTextureLeft() {
+	return mTextureLeft;
+}
 void VDFbo::setTextureRight(ci::gl::TextureRef aTexture) {
 	mTextureRight = aTexture;
 }
@@ -221,22 +229,29 @@ void VDFbo::setShaderIndex(int aShaderIndex) {
 /*ci::gl::TextureRef VDFbo::getTexture() {
 	return mFbo->getColorTexture();
 	}*/
+int VDFbo::getTextureWidth() {
+	//mWidth = mVDInputTexture->getTextureWidth();
+
+	return mWidth;
+}
+int VDFbo::getTextureHeight() {
+	//mHeight = mVDInputTexture->getTextureHeight();
+	return mHeight;
+}
 ci::gl::TextureRef VDFbo::getTexture() {
 	// start profiling
 	auto start = Clock::now();
+	gl::ScopedFramebuffer fbScp(mFbo);
+	gl::clear(Color(0.25, 0.5f, 1.0f));// Color::black());
 
 	// image sequence
 	if (mVDInputTexture->isSequence()) {
 		mVDInputTexture->update();
 	}
-	if (mVDInputTexture->isMovie()) {
-		// 
-	}
 
-	gl::ScopedFramebuffer fbScp(mFbo);
-	gl::clear(Color(0.25, 0.5f, 1.0f));// Color::black());
-	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());//ivec2(1024,480));
+
+		// setup the viewport to match the dimensions of the FBO
+		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 	// hehe gl::ScopedViewport scpVp(ivec2(40 * mVDSettings->iGlobalTime), mFbo->getSize());//ivec2(1024,480));
 	//gl::viewport(getWindowSize());
 
@@ -297,16 +312,31 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iSeed", mVDSettings->iSeed);
 	mShader->uniform("iFlipH", mFlipH);
 	mShader->uniform("iFlipV", mFlipV);
+	//gl::ScopedTextureBind tex(mTextureLeft);
+	//gl::ScopedTextureBind tex1(mTextureRight);
 
-	gl::ScopedTextureBind tex(mTextureLeft);
-	gl::ScopedTextureBind tex1(mTextureRight);
+	gl::ScopedTextureBind tex(mVDInputTexture->getTexture());
+	gl::ScopedTextureBind tex1(mVDInputTexture->getTexture());
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 
 	// end profiling
 	auto end = Clock::now();
 	auto nsdur = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	mMicroSeconds = nsdur.count();
-	return mFbo->getColorTexture();
+	if (mVDInputTexture->isMovie()) {
+		//  temp
+		//mWidth = mVDInputTexture->getTextureWidth();
+		//mHeight = mVDInputTexture->getTextureHeight();
+		//gl::Fbo::Format format;
+		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
+		//mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+		//gl::ScopedViewport scpVp(ivec2(0), ivec2(1024,480));
+		return mVDInputTexture->getTexture();
+	}
+	else {
+		return mFbo->getColorTexture();
+	}
+	//return mVDInputTexture->getTexture();
 }
 void VDFbo::saveThumb()
 {

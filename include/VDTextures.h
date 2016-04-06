@@ -18,6 +18,8 @@
 #include "VDSettings.h"
 // Animation
 #include "VDAnimation.h"
+// Session
+#include "VDSession.h"
 // Input textures
 #include "VDInputTexture.h"
 // fbo
@@ -38,11 +40,11 @@ namespace VideoDromm
 
 	class VDTextures {
 	public:
-		VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef);
+		VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef, VDSessionRef aVDSession);
 		virtual					~VDTextures();
-		static VDTexturesRef	create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef)
+		static VDTexturesRef	create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDTextures>(new VDTextures(aVDSettings, aShadersRef, aAnimationRef));
+			return shared_ptr<VDTextures>(new VDTextures(aVDSettings, aShadersRef, aAnimationRef, aVDSession));
 		}
 
 		ci::gl::TextureRef			getWarpTexture(int index);
@@ -69,6 +71,8 @@ namespace VideoDromm
 		GLuint						getFboTextureId(int index);
 		ci::gl::FboRef				getFbo(int index);
 		int							getFboCount() { return mVDFbos.size(); };
+		int							getFboTextureWidth(int index);		
+		int 						getFboTextureHeight(int index);
 		//int							getThumbsFboCount() { return mThumbFbos.size(); };
 		void						flipFboV(int index);
 		void						flipFboH(int index);
@@ -90,7 +94,8 @@ namespace VideoDromm
 		int							loadImageSequence(int index, string aFile);
 		// text
 		int							loadText(int index, string text, int start, int end);
-
+		ci::gl::TextureRef			getTextureRight(int index);
+		ci::gl::TextureRef			getTextureLeft(int index);
 		void						update();
 		void						draw();
 		bool						inputTextureIsSequence(int index);
@@ -116,6 +121,8 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Animation
 		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 		// Shaders
 		VDShadersRef				mVDShaders;
 		// Fbos

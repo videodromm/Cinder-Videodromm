@@ -2,16 +2,17 @@
 
 using namespace VideoDromm;
 
-VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePathOrText, bool isTopDown, int aType) {
+VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aFboIndex, string aFilePathOrText, bool isTopDown, int aType) {
 
 	CI_LOG_V("VDInputTexture constructor");
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimation;
-	mIndex = aIndex;
+	mFboIndex = aFboIndex;
 	mFilePathOrText = aFilePathOrText;
 	mTopDown = isTopDown;
 	mType = aType;
 
+	//mType = 0 if image
 	mIsSequence = (mType == 1);
 	mIsText = (mType == 2);
 	mIsMovie = (mType == 3);
@@ -21,6 +22,8 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 
 	mFlipV = false;
 	mFlipH = true;
+	mWidth = mVDSettings->mFboWidth;
+	mHeight = mVDSettings->mFboHeight;
 
 	// init the texture whatever happens next
 	mTexture = gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, gl::Texture::Format().loadTopDown());
@@ -132,7 +135,7 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	else if (mIsMovie) {
 		loadMovieFile(mFilePathOrText);
 	}
-	else {
+	else { // mType = 0
 		if (mTopDown) {
 			mTexture = gl::Texture::create(loadImage(mFilePathOrText));
 		}
@@ -151,17 +154,31 @@ void VDInputTexture::loadMovieFile(const fs::path &moviePath)
 		mLoopVideo = (mMovie->getDuration() < 30.0f);
 		mMovie->setLoop(mLoopVideo);
 		mMovie->play();
-		mTexture = gl::Texture::create(mMovie->getWidth(), mMovie->getHeight(), gl::Texture::Format().loadTopDown());
+		mWidth = mMovie->getWidth();
+		mHeight = mMovie->getHeight();
+
+		mTexture = gl::Texture::create(mWidth, mHeight, gl::Texture::Format().loadTopDown());
 	}
 	catch (ci::Exception &e)
 	{
 		CI_LOG_V( "Unable to load the movie." );		
 	}
 }
+int VDInputTexture::getTextureWidth() { 
+	
+		return mWidth; 
+	
+};
+int VDInputTexture::getTextureHeight() { 
+	
+		return mHeight;
+	
+};
 
+/*
 void VDInputTexture::setTexture(ci::gl::TextureRef aTexture) {
 	mTexture = aTexture;
-}
+}*/
 
 
 

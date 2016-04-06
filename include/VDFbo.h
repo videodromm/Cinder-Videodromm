@@ -55,6 +55,10 @@ namespace VideoDromm
 		int							getMicroSeconds() { return mMicroSeconds; };
 		void						useMixShader();
 		void						usePassthruShader();
+		ci::gl::TextureRef			getTextureRight();
+		ci::gl::TextureRef			getTextureLeft();
+		int							getTextureWidth();
+		int							getTextureHeight();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

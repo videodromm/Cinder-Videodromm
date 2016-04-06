@@ -2,40 +2,61 @@
 
 using namespace VideoDromm;
 
-VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef)
+VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAnimationRef aAnimationRef, VDSessionRef aVDSession)
 {
 	mVDSettings = aVDSettings;
 	mVDShaders = aShadersRef;
 	mVDAnimation = aAnimationRef;
+	mVDSession = aVDSession;
 	CI_LOG_V("VDTextures constructor");
 
-	currentShadaThumbIndex = 0;
 	// init inputTextures
 	fs::path imageFile = getAssetPath("") / "0.jpg";
 	if (fs::exists(imageFile)) {
-		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, 0, imageFile.string(), true, false));
-		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, 0, imageFile.string(), true, false));
-		// mix fbo at index 0
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 0));
-		// left fbo at index 1
-		/*mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1));
-		// right fbo at index 2
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 2));
-		// warp1 fbo at index 3
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 3));
-		// warp2 fbo at index 4
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "warp2", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 4));
-		// preview fbo at index 5
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "preview", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 5));
-		// audio fbo at index 6
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 6));
-		//thumb fbo
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 7));*/
+		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, 0, imageFile.string(), true, 0));// type 0 = image
 	}
 	else {
 		CI_LOG_E("Default input texture not found");
-
 	}
+	// init fbos
+	if (mVDSession->hasImageSequencePath()) {
+		loadImageSequence(1, mVDSession->getImageSequencePath());
+	}
+	if (mVDSession->hasText()) {
+		loadText(2, mVDSession->getText(), mVDSession->getTextStart(), mVDSession->getTextEnd());
+	}
+	if (mVDSession->hasMovie()) {
+		fs::path movieFile = getAssetPath("") / mVDSettings->mAssetsPath / mVDSession->getMovieFileName();
+		loadMovie(3, movieFile.string());
+	}
+	currentShadaThumbIndex = 0;
+
+	// mix fbo at index 0
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 0));
+	// left fbo at index 1
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "left", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1));
+	fs::path  localFile = getAssetPath("") / mVDSettings->mAssetsPath / "1.glsl";
+	if (fs::exists(localFile)) {
+		string shaderPath = localFile.string();
+		mVDFbos[1]->loadPixelFragmentShader(shaderPath);
+	}
+	// right fbo at index 2
+	/*mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "right", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 2));
+	localFile = getAssetPath("") / mVDSettings->mAssetsPath / "2.glsl";
+	if (fs::exists(localFile)) {
+	string shaderPath = localFile.string();
+	mVDFbos[2]->loadPixelFragmentShader(shaderPath);
+	}
+	// warp1 fbo at index 3
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "warp1", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 3));
+	// warp2 fbo at index 4
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "warp2", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 4));
+	// preview fbo at index 5
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "preview", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 5));
+	// audio fbo at index 6
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, 6));
+	//thumb fbo
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "thumbfbo0", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 7));*/
 
 	/*
 		for (int i = 1; i < mVDFbos.size(); i++) {
@@ -206,11 +227,12 @@ sTextures[index] = texture;
 }
 }*/
 // input textures
-ci::gl::TextureRef VDTextures::getInputTexture(int index)
-{
+ci::gl::TextureRef VDTextures::getInputTexture(int index) {
 	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
 	return mVDInputTextures[index]->getTexture();
 }
+
+
 // images sequence
 bool VDTextures::inputTextureIsSequence(int index)
 {
@@ -266,18 +288,36 @@ void VDTextures::inputTextureSetSpeed(int index, int speed) {
 	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
 	mVDInputTextures[index]->setSpeed(speed);
 }
-
+// fbos
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
 	return mVDFbos[index]->getTexture();
 }
+int VDTextures::getFboTextureWidth(int index)
+{
+	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
+	return mVDFbos[index]->getTextureWidth();
+}
+int VDTextures::getFboTextureHeight(int index)
+{
+	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
+	return mVDFbos[index]->getTextureHeight();
+}
+
 GLuint VDTextures::getFboTextureId(int index)
 {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
 	return mVDFbos[index]->getId();
 }
-
+ci::gl::TextureRef VDTextures::getTextureRight(int index) {
+	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
+	return mVDFbos[index]->getTextureRight();
+}
+ci::gl::TextureRef VDTextures::getTextureLeft(int index) {
+	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
+	return mVDFbos[index]->getTextureLeft();
+}
 /*
 GLuint VDTextures::getShaderThumbTextureId(int index)
 {
@@ -296,9 +336,10 @@ int VDTextures::loadText(int index, string text, int start, int end) {
 	int rtn = 0;
 	if (text.length() > 0) {
 		mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, text, true, 2));
-		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], text, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODETEXT));
+		int inputTextureIndex = mVDInputTextures.size() - 1;
+		mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[inputTextureIndex], text, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODETEXT));
 		rtn = mVDFbos.size() - 1;
-		mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+		mVDInputTextures[mVDInputTextures.size() - 1]->setFboIndex(rtn);
 		mVDFbos[mVDFbos.size() - 1]->setTextureRight(mVDInputTextures[mVDInputTextures.size() - 1]->getTexture());
 	}
 	return rtn;
@@ -311,9 +352,10 @@ int VDTextures::loadImageSequence(int index, string aFile) {
 		// tests for valid path 
 		if (fs::exists(mPath)) {
 			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, mPath.string(), true, 1));
-			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
+			int inputTextureIndex = mVDInputTextures.size() - 1;
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[inputTextureIndex], mVDInputTextures[inputTextureIndex]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEIMAGESEQUENCE));
 			rtn = mVDFbos.size() - 1;
-			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+			mVDInputTextures[inputTextureIndex]->setFboIndex(rtn);
 		}
 	}
 	return rtn;
@@ -327,9 +369,10 @@ int VDTextures::loadMovie(int index, string aFile) {
 		// tests for valid path 
 		if (fs::exists(aFile)) {
 			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, 3));
-			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[1], mVDInputTextures[mVDInputTextures.size() - 1]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMOVIE));
+			int inputTextureIndex = mVDInputTextures.size() - 1;
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[inputTextureIndex], mVDInputTextures[inputTextureIndex]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMOVIE));
 			rtn = mVDFbos.size() - 1;
-			mVDInputTextures[mVDInputTextures.size() - 1]->setIndex(rtn);
+			mVDInputTextures[mVDInputTextures.size() - 1]->setFboIndex(rtn);
 		}
 	}
 	return rtn;
@@ -361,7 +404,7 @@ void VDTextures::saveThumb(int index) {
 
 void VDTextures::update()
 {
-	
+
 }
 /*void VDTextures::renderWarpFbos()
 {

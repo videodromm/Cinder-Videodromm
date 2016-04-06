@@ -26,21 +26,21 @@ namespace VideoDromm
 
 	class VDInputTexture {
 	public:
-		VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePathOrText, bool isTopDown, int aType);
+		VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aFboIndex, string aFilePathOrText, bool isTopDown, int aType);
 
-		static VDInputTextureRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aIndex, string aFilePathOrText, bool isTopDown, int aType)
+		static VDInputTextureRef		create(VDSettingsRef aVDSettings, VDAnimationRef aAnimation, int aFboIndex, string aFilePathOrText, bool isTopDown, int aType)
 		{
-			return shared_ptr<VDInputTexture>(new VDInputTexture(aVDSettings, aAnimation, aIndex, aFilePathOrText, isTopDown, aType));
+			return shared_ptr<VDInputTexture>(new VDInputTexture(aVDSettings, aAnimation, aFboIndex, aFilePathOrText, isTopDown, aType));
 		}
 
 		ci::gl::TextureRef			getTexture();
-		void						setTexture(ci::gl::TextureRef aTexture);
+		//void						setTexture(ci::gl::TextureRef aTexture);
 		ivec2						getSize();
 		Area						getBounds();
 		GLuint						getId();
 		int							getType() { return mType; };
-		int							getIndex() { return mIndex; };
-		void						setIndex(int aIndex) { mIndex = aIndex; };
+		int							getFboIndex() { return mFboIndex; };
+		void						setFboIndex(int aFboIndex) { mFboIndex = aFboIndex; };
 		string						getFolder() { return mFolder; };
 		string						getName();
 		bool						isFlipH() { return mFlipH; };
@@ -66,6 +66,8 @@ namespace VideoDromm
 		bool						isText() { return mIsText; };
 		// hap codec movie
 		bool						isMovie() { return mIsMovie; };
+		int							getTextureWidth();
+		int							getTextureHeight();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -76,9 +78,11 @@ namespace VideoDromm
 		bool						mFlipV;
 		bool						mFlipH;
 		int							mType;
-		int							mIndex; // check it's fbo index
+		int							mFboIndex; // fbo index
 		string						mFilePathOrText;
 		bool						mTopDown;
+		int							mWidth;
+		int							mHeight;
 		//! Textures
 		ci::gl::TextureRef			mTexture;
 		// text
