@@ -10,6 +10,8 @@
 #include "VDSettings.h"
 // shaders
 #include "VDShaders.h"
+// Input textures
+#include "VDInputTexture.h"
 // Logger
 #include "VDLog.h"
 
@@ -29,15 +31,16 @@ namespace VideoDromm
 
 	class VDFbo {
 	public:
-		VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, int aWidth, int aHeight, int aType);
+		VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTextureRef aInputTexture, string aName, int aWidth, int aHeight, int aType);
 
-		static VDFboRef		create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, int aWidth, int aHeight, int aType)
+		static VDFboRef		create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTextureRef aInputTexture, string aName, int aWidth, int aHeight, int aType)
 		{
-			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aShadersRef, aName, aWidth, aHeight, aType));
+			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aShadersRef, aInputTexture, aName, aWidth, aHeight, aType));
 		}
 		//gl::FboRef					getFboRef();
 		ci::gl::TextureRef			getTexture();
-		void						setTexture(ci::gl::TextureRef aTexture);
+		void						setTextureRight(ci::gl::TextureRef aTexture);
+		void						setTextureLeft(ci::gl::TextureRef aTexture);
 		ivec2						getSize();
 		Area						getBounds();
 		GLuint						getId();
@@ -50,11 +53,15 @@ namespace VideoDromm
 		int							setGLSLString(string pixelFrag, string name);
 		void						saveThumb();
 		int							getMicroSeconds() { return mMicroSeconds; };
+		void						useMixShader();
+		void						usePassthruShader();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
 		// Shaders
 		VDShadersRef				mVDShaders;
+		// Input textures
+		VDInputTextureRef			mVDInputTexture;
 
 		gl::FboRef					mFbo;
 		string						mName;
@@ -77,13 +84,15 @@ namespace VideoDromm
 		std::string					mPassthruVextexShaderString;
 		//! default fragment shader
 		std::string					mPassthruFragmentShaderString;
+		//! mix fragment shader
+		std::string					mMixFragmentShaderString;
 		//! passthru shader
 		gl::GlslProgRef				mPassThruShader;
 		// include shader lines
 		std::string					shaderInclude;
 
 		//! Textures
-		ci::gl::TextureRef			mTexture, mTexture1;
+		ci::gl::TextureRef			mTextureRight, mTextureLeft;
 		// profiling
 		int							mMicroSeconds;
 	};

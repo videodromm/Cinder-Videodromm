@@ -54,7 +54,7 @@ namespace VideoDromm
 		// textures
 		//void						setTexture(int index, string fileName);
 		//ci::gl::TextureRef			getTexture(int index);
-		void						setFboTexture(int index, ci::gl::TextureRef aTexture);
+		//void						setFboTexture(int index, ci::gl::TextureRef aTexture);
 			//int							getTextureCount() { return sTextures.size(); };
 		void						flipTexture(int index);
 		//void						setTexture(int index, ci::gl::TextureRef texture);
@@ -104,6 +104,8 @@ namespace VideoDromm
 		int							inputTextureGetMaxFrame(int index);
 		int							inputTextureGetSpeed(int index);
 		void						inputTextureSetSpeed(int index, int speed);
+		void						useMixShader(int index);
+		void						usePassthruShader(int index);
 		int							getMicroSeconds(int index);
 		// shaders
 		int							loadPixelFragmentShaderAtIndex(int index, string mFile);

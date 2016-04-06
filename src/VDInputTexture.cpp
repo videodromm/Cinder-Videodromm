@@ -326,6 +326,7 @@ ci::gl::TextureRef VDInputTexture::getTexture() {
 		mTexture = mSequenceTextures[mPlayheadPosition];
 	}
 	else if(mIsMovie) {
+		// needed? if (mMovie->hasVisuals()) 
 		mTexture = mMovie->getTexture();
 	}
 

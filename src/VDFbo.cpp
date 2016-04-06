@@ -2,9 +2,10 @@
 
 using namespace VideoDromm;
 
-VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, int aWidth, int aHeight, int aType) {
+VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTextureRef aInputTexture, string aName, int aWidth, int aHeight, int aType) {
 	mVDSettings = aVDSettings;
 	mVDShaders = aShadersRef;
+	mVDInputTexture = aInputTexture;
 	mName = aName;
 	mWidth = aWidth;
 	mHeight = aHeight;
@@ -21,30 +22,21 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 	mShaderIndex = 0;
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
-	// temp
+	// load shadertoy uniform variables declarations
+	shaderInclude = loadString(loadAsset("shadertoy.inc"));
+	// load passthru vertex shader
 	mShaderName = "passthru";
 	try
 	{
 		fs::path vertexFile = getAssetPath("") / "passthru.vert";
 		if (fs::exists(vertexFile)) {
 			mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
+			CI_LOG_V("passthru.vert loaded");
 		}
 		else
 		{
 			CI_LOG_V("passthru.vert does not exist, should quit");
 		}
-		fs::path fragFile = getAssetPath("") / "passthru.frag";
-		if (fs::exists(fragFile)) {
-			mPassthruFragmentShaderString = loadString(loadAsset("passthru.frag"));
-		}
-		else
-		{
-			CI_LOG_V("passthru.frag does not exist, should quit");
-		}
-		mPassThruShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-		mShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-
-		validFrag = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
@@ -56,44 +48,83 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, string aName, 
 		mError = string(e.what());
 		CI_LOG_V("unable to load passthru shader:" + string(e.what()));
 	}
-	shaderInclude = loadString(loadAsset("shadertoy.inc"));
-	//load mix shader
-	/*try
+	// load passthru fragment shader
+	try
 	{
-	fs::path mixFragFile = getAssetPath("") / "mix.frag";
-	if (fs::exists(mixFragFile))
-	{
-	mShader = gl::GlslProg::create(loadAsset("passthru.vert"), loadFile(mixFragFile));
-	}
-	else
-	{
-	mVDSettings->mMsg = "mix.frag does not exist, should quit";
-	mVDSettings->newMsg = true;
-	CI_LOG_V("mix.frag does not exist, should quit");
-	}
+		fs::path fragFile = getAssetPath("") / "passthru.frag";
+		if (fs::exists(fragFile)) {
+			mPassthruFragmentShaderString = loadString(loadAsset("passthru.frag"));
+		}
+		else
+		{
+			mError = "passthru.frag does not exist, should quit";
+			CI_LOG_V(mError);
+		}
+		mPassThruShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
+		validFrag = true;
+		CI_LOG_V("passthru.frag loaded and compiled");
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
-	mError = string(exc.what());
-	mVDSettings->mMsg = "mix.frag unable to load/compile shader: " + mError;
-	mVDSettings->newMsg = true;
-	CI_LOG_V("unable to load/compile shader:" + string(exc.what()));
+		mError = string(exc.what());
+		CI_LOG_V("unable to load/compile passthru shader:" + string(exc.what()));
 	}
 	catch (const std::exception &e)
 	{
-	mError = string(e.what());
-	mVDSettings->mMsg = "mix.frag unable to load shader: " + mError;
-	mVDSettings->newMsg = true;
-	CI_LOG_V("unable to load shader:" + string(e.what()));
-	}*/
+		mError = string(e.what());
+		CI_LOG_V("unable to load passthru shader:" + string(e.what()));
+	}
+	//load mix shader
+	try
+	{
+		fs::path mixFragFile = getAssetPath("") / "mix.frag";
+		if (fs::exists(mixFragFile))
+		{
+			mMixFragmentShaderString = loadString(loadAsset("mix.frag"));
+			validFrag = true;
+			CI_LOG_V("mix.frag loaded and compiled");
+		}
+		else
+		{
+			mError = "mix.frag does not exist, should quit";
+			CI_LOG_V(mError);
+		}
+	}
+	catch (gl::GlslProgCompileExc &exc)
+	{
+		mError = string(exc.what());
+		mVDSettings->mMsg = "mix.frag unable to load/compile shader: " + mError;
+		mVDSettings->newMsg = true;
+		CI_LOG_V("unable to load/compile shader:" + string(exc.what()));
+	}
+	catch (const std::exception &e)
+	{
+		mError = string(e.what());
+		mVDSettings->mMsg = "mix.frag unable to load shader: " + mError;
+		mVDSettings->newMsg = true;
+		CI_LOG_V("unable to load shader:" + string(e.what()));
+	}
 
 	//std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
 	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
 	mFragFileName = mName;
-	// initialize some textures
-	mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
-	mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
+	// initialize default texture
+	mTextureRight = mVDInputTexture->getTexture();
+	mTextureLeft = mVDInputTexture->getTexture();
+	//mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
+	//mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
 	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
+	usePassthruShader();
+}
+void VDFbo::useMixShader() {
+	mShaderName = "mix";
+	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mMixFragmentShaderString);
+	mShader->setLabel(mShaderName);
+}
+void VDFbo::usePassthruShader() {
+	mShaderName = "passthru";
+	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
+	mShader->setLabel(mShaderName);
 }
 int VDFbo::loadPixelFragmentShader(string aFilePath)
 {
@@ -175,8 +206,11 @@ int VDFbo::setGLSLString(string pixelFrag, string name)
 	return foundIndex;
 }
 
-void VDFbo::setTexture(ci::gl::TextureRef aTexture) {
-	mTexture = aTexture;
+void VDFbo::setTextureRight(ci::gl::TextureRef aTexture) {
+	mTextureRight = aTexture;
+}
+void VDFbo::setTextureLeft(ci::gl::TextureRef aTexture) {
+	mTextureLeft = aTexture;
 }
 
 void VDFbo::setShaderIndex(int aShaderIndex) {
@@ -190,6 +224,14 @@ void VDFbo::setShaderIndex(int aShaderIndex) {
 ci::gl::TextureRef VDFbo::getTexture() {
 	// start profiling
 	auto start = Clock::now();
+
+	// image sequence
+	if (mVDInputTexture->isSequence()) {
+		mVDInputTexture->update();
+	}
+	if (mVDInputTexture->isMovie()) {
+		// 
+	}
 
 	gl::ScopedFramebuffer fbScp(mFbo);
 	gl::clear(Color(0.25, 0.5f, 1.0f));// Color::black());
@@ -256,8 +298,8 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iFlipH", mFlipH);
 	mShader->uniform("iFlipV", mFlipV);
 
-	gl::ScopedTextureBind tex(mTexture);
-	gl::ScopedTextureBind tex1(mTexture1);
+	gl::ScopedTextureBind tex(mTextureLeft);
+	gl::ScopedTextureBind tex1(mTextureRight);
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 
 	// end profiling
