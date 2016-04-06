@@ -9,7 +9,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	mVDAnimation = aAnimationRef;
 	mVDSession = aVDSession;
 	CI_LOG_V("VDTextures constructor");
-
+	movieInputTextureIndex = -1;
 	// init inputTextures
 	fs::path imageFile = getAssetPath("") / "0.jpg";
 	if (fs::exists(imageFile)) {
@@ -288,6 +288,12 @@ void VDTextures::inputTextureSetSpeed(int index, int speed) {
 	if (index > mVDInputTextures.size() - 1) index = mVDInputTextures.size() - 1;
 	mVDInputTextures[index]->setSpeed(speed);
 }
+void VDTextures::rewindMovie() {
+	if (movieInputTextureIndex > -1) mVDInputTextures[movieInputTextureIndex]->rewindMovie();
+}
+void VDTextures::fastforwardMovie() {
+	if (movieInputTextureIndex > -1) mVDInputTextures[movieInputTextureIndex]->fastforwardMovie();
+}
 // fbos
 ci::gl::TextureRef VDTextures::getFboTexture(int index)
 {
@@ -369,8 +375,8 @@ int VDTextures::loadMovie(int index, string aFile) {
 		// tests for valid path 
 		if (fs::exists(aFile)) {
 			mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, index, aFile, true, 3));
-			int inputTextureIndex = mVDInputTextures.size() - 1;
-			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[inputTextureIndex], mVDInputTextures[inputTextureIndex]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMOVIE));
+			movieInputTextureIndex = mVDInputTextures.size() - 1;
+			mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[movieInputTextureIndex], mVDInputTextures[movieInputTextureIndex]->getFolder(), mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMOVIE));
 			rtn = mVDFbos.size() - 1;
 			mVDInputTextures[mVDInputTextures.size() - 1]->setFboIndex(rtn);
 		}

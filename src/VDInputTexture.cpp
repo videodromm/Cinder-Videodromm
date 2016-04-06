@@ -164,6 +164,17 @@ void VDInputTexture::loadMovieFile(const fs::path &moviePath)
 		CI_LOG_V( "Unable to load the movie." );		
 	}
 }
+void VDInputTexture::rewindMovie() {
+	if (mIsMovie) {
+		mMovie->stepBackward();
+	}
+}
+void VDInputTexture::fastforwardMovie() {
+	if (mIsMovie) {
+		movieTime = mMovie->getCurrentTime();
+		mMovie->seekToTime(movieTime + 0.1);
+	}
+}
 int VDInputTexture::getTextureWidth() { 
 	
 		return mWidth; 

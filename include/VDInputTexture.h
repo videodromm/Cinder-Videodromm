@@ -66,6 +66,10 @@ namespace VideoDromm
 		bool						isText() { return mIsText; };
 		// hap codec movie
 		bool						isMovie() { return mIsMovie; };
+		void						rewindMovie();
+		void						fastforwardMovie();
+		float						movieTime;
+
 		int							getTextureWidth();
 		int							getTextureHeight();
 	private:

@@ -88,8 +88,11 @@ namespace VideoDromm
 
 		// image
 		void						loadImageFile(int index, string aFile);
-		// quicktime video
+		// quicktime video (hap codec)
 		int							loadMovie(int index, string aFile);
+		int							movieInputTextureIndex;
+		void						rewindMovie();
+		void						fastforwardMovie();
 		// image sequence
 		int							loadImageSequence(int index, string aFile);
 		// text
