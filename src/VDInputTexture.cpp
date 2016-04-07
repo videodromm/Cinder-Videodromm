@@ -8,7 +8,7 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimation;
 	mFboIndex = aFboIndex;
-	mFilePathOrText = aFilePathOrText;
+	mFilePathOrText = mName = aFilePathOrText;
 	mTopDown = isTopDown;
 	mType = aType;
 	CI_LOG_V(mFilePathOrText);
@@ -21,6 +21,7 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 
 	// movie
 	mLoopVideo = false;
+	movieTime = 0;
 
 	mFlipV = false;
 	mFlipH = true;

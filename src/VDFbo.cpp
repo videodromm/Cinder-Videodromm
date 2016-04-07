@@ -231,16 +231,11 @@ void VDFbo::setShaderIndex(int aShaderIndex) {
 	// CHECK mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mShaderIndex));
 
 }
-/*ci::gl::TextureRef VDFbo::getTexture() {
-	return mFbo->getColorTexture();
-	}*/
-int VDFbo::getTextureWidth() {
-	//mWidth = mVDInputTexture->getTextureWidth();
 
+int VDFbo::getTextureWidth() {
 	return mWidth;
 }
 int VDFbo::getTextureHeight() {
-	//mHeight = mVDInputTexture->getTextureHeight();
 	return mHeight;
 }
 ci::gl::TextureRef VDFbo::getTexture() {
@@ -259,8 +254,8 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	}
 
 
-		// setup the viewport to match the dimensions of the FBO
-		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
+	// setup the viewport to match the dimensions of the FBO
+	gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 	// hehe gl::ScopedViewport scpVp(ivec2(40 * mVDSettings->iGlobalTime), mFbo->getSize());//ivec2(1024,480));
 	//gl::viewport(getWindowSize());
 
@@ -321,11 +316,11 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iSeed", mVDSettings->iSeed);
 	mShader->uniform("iFlipH", mFlipH);
 	mShader->uniform("iFlipV", mFlipV);
-	//gl::ScopedTextureBind tex(mTextureLeft);
-	//gl::ScopedTextureBind tex1(mTextureRight);
+	gl::ScopedTextureBind tex(mTextureLeft);
+	gl::ScopedTextureBind tex1(mTextureRight);
 
-	gl::ScopedTextureBind tex(mVDInputTexture->getTexture());
-	gl::ScopedTextureBind tex1(mVDInputTexture->getTexture());
+	//gl::ScopedTextureBind tex(mVDInputTexture->getTexture());
+	//gl::ScopedTextureBind tex1(mVDInputTexture->getTexture());
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 
 	// end profiling

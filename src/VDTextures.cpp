@@ -20,7 +20,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	}
 
 	// audio texture
-	mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, mVDSettings->TEXTUREMODEAUDIO, "", true, mVDSettings->TEXTUREMODEAUDIO));
+	mVDInputTextures.push_back(VDInputTexture::create(mVDSettings, mVDAnimation, mVDSettings->TEXTUREMODEAUDIO, "audio", true, mVDSettings->TEXTUREMODEAUDIO));
 	// init fbos
 	if (mVDSession->hasImageSequencePath()) {
 		loadImageSequence(1, mVDSession->getImageSequencePath());
@@ -36,7 +36,7 @@ VDTextures::VDTextures(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDAn
 	// mix fbo at index 0
 	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "mix", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEMIX));
 	// audio fbo at index 1
-	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[0], "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
+	mVDFbos.push_back(VDFbo::create(mVDSettings, mVDShaders, mVDInputTextures[1], "audio", mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->TEXTUREMODEAUDIO));
 
 	if (mVDSession->hasShaderLeft()) {
 		fs::path shaderLeftFile = getAssetPath("") / mVDSettings->mAssetsPath / mVDSession->getShaderLeft();
@@ -367,6 +367,10 @@ void VDTextures::saveThumb(int index) {
 void VDTextures::update()
 {
 	mVDInputTextures[mVDSettings->TEXTUREMODEAUDIO]->update();
+	// TODO remove this to optimize, only render when used
+	for (int i = 0; i < mVDFbos.size(); i++) {
+		mVDFbos[i]->getTexture();
+	}
 }
 /*void VDTextures::renderWarpFbos()
 {
