@@ -82,6 +82,7 @@ namespace VideoDromm
 		void						rewindMovie();
 		void						fastforwardMovie();
 		float						movieTime;
+		void						playMovie();
 		// audio
 		void						loadWaveFile(string aFilePath);
 		float*						getSmallSpectrum() { return arr; };

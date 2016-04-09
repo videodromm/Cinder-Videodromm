@@ -339,6 +339,9 @@ int VDTextures::loadMovie(int index, string aFile) {
 	}
 	return rtn;
 }
+void VDTextures::playMovie() {
+	if (movieInputTextureIndex > -1) mVDInputTextures[movieInputTextureIndex]->playMovie();
+}
 void VDTextures::useMixShader(int index) {
 	if (index > mVDFbos.size() - 1) index = mVDFbos.size() - 1;
 	mVDFbos[index]->useMixShader();

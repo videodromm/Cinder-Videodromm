@@ -104,6 +104,7 @@ namespace VideoDromm
 		//int							iBar;
 		int							iBeatIndex; //1 to beatsperbar
 		// animation
+		int							currentScene;
 		//int							getBadTV(int frame);
 		// keyboard
 		bool						handleKeyDown(KeyEvent &event);

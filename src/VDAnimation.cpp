@@ -325,7 +325,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	JsonBag::add(&mText, "text", []() {
 		app::console() << "Updated text" << endl;
 	});
-
+	currentScene = 0;
 	// zoom
 	defaultZoom = 1.0f;
 	minZoom = 0.1;

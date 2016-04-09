@@ -67,16 +67,17 @@ namespace VideoDromm
 		// Input textures
 		VDInputTextureRef			mVDInputTexture;
 
-		gl::FboRef					mFbo;
+		gl::FboRef					mFbo, mLeftFbo, mRightFbo;
 		string						mName;
 		bool						mFlipV;
 		bool						mFlipH;
 		int							mWidth;
 		int							mHeight;
 		int							mType;
-
+		void						renderLeftFbo();
+		void						renderRightFbo();
 		//! Shaders
-		gl::GlslProgRef				mShader;
+		gl::GlslProgRef				mShader, mLeftShader, mRightShader;
 		int							mShaderIndex;
 		string						mError;
 		string						mFragFile;

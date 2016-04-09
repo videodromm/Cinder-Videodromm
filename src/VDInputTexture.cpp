@@ -122,16 +122,23 @@ VDInputTexture::VDInputTexture(VDSettingsRef aVDSettings, VDAnimationRef aAnimat
 		layout.clear(ColorA(0.0f, 0.0f, 0.0f, 1.0f));
 		//layout.setFont(Font("Flamingo Solide Normal", 24));
 		fs::path fontFile = getAssetPath("") / "fonts" / "FlamingoSolide.otf";
-		layout.setFont(Font(loadFile(fontFile), 72));
 		//layout.setFont(Font("Arial", 24));
 		layout.setColor(Color(1.0f, 1.0f, 1.0f));
-		layout.addCenteredLine(mFilePathOrText);
+		/*switch (mVDAnimation->currentScene)
+		{
+		case 0:*/
+			layout.setFont(Font(loadFile(fontFile), 210));
+			layout.addCenteredLine(mFilePathOrText);
+		/*	break;
 
-		layout.setFont(Font(loadFile(fontFile), 24));
-		layout.addCenteredLine("W H E N   O N E   S U N   R I S E S");
+		default:*/
+			layout.setFont(Font(loadFile(fontFile), 24));
+			layout.addCenteredLine("W H E N   O N E   S U N   R I S E S");
 
-		layout.addCenteredLine("E V E R Y T H I N G   I S   I L L U M I N A T E D");
-
+			layout.setFont(Font(loadFile(fontFile), 24));
+			layout.addCenteredLine("E V E R Y T H I N G   I S   I L L U M I N A T E D");
+			/*break;
+		}*/
 		Surface8u rendered = layout.render(false, false);
 		mTexture = gl::Texture::create(rendered, gl::Texture::Format().loadTopDown());
 	}
@@ -231,12 +238,23 @@ void VDInputTexture::loadMovieFile(const fs::path &moviePath)
 		mMovie->play();
 		mWidth = mMovie->getWidth();
 		mHeight = mMovie->getHeight();
-
+		mMovie->stop();
+		mMovie->seekToStart();
 		mTexture = gl::Texture::create(mWidth, mHeight, gl::Texture::Format().loadTopDown());
 	}
 	catch (ci::Exception &e)
 	{
-		CI_LOG_V( "Unable to load the movie." );		
+		CI_LOG_V("Unable to load the movie.");
+	}
+}
+void VDInputTexture::playMovie() {
+	if (mMovie->isPlaying()) {
+		mMovie->stop();
+		mMovie->seekToStart();
+	}
+	else {
+	mMovie->play();
+
 	}
 }
 void VDInputTexture::rewindMovie() {
@@ -250,20 +268,20 @@ void VDInputTexture::fastforwardMovie() {
 		mMovie->seekToTime(movieTime + 0.1);
 	}
 }
-int VDInputTexture::getTextureWidth() { 
-	
-		return mWidth; 
-	
+int VDInputTexture::getTextureWidth() {
+
+	return mWidth;
+
 };
-int VDInputTexture::getTextureHeight() { 
-	
-		return mHeight;
-	
+int VDInputTexture::getTextureHeight() {
+
+	return mHeight;
+
 };
 
 /*
 void VDInputTexture::setTexture(ci::gl::TextureRef aTexture) {
-	mTexture = aTexture;
+mTexture = aTexture;
 }*/
 
 
@@ -500,7 +518,7 @@ ci::gl::TextureRef VDInputTexture::getTexture() {
 		}
 		mTexture = mSequenceTextures[mPlayheadPosition];
 	}
-	else if(mIsMovie) {
+	else if (mIsMovie) {
 		// needed? if (mMovie->hasVisuals()) 
 		mTexture = mMovie->getTexture();
 	}

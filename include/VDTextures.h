@@ -93,6 +93,7 @@ namespace VideoDromm
 		int							movieInputTextureIndex;
 		void						rewindMovie();
 		void						fastforwardMovie();
+		void						playMovie();
 		// image sequence
 		int							loadImageSequence(int index, string aFile);
 		// text

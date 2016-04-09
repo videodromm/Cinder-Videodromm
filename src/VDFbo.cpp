@@ -15,8 +15,8 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTexture
 	// fbo
 	gl::Fbo::Format format;
 	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());//
-	//mRenderFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+
 	mFlipV = false;
 	mFlipH = true;
 	mShaderIndex = 0;
@@ -61,6 +61,8 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTexture
 			CI_LOG_V(mError);
 		}
 		mPassThruShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
+		mLeftShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
+		mRightShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
 		validFrag = true;
 		CI_LOG_V("passthru.frag loaded and compiled");
 	}
@@ -124,10 +126,16 @@ VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTexture
 		usePassthruShader();
 	}
 }
+
 void VDFbo::useMixShader() {
 	mShaderName = "mix";
 	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mMixFragmentShaderString);
 	mShader->setLabel(mShaderName);
+	// create 2 additional fbos
+	gl::Fbo::Format format;
+	mLeftFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+	mRightFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+
 }
 void VDFbo::usePassthruShader() {
 	mShaderName = "passthru";
@@ -238,11 +246,125 @@ int VDFbo::getTextureWidth() {
 int VDFbo::getTextureHeight() {
 	return mHeight;
 }
+void VDFbo::renderLeftFbo() {
+	gl::ScopedFramebuffer fbScp(mLeftFbo);
+	gl::clear(Color(0.95f, 0.0f, 0.0f));// Color::black());
+	// setup the viewport to match the dimensions of the FBO
+	gl::ScopedViewport scpVp(ivec2(0), mLeftFbo->getSize());
+	//mShader = mVDShaders->getShader(mShaderIndex).shader;
+	gl::ScopedGlslProg shaderScp(mLeftShader);
+	//mShader->bind();
+	mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
+	mShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
+	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
+	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+	mShader->uniform("iZoom", 1.0f);
+	mShader->uniform("iChannel0", 0);
+	mShader->uniform("iChannel1", 1);
+	mShader->uniform("iAudio0", 0);
+	mShader->uniform("iFreq0", mVDSettings->iFreqs[0]);
+	mShader->uniform("iFreq1", mVDSettings->iFreqs[1]);
+	mShader->uniform("iFreq2", mVDSettings->iFreqs[2]);
+	mShader->uniform("iFreq3", mVDSettings->iFreqs[3]);
+	mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
+	mShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
+	mShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
+	mShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
+	mShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
+	mShader->uniform("width", 1);
+	mShader->uniform("height", 1);
+	mShader->uniform("iRenderXY", vec2(0.0, 0.0));
+	mShader->uniform("iAlpha", mVDSettings->controlValues[4]);
+	mShader->uniform("iBlendmode", mVDSettings->iBlendMode);
+	mShader->uniform("iRotationSpeed", mVDSettings->controlValues[19]);
+	mShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
+	mShader->uniform("iPixelate", mVDSettings->controlValues[15]);
+	mShader->uniform("iExposure", mVDSettings->controlValues[14]);
+	mShader->uniform("iFade", (int)mVDSettings->iFade);
+	mShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
+	mShader->uniform("iLight", (int)mVDSettings->iLight);
+	mShader->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
+	mShader->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
+	mShader->uniform("iTransition", mVDSettings->iTransition);
+	mShader->uniform("iAnim", mVDSettings->iAnim.value());
+	mShader->uniform("iRepeat", (int)mVDSettings->iRepeat);
+	mShader->uniform("iVignette", (int)mVDSettings->controlValues[47]);
+	mShader->uniform("iInvert", (int)mVDSettings->controlValues[48]);
+	mShader->uniform("iDebug", (int)mVDSettings->iDebug);
+	mShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
+	mShader->uniform("iFps", mVDSettings->iFps);
+	// TODO mShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
+	// TODO mShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
+	mShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
+	mShader->uniform("iBeat", mVDSettings->iBeat);
+	mShader->uniform("iSeed", mVDSettings->iSeed);
+	mShader->uniform("iFlipH", mFlipH);
+	mShader->uniform("iFlipV", mFlipV);
+	gl::ScopedTextureBind tex(mTextureLeft);
+	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+}
+void VDFbo::renderRightFbo() {
+	gl::ScopedFramebuffer fbScp(mRightFbo);
+	gl::clear(Color(0.0f, 0.95f, 0.0f));// Color::black());
+	// setup the viewport to match the dimensions of the FBO
+	gl::ScopedViewport scpVp(ivec2(0), mRightFbo->getSize());
+	//mShader = mVDShaders->getShader(mShaderIndex).shader;
+	gl::ScopedGlslProg shaderScp(mRightShader);
+	//mShader->bind();
+	mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
+	mShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
+	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
+	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+	mShader->uniform("iZoom", 1.0f);
+	mShader->uniform("iChannel0", 0);
+	mShader->uniform("iChannel1", 1);
+	mShader->uniform("iAudio0", 0);
+	mShader->uniform("iFreq0", mVDSettings->iFreqs[0]);
+	mShader->uniform("iFreq1", mVDSettings->iFreqs[1]);
+	mShader->uniform("iFreq2", mVDSettings->iFreqs[2]);
+	mShader->uniform("iFreq3", mVDSettings->iFreqs[3]);
+	mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
+	mShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
+	mShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
+	mShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
+	mShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
+	mShader->uniform("width", 1);
+	mShader->uniform("height", 1);
+	mShader->uniform("iRenderXY", vec2(0.0, 0.0));
+	mShader->uniform("iAlpha", mVDSettings->controlValues[4]);
+	mShader->uniform("iBlendmode", mVDSettings->iBlendMode);
+	mShader->uniform("iRotationSpeed", mVDSettings->controlValues[19]);
+	mShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
+	mShader->uniform("iPixelate", mVDSettings->controlValues[15]);
+	mShader->uniform("iExposure", mVDSettings->controlValues[14]);
+	mShader->uniform("iFade", (int)mVDSettings->iFade);
+	mShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
+	mShader->uniform("iLight", (int)mVDSettings->iLight);
+	mShader->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
+	mShader->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
+	mShader->uniform("iTransition", mVDSettings->iTransition);
+	mShader->uniform("iAnim", mVDSettings->iAnim.value());
+	mShader->uniform("iRepeat", (int)mVDSettings->iRepeat);
+	mShader->uniform("iVignette", (int)mVDSettings->controlValues[47]);
+	mShader->uniform("iInvert", (int)mVDSettings->controlValues[48]);
+	mShader->uniform("iDebug", (int)mVDSettings->iDebug);
+	mShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
+	mShader->uniform("iFps", mVDSettings->iFps);
+	// TODO mShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
+	// TODO mShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
+	mShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
+	mShader->uniform("iBeat", mVDSettings->iBeat);
+	mShader->uniform("iSeed", mVDSettings->iSeed);
+	mShader->uniform("iFlipH", mFlipH);
+	mShader->uniform("iFlipV", mFlipV);
+	gl::ScopedTextureBind tex(mTextureRight);
+	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+}
 ci::gl::TextureRef VDFbo::getTexture() {
 	// start profiling
 	auto start = Clock::now();
 	gl::ScopedFramebuffer fbScp(mFbo);
-	gl::clear(Color(0.25, 0.5f, 1.0f));// Color::black());
+	gl::clear(Color(0.25, 0.0f, 0.2f));// Color::black());
 
 	// image sequence
 	if (mVDInputTexture->isSequence()) {
@@ -252,8 +374,10 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	if (mVDInputTexture->isAudio()) {
 		mVDInputTexture->update();
 	}
-
-
+	if (mType == mVDSettings->TEXTUREMODEMIX) {
+		renderLeftFbo();
+		renderRightFbo();
+	}
 	// setup the viewport to match the dimensions of the FBO
 	gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 	// hehe gl::ScopedViewport scpVp(ivec2(40 * mVDSettings->iGlobalTime), mFbo->getSize());//ivec2(1024,480));
@@ -316,8 +440,14 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	mShader->uniform("iSeed", mVDSettings->iSeed);
 	mShader->uniform("iFlipH", mFlipH);
 	mShader->uniform("iFlipV", mFlipV);
-	gl::ScopedTextureBind tex(mTextureLeft);
-	gl::ScopedTextureBind tex1(mTextureRight);
+	if (mType == mVDSettings->TEXTUREMODEMIX) {
+		gl::ScopedTextureBind tex(mLeftFbo->getColorTexture());
+		gl::ScopedTextureBind tex1(mRightFbo->getColorTexture());
+	}
+	else {
+		gl::ScopedTextureBind tex(mTextureLeft);
+		gl::ScopedTextureBind tex1(mTextureRight);
+	}
 
 	//gl::ScopedTextureBind tex(mVDInputTexture->getTexture());
 	//gl::ScopedTextureBind tex1(mVDInputTexture->getTexture());
@@ -328,34 +458,21 @@ ci::gl::TextureRef VDFbo::getTexture() {
 	auto nsdur = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	mMicroSeconds = nsdur.count();
 	if (mVDInputTexture->isMovie()) {
-		//  temp
-		//mWidth = mVDInputTexture->getTextureWidth();
-		//mHeight = mVDInputTexture->getTextureHeight();
-		//gl::Fbo::Format format;
-		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-		//mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-		//gl::ScopedViewport scpVp(ivec2(0), ivec2(1024,480));
 		return mVDInputTexture->getTexture();
 	}
 	else {
 		return mFbo->getColorTexture();
 	}
-	//return mVDInputTexture->getTexture();
 }
-void VDFbo::saveThumb()
-{
-
+void VDFbo::saveThumb() {
 	string filename;
-	try
-	{
+	try {
 		filename = mFragFileName + ".jpg";
 		Surface s8(mFbo->getColorTexture()->createSource());
 		writeImage(getAssetPath("") / "thumbs" / filename, s8);
 		CI_LOG_V("saved:" + filename);
-
 	}
-	catch (const std::exception &e)
-	{
+	catch (const std::exception &e) {
 		CI_LOG_V("unable to save:" + filename + string(e.what()));
 	}
 }
@@ -363,10 +480,6 @@ ivec2 VDFbo::getSize() {
 
 	return mFbo->getSize();
 }
-/*gl::FboRef VDFbo::getFboRef() {
-
-	return mFbo;
-	}*/
 Area VDFbo::getBounds() {
 
 	return mFbo->getBounds();
