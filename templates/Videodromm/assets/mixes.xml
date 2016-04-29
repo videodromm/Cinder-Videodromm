@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mixes version="1.0">
+	<mix id="1" mixtype="mix">
+		<details fbopath="fbos.xml" width="640" height="480"/>
+	</mix>
+</mixes>
+

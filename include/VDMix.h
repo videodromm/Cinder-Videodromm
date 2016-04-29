@@ -70,6 +70,7 @@ namespace VideoDromm
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getInputTexturesCount(unsigned int aFboIndex);
+		string							getInputTextureName(unsigned int aFboIndex, unsigned int aTextureIndex);
 		// uniforms
 		void							setCrossfade(float aCrossfade);
 	protected:

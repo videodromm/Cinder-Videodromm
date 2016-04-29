@@ -215,7 +215,10 @@ namespace VideoDromm {
 		if (aFboIndex > mFbos.size() - 1) aFboIndex = mFbos.size() - 1;
 		return mFbos[aFboIndex]->getInputTexturesCount();
 	}
-
+	string VDMix::getInputTextureName(unsigned int aFboIndex, unsigned int aTextureIndex) {
+		if (aFboIndex > mFbos.size() - 1) aFboIndex = mFbos.size() - 1;
+		return mFbos[aFboIndex]->getInputTextureName(aTextureIndex);
+	}
 	int VDMix::getFboTextureWidth(unsigned int aFboIndex) {
 		if (aFboIndex > mFbos.size() - 1) aFboIndex = mFbos.size() - 1;
 		return mFbos[aFboIndex]->getTextureWidth();

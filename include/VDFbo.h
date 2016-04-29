@@ -60,6 +60,7 @@ namespace VideoDromm
 		// textures
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aIndex);
 		unsigned int					getInputTexturesCount() { return mTexs.size(); };
+		string							getInputTextureName(unsigned int aTextureIndex);
 		ci::gl::Texture2dRef			getTexture();
 		void							loadImageFile(string aFile, unsigned int aTextureIndex);
 	protected:

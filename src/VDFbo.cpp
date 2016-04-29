@@ -308,6 +308,11 @@ namespace VideoDromm {
 		if (aIndex > mTexs.size() - 1) aIndex = mTexs.size() - 1;
 		return mTexs[aIndex]->getTexture();
 	}
+	string VDFbo::getInputTextureName(unsigned int aTextureIndex) { 
+		if (aTextureIndex > mTexs.size() - 1) aTextureIndex = mTexs.size() - 1;
+		return mTexs[aTextureIndex]->getName(); 
+	}
+
 	void VDFbo::loadImageFile(string aFile, unsigned int aTextureIndex) {
 		if (aTextureIndex > mTexs.size() - 1) aTextureIndex = mTexs.size() - 1;
 		mTexs[aTextureIndex]->loadImageFromFileFullPath(aFile);
