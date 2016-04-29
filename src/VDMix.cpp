@@ -310,8 +310,8 @@ namespace VideoDromm {
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(5), mMixFbo->getSize());
 		gl::ScopedGlslProg shaderScp(mMixShader);
-		mLeftFbo->bindTexture();
-		mRightFbo->bindTexture();
+		mRightFbo->bindTexture(0);
+		mLeftFbo->bindTexture(1);
 
 		mMixShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
 		mMixShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
