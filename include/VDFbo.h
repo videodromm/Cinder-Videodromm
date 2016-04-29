@@ -1,106 +1,95 @@
 #pragma once
 
-#include "cinder/Cinder.h"
 #include "cinder/app/App.h"
+#include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
-#include "cinder/Utilities.h"
-#include "cinder/ImageIo.h"
+#include "cinder/Xml.h"
+#include "cinder/Json.h"
+#include "cinder/Capture.h"
+#include "cinder/Log.h"
+#include "cinder/Timeline.h"
 
-// Settings
-#include "VDSettings.h"
-// shaders
-#include "VDShaders.h"
-// Input textures
-#include "VDInputTexture.h"
-// Logger
-#include "VDLog.h"
+#include "VDTexture.h"
 
-#pragma warning(push)
-#pragma warning(disable: 4996) // _CRT_SECURE_NO_WARNINGS
+#include <atomic>
+#include <vector>
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+using namespace VideoDromm;
 
 namespace VideoDromm
 {
 	// stores the pointer to the VDFbo instance
-	typedef std::shared_ptr<class VDFbo> VDFboRef;
-	// profiling
-	typedef std::chrono::high_resolution_clock Clock;
+	typedef std::shared_ptr<class VDFbo> 	VDFboRef;
+	typedef std::vector<VDFboRef>			VDFboList;
 
-	class VDFbo {
+	class VDFbo : public std::enable_shared_from_this < VDFbo > {
 	public:
-		VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTextureRef aInputTexture, string aName, int aWidth, int aHeight, int aType);
-
-		static VDFboRef		create(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTextureRef aInputTexture, string aName, int aWidth, int aHeight, int aType)
-		{
-			return shared_ptr<VDFbo>(new VDFbo(aVDSettings, aShadersRef, aInputTexture, aName, aWidth, aHeight, aType));
-		}
-		//gl::FboRef					getFboRef();
-		ci::gl::TextureRef			getTexture();
-		void						setTextureRight(ci::gl::TextureRef aTexture);
-		void						setTextureLeft(ci::gl::TextureRef aTexture);
-		ivec2						getSize();
-		Area						getBounds();
-		GLuint						getId();
-		int							getType() { return mType; };
-		string						getName();
-		bool						isFlipH() { return mFlipH; };
-		bool						isFlipV() { return mFlipV; };
-		void						setShaderIndex(int aShaderIndex);
-		int							loadPixelFragmentShader(string aFilePath);
-		int							setGLSLString(string pixelFrag, string name);
-		void						saveThumb();
-		int							getMicroSeconds() { return mMicroSeconds; };
-		void						useMixShader();
-		void						usePassthruShader();
-		ci::gl::TextureRef			getTextureRight();
-		ci::gl::TextureRef			getTextureLeft();
-		int							getTextureWidth();
-		int							getTextureHeight();
-	private:
-		// Settings
-		VDSettingsRef				mVDSettings;
-		// Shaders
-		VDShadersRef				mVDShaders;
-		// Input textures
-		VDInputTextureRef			mVDInputTexture;
-
-		gl::FboRef					mFbo, mLeftFbo, mRightFbo;
-		string						mName;
-		bool						mFlipV;
-		bool						mFlipH;
-		int							mWidth;
-		int							mHeight;
-		int							mType;
-		void						renderLeftFbo();
-		void						renderRightFbo();
-		//! Shaders
-		gl::GlslProgRef				mShader, mLeftShader, mRightShader;
-		int							mShaderIndex;
-		string						mError;
-		string						mFragFile;
-		string						mFragFileName;
-		string						mShaderName;
-		bool						validFrag;
-
+		typedef enum { UNKNOWN, TEXTURE, MIX } FboType;
+		VDFbo(FboType aType = UNKNOWN);
+		~VDFbo(void);
+		static VDFboRef create() { return std::make_shared<VDFbo>(); }
+		//! returns a shared pointer to this fbo
+		VDFboRef						getPtr() { return shared_from_this(); }
+		ci::ivec2						getSize();
+		ci::Area						getBounds();
+		GLuint							getId();
+		//! returns the type
+		FboType							getType() { return mType; };
+		std::string						getName();
+		//bool							isFlipH() { return mFlipH; };
+		//bool							isFlipV() { return mFlipV; };
+		int								getTextureWidth();
+		int								getTextureHeight();
+		//!
+		void							fromXml(const ci::XmlTree &xml);
+		//!
+		XmlTree							toXml() const;
+		//! read a xml file and pass back a vector of VDFbos
+		static VDFboList				readSettings(const ci::DataSourceRef &source);
+		//! write a xml file
+		static void						writeSettings(const VDFboList &VDFbolist, const ci::DataTargetRef &target);
+		// move, rotate, zoom methods
+		void							setPosition(int x, int y);
+		void							setZoom(float aZoom);
+		// shader
+		int								loadPixelFragmentShader(string aFilePath);
+		int								setGLSLString(string pixelFrag, string name);
+		// textures
+		ci::gl::Texture2dRef			getInputTexture(unsigned int aIndex);
+		unsigned int					getInputTexturesCount() { return mTexs.size(); };
+		ci::gl::Texture2dRef			getTexture();
+		void							loadImageFile(string aFile, unsigned int aTextureIndex);
+	protected:
+		std::string						mFboName;
+		//bool							mFlipV;
+		//bool							mFlipH;
+		FboType							mType;
+		std::string						mFilePathOrText;
+		//bool							mTopDown;
+		int								mWidth;
+		int								mHeight;
+		float							mPosX;
+		float							mPosY;
+		float							mZoom;
 		//! default vertex shader
-		std::string					mPassthruVextexShaderString;
+		std::string						mPassthruVextexShaderString;
 		//! default fragment shader
-		std::string					mPassthruFragmentShaderString;
-		//! mix fragment shader
-		std::string					mMixFragmentShaderString;
+		std::string						mFboTextureFragmentShaderString;
 		//! passthru shader
-		gl::GlslProgRef				mPassThruShader;
+		gl::GlslProgRef					mFboTextureShader;
 		// include shader lines
-		std::string					shaderInclude;
-
-		//! Textures
-		ci::gl::TextureRef			mTextureRight, mTextureLeft;
-		// profiling
-		int							mMicroSeconds;
+		std::string						shaderInclude;
+		string							mError;
+		// uniforms
+		vec3							iChannelResolution0;
+	private:
+		//! Fbo
+		gl::FboRef						mFbo;
+		VDTextureList					mTexs;
+		//! Shaders
+		string							mShaderName;
 	};
-
-
 }

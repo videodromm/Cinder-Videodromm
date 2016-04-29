@@ -1,496 +1,333 @@
 #include "VDFbo.h"
 
-using namespace VideoDromm;
+#include "cinder/gl/Texture.h"
+#include "cinder/Xml.h"
 
-VDFbo::VDFbo(VDSettingsRef aVDSettings, VDShadersRef aShadersRef, VDInputTextureRef aInputTexture, string aName, int aWidth, int aHeight, int aType) {
-	mVDSettings = aVDSettings;
-	mVDShaders = aShadersRef;
-	mVDInputTexture = aInputTexture;
-	mName = aName;
-	mWidth = mVDInputTexture->getTextureWidth();
-	mHeight = mVDInputTexture->getTextureHeight();
-	mType = aType;
-	CI_LOG_V("VDFbo constructor");
+using namespace ci;
+using namespace ci::app;
 
-	// fbo
-	gl::Fbo::Format format;
-	//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-	mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-
-	mFlipV = false;
-	mFlipH = true;
-	mShaderIndex = 0;
-	gl::enableDepthRead();
-	gl::enableDepthWrite();
-	// load shadertoy uniform variables declarations
-	shaderInclude = loadString(loadAsset("shadertoy.inc"));
-	// load passthru vertex shader
-	mShaderName = "passthru";
-	try
+namespace VideoDromm {
+	VDFbo::VDFbo(FboType aType)
+		: mFilePathOrText("")
+		, mFboName("fbo")
+		/*, mTopDown(true)
+		, mFlipV(false)
+		, mFlipH(true)*/
+		, mWidth(640)
+		, mHeight(480)
 	{
-		fs::path vertexFile = getAssetPath("") / "passthru.vert";
-		if (fs::exists(vertexFile)) {
-			mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
-			CI_LOG_V("passthru.vert loaded");
-		}
-		else
+		mType = TEXTURE;
+		mPosX = mPosY = 0.0f;
+		mZoom = 1.0f;
+		// init the fbo whatever happens next
+		gl::Fbo::Format format;
+		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
+		mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+		// init with passthru shader
+		mShaderName = "fbotexture";
+		// load shadertoy uniform variables declarations
+		shaderInclude = loadString(loadAsset("shadertoy.inc"));
+		try
 		{
-			CI_LOG_V("passthru.vert does not exist, should quit");
-		}
-	}
-	catch (gl::GlslProgCompileExc &exc)
-	{
-		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile passthru shader:" + string(exc.what()));
-	}
-	catch (const std::exception &e)
-	{
-		mError = string(e.what());
-		CI_LOG_V("unable to load passthru shader:" + string(e.what()));
-	}
-	// load passthru fragment shader
-	try
-	{
-		fs::path fragFile = getAssetPath("") / "passthru.frag";
-		if (fs::exists(fragFile)) {
-			mPassthruFragmentShaderString = loadString(loadAsset("passthru.frag"));
-		}
-		else
-		{
-			mError = "passthru.frag does not exist, should quit";
-			CI_LOG_V(mError);
-		}
-		mPassThruShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-		mLeftShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-		mRightShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-		validFrag = true;
-		CI_LOG_V("passthru.frag loaded and compiled");
-	}
-	catch (gl::GlslProgCompileExc &exc)
-	{
-		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile passthru shader:" + string(exc.what()));
-	}
-	catch (const std::exception &e)
-	{
-		mError = string(e.what());
-		CI_LOG_V("unable to load passthru shader:" + string(e.what()));
-	}
-	//load mix shader
-	try
-	{
-		fs::path mixFragFile = getAssetPath("") / "mix.frag";
-		if (fs::exists(mixFragFile))
-		{
-			mMixFragmentShaderString = loadString(loadAsset("mix.frag"));
-			validFrag = true;
-			CI_LOG_V("mix.frag loaded and compiled");
-		}
-		else
-		{
-			mError = "mix.frag does not exist, should quit";
-			CI_LOG_V(mError);
-		}
-	}
-	catch (gl::GlslProgCompileExc &exc)
-	{
-		mError = string(exc.what());
-		mVDSettings->mMsg = "mix.frag unable to load/compile shader: " + mError;
-		mVDSettings->newMsg = true;
-		CI_LOG_V("unable to load/compile shader:" + string(exc.what()));
-	}
-	catch (const std::exception &e)
-	{
-		mError = string(e.what());
-		mVDSettings->mMsg = "mix.frag unable to load shader: " + mError;
-		mVDSettings->newMsg = true;
-		CI_LOG_V("unable to load shader:" + string(e.what()));
-	}
-
-	//std::string fs = shaderInclude + loadString(loadAsset("10.glsl"));
-	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, fs);
-	mFragFileName = mName;
-	// initialize default texture
-	mTextureRight = mVDInputTexture->getTexture();
-	mTextureLeft = mVDInputTexture->getTexture();
-	mWidth = mVDInputTexture->getTextureWidth();
-	mHeight = mVDInputTexture->getTextureHeight();
-
-	//mTexture = gl::Texture::create(loadImage(loadAsset("0.jpg")));
-	//mTexture1 = gl::Texture::create(loadImage(loadAsset("0.jpg")), gl::Texture::Format().loadTopDown());
-	//mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mType));
-	if (mType == mVDSettings->TEXTUREMODEMIX) {
-		useMixShader();
-	}
-	else {
-		usePassthruShader();
-	}
-}
-
-void VDFbo::useMixShader() {
-	mShaderName = "mix";
-	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mMixFragmentShaderString);
-	mShader->setLabel(mShaderName);
-	// create 2 additional fbos
-	gl::Fbo::Format format;
-	mLeftFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-	mRightFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-
-}
-void VDFbo::usePassthruShader() {
-	mShaderName = "passthru";
-	mShader = gl::GlslProg::create(mPassthruVextexShaderString, mPassthruFragmentShaderString);
-	mShader->setLabel(mShaderName);
-}
-int VDFbo::loadPixelFragmentShader(string aFilePath)
-{
-	int rtn = -1;
-	// reset 
-	mVDSettings->iFade = false;
-	mVDSettings->controlValues[22] = 1.0f;
-	try
-	{
-		fs::path fr = aFilePath;
-		string name = "unknown";
-		string mFile = fr.string();
-		if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
-		mFragFileName = name;
-		if (fs::exists(fr))
-		{
-			validFrag = false;
-			std::string fs = shaderInclude + loadString(loadFile(aFilePath));
-			rtn = setGLSLString(fs, name);
-			if (rtn > -1)
+			fs::path vertexFile = getAssetPath("") / "passthru.vert";
+			if (fs::exists(vertexFile)) {
+				mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
+				CI_LOG_V("passthru.vert loaded");
+			}
+			else
 			{
-				CI_LOG_V(mFragFile + " loaded and compiled");
-				mVDSettings->mMsg = name + " loadPixelFragmentShader success";
-				mVDSettings->newMsg = true;
-				//mFragmentShadersNames[rtn] = name;
-				mShader->setLabel(name);
+				CI_LOG_V("passthru.vert does not exist, should quit");
 			}
 		}
-		else
+		catch (gl::GlslProgCompileExc &exc)
 		{
-			CI_LOG_V(mFragFile + " does not exist");
+			mError = string(exc.what());
+			CI_LOG_V("unable to load/compile passthru vertex shader:" + string(exc.what()));
+		}
+		catch (const std::exception &e)
+		{
+			mError = string(e.what());
+			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
+		}
+		// load passthru fragment shader
+		try
+		{
+			fs::path fragFile = getAssetPath("") / "fbotexture.frag";
+			if (fs::exists(fragFile)) {
+				mFboTextureFragmentShaderString = loadString(loadAsset("fbotexture.frag"));
+			}
+			else
+			{
+				mError = "fbotexture.frag does not exist, should quit";
+				CI_LOG_V(mError);
+			}
+			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
+			mFboTextureShader->setLabel(mShaderName);
+			CI_LOG_V("fbotexture.frag loaded and compiled");
+		}
+		catch (gl::GlslProgCompileExc &exc)
+		{
+			mError = string(exc.what());
+			CI_LOG_V("unable to load/compile fbotexture fragment shader:" + string(exc.what()));
+		}
+		catch (const std::exception &e)
+		{
+			mError = string(e.what());
+			CI_LOG_V("unable to load fbotexture fragment shader:" + string(e.what()));
 		}
 	}
-	catch (gl::GlslProgCompileExc &exc)
+	VDFbo::~VDFbo(void) {
+
+	}
+	int VDFbo::loadPixelFragmentShader(string aFilePath)
 	{
-		mError = string(exc.what());
-		CI_LOG_V(aFilePath + " unable to load/compile shader err:" + mError);
-		mVDSettings->mMsg = mError;
-		mVDSettings->newMsg = true;
+		int rtn = -1;
+		// reset 
+		//mVDSettings->iFade = false;
+		//mVDSettings->controlValues[22] = 1.0f;
+		try
+		{
+			fs::path fr = aFilePath;
+			string name = "unknownshader";
+			string mFile = fr.string();
+			if (mFile.find_last_of("\\") != std::string::npos) name = mFile.substr(mFile.find_last_of("\\") + 1);
+			//mFragFileName = name;
+			if (fs::exists(fr))
+			{
+				//validFrag = false;
+				std::string fs = shaderInclude + loadString(loadFile(aFilePath));
+				rtn = setGLSLString(fs, name);
+				if (rtn > -1)
+				{
+					//CI_LOG_V(mFragFile + " loaded and compiled");
+					//mVDSettings->mMsg = name + " loadPixelFragmentShader success";
+					//mVDSettings->newMsg = true;
+					//mFragmentShadersNames[rtn] = name;
+					mFboTextureShader->setLabel(name);
+				}
+			}
+			else
+			{
+				//CI_LOG_V(mFragFile + " does not exist");
+			}
+		}
+		catch (gl::GlslProgCompileExc &exc)
+		{
+			mError = string(exc.what());
+			CI_LOG_V(aFilePath + " unable to load/compile shader err:" + mError);
+			//mVDSettings->mMsg = mError;
+			//mVDSettings->newMsg = true;
+		}
+		catch (const std::exception &e)
+		{
+			mError = string(e.what());
+			CI_LOG_V(aFilePath + " unable to load shader err:" + mError);
+			//mVDSettings->mMsg = mError;
+			//mVDSettings->newMsg = true;
+		}
+
+		return rtn;
 	}
-	catch (const std::exception &e)
+
+	int VDFbo::setGLSLString(string pixelFrag, string name)
 	{
-		mError = string(e.what());
-		CI_LOG_V(aFilePath + " unable to load shader err:" + mError);
-		mVDSettings->mMsg = mError;
-		mVDSettings->newMsg = true;
+		int foundIndex = 0;
+
+		try
+		{
+			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
+			mShaderName = name;
+
+			//preview the new loaded shader
+			//mVDSettings->mPreviewFragIndex = foundIndex;
+			CI_LOG_V("setGLSLString success");
+			//mVDSettings->mMsg = name + " setGLSLString success";
+			//mVDSettings->newMsg = true;
+			mError = "";
+			//validFrag = true;
+		}
+		catch (gl::GlslProgCompileExc exc)
+		{
+			//validFrag = false;
+			// TODO CI_LOG_E("Problem Compiling ImGui::Renderer shader " << exc.what());
+			foundIndex = -1;
+			mError = string(exc.what());
+			//mVDSettings->mMsg = "setGLSLString file: " + name + " error:" + mError;
+			//mVDSettings->newMsg = true;
+			//CI_LOG_V(mVDSettings->mMsg);
+		}
+		return foundIndex;
 	}
-
-	return rtn;
-}
-
-int VDFbo::setGLSLString(string pixelFrag, string name)
-{
-	int foundIndex = 0;
-
-	try
+	VDFboList VDFbo::readSettings(const DataSourceRef &source)
 	{
-		mShader = gl::GlslProg::create(mPassthruVextexShaderString, pixelFrag);
-		mShaderName = name;
+		XmlTree			doc;
+		VDFboList	VDFbolist;
 
-		//preview the new loaded shader
-		mVDSettings->mPreviewFragIndex = foundIndex;
-		CI_LOG_V("setGLSLString success");
-		mVDSettings->mMsg = name + " setGLSLString success";
-		mVDSettings->newMsg = true;
-		mError = "";
-		validFrag = true;
+		// try to load the specified xml file
+		try { doc = XmlTree(source); }
+		catch (...) { return VDFbolist; }
+
+		// check if this is a valid file 
+		bool isOK = doc.hasChild("fbos");
+		//
+		if (isOK) {
+
+			XmlTree fboXml = doc.getChild("fbos");
+
+			// iterate textures
+			for (XmlTree::ConstIter child = fboXml.begin("fbo"); child != fboXml.end(); ++child) {
+				// create fbo of the correct type
+				std::string texturetype = child->getAttributeValue<std::string>("fbotype", "unknown");
+				XmlTree detailsXml = child->getChild("details");
+
+				if (texturetype == "texture") {
+					VDFboRef t(new VDFbo());
+					t->fromXml(detailsXml);
+					VDFbolist.push_back(t);
+				}
+			}
+		}
+		else {
+			// malformed XML
+			CI_LOG_V("malformed XML");
+			VDFboRef t(new VDFbo());
+			XmlTree		initXml;
+			initXml.setTag("details");
+			initXml.setAttribute("filepath", "0.jpg");
+			initXml.setAttribute("width", 640);
+			initXml.setAttribute("height", 480);
+			initXml.setAttribute("shadername", "0.glsl");
+			t->fromXml(initXml);
+			VDFbolist.push_back(t);
+		}
+		return VDFbolist;
 	}
-	catch (gl::GlslProgCompileExc exc)
+
+	void VDFbo::writeSettings(const VDFboList &VDFbolist, const ci::DataTargetRef &target) {
+
+		// create config document and root <textures>
+		XmlTree			doc;
+		doc.setTag("fbos");
+		doc.setAttribute("version", "1.0");
+
+		// 
+		for (unsigned int i = 0; i < VDFbolist.size(); ++i) {
+			// create <texture>
+			XmlTree			fbo;
+			fbo.setTag("fbo");
+			fbo.setAttribute("id", i + 1);
+			switch (VDFbolist[i]->mType) {
+			case TEXTURE: fbo.setAttribute("fbotype", "texture"); break;
+			default: fbo.setAttribute("fbotype", "unknown"); break;
+			}
+			// details specific to texture type
+			fbo.push_back(VDFbolist[i]->toXml());
+
+			// add fbo to doc
+			doc.push_back(fbo);
+		}
+
+		// write file
+		doc.write(target);
+	}
+	XmlTree	VDFbo::toXml() const
 	{
-		validFrag = false;
-		// TODO CI_LOG_E("Problem Compiling ImGui::Renderer shader " << exc.what());
-		foundIndex = -1;
-		mError = string(exc.what());
-		mVDSettings->mMsg = "setGLSLString file: " + name + " error:" + mError;
-		mVDSettings->newMsg = true;
-		CI_LOG_V(mVDSettings->mMsg);
-	}
-	return foundIndex;
-}
-ci::gl::TextureRef VDFbo::getTextureRight() {
-	return mTextureRight;
-}
-ci::gl::TextureRef VDFbo::getTextureLeft() {
-	return mTextureLeft;
-}
-void VDFbo::setTextureRight(ci::gl::TextureRef aTexture) {
-	mTextureRight = aTexture;
-}
-void VDFbo::setTextureLeft(ci::gl::TextureRef aTexture) {
-	mTextureLeft = aTexture;
-}
+		XmlTree		xml;
+		xml.setTag("details");
+		xml.setAttribute("filepath", mFilePathOrText);
+		xml.setAttribute("width", mWidth);
+		xml.setAttribute("height", mHeight);
+		xml.setAttribute("shadername", mShaderName);
 
-void VDFbo::setShaderIndex(int aShaderIndex) {
-	mShaderIndex = aShaderIndex;
-	// CHECK mShader = gl::GlslProg::create(mPassthruVextexShaderString, mVDShaders->getShaderString(mShaderIndex));
-
-}
-
-int VDFbo::getTextureWidth() {
-	return mWidth;
-}
-int VDFbo::getTextureHeight() {
-	return mHeight;
-}
-void VDFbo::renderLeftFbo() {
-	gl::ScopedFramebuffer fbScp(mLeftFbo);
-	gl::clear(Color(0.95f, 0.0f, 0.0f));// Color::black());
-	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(ivec2(0), mLeftFbo->getSize());
-	//mShader = mVDShaders->getShader(mShaderIndex).shader;
-	gl::ScopedGlslProg shaderScp(mLeftShader);
-	//mShader->bind();
-	mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
-	mShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
-	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
-	mShader->uniform("iZoom", 1.0f);
-	mShader->uniform("iChannel0", 0);
-	mShader->uniform("iChannel1", 1);
-	mShader->uniform("iAudio0", 0);
-	mShader->uniform("iFreq0", mVDSettings->iFreqs[0]);
-	mShader->uniform("iFreq1", mVDSettings->iFreqs[1]);
-	mShader->uniform("iFreq2", mVDSettings->iFreqs[2]);
-	mShader->uniform("iFreq3", mVDSettings->iFreqs[3]);
-	mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
-	mShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
-	mShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
-	mShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-	mShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
-	mShader->uniform("width", 1);
-	mShader->uniform("height", 1);
-	mShader->uniform("iRenderXY", vec2(0.0, 0.0));
-	mShader->uniform("iAlpha", mVDSettings->controlValues[4]);
-	mShader->uniform("iBlendmode", mVDSettings->iBlendMode);
-	mShader->uniform("iRotationSpeed", mVDSettings->controlValues[19]);
-	mShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
-	mShader->uniform("iPixelate", mVDSettings->controlValues[15]);
-	mShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	mShader->uniform("iFade", (int)mVDSettings->iFade);
-	mShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
-	mShader->uniform("iLight", (int)mVDSettings->iLight);
-	mShader->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
-	mShader->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
-	mShader->uniform("iTransition", mVDSettings->iTransition);
-	mShader->uniform("iAnim", mVDSettings->iAnim.value());
-	mShader->uniform("iRepeat", (int)mVDSettings->iRepeat);
-	mShader->uniform("iVignette", (int)mVDSettings->controlValues[47]);
-	mShader->uniform("iInvert", (int)mVDSettings->controlValues[48]);
-	mShader->uniform("iDebug", (int)mVDSettings->iDebug);
-	mShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
-	mShader->uniform("iFps", mVDSettings->iFps);
-	// TODO mShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
-	// TODO mShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
-	mShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
-	mShader->uniform("iBeat", mVDSettings->iBeat);
-	mShader->uniform("iSeed", mVDSettings->iSeed);
-	mShader->uniform("iFlipH", mFlipH);
-	mShader->uniform("iFlipV", mFlipV);
-	gl::ScopedTextureBind tex(mTextureLeft);
-	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
-}
-void VDFbo::renderRightFbo() {
-	gl::ScopedFramebuffer fbScp(mRightFbo);
-	gl::clear(Color(0.0f, 0.95f, 0.0f));// Color::black());
-	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(ivec2(0), mRightFbo->getSize());
-	//mShader = mVDShaders->getShader(mShaderIndex).shader;
-	gl::ScopedGlslProg shaderScp(mRightShader);
-	//mShader->bind();
-	mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
-	mShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
-	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
-	mShader->uniform("iZoom", 1.0f);
-	mShader->uniform("iChannel0", 0);
-	mShader->uniform("iChannel1", 1);
-	mShader->uniform("iAudio0", 0);
-	mShader->uniform("iFreq0", mVDSettings->iFreqs[0]);
-	mShader->uniform("iFreq1", mVDSettings->iFreqs[1]);
-	mShader->uniform("iFreq2", mVDSettings->iFreqs[2]);
-	mShader->uniform("iFreq3", mVDSettings->iFreqs[3]);
-	mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
-	mShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
-	mShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
-	mShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-	mShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
-	mShader->uniform("width", 1);
-	mShader->uniform("height", 1);
-	mShader->uniform("iRenderXY", vec2(0.0, 0.0));
-	mShader->uniform("iAlpha", mVDSettings->controlValues[4]);
-	mShader->uniform("iBlendmode", mVDSettings->iBlendMode);
-	mShader->uniform("iRotationSpeed", mVDSettings->controlValues[19]);
-	mShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
-	mShader->uniform("iPixelate", mVDSettings->controlValues[15]);
-	mShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	mShader->uniform("iFade", (int)mVDSettings->iFade);
-	mShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
-	mShader->uniform("iLight", (int)mVDSettings->iLight);
-	mShader->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
-	mShader->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
-	mShader->uniform("iTransition", mVDSettings->iTransition);
-	mShader->uniform("iAnim", mVDSettings->iAnim.value());
-	mShader->uniform("iRepeat", (int)mVDSettings->iRepeat);
-	mShader->uniform("iVignette", (int)mVDSettings->controlValues[47]);
-	mShader->uniform("iInvert", (int)mVDSettings->controlValues[48]);
-	mShader->uniform("iDebug", (int)mVDSettings->iDebug);
-	mShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
-	mShader->uniform("iFps", mVDSettings->iFps);
-	// TODO mShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
-	// TODO mShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
-	mShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
-	mShader->uniform("iBeat", mVDSettings->iBeat);
-	mShader->uniform("iSeed", mVDSettings->iSeed);
-	mShader->uniform("iFlipH", mFlipH);
-	mShader->uniform("iFlipV", mFlipV);
-	gl::ScopedTextureBind tex(mTextureRight);
-	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
-}
-ci::gl::TextureRef VDFbo::getTexture() {
-	// start profiling
-	auto start = Clock::now();
-	gl::ScopedFramebuffer fbScp(mFbo);
-	gl::clear(Color(0.25, 0.0f, 0.2f));// Color::black());
-
-	// image sequence
-	if (mVDInputTexture->isSequence()) {
-		mVDInputTexture->update();
-	}
-	// image sequence
-	if (mVDInputTexture->isAudio()) {
-		mVDInputTexture->update();
-	}
-	if (mType == mVDSettings->TEXTUREMODEMIX) {
-		renderLeftFbo();
-		renderRightFbo();
-	}
-	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
-	// hehe gl::ScopedViewport scpVp(ivec2(40 * mVDSettings->iGlobalTime), mFbo->getSize());//ivec2(1024,480));
-	//gl::viewport(getWindowSize());
-
-	//mShader = mVDShaders->getShader(mShaderIndex).shader;
-	gl::ScopedGlslProg shaderScp(mShader);
-	//mShader->bind();
-	mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
-	mShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
-	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
-	mShader->uniform("iZoom", 1.0f);
-	mShader->uniform("iChannel0", 0);
-	mShader->uniform("iChannel1", 1);
-	/*mShader->uniform("iChannel0", mVDSettings->iChannels[0]);
-	mShader->uniform("iChannel1", mVDSettings->iChannels[1]);
-	mShader->uniform("iChannel2", mVDSettings->iChannels[2]);
-	mShader->uniform("iChannel3", mVDSettings->iChannels[3]);
-	mShader->uniform("iChannel4", mVDSettings->iChannels[4]);
-	mShader->uniform("iChannel5", mVDSettings->iChannels[5]);
-	mShader->uniform("iChannel6", mVDSettings->iChannels[6]);
-	mShader->uniform("iChannel7", mVDSettings->iChannels[7]);*/
-	mShader->uniform("iAudio0", 0);
-	mShader->uniform("iFreq0", mVDSettings->iFreqs[0]);
-	mShader->uniform("iFreq1", mVDSettings->iFreqs[1]);
-	mShader->uniform("iFreq2", mVDSettings->iFreqs[2]);
-	mShader->uniform("iFreq3", mVDSettings->iFreqs[3]);
-	mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
-	mShader->uniform("iColor", vec3(mVDSettings->controlValues[1], mVDSettings->controlValues[2], mVDSettings->controlValues[3]));// mVDSettings->iColor);
-	mShader->uniform("iBackgroundColor", vec3(mVDSettings->controlValues[5], mVDSettings->controlValues[6], mVDSettings->controlValues[7]));// mVDSettings->iBackgroundColor);
-	mShader->uniform("iSteps", (int)mVDSettings->controlValues[20]);
-	mShader->uniform("iRatio", mVDSettings->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio); 
-	mShader->uniform("width", 1);
-	mShader->uniform("height", 1);
-	mShader->uniform("iRenderXY", vec2(0.0, 0.0));
-	mShader->uniform("iAlpha", mVDSettings->controlValues[4]);
-	mShader->uniform("iBlendmode", mVDSettings->iBlendMode);
-	mShader->uniform("iRotationSpeed", mVDSettings->controlValues[19]);
-	mShader->uniform("iCrossfade", mVDSettings->controlValues[21]);
-	mShader->uniform("iPixelate", mVDSettings->controlValues[15]);
-	mShader->uniform("iExposure", mVDSettings->controlValues[14]);
-	mShader->uniform("iFade", (int)mVDSettings->iFade);
-	mShader->uniform("iToggle", (int)mVDSettings->controlValues[46]);
-	mShader->uniform("iLight", (int)mVDSettings->iLight);
-	mShader->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
-	mShader->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
-	mShader->uniform("iTransition", mVDSettings->iTransition);
-	mShader->uniform("iAnim", mVDSettings->iAnim.value());
-	mShader->uniform("iRepeat", (int)mVDSettings->iRepeat);
-	mShader->uniform("iVignette", (int)mVDSettings->controlValues[47]);
-	mShader->uniform("iInvert", (int)mVDSettings->controlValues[48]);
-	mShader->uniform("iDebug", (int)mVDSettings->iDebug);
-	mShader->uniform("iShowFps", (int)mVDSettings->iShowFps);
-	mShader->uniform("iFps", mVDSettings->iFps);
-	// TODO mShader->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
-	// TODO mShader->uniform("iTempoTime", mVDAnimation->iTempoTime);
-	mShader->uniform("iGlitch", (int)mVDSettings->controlValues[45]);
-	mShader->uniform("iBeat", mVDSettings->iBeat);
-	mShader->uniform("iSeed", mVDSettings->iSeed);
-	mShader->uniform("iFlipH", mFlipH);
-	mShader->uniform("iFlipV", mFlipV);
-	if (mType == mVDSettings->TEXTUREMODEMIX) {
-		gl::ScopedTextureBind tex(mLeftFbo->getColorTexture());
-		gl::ScopedTextureBind tex1(mRightFbo->getColorTexture());
-	}
-	else {
-		gl::ScopedTextureBind tex(mTextureLeft);
-		gl::ScopedTextureBind tex1(mTextureRight);
+		return xml;
 	}
 
-	//gl::ScopedTextureBind tex(mVDInputTexture->getTexture());
-	//gl::ScopedTextureBind tex1(mVDInputTexture->getTexture());
-	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+	void VDFbo::fromXml(const XmlTree &xml)
+	{
+		mType = TEXTURE;
+		// retrieve texture specific to this fbo
+		mFilePathOrText = xml.getAttributeValue<string>("filepath", "0.jpg");
 
-	// end profiling
-	auto end = Clock::now();
-	auto nsdur = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-	mMicroSeconds = nsdur.count();
-	if (mVDInputTexture->isMovie()) {
-		return mVDInputTexture->getTexture();
+		fs::path fullPath = getAssetPath("") / mFilePathOrText;// TODO / mVDSettings->mAssetsPath
+		try {
+			mTexs.push_back(TextureImage::create());
+			mTexs[0]->loadImageFromFileFullPath(fullPath.string());
+			CI_LOG_V("successfully loaded " + mFilePathOrText);
+		}
+		catch (Exception &exc) {
+			CI_LOG_EXCEPTION("error loading ", exc);
+		}
+
+		// retrieve shader specific to this fbo
+		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.glsl");
+		if (mGlslPath.length() > 0) {
+			fs::path fr = getAssetPath("") / mGlslPath;// TODO / mVDSettings->mAssetsPath
+			if (fs::exists(fr)) {
+				try {
+					loadPixelFragmentShader(fr.string());
+					CI_LOG_V("successfully loaded " + mGlslPath);
+				}
+				catch (Exception &exc) {
+					CI_LOG_EXCEPTION("error loading ", exc);
+				}
+			}
+		}
 	}
-	else {
+	void VDFbo::setPosition(int x, int y) {
+		mPosX = ((float)x / (float)mWidth) - 0.5;
+		mPosY = ((float)y / (float)mHeight) - 0.5;
+	}
+	void VDFbo::setZoom(float aZoom) {
+		mZoom = aZoom;
+	}
+	int VDFbo::getTextureWidth() {
+		return mWidth;
+	};
+
+	int VDFbo::getTextureHeight() {
+		return mHeight;
+	};
+
+	ci::ivec2 VDFbo::getSize() {
+		return mFbo->getSize();
+	}
+
+	ci::Area VDFbo::getBounds() {
+		return mFbo->getBounds();
+	}
+
+	GLuint VDFbo::getId() {
+		return mFbo->getId();
+	}
+
+	std::string VDFbo::getName(){
+		return mFboName;
+	}
+
+	ci::gl::Texture2dRef VDFbo::getInputTexture(unsigned int aIndex) {
+		if (aIndex > mTexs.size() - 1) aIndex = mTexs.size() - 1;
+		return mTexs[aIndex]->getTexture();
+	}
+	void VDFbo::loadImageFile(string aFile, unsigned int aTextureIndex) {
+		if (aTextureIndex > mTexs.size() - 1) aTextureIndex = mTexs.size() - 1;
+		mTexs[aTextureIndex]->loadImageFromFileFullPath(aFile);
+	}
+	ci::gl::Texture2dRef VDFbo::getTexture() {
+		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
+		gl::ScopedFramebuffer fbScp(mFbo);
+		gl::clear(Color::black());
+		// setup the viewport to match the dimensions of the FBO
+		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
+		gl::ScopedGlslProg shaderScp(mFboTextureShader);
+		//mShader->bind();
+		mFboTextureShader->uniform("iGlobalTime", (float)getElapsedSeconds()); //TODO
+		mFboTextureShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
+		mFboTextureShader->uniform("iChannelResolution[0]", iChannelResolution0);
+		mFboTextureShader->uniform("iChannel0", 0);
+		mFboTextureShader->uniform("iZoom", mZoom);
+		gl::ScopedTextureBind tex(mTexs[0]->getTexture());
+		gl::drawSolidRect(Rectf(0, 0, mWidth, mHeight));
 		return mFbo->getColorTexture();
 	}
-}
-void VDFbo::saveThumb() {
-	string filename;
-	try {
-		filename = mFragFileName + ".jpg";
-		Surface s8(mFbo->getColorTexture()->createSource());
-		writeImage(getAssetPath("") / "thumbs" / filename, s8);
-		CI_LOG_V("saved:" + filename);
-	}
-	catch (const std::exception &e) {
-		CI_LOG_V("unable to save:" + filename + string(e.what()));
-	}
-}
-ivec2 VDFbo::getSize() {
+} // namespace VideoDromm
 
-	return mFbo->getSize();
-}
-Area VDFbo::getBounds() {
-
-	return mFbo->getBounds();
-}
-GLuint VDFbo::getId() {
-
-	return mFbo->getId();
-}
-string VDFbo::getName(){
-
-	return mName;
-}
-
-#pragma warning(pop) // _CRT_SECURE_NO_WARNINGS
