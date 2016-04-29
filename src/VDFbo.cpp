@@ -104,6 +104,7 @@ namespace VideoDromm {
 					//mVDSettings->newMsg = true;
 					//mFragmentShadersNames[rtn] = name;
 					mFboTextureShader->setLabel(name);
+					mFboName = name;
 				}
 			}
 			else
