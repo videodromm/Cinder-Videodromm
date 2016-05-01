@@ -375,7 +375,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	loadAnimation();
 }
 void VDAnimation::load() {
-	bag()->load(app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json");
+	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json";
+	// Create json file if it doesn't already exist.
+	if (fs::exists(mJsonFilePath)) {
+		bag()->load(mJsonFilePath);
+	}
+	
 
 }
 void VDAnimation::save() {

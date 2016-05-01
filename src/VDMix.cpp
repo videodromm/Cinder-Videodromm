@@ -275,7 +275,15 @@ namespace VideoDromm {
 
 		// render the right fbo
 		gl::ScopedGlslProg shaderScp(gl::getStockShader(gl::ShaderDef().texture()));
-		gl::ScopedTextureBind tex(mFbos[1]->getTexture());
+		if (mFbos.size() > 1) {
+			gl::ScopedTextureBind tex(mFbos[1]->getTexture());
+
+		}
+		else {
+			CI_LOG_W("renderRightFbo: only one fbo, right renders left...");
+			gl::ScopedTextureBind tex(mFbos[0]->getTexture());
+
+		}
 		gl::drawSolidRect(Rectf(0, 0, mWidth, mHeight));
 	}
 	ci::gl::TextureRef VDMix::getRightFboTexture() {
