@@ -10,10 +10,6 @@
 	url="https://github.com/Videodromm/Cinder-Videodromm"
 	git="git://github.com/brucelane/Cinder-Videodromm.git"
 	>
-	<requires>org.libcinder.osc</requires>
-	<requires>ocornut.imgui</requires>
-	<requires>nl.cowlumbus.warping</requires>
-	<requires>com.wk.websocketpp</requires>
 	<supports os="msw" />
   	<supports os="macosx" />
     <supports os="ios" />
