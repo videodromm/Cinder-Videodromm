@@ -162,7 +162,7 @@ void VDAnimation::update() {
 		if (iTempoTime < previousTime)
 		{
 			//iBar++;
-			mVDSettings->iBeat++;
+			if (mAutoBeatAnimation) mVDSettings->iBeat++;
 		}
 		previousTime = iTempoTime;
 
@@ -317,6 +317,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
 	// live json params
+	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json";
 	JsonBag::add(&mBackgroundColor, "background_color");
 	JsonBag::add(&mExposure, "exposure", []() {
 		app::console() << "Updated exposure" << endl;
@@ -325,6 +326,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	JsonBag::add(&mText, "text", []() {
 		app::console() << "Updated text" << endl;
 	});
+	JsonBag::add(&mAutoBeatAnimation, "autobeatanimation");
 	currentScene = 0;
 	// zoom
 	defaultZoom = 1.0f;
@@ -375,16 +377,18 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	loadAnimation();
 }
 void VDAnimation::load() {
-	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json";
 	// Create json file if it doesn't already exist.
 	if (fs::exists(mJsonFilePath)) {
 		bag()->load(mJsonFilePath);
 	}
-	
+	else {
+		bag()->save(mJsonFilePath);
+		bag()->load(mJsonFilePath);
+	}
 
 }
 void VDAnimation::save() {
-	bag()->save();
+	bag()->save(mJsonFilePath);
 	saveAnimation();
 }
 #pragma region utility

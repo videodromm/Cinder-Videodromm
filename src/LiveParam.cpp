@@ -52,8 +52,9 @@ void JsonBag::load(ci::fs::path aJsonFilePath)
 	}
 }
 
-void JsonBag::save() const
+void JsonBag::save(ci::fs::path aJsonFilePath)// const
 {
+	mJsonFilePath = aJsonFilePath;
 	JsonTree doc;
 	JsonTree params = JsonTree::makeArray( "params" );
 	

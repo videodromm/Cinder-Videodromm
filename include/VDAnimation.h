@@ -35,6 +35,7 @@ namespace VideoDromm
 		Color						getBackgroundColor() { return mBackgroundColor; };
 		float						getExposure() { return mExposure; };
 		void						setExposure(float aExposure);
+		bool						getAutoBeatAnimation() { return mAutoBeatAnimation; };
 		const int					maxBlendMode = 28;
 		// tap tempo
 		//float						mTempo;
@@ -115,9 +116,12 @@ namespace VideoDromm
 		// Session
 		VDSessionRef				mVDSession;
 		// Live json params
+		fs::path					mJsonFilePath;
 		Parameter<Color>			mBackgroundColor;
 		Parameter<float>			mExposure;
 		Parameter<string>			mText;
+		Parameter<bool>				mAutoBeatAnimation;
+
 		// timed animation
 		ci::Timer					timer;
 		std::deque <double>			buffer;

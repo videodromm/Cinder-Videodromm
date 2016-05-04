@@ -106,7 +106,7 @@ namespace live {
 			bag->mItems.emplace( key, param );
 		}
 		
-		void save() const;
+		void save(ci::fs::path aJsonFilePath) ;//const
 		void load(ci::fs::path aJsonFilePath);
 	private:	
 		JsonBag();
