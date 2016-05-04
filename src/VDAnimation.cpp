@@ -141,7 +141,7 @@ void VDAnimation::update() {
 
 	currentTime = timer.getSeconds();
 	// TODO check bounds
-	if (mAutoBeatAnimation) mVDSettings->liveMeter = mVDSettings->maxVolume/255;
+	if (mAutoBeatAnimation) mVDSettings->liveMeter = mVDSettings->maxVolume * 2;
 
 	int time = (currentTime - startTime)*1000000.0;
 	int elapsed = iDeltaTime*1000000.0;
