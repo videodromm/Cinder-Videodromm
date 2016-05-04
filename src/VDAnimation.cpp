@@ -140,6 +140,8 @@ void VDAnimation::update() {
 #pragma region animation
 
 	currentTime = timer.getSeconds();
+	// TODO check bounds
+	if (mAutoBeatAnimation) mVDSettings->liveMeter = mVDSettings->maxVolume/255;
 
 	int time = (currentTime - startTime)*1000000.0;
 	int elapsed = iDeltaTime*1000000.0;
