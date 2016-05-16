@@ -33,6 +33,10 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// glitch
 		mVDSettings->controlValues[45] = 1.0f;
 		break;
+	case KeyEvent::KEY_i:
+		// invert
+		mVDSettings->controlValues[48] = 1.0f;
+		break;
 	default:
 		handled = false;
 	}
@@ -55,6 +59,10 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	case KeyEvent::KEY_t:
 		// trixels
 		mVDSettings->controlValues[16] = 0.0f; 
+		break;
+	case KeyEvent::KEY_i:
+		// invert
+		mVDSettings->controlValues[48] = 0.0f;
 		break;
 	default:
 		handled = false;
