@@ -212,12 +212,12 @@ namespace VideoDromm {
 		ColorA						ColorYellow;
 		ColorA						ColorPurple;
 		// audio
-		float						*mData;
+		//float						*mData;
 		float						maxVolume;
 		bool						mUseLineIn;
 		bool						mIsPlaying;
-		//float						mAudioMultFactor; mVDSettings->controlValues[13]
-		float						iFreqs[4];
+		//float						mAudioMultFactor; now mVDSettings->controlValues[13]
+		float						iFreqs[7];
 		int							iBeat;
 		int							mFftSize;
 		int							mWindowSize;
@@ -234,7 +234,6 @@ namespace VideoDromm {
 
 		ci::Anim<float>				mStateTransition;
 
-		//ivec2						mRenderResolution;        // render resolution (replaces iResolution which increments magically)
 		// 
 		bool						mSendToOutput;
 		bool						autoInvert;

@@ -519,12 +519,12 @@ void VDSettings::reset()
 
 	maxVolume = 0.0f;
 	liveMeter = 0.0f;
-	mData = new float[1024];
+	/*mData = new float[1024];
 	for (int i = 0; i < 1024; i++)
 	{
 		mData[i] = 0;
-	}
-	for (int i = 0; i < 4; i++)
+	}*/
+	for (int i = 0; i < 7; i++)
 	{
 		iFreqs[i] = i;
 	}

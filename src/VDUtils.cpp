@@ -34,22 +34,22 @@ void VDUtils::createWarpFbos()
 	// vector + dynamic resize
 	/*for (int a = 0; a < 12; a++)
 	{
-		WarpFbo newWarpFbo;
-		if (a == 0)
-		{
-			newWarpFbo.textureIndex = 0; // spout
-			newWarpFbo.textureMode = mVDSettings->TEXTUREMODEINPUT;
-			newWarpFbo.active = true;
-			newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		}
-		else
-		{
-			newWarpFbo.textureIndex = 0; // index of MixFbo for shadamixa
-			newWarpFbo.textureMode = mVDSettings->TEXTUREMODESHADER;
-			newWarpFbo.active = false;
-			newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		}
-		mVDSettings->mWarpFbos.push_back(newWarpFbo);
+	WarpFbo newWarpFbo;
+	if (a == 0)
+	{
+	newWarpFbo.textureIndex = 0; // spout
+	newWarpFbo.textureMode = mVDSettings->TEXTUREMODEINPUT;
+	newWarpFbo.active = true;
+	newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+	}
+	else
+	{
+	newWarpFbo.textureIndex = 0; // index of MixFbo for shadamixa
+	newWarpFbo.textureMode = mVDSettings->TEXTUREMODESHADER;
+	newWarpFbo.active = false;
+	newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
+	}
+	mVDSettings->mWarpFbos.push_back(newWarpFbo);
 	}*/
 }
 
@@ -90,12 +90,12 @@ int VDUtils::getWindowsResolution()
 	//mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;
-	splitWarp(mVDSettings->mFboWidth,mVDSettings->mFboHeight);
+	splitWarp(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 	return w;
 }
 void VDUtils::splitWarp(int fboWidth, int fboHeight) {
-	 
-	x1LeftOrTop = x1RightOrBottom =0;
+
+	x1LeftOrTop = x1RightOrBottom = 0;
 	y1LeftOrTop = y1RightOrBottom = 0;
 	x2LeftOrTop = x2RightOrBottom = mVDSettings->mFboWidth;
 	y2LeftOrTop = y2RightOrBottom = mVDSettings->mFboHeight;
@@ -110,13 +110,13 @@ void VDUtils::splitWarp(int fboWidth, int fboHeight) {
 		y2LeftOrTop = (fboHeight / 2) - 1;
 		y1RightOrBottom = fboHeight / 2;
 		y2RightOrBottom = fboHeight;
-	} 
+	}
 	else
 	{
 		// no change
 	}
-		mSrcAreaLeftOrTop = Area(x1LeftOrTop, y1LeftOrTop, x2LeftOrTop, y2LeftOrTop);
-		mSrcAreaRightOrBottom = Area(x1RightOrBottom, y1RightOrBottom, x2RightOrBottom, y2RightOrBottom);
+	mSrcAreaLeftOrTop = Area(x1LeftOrTop, y1LeftOrTop, x2LeftOrTop, y2LeftOrTop);
+	mSrcAreaRightOrBottom = Area(x1RightOrBottom, y1RightOrBottom, x2RightOrBottom, y2RightOrBottom);
 
 }
 void VDUtils::moveX1LeftOrTop(int x1) {
