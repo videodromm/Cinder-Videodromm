@@ -175,9 +175,9 @@ bool VDSettings::save()
 	AssetsPath.setAttribute("value", toString(mAssetsPath));
 	settings.push_back(AssetsPath);
 
-	XmlTree UseLineIn("UseLineIn", "");
+	/*XmlTree UseLineIn("UseLineIn", "");
 	UseLineIn.setAttribute("value", toString(mUseLineIn));
-	settings.push_back(UseLineIn);
+	settings.push_back(UseLineIn);*/
 
 	XmlTree SplitWarpH("SplitWarpH", "");
 	SplitWarpH.setAttribute("value", toString(mSplitWarpH));
@@ -316,10 +316,10 @@ bool VDSettings::restore()
 					mAssetsPath = "";
 				}
 			}
-			if (settings.hasChild("UseLineIn")) {
+			/*if (settings.hasChild("UseLineIn")) {
 				XmlTree UseLineIn = settings.getChild("UseLineIn");
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
-			}
+			}*/
 			if (settings.hasChild("SplitWarpH")) {
 				XmlTree SplitWarpH = settings.getChild("SplitWarpH");
 				mSplitWarpH = SplitWarpH.getAttributeValue<bool>("value");
@@ -412,58 +412,7 @@ void VDSettings::resetSomeParams() {
 	mTransitionDuration = 2.0f;
 	mTransitionTime = 1.0f;
 
-	// red
-	controlValues[1] = 1.0f;
-	// green
-	controlValues[2] = 0.3f;
-	// blue
-	controlValues[3] = 0.0f;
-	// Alpha 
-	controlValues[4] = 1.0f;
-	// background red
-	controlValues[5] = 0.1f;
-	// background green
-	controlValues[6] = 0.1f;
-	// background blue
-	controlValues[7] = 0.1f;
-	// background alpha
-	controlValues[8] = 0.2f;
-	// pointsphere zPosition
-	controlValues[9] = -0.7f;
-	// iChromatic
-	controlValues[10] = 0.0f;
-	// ratio
-	controlValues[11] = 20.0f;
-	// Speed 
-	controlValues[12] = 12.0f;
-	// Audio multfactor 
-	controlValues[13] = 1.0f;
-	// exposure
-	controlValues[14] = 1.0f;
-	// Pixelate
-	controlValues[15] = 1.0f;
-	// Trixels
-	controlValues[16] = 0.0f;
-	// GridSize
-	controlValues[17] = 0.0f;
-	// iCrossfade
-	controlValues[18] = 1.0f;
-	// RotationSpeed
-	controlValues[19] = 0.0f;
-	// Steps
-	controlValues[20] = 16.0f;
-	// iPreviewCrossfade
-	controlValues[21] = 1.0f;
-	// zoom
-	controlValues[22] = iZoomLeft = iZoomRight = 1.0f;
-	// glitch
-	controlValues[45] = 0.0f;
-	// toggle
-	controlValues[46] = 0.0f;
-	// vignette
-	controlValues[47] = 0.0f;
-	// invert
-	controlValues[48] = 0.0f;
+	iZoomLeft = iZoomRight = 1.0f;
 	autoInvert = false;
 }
 
@@ -510,24 +459,19 @@ void VDSettings::reset()
 	//audio
 	// audio in multiplication factor
 	//mAudioMultFactor = 1.0;
-	mUseLineIn = true;
 	mIsPlaying = false;
 	iBeat = 0;
 	iSeed = 0.1;
 	mFftSize = 512;
 	mWindowSize = 1024;
 
-	maxVolume = 0.0f;
 	liveMeter = 0.0f;
 	/*mData = new float[1024];
 	for (int i = 0; i < 1024; i++)
 	{
 		mData[i] = 0;
 	}*/
-	for (int i = 0; i < 7; i++)
-	{
-		iFreqs[i] = i;
-	}
+
 
 	// shader uniforms
 	iResolution = vec3(mFboWidth, mFboHeight, 1.0);
@@ -539,7 +483,6 @@ void VDSettings::reset()
 	{
 		iChannelResolution[i] = vec3(mFboWidth, mFboHeight, 1.0);
 	}
-	controlValues[18] = controlValues[21] = 1.0;
 #ifdef _DEBUG
 	iDebug = true;
 #else
@@ -612,10 +555,7 @@ void VDSettings::reset()
 
 	// midi
 	mMIDIEnabled = true;
-	for (int c = 0; c < 128; c++)
-	{
-		controlValues[c] = 0.01f;
-	}
+
 	// OSC
 	mOSCEnabled = true;
 	mOSCDestinationHost = "127.0.0.1";

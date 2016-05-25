@@ -131,6 +131,4 @@ void VDSession::reset()
 	mShaderRight = "";
 
 	resetSomeParams();
-
-
 }

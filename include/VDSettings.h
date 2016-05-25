@@ -5,12 +5,7 @@
 #include "cinder/gl/GlslProg.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/Timeline.h"
-//#include "cinder/Json.h"
 #include "cinder/Xml.h"
-
-
-// fonts
-//#include "Resources.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -213,11 +208,8 @@ namespace VideoDromm {
 		ColorA						ColorPurple;
 		// audio
 		//float						*mData;
-		float						maxVolume;
-		bool						mUseLineIn;
 		bool						mIsPlaying;
-		//float						mAudioMultFactor; now mVDSettings->controlValues[13]
-		float						iFreqs[7];
+		//float						mAudioMultFactor; now mVDAnimation->controlValues[13]
 		int							iBeat;
 		int							mFftSize;
 		int							mWindowSize;
@@ -244,8 +236,6 @@ namespace VideoDromm {
 		int							mFboResolution;
 		int							mOutputVideoResolution;
 		vec2						mOutputResolution;
-		// OSC/MIDI/JSON controlled UI and params
-		map<int, float>				controlValues;
 		// indexes for textures
 		map<int, int>				iChannels;
 		int							selectedChannel;

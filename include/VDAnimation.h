@@ -110,6 +110,13 @@ namespace VideoDromm
 		// keyboard
 		bool						handleKeyDown(KeyEvent &event);
 		bool						handleKeyUp(KeyEvent &event);
+		// audio
+		float						maxVolume;
+		bool						mUseLineIn;
+		float						iFreqs[7];
+		// OSC/MIDI/JSON controlled UI and params
+		map<int, float>				controlValues;
+
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
