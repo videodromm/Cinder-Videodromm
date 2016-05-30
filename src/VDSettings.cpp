@@ -414,6 +414,23 @@ void VDSettings::resetSomeParams() {
 
 	iZoomLeft = iZoomRight = 1.0f;
 	autoInvert = false;
+	// imgui
+	uiXPos = uiMargin = 3;
+	uiElementWidth = mPreviewFboWidth + uiMargin;
+	uiElementHeight = mPreviewFboHeight * 2.3;
+	// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15 mPreviewWidth = 160;mPreviewHeight = 120;
+	uiLargeW = (mPreviewFboWidth + uiMargin) * 4;
+	uiLargeH = (mPreviewFboHeight + uiMargin) * 8;
+	uiLargePreviewW = uiLargeW / 2 ;
+	uiLargePreviewH = (mPreviewHeight + uiMargin) * 2.4;
+	uiXPosCol1 = uiLargeW + uiMargin*2;
+	uiXPosCol2 = uiXPosCol1 + uiMargin + uiElementWidth; //largeW + mVDSettings->uiMargin * 2;
+	uiXPosCol3 = uiXPosCol2 + uiMargin;
+	uiYPos;
+	uiYPosRow1 = 18;
+	uiYPosRow2 = 120;
+	uiYPosRow3 = uiYPosRow2 + uiLargeH + uiMargin * 2;
+
 }
 
 void VDSettings::reset()
@@ -583,6 +600,4 @@ void VDSettings::reset()
 	iBlueMultiplier = 1.0f;
 
 	resetSomeParams();
-
-
 }

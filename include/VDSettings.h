@@ -274,13 +274,31 @@ namespace VideoDromm {
 		bool						mIsWebSocketsServer;
 		uint16_t					mWebSocketsPort;
 		string						mWebSocketsHost;
-		//abp
+		// abp
 		float						mBend;
 		float						liveMeter;
 		// info to backup in XML
 		string						mInfo;
 		// ableton liveOSC
 		string						mTrackName;
+		// imgui positions and sizes
+		int							uiMargin;
+		// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15
+		int							uiElementWidth;
+		int							uiElementHeight;
+
+		int							uiXPos;
+		int							uiXPosCol1;
+		int							uiXPosCol2;
+		int							uiXPosCol3;
+		int							uiYPos;
+		int							uiYPosRow1;
+		int							uiYPosRow2;
+		int							uiYPosRow3;
+		int							uiLargeW;
+		int							uiLargeH;
+		int							uiLargePreviewW;
+		int							uiLargePreviewH;
 	private:
 		const string settingsFileName = "VDSettings.xml";
 	};
