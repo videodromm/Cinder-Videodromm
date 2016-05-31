@@ -114,6 +114,7 @@ void VDAnimation::loadAnimation() {
 	}
 }
 void VDAnimation::update() {
+
 	//chromatic
 	if (!controlValues[42]) {
 		lockChromatic();
