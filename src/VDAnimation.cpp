@@ -37,6 +37,13 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// invert
 		controlValues[48] = 1.0f;
 		break;
+	case KeyEvent::KEY_LEFT:		
+		if (controlValues[21]>0.1) controlValues[21] -= 0.1;
+		break;
+	case KeyEvent::KEY_RIGHT:
+		if (controlValues[21]<1.0) controlValues[21] += 0.1;
+		break;
+
 	default:
 		handled = false;
 	}
@@ -435,7 +442,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// Steps
 	controlValues[20] = 16.0f;
 	// iPreviewCrossfade
-	controlValues[21] = 1.0f;
+	controlValues[21] = 0.0f;
 	// zoom
 	controlValues[22] = 1.0f;
 	// glitch
