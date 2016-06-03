@@ -43,7 +43,26 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 	case KeyEvent::KEY_RIGHT:
 		if (controlValues[21]<1.0) controlValues[21] += 0.1;
 		break;
-
+	case KeyEvent::KEY_x:
+	case KeyEvent::KEY_y:
+		mVDSettings->iXorY = !mVDSettings->iXorY;
+		break;
+	case KeyEvent::KEY_c:
+		// chromatic
+		controlValues[10] = controlValues[10] + 0.05f;
+		break;
+	case KeyEvent::KEY_p:
+		// pixelate
+		controlValues[15] = controlValues[15] + 0.05f;
+		break;
+	case KeyEvent::KEY_o:
+		// toggle
+		controlValues[46] = !controlValues[46];
+		break;
+	case KeyEvent::KEY_z:
+		// zoom
+		controlValues[22] = controlValues[22] - 0.05f;
+		break;
 	default:
 		handled = false;
 	}
@@ -70,6 +89,22 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	case KeyEvent::KEY_i:
 		// invert
 		controlValues[48] = 0.0f;
+		break;
+	case KeyEvent::KEY_c:
+		// chromatic
+		controlValues[10] = 0.0f;
+		break;
+	case KeyEvent::KEY_p:
+		// pixelate
+		controlValues[15] = 1.0f;
+		break;
+	case KeyEvent::KEY_o:
+		// toggle
+		controlValues[46] = 0.0f;
+		break;
+	case KeyEvent::KEY_z:
+		// zoom
+		controlValues[22] = 1.0f;
 		break;
 	default:
 		handled = false;
