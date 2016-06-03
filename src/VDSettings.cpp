@@ -581,7 +581,9 @@ void VDSettings::reset()
 	mOSCDestinationPort2 = 7002;
 	mOSCReceiverPort = 7000;
 	mMsg = "";
+	mWebSocketsMsg = "";
 	newMsg = false;
+	mWebSocketsNewMsg = false;
 	InfoMsg = "";
 	mIsOSCSender = false;
 	// web sockets
