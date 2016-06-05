@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fbos version="1.0">
+	<texture id="1" texturetype="image">
+		<details path="help.jpg" width="640" height="480" shadername="3BeatAcidAtTheDisco.glsl" topdown="1"/>
+	</texture>
+</fbos>
+

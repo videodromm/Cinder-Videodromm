@@ -20,7 +20,12 @@
 	<sourcePattern>src/*.c</sourcePattern>
 	<platform os="msw">
 		<libraryPath>lib</libraryPath>
+		<requires>fr.batchass.spout</requires>
+	</platform>
+	<platform os="macosx">
+		<requires>org.libcinder.quicktime</requires>
+		<requires>info.v002.syphon</requires>
 	</platform>
 </block>
-<template>templates/Videodromm/template.xml</template>
+<template>templates/Videodromm-Textures/template.xml</template>
 </cinder>
