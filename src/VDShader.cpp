@@ -5,6 +5,10 @@ using namespace VideoDromm;
 VDShader::VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVextexShaderFilePath = aVextexShaderFilePath;
+
+	// shadertoy include
+	shaderInclude = loadString(loadAsset("shadertoy.inc"));
+
 	loadVertexStringFromFile(mVextexShaderFilePath);
 	loadFragmentStringFromFile(mFragmentShaderFilePath);
 	CI_LOG_V("VDShaders constructor");
@@ -15,7 +19,7 @@ void VDShader::loadVertexStringFromFile(string aFileName) {
 	// load vertex shader
 	try {
 		if (aFileName.length() == 0) {
-			mVertexFile = getAssetPath("") / mVDSettings->mAssetsPath / "passthru.vert";
+			mVertexFile = getAssetPath("") / "passthru.vert";
 		}
 		else {
 			mVertexFile = aFileName;
@@ -23,7 +27,7 @@ void VDShader::loadVertexStringFromFile(string aFileName) {
 		if (!fs::exists(mVertexFile)) {
 			mError = mVertexFile.string() + " does not exist";
 			CI_LOG_V(mError);
-			mVertexFile = getAssetPath("") / mVDSettings->mAssetsPath / "passthru.vert";
+			mVertexFile = getAssetPath("") / "passthru.vert";
 		}
 		mVextexShaderString = loadString(loadFile(mVertexFile));
 		mVextexShaderFilePath = mVertexFile.string();
@@ -39,7 +43,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 	try
 	{
 		if (aFileName.length() == 0) {
-			mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / "0.glsl";
+			mFragFile = getAssetPath("") / "0.glsl";
 		}
 		else {
 			mFragFile = aFileName;
@@ -48,10 +52,18 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 		if (!fs::exists(mFragFile)) {
 			mError = mFragFile.string() + " does not exist";
 			CI_LOG_V(mError);
-			mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / "0.glsl";
+			mFragFile = getAssetPath("") / "0.glsl";
 		}
-		mFragmentShaderString = loadString(loadFile(mFragFile));
 		mFragmentShaderFilePath = mFragFile.string();
+		mFragmentShaderString = loadString(loadFile(mFragFile));
+		std::size_t foundUniform = mFragmentShaderString.find("uniform");
+
+		if (foundUniform == std::string::npos) {
+			
+			mFragmentShaderString = shaderInclude + mFragmentShaderString;
+		}
+
+
 		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);
 		mShader->setLabel(mFragFile.string());
 		CI_LOG_V(mFragFile.string() + " loaded and compiled");
@@ -79,6 +91,9 @@ void VDShader::fromXml(const XmlTree &xml) {
 	loadFragmentStringFromFile(mFragFile.string());
 
 }
+gl::GlslProgRef VDShader::getShader() { 
+	return mShader; 
+};
 VDShader::~VDShader() {
 	CI_LOG_V("VDShader destructor");
 }

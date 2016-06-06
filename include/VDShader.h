@@ -38,7 +38,7 @@ namespace VideoDromm
 			return shared_ptr<VDShader>(new VDShader(aVDSettings, aFragmentShaderFilePath, aVextexShaderFilePath));
 		}
 		void fromXml(const XmlTree &xml);
-		gl::GlslProgRef					getShader() { return mShader; };
+		gl::GlslProgRef					getShader();
 		string							getName() { return mName; };
 		void							loadVertexStringFromFile(string aFileName);
 		void							loadFragmentStringFromFile(string aFileName);
@@ -62,5 +62,8 @@ namespace VideoDromm
 		std::string						mFragmentShaderString;
 		std::string						mFragmentShaderFilePath;
 		fs::path						mFragFile;
+		// include shader lines
+		std::string				shaderInclude;
+
 	};
 }

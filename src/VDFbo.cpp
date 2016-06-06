@@ -23,7 +23,7 @@ namespace VideoDromm {
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		// init shaders
-		//mVDShaders = VDShaders::create(mVDSettings);
+		mShaderIndex = 0;
 
 		// init the fbo whatever happens next
 		gl::Fbo::Format format;
@@ -110,6 +110,15 @@ namespace VideoDromm {
 				mShaderName = mGlslPath;
 				loadFragmentShader(fr.string());
 				CI_LOG_V("successfully loaded " + mGlslPath);
+			}
+			else {
+				CI_LOG_V("try upper level because file does not exist: " + mGlslPath);
+				fr = getAssetPath("") / mGlslPath;
+				if (fs::exists(fr)) {
+					mShaderName = mGlslPath;
+					loadFragmentShader(fr.string());
+					CI_LOG_V("successfully loaded " + mGlslPath);
+				}
 			}
 		}
 	}
