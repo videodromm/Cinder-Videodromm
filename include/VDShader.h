@@ -42,6 +42,7 @@ namespace VideoDromm
 		string							getName() { return mName; };
 		void							loadVertexStringFromFile(string aFileName);
 		void							loadFragmentStringFromFile(string aFileName);
+		string							getFragmentString() { return mFragmentShaderString; };
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

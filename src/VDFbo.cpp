@@ -129,17 +129,19 @@ namespace VideoDromm {
 		mShaderList.push_back(s);
 
 		mShaderIndex = rtn = mShaderList.size() - 1;
+		mVDSettings->mShaderToLoad =  "";
+		mFragmentShaderText = s->getFragmentString();
 		/*mFragmentShaderText = mShaderList->loadFboPixelFragmentShader(aFilePath);
 		if (mFragmentShaderText.length() > 0) {
 		mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFragmentShaderText);
 		mFboTextureShader->setLabel(mShaderName);
-		mVDSettings->mShaderToLoad =  "";
+		
 		rtn = 1432143214321432142143213213123123120;
 		}*/
 		return rtn;
 	}
 	string VDFbo::getFragmentShaderText() {
-		return mFragmentShaderText;
+		return mFragmentShaderText; 
 	}
 	std::string VDFbo::getLabel() {
 		mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());

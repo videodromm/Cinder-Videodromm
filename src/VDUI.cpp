@@ -134,6 +134,8 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		mUIFbos->Run("Fbos");
 		break;
 	case 2:
+		// Shaders
+		mUIShaders->Run("Shaders");
 		// Console
 		mVDConsole->Run("Console");
 		break;
