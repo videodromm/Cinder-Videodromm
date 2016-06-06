@@ -104,6 +104,9 @@ namespace VideoDromm
 		string							getInputTextureName(unsigned int aTextureIndex);
 		// uniforms
 		void							setCrossfade(float aCrossfade);
+		// shaders
+		unsigned int					getShadersCount();
+		string							getShaderName(unsigned int aShaderIndex);
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -116,14 +119,14 @@ namespace VideoDromm
 		float							mPosY;
 		float							mZoom;
 		//! default vertex shader
-		std::string						mPassthruVextexShaderString;
+		//std::string						mPassthruVextexShaderString;
 		//! default fragment shader
-		std::string						mMixFragmentShaderString;
+		//std::string						mMixFragmentShaderString;
 		//! mix shader
 		gl::GlslProgRef					mMixShader;
 		// include shader lines
-		std::string						shaderInclude;
-		string							mError;
+		//std::string						shaderInclude;
+		//string							mError;
 		// uniforms
 		vec3							iChannelResolution0;
 	private:
@@ -147,7 +150,7 @@ namespace VideoDromm
 		//! Shaders
 		VDShaderList					mShaderList;
 		bool							initShaderList();
-		string							mMixShaderName;
+		unsigned int					mMixShaderIndex;
 		// Textures
 		VDTextureList					mTextureList;
 		fs::path						mTexturesFilepath;

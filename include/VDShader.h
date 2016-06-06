@@ -23,94 +23,44 @@ using namespace std;
 
 namespace VideoDromm
 {
-	// stores the pointer to the VDShaders instance
-	typedef std::shared_ptr<class VDShaders>	VDShadersRef;
-	typedef std::vector<VDShadersRef>			VDShaderList;
+	// stores the pointer to the VDShader instance
+	typedef std::shared_ptr<class VDShader>	VDShaderRef;
+	typedef std::vector<VDShaderRef>			VDShaderList;
 
-	struct VDShader
-	{
-		gl::GlslProgRef				shader;
-		string						name;
-		string						text;
-		bool						active;
-		int							microseconds;
-	};
-	class VDShaders {
+
+	class VDShader {
 	public:
-		VDShaders(VDSettingsRef aVDSettings);
-		virtual					~VDShaders();
+		VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath, string aVextexShaderFilePath);
+		virtual					~VDShader();
 		void update();
-		static VDShadersRef	create(VDSettingsRef aVDSettings)
+		static VDShaderRef	create(VDSettingsRef aVDSettings, string aFragmentShaderFilePath, string aVextexShaderFilePath)
 		{
-			return shared_ptr<VDShaders>(new VDShaders(aVDSettings));
+			return shared_ptr<VDShader>(new VDShader(aVDSettings, aFragmentShaderFilePath, aVextexShaderFilePath));
 		}
-
-		string							getFragFileName() { return mFragFileName; };
-		string							getFragFullPath() { return mFragFile; };
-
-		bool							setFragString(string pixelFrag);
-		int								setGLSLString(string pixelFrag, string name);
-		int								setGLSLStringAtIndex(string pixelFrag, string name, int index);
-		// TO CHECK text int								setGLSLPixelShaderAtIndex(gl::GlslProgRef pixelFrag, string name, int index);
-		bool							loadTextFile(string aFilePath);
-
-		string							getFragError();
-
-		bool							isValidFrag() { return validFrag; };
-		bool							isValidVert() { return validVert; };
-
-		//Shada							getShader(int aIndex) { return mFragmentShaders[aIndex]; };
-		int								getCount() { return mFragmentShaders.size(); };
-
-		int								loadPixelFragmentShader(string aFilePath);
-		void							removePixelFragmentShaderAtIndex(int index);
-		int								loadPixelFragmentShaderAtIndex(string aFilePath, int index);
-		string							getFileName(string aFilePath);
-		string							getNewFragFileName(string aFilePath);
-		string							getFragStringFromFile(string fileName);
-		void							renderPreviewShader();
-
-		void							createThumbsFromDir(string filePath);
-		void							setShaderMicroSeconds(int index, int micro);
-
-		std::string						getShaderString(int index);
-		// get the include shader
-		std::string						getShaderInclude() { return shaderInclude; };
-		// fbo shader
-		std::string						loadFboPixelFragmentShader(string aFilePath);
-
+		void fromXml(const XmlTree &xml);
+		gl::GlslProgRef					getShader() { return mShader; };
+		string							getName() { return mName; };
+		void							loadVertexStringFromFile(string aFileName);
+		void							loadFragmentStringFromFile(string aFileName);
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
 
-		string							mFragFile;
-		string							mFragFileName;
-
-		bool							validFrag;
-		bool							validVert;
-
-		// new
-		int								mCurrentRenderShader;
-		int								mCurrentPreviewShader;
-		int								mShaderIndex;
-		//! shaders
-		vector<VDShader>				mFragmentShaders;
-
-		string							fileName, previousFileName, currentFileName, mixFileName;
+		string							mId;
+		gl::GlslProgRef					mShader;
+		string							mName;
+		string							mText;
+		bool							mActive;
+		int								mMicroSeconds;
 		string							mError;
 
-		//! find index for insert/update in mFragmentShaders
-		int								findFragmentShaderIndex(int index, string name);
-
-		//! default vertex shader
-		std::string						mPassthruVextexShaderString;
-		//! default fragment shader
-		std::string						mPassthruFragmentShaderString;
-		//! passthru shader
-		gl::GlslProgRef					mPassThruShader;
-
-		// include shader lines
-		std::string						shaderInclude;
-
+		//! vertex shader
+		std::string						mVextexShaderString;
+		std::string						mVextexShaderFilePath;
+		fs::path						mVertexFile;
+		//! fragment shader
+		std::string						mFragmentShaderString;
+		std::string						mFragmentShaderFilePath;
+		fs::path						mFragFile;
 	};
 }

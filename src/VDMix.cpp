@@ -45,73 +45,26 @@ namespace VideoDromm {
 		//mUseLeftFbo = mUseRightFbo = true;
 		// use fbo texture for live coding
 		mUseFbo = false;
-		// init with passthru shader
-		mMixShaderName = "mixshader";
+		// mix shader index
+		mMixShaderIndex = 0;
 		// load shadertoy uniform variables declarations
-		shaderInclude = loadString(loadAsset("shadertoy.inc"));
-		try
-		{
-			fs::path vertexFile = getAssetPath("") / "passthru.vert";
-			if (fs::exists(vertexFile)) {
-				mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
-				CI_LOG_V("passthru.vert loaded");
-			}
-			else
-			{
-				CI_LOG_V("passthru.vert does not exist, should quit");
-			}
-		}
-		catch (gl::GlslProgCompileExc &exc)
-		{
-			mError = string(exc.what());
-			CI_LOG_V("unable to load/compile passthru vertex shader:" + string(exc.what()));
-		}
-		catch (const std::exception &e)
-		{
-			mError = string(e.what());
-			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
-		}
-		// load passthru fragment shader
-		try
-		{
-			fs::path fragFile = getAssetPath("") / "mixfbo.frag";
-			if (fs::exists(fragFile)) {
-				mMixFragmentShaderString = loadString(loadAsset("mixfbo.frag"));
-			}
-			else
-			{
-				mError = "mixfbo.frag does not exist, should quit";
-				CI_LOG_V(mError);
-			}
-			mMixShader = gl::GlslProg::create(mPassthruVextexShaderString, mMixFragmentShaderString);
-			mMixShader->setLabel(mMixShaderName);
-			CI_LOG_V("mixfbo.frag loaded and compiled");
-		}
-		catch (gl::GlslProgCompileExc &exc)
-		{
-			mError = string(exc.what());
-			CI_LOG_V("unable to load/compile mixfbo fragment shader:" + string(exc.what()));
-		}
-		catch (const std::exception &e)
-		{
-			mError = string(e.what());
-			CI_LOG_V("unable to load mixfbo fragment shader:" + string(e.what()));
-		}
+		//shaderInclude = loadString(loadAsset("shadertoy.inc"));
+
 	}
 	bool VDMix::initFboList() {
 		bool isFirstLaunch = false;
 		if (mFboList.size() == 0) {
 			CI_LOG_V("VDMix::init mFboList");
 			isFirstLaunch = true;
-			VDFboRef t(new VDFbo(mVDSettings, mVDAnimation, mTextureList, mShaderList));
+			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList, mShaderList));
 			// create fbo xml
 			XmlTree			fboXml;
 			fboXml.setTag("audio fbo 0");
 			fboXml.setAttribute("id", "0");
 			fboXml.setAttribute("width", "640");
 			fboXml.setAttribute("height", "480");;
-			t->fromXml(fboXml);
-			mFboList.push_back(t);
+			f->fromXml(fboXml);
+			mFboList.push_back(f);
 		}
 		return isFirstLaunch;
 	}
@@ -120,8 +73,17 @@ namespace VideoDromm {
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDMix::init mShaderList");
 			isFirstLaunch = true;
-			mShaderList.push_back(t);
+			VDShaderRef s(new VDShader(mVDSettings, "", ""));
+			// create shader xml
+			XmlTree			shaderXml;
+			shaderXml.setTag("mix");
+			shaderXml.setAttribute("id", "0");
+			shaderXml.setAttribute("vertfile", "passthru.vert");
+			shaderXml.setAttribute("fragfile", "mixfbo.frag");
+			s->fromXml(shaderXml);
+			mShaderList.push_back(s);
 		}
+		return isFirstLaunch;
 	}
 	bool VDMix::initTextureList() {
 		bool isFirstLaunch = false;
@@ -468,13 +430,23 @@ namespace VideoDromm {
 	void VDMix::setCrossfade(float aCrossfade) {
 		mVDAnimation->controlValues[21] = aCrossfade;
 	}
+	// shaders
+	unsigned int VDMix::getShadersCount() {
+		return mShaderList.size();
+	}
+	string VDMix::getShaderName(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->getName();
+	}
 
 	ci::gl::TextureRef VDMix::getTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mMixFbo);
 		gl::clear(Color::gray(0.2f));
 		gl::ScopedViewport scpVp(ivec2(0), mMixFbo->getSize());
-		gl::ScopedGlslProg shaderScp(mMixShader);
+		//gl::ScopedGlslProg shaderScp(mShaderList[mMixShaderIndex]->getShader());
+		mMixShader = mShaderList[mMixShaderIndex]->getShader();
+
 		gl::ScopedTextureBind tex1(getFboTexture(mLeftFboIndex));
 		gl::ScopedTextureBind tex2(getFboTexture(mRightFboIndex));
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));

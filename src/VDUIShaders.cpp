@@ -22,7 +22,7 @@ void VDUIShaders::Run(const char* title) {
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(t);
-			ui::Image((void*)mVDMix->getShaderThumb(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			//ui::Image((void*)mVDMix->getShaderThumb(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 		}
 	}
 	

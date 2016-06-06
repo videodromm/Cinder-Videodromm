@@ -15,8 +15,8 @@
 #include "VDAnimation.h"
 // textures
 #include "VDTexture.h"
-// textures
-#include "VDShaders.h"
+// shaders
+#include "VDShader.h"
 
 #include <atomic>
 #include <vector>
@@ -109,6 +109,5 @@ namespace VideoDromm
 		string							mShaderName;
 		string							mFragmentShaderText;
 		string							mId;
-		
 	};
 }

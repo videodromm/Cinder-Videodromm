@@ -28,7 +28,7 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDUIShaders>(new VDUIShaders(aVDSettings, aVDMix, aVDRouter));
 		}
-		~VDUIWebsockets();
+		~VDUIShaders();
 		void    Run(const char* title);
 	private:
 		// Settings
