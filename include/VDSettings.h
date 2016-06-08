@@ -167,6 +167,7 @@ namespace VideoDromm {
 		float						iFps;
 		string						sFps;
 		bool						iGreyScale;
+		unsigned int				shaderEditIndex;
 		// transition
 		int							iTransition;
 		Anim<float>					iAnim;

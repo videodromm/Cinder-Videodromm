@@ -62,7 +62,8 @@ void VDUIFbos::Run(const char* title) {
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Set fbo to right");
 			ui::PopStyleColor(3);
- 
+
+
 			ui::PopID();
 		}
 		ui::End();

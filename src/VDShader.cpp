@@ -14,6 +14,8 @@ VDShader::VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath = "
 	CI_LOG_V("VDShaders constructor");
 	mVDSettings = aVDSettings;
 	mError = "";
+	gl::Fbo::Format format;
+	mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
 }
 void VDShader::loadVertexStringFromFile(string aFileName) {
 	// load vertex shader
@@ -59,7 +61,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 		std::size_t foundUniform = mFragmentShaderString.find("uniform");
 
 		if (foundUniform == std::string::npos) {
-			
+
 			mFragmentShaderString = shaderInclude + mFragmentShaderString;
 		}
 
@@ -71,7 +73,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 	catch (gl::GlslProgCompileExc &exc)
 	{
 		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile mixfbo fragment shader:" + string(exc.what()));
+		CI_LOG_V("unable to load/compile fragment shader:" + string(exc.what()));
 	}
 	catch (const std::exception &e)
 	{
@@ -91,8 +93,56 @@ void VDShader::fromXml(const XmlTree &xml) {
 	loadFragmentStringFromFile(mFragFile.string());
 
 }
-gl::GlslProgRef VDShader::getShader() { 
-	return mShader; 
+ci::gl::Texture2dRef VDShader::getThumb() {
+	string filename = mName + ".jpg";
+	fs::path fr = getAssetPath("") / "thumbs" / filename;
+	if (!fs::exists(fr)) {
+		// draw using the mix shader
+		mThumbFbo->bindFramebuffer();
+		//gl::setViewport(mVDFbos[mVDSettings->mMixFboIndex].fbo.getBounds());
+
+		// clear the FBO
+		gl::clear();
+		gl::setMatricesWindow(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
+
+		mShader->bind();
+		mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
+		mShader->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
+		mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
+		mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+		mShader->uniform("iChannel0", 0);
+		mShader->uniform("iChannel1", 1);
+		mShader->uniform("iChannel2", 2);
+		mShader->uniform("iAudio0", 0);
+		mShader->uniform("iFreq0", 1.0f);
+		mShader->uniform("iFreq1", 1.0f);
+		mShader->uniform("iFreq2", 1.0f);
+		mShader->uniform("iFreq3", 1.0f);
+		mShader->uniform("spectrum", vec3(1.0f));
+		mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
+		mShader->uniform("iColor", vec3(1.0f, 1.0f, 0.0f));
+		mShader->uniform("iBackgroundColor", vec3(1.0f, 0.0f, 0.0f));
+		mShader->uniform("iSteps", 16.0f);
+		mShader->uniform("iRatio", 20.0f);
+		mShader->uniform("iRenderXY", mVDSettings->mRenderXY);
+		mShader->uniform("iZoom", 1.0f);
+		mShader->uniform("iAlpha", 1.0f);
+
+		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+		// stop drawing into the FBO
+		mThumbFbo->unbindFramebuffer();
+		mThumbTexture = mThumbFbo->getColorTexture();
+		Surface s8(mThumbTexture->createSource());
+		writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
+	}
+	else {
+		// load from disk?
+	}
+	return mThumbTexture;
+}
+
+gl::GlslProgRef VDShader::getShader() {
+	return mShader;
 };
 VDShader::~VDShader() {
 	CI_LOG_V("VDShader destructor");

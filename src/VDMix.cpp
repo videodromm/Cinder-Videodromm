@@ -56,7 +56,7 @@ namespace VideoDromm {
 		if (mFboList.size() == 0) {
 			CI_LOG_V("VDMix::init mFboList");
 			isFirstLaunch = true;
-			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList, mShaderList));
+			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 			// create fbo xml
 			XmlTree			fboXml;
 			fboXml.setTag("audio fbo 0");
@@ -185,14 +185,6 @@ namespace VideoDromm {
 	VDMix::~VDMix(void) {
 
 	}
-	int VDMix::loadFboFragmentShader(string aFilePath, unsigned int aFboIndex) {
-		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
-		return mFboList[aFboIndex]->loadFragmentShader(aFilePath);
-	}
-	string VDMix::getFboFragmentShaderText(unsigned int aFboIndex) {
-		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
-		return mFboList[aFboIndex]->getFragmentShaderText();
-	}
 	VDMixList VDMix::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, const DataSourceRef &source) {
 		XmlTree			doc;
 		VDMixList	VDMixlist;
@@ -273,13 +265,53 @@ namespace VideoDromm {
 			CI_LOG_V("VDMix got fbo child ");
 			for (XmlTree::ConstIter fboChild = xml.begin("fbo"); fboChild != xml.end(); ++fboChild) {
 				CI_LOG_V("VDMix create fbo ");
-				VDFboRef t(new VDFbo(mVDSettings, mVDAnimation, mTextureList, mShaderList));
-				t->fromXml(*fboChild);
-				mFboList.push_back(t);
+				VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+				f->fromXml(*fboChild);
+				mFboList.push_back(f);
+				int fboIndex = mFboList.size() - 1;
+				
+				string mGlslPath = fboChild->getAttributeValue<string>("shadername", "0.glsl");
+				CI_LOG_V("fbo shadername " + mGlslPath);
+				f->setLabel(mGlslPath);
+				if (mGlslPath.length() > 0) {
+					fs::path fr = getAssetPath("") / mVDSettings->mAssetsPath / mGlslPath;
+					if (fs::exists(fr)) {
+						loadFboFragmentShader(fr.string(), fboIndex);
+						CI_LOG_V("successfully loaded " + mGlslPath);
+					}
+					else {
+						CI_LOG_V("try upper level because file does not exist: " + mGlslPath);
+						fr = getAssetPath("") / mGlslPath;
+						if (fs::exists(fr)) {
+							loadFboFragmentShader(fr.string(), fboIndex);
+							CI_LOG_V("successfully loaded " + mGlslPath);
+						}
+					}
+				}
 			}
 			if (mFboList.size() > 2) mLeftFboIndex = mFboList.size() - 2;
 			if (mFboList.size() > 1) mRightFboIndex = mFboList.size() - 1;
 		}
+	}
+	int VDMix::loadFboFragmentShader(string aFilePath, unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+		int rtn = -1;
+		CI_LOG_V("fbo" + toString(aFboIndex) + ": loadPixelFragmentShader " + aFilePath);
+		VDShaderRef s(new VDShader(mVDSettings, aFilePath, ""));
+		mShaderList.push_back(s);
+
+		rtn = mShaderList.size() - 1;
+		mFboList[aFboIndex]->setShaderIndex(rtn);
+		mFboList[aFboIndex]->setFragmentShader(s->getFragmentString());
+		mVDSettings->mShaderToLoad = "";
+
+		return rtn;
+	}
+	string VDMix::getFboFragmentShaderText(unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+		unsigned int shaderIndex = mFboList[aFboIndex]->getShaderIndex();
+		if (shaderIndex > mShaderList.size() - 1) shaderIndex = 0;
+		return mShaderList[shaderIndex]->getFragmentString();
 	}
 	void VDMix::setPosition(int x, int y) {
 		mPosX = ((float)x / (float)mWidth) - 0.5;
@@ -438,7 +470,12 @@ namespace VideoDromm {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getName();
 	}
-
+	ci::gl::Texture2dRef VDMix::getShaderThumb(unsigned int aShaderIndex) {
+		return mShaderList[aShaderIndex]->getThumb();
+	}
+	void VDMix::editShader(unsigned int aShaderIndex) {
+		mVDSettings->shaderEditIndex = aShaderIndex;
+	}
 	ci::gl::TextureRef VDMix::getTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mMixFbo);

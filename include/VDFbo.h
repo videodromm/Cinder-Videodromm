@@ -48,6 +48,7 @@ namespace VideoDromm
 		TextureType						getType() { return mType; };
 		std::string						getName();
 		std::string						getLabel();
+		void							setLabel(string aLabel) { mFboTextureShader->setLabel(aLabel); };
 		//bool							isFlipH() { return mFlipH; };
 		//bool							isFlipV() { return mFlipV; };
 		int								getTextureWidth();
@@ -60,8 +61,11 @@ namespace VideoDromm
 		void							setPosition(int x, int y);
 		void							setZoom(float aZoom);
 		// shader
-		int								loadFragmentShader(string aFilePath);
-		string							getFragmentShaderText();
+		void							setShaderIndex(unsigned int aShaderIndex) { mShaderIndex = aShaderIndex; };
+		unsigned int					getShaderIndex() { return mShaderIndex; };
+		void							setFragmentShader(string aFragmentShaderString);
+		//int								loadFragmentShader(string aFilePath);
+		//string							getFragmentShaderText();
 		// textures
 		void							setInputTexture(unsigned int aTextureIndex);
 		unsigned int					getInputTextureIndex() { return inputTextureIndex; };
@@ -104,7 +108,8 @@ namespace VideoDromm
 		unsigned int					inputTextureIndex;
 		//! Shaders
 		string							mShaderName;
-		string							mFragmentShaderText;
+		//string							mFragmentShaderText;
+		unsigned int					mShaderIndex;
 		string							mId;
 	};
 }

@@ -22,7 +22,13 @@ void VDUIShaders::Run(const char* title) {
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(t);
-			//ui::Image((void*)mVDMix->getShaderThumb(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDMix->getShaderThumb(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			// edit
+			sprintf(buf, "E##s%d", f);
+			if (ui::Button(buf)){
+				mVDMix->editShader(f);
+			}
+			if (ui::IsItemHovered()) ui::SetTooltip("Edit shader");
 			ui::PopID();
 			ui::PopItemWidth();
 		}

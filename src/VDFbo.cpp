@@ -7,7 +7,7 @@ using namespace ci;
 using namespace ci::app;
 
 namespace VideoDromm {
-	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList)
+	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList)
 		: mFilePathOrText("")
 		, mFboName("fbo")
 		, mWidth(1024)
@@ -17,52 +17,25 @@ namespace VideoDromm {
 		mVDSettings = aVDSettings;
 		mVDAnimation = aVDAnimation;
 		mTextureList = aTextureList;
-		mShaderList = aShaderList;
 		mType = UNKNOWN;
 		inputTextureIndex = 0;
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
-		// init shaders
-		mShaderIndex = 0;
 
 		// init the fbo whatever happens next
 		gl::Fbo::Format format;
-		mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+		mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture()); 
+
 		// init with passthru shader
 		mShaderName = "fbotexture";
-		// load shadertoy uniform variables declarations
-		/*shaderInclude = loadString(loadAsset("shadertoy.inc"));
-		try
-		{
-			fs::path vertexFile = getAssetPath("") / "passthru.vert";
-			if (fs::exists(vertexFile)) {
-				mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
-				CI_LOG_V("passthru.vert loaded");
-			}
-			else
-			{
-				CI_LOG_V("passthru.vert does not exist, should quit");
-			}
-		}
-		catch (gl::GlslProgCompileExc &exc)
-		{
-			mError = string(exc.what());
-			CI_LOG_V("unable to load/compile passthru vertex shader:" + string(exc.what()));
-		}
-		catch (const std::exception &e)
-		{
-			mError = string(e.what());
-			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
-		}*/
+		
 		// load passthru fragment shader
-		try
-		{
+		try {
 			fs::path fragFile = getAssetPath("") / "fbotexture.frag";
 			if (fs::exists(fragFile)) {
 				mFboTextureFragmentShaderString = loadString(loadAsset("fbotexture.frag"));
 			}
-			else
-			{
+			else {
 				mError = "fbotexture.frag does not exist, should quit";
 				CI_LOG_V(mError);
 			}
@@ -70,19 +43,16 @@ namespace VideoDromm {
 			mFboTextureShader->setLabel(mShaderName);
 			CI_LOG_V("fbotexture.frag loaded and compiled");
 		}
-		catch (gl::GlslProgCompileExc &exc)
-		{
+		catch (gl::GlslProgCompileExc &exc) {
 			mError = string(exc.what());
 			CI_LOG_V("unable to load/compile fbotexture fragment shader:" + string(exc.what()));
 		}
-		catch (const std::exception &e)
-		{
+		catch (const std::exception &e) {
 			mError = string(e.what());
 			CI_LOG_V("unable to load fbotexture fragment shader:" + string(e.what()));
 		}
 	}
 	VDFbo::~VDFbo(void) {
-
 	}
 
 	XmlTree	VDFbo::toXml() const
@@ -106,7 +76,7 @@ namespace VideoDromm {
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
-		if (mGlslPath.length() > 0) {
+		/*if (mGlslPath.length() > 0) {
 			fs::path fr = getAssetPath("") / mVDSettings->mAssetsPath / mGlslPath;
 			if (fs::exists(fr)) {
 				loadFragmentShader(fr.string());
@@ -120,30 +90,16 @@ namespace VideoDromm {
 					CI_LOG_V("successfully loaded " + mGlslPath);
 				}
 			}
-		}
-	}
-	int VDFbo::loadFragmentShader(string aFilePath) {
-		int rtn = -1;
-		CI_LOG_V("fbo" + mId + ": loadPixelFragmentShader " + aFilePath);
-		VDShaderRef s(new VDShader(mVDSettings, aFilePath, ""));
-		mShaderList.push_back(s);
-
-		mShaderIndex = rtn = mShaderList.size() - 1;
-		mVDSettings->mShaderToLoad =  "";
-		mFragmentShaderText = s->getFragmentString();
-		/*mFragmentShaderText = mShaderList->loadFboPixelFragmentShader(aFilePath);
-		if (mFragmentShaderText.length() > 0) {
-		mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFragmentShaderText);
-		mFboTextureShader->setLabel(mShaderName);
 		}*/
-		return rtn;
 	}
-	string VDFbo::getFragmentShaderText() {
-		return mFragmentShaderText; 
+	void VDFbo::setFragmentShader(string aFragmentShaderString) {
+		mFboTextureFragmentShaderString = aFragmentShaderString;
+		mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
+
 	}
+
 	std::string VDFbo::getLabel() {
-		//mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());
-		mFbo->setLabel(mShaderName);
+		mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());		
 		return mFbo->getLabel();
 	}
 
@@ -193,8 +149,8 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
-		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
-		mFboTextureShader = mShaderList[mShaderIndex]->getShader();
+		gl::ScopedGlslProg shaderScp(mFboTextureShader);
+		//mFboTextureShader = mShaderList[mShaderIndex]->getShader();
 		//mShader->bind();
 		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime); //TODO
 		mFboTextureShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));

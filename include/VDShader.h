@@ -43,6 +43,7 @@ namespace VideoDromm
 		void							loadVertexStringFromFile(string aFileName);
 		void							loadFragmentStringFromFile(string aFileName);
 		string							getFragmentString() { return mFragmentShaderString; };
+		ci::gl::Texture2dRef			getThumb();
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
@@ -64,7 +65,9 @@ namespace VideoDromm
 		std::string						mFragmentShaderFilePath;
 		fs::path						mFragFile;
 		// include shader lines
-		std::string				shaderInclude;
-
+		std::string						shaderInclude;
+		// fbo
+		gl::FboRef						mThumbFbo;
+		ci::gl::Texture2dRef			mThumbTexture;
 	};
 }
