@@ -34,10 +34,10 @@ namespace VideoDromm
 
 	class VDFbo : public VDTexture{
 	public:
-		VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList);
+		VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList);
 		~VDFbo(void);
-		static VDFboRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList) {
-			return std::make_shared<VDFbo>(aVDSettings, aVDAnimation, aTextureList, aShaderList);
+		static VDFboRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList) {
+			return std::make_shared<VDFbo>(aVDSettings, aVDAnimation, aTextureList);
 		}
 		//! returns a shared pointer to this fbo
 		VDFboRef						getPtr() { return std::static_pointer_cast<VDFbo>(shared_from_this()); }
@@ -87,8 +87,7 @@ namespace VideoDromm
 		std::string						mFboTextureFragmentShaderString;
 		//! passthru shader
 		gl::GlslProgRef					mFboTextureShader;
-		// include shader lines
-		std::string						shaderInclude;
+
 		string							mError;
 		// uniforms
 		vec3							iChannelResolution0;
@@ -97,9 +96,7 @@ namespace VideoDromm
 		VDAnimationRef					mVDAnimation;
 		// Settings
 		VDSettingsRef					mVDSettings;
-		//! Shaders
-		VDShaderList					mShaderList;
-		unsigned int					mShaderIndex;
+
 		//! Fbo
 		gl::FboRef						mFbo;
 		//! Textures

@@ -31,7 +31,7 @@ namespace VideoDromm {
 		// init with passthru shader
 		mShaderName = "fbotexture";
 		// load shadertoy uniform variables declarations
-		shaderInclude = loadString(loadAsset("shadertoy.inc"));
+		/*shaderInclude = loadString(loadAsset("shadertoy.inc"));
 		try
 		{
 			fs::path vertexFile = getAssetPath("") / "passthru.vert";
@@ -53,7 +53,7 @@ namespace VideoDromm {
 		{
 			mError = string(e.what());
 			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
-		}
+		}*/
 		// load passthru fragment shader
 		try
 		{
@@ -104,10 +104,11 @@ namespace VideoDromm {
 		mWidth = xml.getAttributeValue<int>("width", 1024);
 		mHeight = xml.getAttributeValue<int>("height", 768);
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
+		mShaderName = mGlslPath;
+		mFboTextureShader->setLabel(mShaderName);
 		if (mGlslPath.length() > 0) {
 			fs::path fr = getAssetPath("") / mVDSettings->mAssetsPath / mGlslPath;
 			if (fs::exists(fr)) {
-				mShaderName = mGlslPath;
 				loadFragmentShader(fr.string());
 				CI_LOG_V("successfully loaded " + mGlslPath);
 			}
@@ -115,7 +116,6 @@ namespace VideoDromm {
 				CI_LOG_V("try upper level because file does not exist: " + mGlslPath);
 				fr = getAssetPath("") / mGlslPath;
 				if (fs::exists(fr)) {
-					mShaderName = mGlslPath;
 					loadFragmentShader(fr.string());
 					CI_LOG_V("successfully loaded " + mGlslPath);
 				}
@@ -135,8 +135,6 @@ namespace VideoDromm {
 		if (mFragmentShaderText.length() > 0) {
 		mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFragmentShaderText);
 		mFboTextureShader->setLabel(mShaderName);
-		
-		rtn = 1432143214321432142143213213123123120;
 		}*/
 		return rtn;
 	}
@@ -144,7 +142,8 @@ namespace VideoDromm {
 		return mFragmentShaderText; 
 	}
 	std::string VDFbo::getLabel() {
-		mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());
+		//mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());
+		mFbo->setLabel(mShaderName);
 		return mFbo->getLabel();
 	}
 
@@ -196,7 +195,6 @@ namespace VideoDromm {
 		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
 		mFboTextureShader = mShaderList[mShaderIndex]->getShader();
-		//CI_LOG_V(mFboTextureShader->getLabel());
 		//mShader->bind();
 		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime); //TODO
 		mFboTextureShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
