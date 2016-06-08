@@ -28,7 +28,28 @@ namespace VideoDromm {
 
 		// init with passthru shader
 		mShaderName = "fbotexture";
-
+		try
+		{
+			fs::path vertexFile = getAssetPath("") / "passthru.vert";
+			if (fs::exists(vertexFile)) {
+				mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
+				CI_LOG_V("passthru.vert loaded");
+			}
+			else
+			{
+				CI_LOG_V("passthru.vert does not exist, should quit");
+			}
+		}
+		catch (gl::GlslProgCompileExc &exc)
+		{
+			mError = string(exc.what());
+			CI_LOG_V("unable to load/compile passthru vertex shader:" + string(exc.what()));
+		}
+		catch (const std::exception &e)
+		{
+			mError = string(e.what());
+			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
+		}
 		// load passthru fragment shader
 		try {
 			fs::path fragFile = getAssetPath("") / "fbotexture.frag";
@@ -143,10 +164,10 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
-		gl::ScopedGlslProg shaderScp(mFboTextureShader);
+		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
 		//mFboTextureShader = mShaderList[mShaderIndex]->getShader();
-		//mShader->bind();
-		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime); //TODO
+		mFboTextureShader->bind();
+		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
 		mFboTextureShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
 		mFboTextureShader->uniform("iChannelResolution[0]", iChannelResolution0);
 		mFboTextureShader->uniform("iChannel0", 0);
