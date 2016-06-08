@@ -43,7 +43,9 @@ namespace VideoDromm
 		void							loadVertexStringFromFile(string aFileName);
 		void							loadFragmentStringFromFile(string aFileName);
 		string							getFragmentString() { return mFragmentShaderString; };
+		// thumb image
 		ci::gl::Texture2dRef			getThumb();
+		void							createThumb();
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

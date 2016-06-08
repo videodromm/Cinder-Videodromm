@@ -24,11 +24,11 @@ namespace VideoDromm {
 
 		// init the fbo whatever happens next
 		gl::Fbo::Format format;
-		mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture()); 
+		mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
 
 		// init with passthru shader
 		mShaderName = "fbotexture";
-		
+
 		// load passthru fragment shader
 		try {
 			fs::path fragFile = getAssetPath("") / "fbotexture.frag";
@@ -76,30 +76,24 @@ namespace VideoDromm {
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
-		/*if (mGlslPath.length() > 0) {
-			fs::path fr = getAssetPath("") / mVDSettings->mAssetsPath / mGlslPath;
-			if (fs::exists(fr)) {
-				loadFragmentShader(fr.string());
-				CI_LOG_V("successfully loaded " + mGlslPath);
-			}
-			else {
-				CI_LOG_V("try upper level because file does not exist: " + mGlslPath);
-				fr = getAssetPath("") / mGlslPath;
-				if (fs::exists(fr)) {
-					loadFragmentShader(fr.string());
-					CI_LOG_V("successfully loaded " + mGlslPath);
-				}
-			}
-		}*/
 	}
 	void VDFbo::setFragmentShader(string aFragmentShaderString) {
-		mFboTextureFragmentShaderString = aFragmentShaderString;
-		mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
-
+		try {
+			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, aFragmentShaderString);
+			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
+		}
+		catch (gl::GlslProgCompileExc &exc) {
+			mError = string(exc.what());
+			CI_LOG_V("unable to load/compile fragment shader:" + string(exc.what()));
+		}
+		catch (const std::exception &e) {
+			mError = string(e.what());
+			CI_LOG_V("unable to load fragment shader:" + string(e.what()));
+		}
 	}
 
 	std::string VDFbo::getLabel() {
-		mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());		
+		mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());
 		return mFbo->getLabel();
 	}
 

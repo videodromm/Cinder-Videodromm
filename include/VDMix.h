@@ -109,6 +109,7 @@ namespace VideoDromm
 		string							getShaderName(unsigned int aShaderIndex);
 		ci::gl::Texture2dRef			getShaderThumb(unsigned int aShaderIndex);
 		void							editShader(unsigned int aShaderIndex);
+		void							createShaderThumb(unsigned int aShaderIndex);
 	protected:
 		std::string						mName;
 		bool							mFlipV;

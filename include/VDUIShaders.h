@@ -38,7 +38,6 @@ namespace VideoDromm
 		// Router
 		VDRouterRef					mVDRouter;
 		// imgui
-		float						f = 0.0f;
 		char						buf[64];
 	};
 }

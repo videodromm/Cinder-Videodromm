@@ -303,7 +303,7 @@ namespace VideoDromm {
 	}
 	void TextureImage::loadFromFullPath(string aPath) {
 		if (fs::exists(aPath)) {
-			mTexture = ci::gl::Texture::create(loadImage(aPath)); //loadAsset(mPath)
+			mTexture = ci::gl::Texture::create(loadImage(aPath));
 			mInputSurface = Surface(loadImage(aPath));
 		}
 		else {

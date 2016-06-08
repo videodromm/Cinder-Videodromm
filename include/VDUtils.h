@@ -37,6 +37,7 @@ namespace VideoDromm
 		void						moveY1LeftOrTop(int y1);
 		// file system
 		fs::path					getPath(string path);
+		string						getFileNameFromFullPath(string path);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

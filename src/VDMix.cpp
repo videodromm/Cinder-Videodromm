@@ -476,6 +476,10 @@ namespace VideoDromm {
 	void VDMix::editShader(unsigned int aShaderIndex) {
 		mVDSettings->shaderEditIndex = aShaderIndex;
 	}
+	void VDMix::createShaderThumb(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->createThumb();
+	}
 	ci::gl::TextureRef VDMix::getTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mMixFbo);

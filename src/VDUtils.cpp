@@ -141,3 +141,8 @@ fs::path VDUtils::getPath(string path)
 	if (path.length() > 0) { p += fs::path("/" + path); }
 	return p;
 }
+string VDUtils::getFileNameFromFullPath(string path)
+{
+	fs::path fullPath = path;
+	return fullPath.filename().string();
+}
