@@ -371,6 +371,10 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getTextureHeight();
 	}
+	unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
+		return mFboList[aFboIndex]->getInputTextureIndex();
+	}
 	ci::ivec2 VDMix::getSize() {
 		return mMixFbo->getSize();
 	}

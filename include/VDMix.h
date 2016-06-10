@@ -69,6 +69,7 @@ namespace VideoDromm
 		void							setRightFboIndex(unsigned int aFboIndex);
 		unsigned int					getLeftFboIndex() { return mLeftFboIndex; };
 		unsigned int					getRightFboIndex() { return mRightFboIndex; };
+		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		/*bool							isLeftFboUsed() { return mUseLeftFbo; };
 		bool							isRightFboUsed() { return mUseRightFbo; };*/
 		bool							isFboUsed() { return mUseFbo; };

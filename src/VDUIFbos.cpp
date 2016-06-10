@@ -21,7 +21,12 @@ void VDUIFbos::Run(const char* title) {
 			ui::Image((void*)mVDMix->getFboTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			for (unsigned int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
 				if (t > 0) ui::SameLine();
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 0.6f, 0.6f));
+				if (mVDMix->getFboInputTextureIndex(f) == t) {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 1.0f, 1.0f));
+				}
+				else {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 0.6f, 0.6f));
+				}
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(t / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(t / 7.0f, 0.8f, 0.8f));
 
