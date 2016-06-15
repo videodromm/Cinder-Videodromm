@@ -9,8 +9,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 
 	CI_LOG_V("VDRouter constructor");
 	// kinect
-	for (int i = 0; i < 20; i++)
-	{
+	for (int i = 0; i < 20; i++) {
 		skeleton[i] = ivec4(0.0f);
 	}
 	// OSC
@@ -193,8 +192,7 @@ void VDRouter::shutdown() {
 #endif
 }
 
-void VDRouter::midiSetup()
-{
+void VDRouter::midiSetup() {
 	stringstream ss;
 	ss << "setupMidi: ";
 #if defined( CINDER_MSW )
@@ -212,23 +210,17 @@ void VDRouter::midiSetup()
 				midiInput mIn;
 				mIn.portName = mMidiIn0.GetPortName(i);
 				mMidiInputs.push_back(mIn);
-				if (mVDSettings->mMIDIOpenAllInputPorts)
-				{
+				if (mVDSettings->mMIDIOpenAllInputPorts) {
 					openMidiInPort(i);
 					mMidiInputs[i].isConnected = true;
 					ss << "Opening MIDI port " << i << " " << mMidiInputs[i].portName;
-				}
-				else
-				{
+				} else {
 					mMidiInputs[i].isConnected = false;
 					ss << "Available MIDI port " << i << " " << mMidiIn0.GetPortName(i);
 				}
-
 			}
 		}
-	}
-	else
-	{
+	} else {
 		ss << "No MIDI Ports found!!!!" << std::endl;
 	}
 	ss << std::endl;
@@ -241,28 +233,29 @@ void VDRouter::midiSetup()
 }
 void VDRouter::openMidiInPort(int i) {
 #if defined( CINDER_MSW )
-	stringstream ss;
-	if (i < mMidiIn0.mPortCount) {
-		if (i == 0)
-		{
-			mMidiIn0.OpenPort(i);
-			mMidiIn0.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+	// HACK Push2 has 2 midi ports, we keep the internal one not useable 
+	if (mMidiIn0.GetPortName(i) != "Ableton Push 2 1") {
+
+		stringstream ss;
+		if (i < mMidiIn0.mPortCount) {
+			if (i == 0) {
+				mMidiIn0.OpenPort(i);
+				mMidiIn0.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+			}
+			if (i == 1) {
+				mMidiIn1.OpenPort(i);
+				mMidiIn1.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+			}
+			if (i == 2) {
+				mMidiIn2.OpenPort(i);
+				mMidiIn2.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+			}
 		}
-		if (i == 1)
-		{
-			mMidiIn1.OpenPort(i);
-			mMidiIn1.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
-		}
-		if (i == 2)
-		{
-			mMidiIn2.OpenPort(i);
-			mMidiIn2.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
-		}
+		mMidiInputs[i].isConnected = true;
+		ss << "Opening MIDI port " << i << " " << mMidiInputs[i].portName << std::endl;
+		mVDSettings->mWebSocketsMsg = ss.str();
+		mVDSettings->mWebSocketsNewMsg = true;
 	}
-	mMidiInputs[i].isConnected = true;
-	ss << "Opening MIDI port " << i << " " << mMidiInputs[i].portName << std::endl;
-	mVDSettings->mWebSocketsMsg = ss.str();
-	mVDSettings->mWebSocketsNewMsg = true;
 #endif
 }
 void VDRouter::closeMidiInPort(int i) {
@@ -283,8 +276,7 @@ void VDRouter::closeMidiInPort(int i) {
 #endif
 }
 #if defined( CINDER_MSW )
-void VDRouter::midiListener(midi::MidiMessage msg)
-{
+void VDRouter::midiListener(midi::MidiMessage msg) {
 	stringstream ss;
 	midiChannel = msg.Channel;
 	switch (msg.StatusCode)
@@ -324,10 +316,8 @@ void VDRouter::midiListener(midi::MidiMessage msg)
 	mVDSettings->mWebSocketsNewMsg = true;
 }
 #endif
-void VDRouter::updateParams(int iarg0, float farg1)
-{
-	if (farg1 > 0.1)
-	{
+void VDRouter::updateParams(int iarg0, float farg1) {
+	if (farg1 > 0.1) {
 		//avoid to send twice
 		if (iarg0 == 51) {
 			sendOSCIntMessage("/live/prev/cue", 0);		// previous cue	
@@ -345,38 +335,32 @@ void VDRouter::updateParams(int iarg0, float farg1)
 			mVDSettings->mPreviewFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 54) sendOSCIntMessage("/live/play", 0);			// play
-		if (iarg0 == 58)
-		{
+		if (iarg0 == 58) {
 			// track left		
 			mVDSettings->iTrack--;
 			if (mVDSettings->iTrack < 0) mVDSettings->iTrack = 0;
 		}
-		if (iarg0 == 59)
-		{
+		if (iarg0 == 59) {
 			// track right
 			mVDSettings->iTrack++;
 			if (mVDSettings->iTrack > 7) mVDSettings->iTrack = 7;
 		}
-		if (iarg0 == 61)
-		{
+		if (iarg0 == 61) {
 			// right arrow
 			mVDSettings->iBlendMode--;
 			if (mVDSettings->iBlendMode < 0) mVDSettings->iBlendMode = mVDAnimation->maxBlendMode;
 		}
-		if (iarg0 == 62)
-		{
+		if (iarg0 == 62) {
 			// left arrow
 			mVDSettings->iBlendMode++;
 			if (mVDSettings->iBlendMode > mVDAnimation->maxBlendMode) mVDSettings->iBlendMode = 0;
 		}
 	}
-	if (iarg0 > 0 && iarg0 < 9)
-	{
+	if (iarg0 > 0 && iarg0 < 9) {
 		// sliders 
 		mVDAnimation->controlValues[iarg0] = farg1;
 	}
-	if (iarg0 > 10 && iarg0 < 19)
-	{
+	if (iarg0 > 10 && iarg0 < 19) {
 		// rotary 
 		mVDAnimation->controlValues[iarg0] = farg1;
 		// audio multfactor
@@ -385,8 +369,7 @@ void VDRouter::updateParams(int iarg0, float farg1)
 		if (iarg0 == 14) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * mVDAnimation->maxExposure;
 	}
 	// buttons
-	if (iarg0 > 20 && iarg0 < 29)
-	{
+	if (iarg0 > 20 && iarg0 < 29) {
 		// select index
 		mVDSettings->selectedWarp = iarg0 - 21;
 	}
@@ -397,16 +380,13 @@ void VDRouter::updateParams(int iarg0, float farg1)
 	// activate
 	mVDSettings->mWarpFbos[mVDSettings->selectedWarp].active = !mVDSettings->mWarpFbos[mVDSettings->selectedWarp].active;
 	}*/
-	if (iarg0 > 40 && iarg0 < 49)
-	{
+	if (iarg0 > 40 && iarg0 < 49) {
 		// low row 
 		mVDAnimation->controlValues[iarg0] = farg1;
 	}
-
 }
 
-void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5)
-{
+void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {
 	osc::Message m(controlType);
 	m.append(iarg0);
 	m.append(iarg1);
@@ -416,8 +396,7 @@ void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int i
 	m.append(iarg5);
 	mOSCSender->send(m);
 }
-void VDRouter::sendOSCStringMessage(string controlType, int iarg0, string sarg1, string sarg2, string sarg3, string sarg4, string sarg5)
-{
+void VDRouter::sendOSCStringMessage(string controlType, int iarg0, string sarg1, string sarg2, string sarg3, string sarg4, string sarg5) {
 	osc::Message m(controlType);
 	m.append(iarg0);
 	if (sarg1 != "") m.append(sarg1);
@@ -427,14 +406,12 @@ void VDRouter::sendOSCStringMessage(string controlType, int iarg0, string sarg1,
 	if (sarg5 != "") m.append(sarg5);
 	mOSCSender->send(m);
 }
-void VDRouter::sendOSCColorMessage(string controlType, float val)
-{
+void VDRouter::sendOSCColorMessage(string controlType, float val) {
 	osc::Message m(controlType);
 	m.append(val);
 	mOSCSender->send(m);
 }
-void VDRouter::sendOSCFloatMessage(string controlType, int iarg0, float farg1, float farg2, float farg3, float farg4, float farg5)
-{
+void VDRouter::sendOSCFloatMessage(string controlType, int iarg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
 	osc::Message m(controlType);
 	m.append(iarg0);
 	m.append(farg1);
@@ -444,42 +421,33 @@ void VDRouter::sendOSCFloatMessage(string controlType, int iarg0, float farg1, f
 	m.append(farg5);
 	mOSCSender->send(m);
 }
-void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float farg1, float farg2, float farg3, float farg4, float farg5)
-{
+void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
 	updateParams(iarg0, farg1);
 	sendOSCFloatMessage(controlType, iarg0, farg1, farg2);
 }
 
-void VDRouter::wsPing()
-{
-	if (clientConnected)
-	{
-		if (!mVDSettings->mIsWebSocketsServer)
-		{
+void VDRouter::wsPing() {
+	if (clientConnected) {
+		if (!mVDSettings->mIsWebSocketsServer) {
 			mClient.ping();
 		}
 	}
 }
 
-void VDRouter::wsConnect()
-{
+void VDRouter::wsConnect() {
 	// either a client or a server
-	if (mVDSettings->mIsWebSocketsServer)
-	{
-		mServer.connectOpenEventHandler([&]()
-		{
+	if (mVDSettings->mIsWebSocketsServer) {
+		mServer.connectOpenEventHandler([&]() {
 			clientConnected = true;
 			mVDSettings->mWebSocketsMsg = "Connected";
 			mVDSettings->mWebSocketsNewMsg = true;
 		});
-		mServer.connectCloseEventHandler([&]()
-		{
+		mServer.connectCloseEventHandler([&]() {
 			clientConnected = false;
 			mVDSettings->mWebSocketsMsg = "Disconnected";
 			mVDSettings->mWebSocketsNewMsg = true;
 		});
-		mServer.connectFailEventHandler([&](string err)
-		{
+		mServer.connectFailEventHandler([&](string err) {
 			mVDSettings->mWebSocketsMsg = "WS Error";
 			mVDSettings->mWebSocketsNewMsg = true;
 			if (!err.empty()) {
@@ -487,13 +455,11 @@ void VDRouter::wsConnect()
 			}
 
 		});
-		mServer.connectInterruptEventHandler([&]()
-		{
+		mServer.connectInterruptEventHandler([&]() {
 			mVDSettings->mWebSocketsMsg = "WS Interrupted";
 			mVDSettings->mWebSocketsNewMsg = true;
 		});
-		mServer.connectPingEventHandler([&](string msg)
-		{
+		mServer.connectPingEventHandler([&](string msg) {
 			mVDSettings->mWebSocketsMsg = "WS Pinged";
 			mVDSettings->mWebSocketsNewMsg = true;
 			if (!msg.empty())
@@ -501,31 +467,25 @@ void VDRouter::wsConnect()
 				mVDSettings->mWebSocketsMsg += ": " + msg;
 			}
 		});
-		mServer.connectMessageEventHandler([&](string msg)
-		{
+		mServer.connectMessageEventHandler([&](string msg) {
 			int left;
 			int index;
 			mVDSettings->mWebSocketsMsg = "WS onRead";
 			mVDSettings->mWebSocketsNewMsg = true;
-			if (!msg.empty())
-			{
+			if (!msg.empty()) {
 				mVDSettings->mWebSocketsMsg += ": " + msg;
 				string first = msg.substr(0, 1);
-				if (first == "{")
-				{
+				if (first == "{") {
 					// json
 					JsonTree json;
-					try
-					{
+					try {
 						json = JsonTree(msg);
 						JsonTree jsonParams = json.getChild("params");
-						for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement)
-						{
+						for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
 							int name = jsonElement->getChild("name").getValue<int>();
 							float value = jsonElement->getChild("value").getValue<float>();
 							if (name > mVDAnimation->controlValues.size()) {
-								switch (name)
-								{
+								switch (name) {
 								case 300:
 									//selectShader
 									left = jsonElement->getChild("left").getValue<int>();
@@ -535,7 +495,6 @@ void VDRouter::wsConnect()
 								default:
 									break;
 								}
-
 							}
 							else {
 								// basic name value 
@@ -547,21 +506,18 @@ void VDRouter::wsConnect()
 						{
 						}
 					}
-					catch (cinder::JsonTree::Exception exception)
-					{
+					catch (cinder::JsonTree::Exception exception) {
 						mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
 						mVDSettings->mWebSocketsMsg += exception.what();
 						mVDSettings->mWebSocketsMsg += "  ";
 					}
 				}
-				else if (msg.substr(0, 2) == "/*")
-				{
+				else if (msg.substr(0, 2) == "/*") {
 					// shader with json info				
 					unsigned closingCommentPosition = msg.find("*/");
 					if (closingCommentPosition > 0) {
 						JsonTree json;
-						try
-						{
+						try {
 							// create folders if they don't exist
 							fs::path pathsToCheck = getAssetPath("") / "glsl";
 							if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
@@ -610,11 +566,10 @@ void VDRouter::wsConnect()
 							mFragProcessed << processedContent;
 							mFragProcessed.close();
 							CI_LOG_V("processed file saved:" + processedFile.string());
-								mVDSettings->mShaderToLoad = processedFile.string(); 
+							mVDSettings->mShaderToLoad = processedFile.string();
 
 						}
-						catch (cinder::JsonTree::Exception exception)
-						{
+						catch (cinder::JsonTree::Exception exception) {
 							mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
 							mVDSettings->mWebSocketsMsg += exception.what();
 							mVDSettings->mWebSocketsMsg += "  ";
@@ -622,8 +577,7 @@ void VDRouter::wsConnect()
 
 					}
 				}
-				else if (msg.substr(0, 7) == "uniform")
-				{
+				else if (msg.substr(0, 7) == "uniform") {
 					// fragment shader from live coding
 					//mShaders->loadLiveShader(msg);
 					mVDSettings->mShaderToLoad = msg;
@@ -632,8 +586,7 @@ void VDRouter::wsConnect()
 						wsWrite(msg);
 					}
 				}
-				else if (msg.substr(0, 7) == "#version")
-				{
+				else if (msg.substr(0, 7) == "#version") {
 					// fragment shader from live coding
 					//mShaders->loadLiveShader(msg);
 					// route it to websockets clients
@@ -642,8 +595,7 @@ void VDRouter::wsConnect()
 					}
 
 				}
-				else if (first == "I")
-				{
+				else if (first == "I") {
 
 					if (msg == "ImInit") {
 						// send ImInit OK
@@ -696,20 +648,17 @@ void VDRouter::wsConnect()
 	}
 	else
 	{
-		mClient.connectOpenEventHandler([&]()
-		{
+		mClient.connectOpenEventHandler([&]() {
 			clientConnected = true;
 			mVDSettings->mWebSocketsMsg = "Connected";
 			mVDSettings->mWebSocketsNewMsg = true;
 		});
-		mClient.connectCloseEventHandler([&]()
-		{
+		mClient.connectCloseEventHandler([&]() {
 			clientConnected = false;
 			mVDSettings->mWebSocketsMsg = "Disconnected";
 			mVDSettings->mWebSocketsNewMsg = true;
 		});
-		mClient.connectFailEventHandler([&](string err)
-		{
+		mClient.connectFailEventHandler([&](string err) {
 			mVDSettings->mWebSocketsMsg = "WS Error";
 			mVDSettings->mWebSocketsNewMsg = true;
 			if (!err.empty()) {
@@ -717,13 +666,11 @@ void VDRouter::wsConnect()
 			}
 
 		});
-		mClient.connectInterruptEventHandler([&]()
-		{
+		mClient.connectInterruptEventHandler([&]() {
 			mVDSettings->mWebSocketsMsg = "WS Interrupted";
 			mVDSettings->mWebSocketsNewMsg = true;
 		});
-		mClient.connectPingEventHandler([&](string msg)
-		{
+		mClient.connectPingEventHandler([&](string msg) {
 			mVDSettings->mWebSocketsMsg = "WS Ponged";
 			mVDSettings->mWebSocketsNewMsg = true;
 			if (!msg.empty())
@@ -731,31 +678,25 @@ void VDRouter::wsConnect()
 				mVDSettings->mWebSocketsMsg += ": " + msg;
 			}
 		});
-		mClient.connectMessageEventHandler([&](string msg)
-		{
+		mClient.connectMessageEventHandler([&](string msg) {
 			int left;
 			int index;
 			mVDSettings->mWebSocketsMsg = "WS onRead";
 			mVDSettings->mWebSocketsNewMsg = true;
-			if (!msg.empty())
-			{
+			if (!msg.empty()) {
 				mVDSettings->mWebSocketsMsg += ": " + msg;
 				string first = msg.substr(0, 1);
-				if (first == "{")
-				{
+				if (first == "{") {
 					// json
 					JsonTree json;
-					try
-					{
+					try {
 						json = JsonTree(msg);
 						JsonTree jsonParams = json.getChild("params");
-						for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement)
-						{
+						for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
 							int name = jsonElement->getChild("name").getValue<int>();
 							float value = jsonElement->getChild("value").getValue<float>();
 							if (name > mVDAnimation->controlValues.size()) {
-								switch (name)
-								{
+								switch (name) {
 								case 300:
 									//selectShader
 									left = jsonElement->getChild("left").getValue<int>();
@@ -765,7 +706,6 @@ void VDRouter::wsConnect()
 								default:
 									break;
 								}
-
 							}
 							else {
 								// basic name value 

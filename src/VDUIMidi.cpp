@@ -27,30 +27,32 @@ void VDUIMidi::Run(const char* title) {
 			ui::Separator();
 			for (int i = 0; i < mVDRouter->getMidiInPortsCount(); i++)
 			{
-				ui::Text(mVDRouter->getMidiInPortName(i).c_str()); ui::NextColumn();
+				if (mVDRouter->getMidiInPortName(i) != "Ableton Push 2 1") {
+					ui::Text(mVDRouter->getMidiInPortName(i).c_str()); ui::NextColumn();
 
-				if (mVDRouter->isMidiInConnected(i))
-				{
-					sprintf(buf, "Disconnect %d", i);
-				}
-				else
-				{
-					sprintf(buf, "Connect %d", i);
-				}
-
-				if (ui::Button(buf))
-				{
 					if (mVDRouter->isMidiInConnected(i))
 					{
-						mVDRouter->closeMidiInPort(i);
+						sprintf(buf, "Disconnect %d", i);
 					}
 					else
 					{
-						mVDRouter->openMidiInPort(i);
+						sprintf(buf, "Connect %d", i);
 					}
+
+					if (ui::Button(buf))
+					{
+						if (mVDRouter->isMidiInConnected(i))
+						{
+							mVDRouter->closeMidiInPort(i);
+						}
+						else
+						{
+							mVDRouter->openMidiInPort(i);
+						}
+					}
+					ui::NextColumn();
+					ui::Separator();
 				}
-				ui::NextColumn();
-				ui::Separator();
 			}
 			ui::Columns(1);
 		}
