@@ -400,6 +400,41 @@ namespace VideoDromm {
 	void VDMix::setRightFboIndex(unsigned int aFboIndex) {
 		if (aFboIndex < mFboList.size()) mRightFboIndex = aFboIndex;
 	}
+	int VDMix::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex) {
+		int rtn = -1;
+		string ext = "";
+		// use the last of the dropped files
+		int dotIndex = aAbsolutePath.find_last_of(".");
+		int slashIndex = aAbsolutePath.find_last_of("\\");
+
+		if (dotIndex != std::string::npos && dotIndex > slashIndex) ext = aAbsolutePath.substr(aAbsolutePath.find_last_of(".") + 1);
+
+		if (ext == "wav" || ext == "mp3") {
+			loadAudioFile(aAbsolutePath);
+		}
+		else if (ext == "png" || ext == "jpg") {
+			if (aIndex < 1) aIndex = 1;
+			if (aIndex > 3) aIndex = 3;
+			loadImageFile(aAbsolutePath, aIndex, true);
+		}
+		else if (ext == "glsl") {
+			if (aIndex > getFboCount() - 1) aIndex = getFboCount() - 1;
+			rtn = loadFboFragmentShader(aAbsolutePath, aIndex);		
+		}
+		else if (ext == "xml") {
+		}
+		else if (ext == "mov") {
+			//loadMovie(index, mFile);
+		}
+		else if (ext == "txt") {
+		}
+		else if (ext == "") {
+			// try loading image sequence from dir
+			//loadImageSequence(index, mFile);
+		}
+		return rtn;
+	}
+
 	void VDMix::loadImageFile(string aFile, unsigned int aTextureIndex, bool right) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		CI_LOG_V("loadImageFile " + aFile + " at textureIndex " + toString(aTextureIndex));

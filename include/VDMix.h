@@ -45,6 +45,8 @@ namespace VideoDromm
 		bool							isFlipV() { return mFlipV; };
 		int								getTextureWidth();
 		int								getTextureHeight();
+		// file operations (filedrop, etc)
+		int								loadFileFromAbsolutePath(string aAbsolutePath, int aIndex = 0);
 		// textures
 		void							loadImageFile(string aFile, unsigned int aTextureIndex, bool right);
 		void							loadAudioFile(string aFile);
