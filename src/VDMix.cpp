@@ -433,6 +433,19 @@ namespace VideoDromm {
 		return rtn;
 	}
 
+	void VDMix::loadMovie(string aFile, unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		CI_LOG_V("loadMovie " + aFile + " at textureIndex " + toString(aTextureIndex));
+		// add texture xml
+		XmlTree			textureXml;
+		textureXml.setTag("texture");
+		textureXml.setAttribute("id", "0");
+		textureXml.setAttribute("texturetype", "movie");
+		TextureMovieRef t(new TextureMovie());
+		t->fromXml(textureXml);
+		mTextureList.push_back(t);
+	}
+
 	void VDMix::loadImageFile(string aFile, unsigned int aTextureIndex, bool right) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		CI_LOG_V("loadImageFile " + aFile + " at textureIndex " + toString(aTextureIndex));
