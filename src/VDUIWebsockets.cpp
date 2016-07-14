@@ -32,7 +32,6 @@ void VDUIWebsockets::Run(const char* title) {
 		ui::SameLine();
 		if (ui::Button("Ping")) { mVDRouter->wsPing(); }
 		ui::Text(">%s", mVDSettings->mWebSocketsMsg.c_str());
-
 		//static char str0[128] = mParameterBag->mWebSocketsHost.c_str();
 		//static int i0 = mVDSettings->mWebSocketsPort;
 		//ui::InputText("address", str0, IM_ARRAYSIZE(str0));

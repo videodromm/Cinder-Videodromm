@@ -242,8 +242,7 @@ namespace VideoDromm {
 		// write file
 		doc.write(target);*/
 	}
-	XmlTree	VDMix::toXml() const
-	{
+	XmlTree	VDMix::toXml() const {
 		XmlTree		xml;
 		xml.setTag("details");
 		// TODO rewrite xml.setAttribute("fbopath", mFbosPath);
@@ -252,8 +251,7 @@ namespace VideoDromm {
 		return xml;
 	}
 
-	void VDMix::fromXml(const XmlTree &xml)
-	{
+	void VDMix::fromXml(const XmlTree &xml) {
 		// initialize the shaders list 
 		initShaderList();
 		// initialize the textures list with audio texture

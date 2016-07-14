@@ -385,7 +385,6 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		mVDAnimation->controlValues[iarg0] = farg1;
 	}
 }
-
 void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {
 	osc::Message m(controlType);
 	m.append(iarg0);
