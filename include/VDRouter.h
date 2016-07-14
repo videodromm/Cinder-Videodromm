@@ -112,6 +112,7 @@ namespace VideoDromm
 		int							midiValue;
 		int							midiChannel;
 		// WebSockets
+		void						parseMessage(string msg);
 		// Web socket client
 		void						wsClientDisconnect();
 		WebSocketClient				mClient;

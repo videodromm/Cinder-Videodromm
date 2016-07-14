@@ -21,8 +21,6 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			mOSCSender = shared_ptr<osc::SenderUdp>(new osc::SenderUdp(mSocket, udp::endpoint(address_v4::broadcast(), mVDSettings->mOSCDestinationPort)));
 			mOSCSender->bind();
 
-			//mOSCSender.setup(mVDSettings->mOSCDestinationHost, mVDSettings->mOSCDestinationPort, true);
-			//mOSCSender2.setup(mVDSettings->mOSCDestinationHost2, mVDSettings->mOSCDestinationPort2, true);
 			osc::Message msg("/start");
 			msg.append(1);
 			msg.append(2);
@@ -104,7 +102,6 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 				{
 					tracks[a] = msg[a].string();
 				}
-
 			});
 			mOSCReceiver->setListener("/live/play",
 				[&](const osc::Message &msg){
@@ -118,6 +115,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(m);
 
 			});
+			// kinect
 			mOSCReceiver->setListener("/sumMovement",
 				[&](const osc::Message &msg){
 				float sumMovement = msg[0].flt();
@@ -133,6 +131,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 					mVDSettings->iGreyScale = 0.0f;
 				}
 			});
+			// kinect
 			mOSCReceiver->setListener("/handsHeadHeight",
 				[&](const osc::Message &msg){
 				float handsHeadHeight = msg[0].flt();
@@ -162,7 +161,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 				[&](const osc::Message &msg){
 				//selectShader(msg[0].int32(), msg[1].int32());
 			});
-
+			// kinect
 			mOSCReceiver->setListener("/joint",
 				[&](const osc::Message &msg){
 				int skeletonIndex = msg[0].int32();
@@ -175,7 +174,6 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			mOSCReceiver->bind();
 			mOSCReceiver->listen();
 		}
-
 	}
 	// WebSockets
 	clientConnected = false;
@@ -433,7 +431,194 @@ void VDRouter::wsPing() {
 		}
 	}
 }
+void VDRouter::parseMessage(string msg) {
+	int left;
+	int index;
+	mVDSettings->mWebSocketsMsg = "WS onRead";
+	mVDSettings->mWebSocketsNewMsg = true;
+	if (!msg.empty()) {
+		mVDSettings->mWebSocketsMsg += ": " + msg;
+		string first = msg.substr(0, 1);
+		if (first == "{") {
+			// json
+			JsonTree json;
+			try {
+				json = JsonTree(msg);
+				JsonTree jsonParams = json.getChild("params");
+				for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
+					int name = jsonElement->getChild("name").getValue<int>();
+					float value = jsonElement->getChild("value").getValue<float>();
+					if (name > mVDAnimation->controlValues.size()) {
+						switch (name) {
+						case 300:
+							//selectShader
+							left = jsonElement->getChild("left").getValue<int>();
+							index = jsonElement->getChild("index").getValue<int>();
+							//selectShader(left, index);
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						// basic name value 
+						mVDAnimation->controlValues[name] = value;
+					}
+				}
+				JsonTree jsonSelectShader = json.getChild("selectShader");
+				for (JsonTree::ConstIter jsonElement = jsonSelectShader.begin(); jsonElement != jsonSelectShader.end(); ++jsonElement)
+				{
+				}
+			}
+			catch (cinder::JsonTree::Exception exception) {
+				mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
+				mVDSettings->mWebSocketsMsg += exception.what();
+				mVDSettings->mWebSocketsMsg += "  ";
+			}
+		}
+		else if (msg.substr(0, 2) == "/*") {
+			// shader with json info				
+			unsigned closingCommentPosition = msg.find("*/");
+			if (closingCommentPosition > 0) {
+				JsonTree json;
+				try {
+					// create folders if they don't exist
+					fs::path pathsToCheck = getAssetPath("") / "glsl";
+					if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
+					pathsToCheck = getAssetPath("") / "glsl" / "received";
+					if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
+					pathsToCheck = getAssetPath("") / "glsl" / "processed";
+					if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
+					// find commented header
+					string jsonHeader = msg.substr(2, closingCommentPosition - 2);
+					ci::JsonTree::ParseOptions parseOptions;
+					parseOptions.ignoreErrors(false);
+					json = JsonTree(jsonHeader, parseOptions);
+					string title = json.getChild("title").getValue<string>();
+					string fragFileName = title + ".frag"; // with uniforms
+					string glslFileName = title + ".glsl"; // without uniforms, need to include shadertoy.inc
+					string shader = msg.substr(closingCommentPosition + 2);
 
+					string processedContent = "/*" + jsonHeader + "*/";
+					// check uniforms presence
+					std::size_t foundUniform = msg.find("uniform");
+
+					if (foundUniform != std::string::npos) {
+						// found uniforms
+					}
+					else {
+						// save glsl file without uniforms as it was received
+						fs::path currentFile = getAssetPath("") / "glsl" / "received" / glslFileName;
+						ofstream mFrag(currentFile.string(), std::ofstream::binary);
+						mFrag << msg;
+						mFrag.close();
+						CI_LOG_V("received file saved:" + currentFile.string());
+						//mVDSettings->mShaderToLoad = currentFile.string(); 
+						// uniforms not found, add include
+						processedContent += "#include shadertoy.inc";
+					}
+					processedContent += shader;
+
+					//mShaders->loadLiveShader(processedContent); // need uniforms declared
+					// route it to websockets clients
+					if (mVDSettings->mIsRouter) {
+						wsWrite(msg);
+					}
+					// save processed file
+					fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
+					ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
+					mFragProcessed << processedContent;
+					mFragProcessed.close();
+					CI_LOG_V("processed file saved:" + processedFile.string());
+					mVDSettings->mShaderToLoad = processedFile.string();
+
+				}
+				catch (cinder::JsonTree::Exception exception) {
+					mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
+					mVDSettings->mWebSocketsMsg += exception.what();
+					mVDSettings->mWebSocketsMsg += "  ";
+				}
+
+			}
+		}
+		else if (msg.substr(0, 7) == "uniform") {
+			// fragment shader from live coding
+			//mShaders->loadLiveShader(msg);
+			mVDSettings->mShaderToLoad = msg;
+			// route it to websockets clients
+			if (mVDSettings->mIsRouter) {
+				wsWrite(msg);
+			}
+		}
+		else if (msg.substr(0, 7) == "#version") {
+			// fragment shader from live coding
+			//mShaders->loadLiveShader(msg);
+			// route it to websockets clients
+			if (mVDSettings->mIsRouter) {
+				wsWrite(msg);
+			}
+
+		}
+		else if (first == "/")
+		{
+			// osc from videodromm-nodejs-router
+			int f = msg.size();
+			const char c = msg[9];
+			int s = msg[12];
+			int t = msg[13];
+			int u = msg[14];
+			CI_LOG_V(msg);
+
+		}
+		else if (first == "I") {
+
+			if (msg == "ImInit") {
+				// send ImInit OK
+				/*if (!remoteClientActive)
+				{
+				remoteClientActive = true;
+				ForceKeyFrame = true;
+				// Send confirmation
+				mServer.write("ImInit");
+				// Send font texture
+				unsigned char* pixels;
+				int width, height;
+				ImGui::GetIO().Fonts->GetTexDataAsAlpha8(&pixels, &width, &height);
+
+				PreparePacketTexFont(pixels, width, height);
+				SendPacket();
+				}*/
+			}
+			else if (msg.substr(0, 11) == "ImMouseMove") {
+				/*string trail = msg.substr(12);
+				unsigned commaPosition = trail.find(",");
+				if (commaPosition > 0) {
+				mouseX = atoi(trail.substr(0, commaPosition).c_str());
+				mouseY = atoi(trail.substr(commaPosition + 1).c_str());
+				ImGuiIO& io = ImGui::GetIO();
+				io.MousePos = toPixels(vec2(mouseX, mouseY));
+
+				}*/
+
+			}
+			else if (msg.substr(0, 12) == "ImMousePress") {
+				/*ImGuiIO& io = ImGui::GetIO(); // 1,0 left click 1,1 right click
+				io.MouseDown[0] = false;
+				io.MouseDown[1] = false;
+				int rightClick = atoi(msg.substr(15).c_str());
+				if (rightClick == 1) {
+
+				io.MouseDown[0] = false;
+				io.MouseDown[1] = true;
+				}
+				else {
+				io.MouseDown[0] = true;
+				io.MouseDown[1] = false;
+				}*/
+			}
+		}
+	}
+}
 void VDRouter::wsConnect() {
 	// either a client or a server
 	if (mVDSettings->mIsWebSocketsServer) {
@@ -453,7 +638,6 @@ void VDRouter::wsConnect() {
 			if (!err.empty()) {
 				mVDSettings->mWebSocketsMsg += ": " + err;
 			}
-
 		});
 		mServer.connectInterruptEventHandler([&]() {
 			mVDSettings->mWebSocketsMsg = "WS Interrupted";
@@ -468,181 +652,7 @@ void VDRouter::wsConnect() {
 			}
 		});
 		mServer.connectMessageEventHandler([&](string msg) {
-			int left;
-			int index;
-			mVDSettings->mWebSocketsMsg = "WS onRead";
-			mVDSettings->mWebSocketsNewMsg = true;
-			if (!msg.empty()) {
-				mVDSettings->mWebSocketsMsg += ": " + msg;
-				string first = msg.substr(0, 1);
-				if (first == "{") {
-					// json
-					JsonTree json;
-					try {
-						json = JsonTree(msg);
-						JsonTree jsonParams = json.getChild("params");
-						for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
-							int name = jsonElement->getChild("name").getValue<int>();
-							float value = jsonElement->getChild("value").getValue<float>();
-							if (name > mVDAnimation->controlValues.size()) {
-								switch (name) {
-								case 300:
-									//selectShader
-									left = jsonElement->getChild("left").getValue<int>();
-									index = jsonElement->getChild("index").getValue<int>();
-									//selectShader(left, index);
-									break;
-								default:
-									break;
-								}
-							}
-							else {
-								// basic name value 
-								mVDAnimation->controlValues[name] = value;
-							}
-						}
-						JsonTree jsonSelectShader = json.getChild("selectShader");
-						for (JsonTree::ConstIter jsonElement = jsonSelectShader.begin(); jsonElement != jsonSelectShader.end(); ++jsonElement)
-						{
-						}
-					}
-					catch (cinder::JsonTree::Exception exception) {
-						mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
-						mVDSettings->mWebSocketsMsg += exception.what();
-						mVDSettings->mWebSocketsMsg += "  ";
-					}
-				}
-				else if (msg.substr(0, 2) == "/*") {
-					// shader with json info				
-					unsigned closingCommentPosition = msg.find("*/");
-					if (closingCommentPosition > 0) {
-						JsonTree json;
-						try {
-							// create folders if they don't exist
-							fs::path pathsToCheck = getAssetPath("") / "glsl";
-							if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
-							pathsToCheck = getAssetPath("") / "glsl" / "received";
-							if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
-							pathsToCheck = getAssetPath("") / "glsl" / "processed";
-							if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
-							// find commented header
-							string jsonHeader = msg.substr(2, closingCommentPosition - 2);
-							ci::JsonTree::ParseOptions parseOptions;
-							parseOptions.ignoreErrors(false);
-							json = JsonTree(jsonHeader, parseOptions);
-							string title = json.getChild("title").getValue<string>();
-							string fragFileName = title + ".frag"; // with uniforms
-							string glslFileName = title + ".glsl"; // without uniforms, need to include shadertoy.inc
-							string shader = msg.substr(closingCommentPosition + 2);
-
-							string processedContent = "/*" + jsonHeader + "*/";
-							// check uniforms presence
-							std::size_t foundUniform = msg.find("uniform");
-
-							if (foundUniform != std::string::npos) {
-								// found uniforms
-							}
-							else {
-								// save glsl file without uniforms as it was received
-								fs::path currentFile = getAssetPath("") / "glsl" / "received" / glslFileName;
-								ofstream mFrag(currentFile.string(), std::ofstream::binary);
-								mFrag << msg;
-								mFrag.close();
-								CI_LOG_V("received file saved:" + currentFile.string());
-								//mVDSettings->mShaderToLoad = currentFile.string(); 
-								// uniforms not found, add include
-								processedContent += "#include shadertoy.inc";
-							}
-							processedContent += shader;
-
-							//mShaders->loadLiveShader(processedContent); // need uniforms declared
-							// route it to websockets clients
-							if (mVDSettings->mIsRouter) {
-								wsWrite(msg);
-							}
-							// save processed file
-							fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
-							ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-							mFragProcessed << processedContent;
-							mFragProcessed.close();
-							CI_LOG_V("processed file saved:" + processedFile.string());
-							mVDSettings->mShaderToLoad = processedFile.string();
-
-						}
-						catch (cinder::JsonTree::Exception exception) {
-							mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
-							mVDSettings->mWebSocketsMsg += exception.what();
-							mVDSettings->mWebSocketsMsg += "  ";
-						}
-
-					}
-				}
-				else if (msg.substr(0, 7) == "uniform") {
-					// fragment shader from live coding
-					//mShaders->loadLiveShader(msg);
-					mVDSettings->mShaderToLoad = msg;
-					// route it to websockets clients
-					if (mVDSettings->mIsRouter) {
-						wsWrite(msg);
-					}
-				}
-				else if (msg.substr(0, 7) == "#version") {
-					// fragment shader from live coding
-					//mShaders->loadLiveShader(msg);
-					// route it to websockets clients
-					if (mVDSettings->mIsRouter) {
-						wsWrite(msg);
-					}
-
-				}
-				else if (first == "I") {
-
-					if (msg == "ImInit") {
-						// send ImInit OK
-						/*if (!remoteClientActive)
-						{
-						remoteClientActive = true;
-						ForceKeyFrame = true;
-						// Send confirmation
-						mServer.write("ImInit");
-						// Send font texture
-						unsigned char* pixels;
-						int width, height;
-						ImGui::GetIO().Fonts->GetTexDataAsAlpha8(&pixels, &width, &height);
-
-						PreparePacketTexFont(pixels, width, height);
-						SendPacket();
-						}*/
-					}
-					else if (msg.substr(0, 11) == "ImMouseMove") {
-						/*string trail = msg.substr(12);
-						unsigned commaPosition = trail.find(",");
-						if (commaPosition > 0) {
-						mouseX = atoi(trail.substr(0, commaPosition).c_str());
-						mouseY = atoi(trail.substr(commaPosition + 1).c_str());
-						ImGuiIO& io = ImGui::GetIO();
-						io.MousePos = toPixels(vec2(mouseX, mouseY));
-
-						}*/
-
-					}
-					else if (msg.substr(0, 12) == "ImMousePress") {
-						/*ImGuiIO& io = ImGui::GetIO(); // 1,0 left click 1,1 right click
-						io.MouseDown[0] = false;
-						io.MouseDown[1] = false;
-						int rightClick = atoi(msg.substr(15).c_str());
-						if (rightClick == 1) {
-
-						io.MouseDown[0] = false;
-						io.MouseDown[1] = true;
-						}
-						else {
-						io.MouseDown[0] = true;
-						io.MouseDown[1] = false;
-						}*/
-					}
-				}
-			}
+			parseMessage(msg);
 		});
 		mServer.listen(mVDSettings->mWebSocketsPort);
 	}
@@ -664,7 +674,6 @@ void VDRouter::wsConnect() {
 			if (!err.empty()) {
 				mVDSettings->mWebSocketsMsg += ": " + err;
 			}
-
 		});
 		mClient.connectInterruptEventHandler([&]() {
 			mVDSettings->mWebSocketsMsg = "WS Interrupted";
@@ -679,69 +688,7 @@ void VDRouter::wsConnect() {
 			}
 		});
 		mClient.connectMessageEventHandler([&](string msg) {
-			int left;
-			int index;
-			mVDSettings->mWebSocketsMsg = "WS onRead";
-			mVDSettings->mWebSocketsNewMsg = true;
-			if (!msg.empty()) {
-				mVDSettings->mWebSocketsMsg += ": " + msg;
-				string first = msg.substr(0, 1);
-				if (first == "{") {
-					// json
-					JsonTree json;
-					try {
-						json = JsonTree(msg);
-						JsonTree jsonParams = json.getChild("params");
-						for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
-							int name = jsonElement->getChild("name").getValue<int>();
-							float value = jsonElement->getChild("value").getValue<float>();
-							if (name > mVDAnimation->controlValues.size()) {
-								switch (name) {
-								case 300:
-									//selectShader
-									left = jsonElement->getChild("left").getValue<int>();
-									index = jsonElement->getChild("index").getValue<int>();
-									//selectShader(left, index);
-									break;
-								default:
-									break;
-								}
-							}
-							else {
-								// basic name value 
-								mVDAnimation->controlValues[name] = value;
-							}
-						}
-						JsonTree jsonSelectShader = json.getChild("selectShader");
-						for (JsonTree::ConstIter jsonElement = jsonSelectShader.begin(); jsonElement != jsonSelectShader.end(); ++jsonElement)
-						{
-						}
-					}
-					catch (cinder::JsonTree::Exception exception)
-					{
-						mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
-						mVDSettings->mWebSocketsMsg += exception.what();
-						mVDSettings->mWebSocketsMsg += "  ";
-					}
-				}
-				else if (first == "#")
-				{
-					// fragment shader from live coding
-					//mBatchass->getShadersRef()->loadLiveShader(msg);
-
-				}
-				else if (first == "/")
-				{
-					// osc from videodromm-nodejs-router
-					int f = msg.size();
-					const char c = msg[9];
-					int s = msg[12];
-					int t = msg[13];
-					int u = msg[14];
-					CI_LOG_V(msg);
-
-				}
-			}
+			parseMessage(msg);
 		});
 		wsClientConnect();
 	}
@@ -812,12 +759,6 @@ void VDRouter::update() {
 			if (clientConnected)
 			{
 				mClient.poll();
-				/*double e = getElapsedSeconds();
-				if (e - mPingTime > 20.0) {
-				mClient.ping();
-				mPingTime = e;
-				}*/
-
 			}
 		}
 	}
