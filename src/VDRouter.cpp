@@ -290,7 +290,6 @@ void VDRouter::midiListener(midi::MidiMessage msg) {
 		else {
 			updateParams(midiControl, midiNormalizedValue);
 		}
-
 		//mWebSockets->write("{\"params\" :[{" + controlType);
 		break;
 	case MIDI_NOTE_ON:
@@ -318,21 +317,23 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	if (farg1 > 0.1) {
 		//avoid to send twice
 		if (iarg0 == 51) {
-			sendOSCIntMessage("/live/prev/cue", 0);		// previous cue	
+			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/prev/cue", 0); // previous cue	
 			// left assign
 			mVDSettings->mLeftFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 52) {
-			sendOSCIntMessage("/live/next/cue", 0);		// next cue 
+			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/next/cue", 0); // next cue 
 			// right assign
 			mVDSettings->mRightFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 53) {
-			sendOSCIntMessage("/live/stop", 0);			// stop
+			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/stop", 0); // stop
 			// preview assign
 			mVDSettings->mPreviewFragIndex = mVDSettings->iTrack;
 		}
-		if (iarg0 == 54) sendOSCIntMessage("/live/play", 0);			// play
+		if (iarg0 == 54) {
+			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/play", 0); // play
+		}
 		if (iarg0 == 58) {
 			// track left		
 			mVDSettings->iTrack--;
@@ -365,6 +366,7 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		if (iarg0 == 13) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * 10;
 		// exposure
 		if (iarg0 == 14) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * mVDAnimation->maxExposure;
+		wsWrite("{\"params\" :[{\"name\":" + toString( iarg0) + ",\"value\":" + toString(mVDAnimation->controlValues[iarg0]) + "}]}");
 	}
 	// buttons
 	if (iarg0 > 20 && iarg0 < 29) {
@@ -574,46 +576,23 @@ void VDRouter::parseMessage(string msg) {
 
 			if (msg == "ImInit") {
 				// send ImInit OK
-				/*if (!remoteClientActive)
-				{
-				remoteClientActive = true;
-				ForceKeyFrame = true;
-				// Send confirmation
-				mServer.write("ImInit");
-				// Send font texture
-				unsigned char* pixels;
-				int width, height;
-				ImGui::GetIO().Fonts->GetTexDataAsAlpha8(&pixels, &width, &height);
-
-				PreparePacketTexFont(pixels, width, height);
-				SendPacket();
+				/*if (!remoteClientActive) { remoteClientActive = true; ForceKeyFrame = true;
+				// Send confirmation mServer.write("ImInit"); // Send font texture unsigned char* pixels; int width, height;
+				ImGui::GetIO().Fonts->GetTexDataAsAlpha8(&pixels, &width, &height); PreparePacketTexFont(pixels, width, height);SendPacket();
 				}*/
 			}
 			else if (msg.substr(0, 11) == "ImMouseMove") {
 				/*string trail = msg.substr(12);
 				unsigned commaPosition = trail.find(",");
-				if (commaPosition > 0) {
-				mouseX = atoi(trail.substr(0, commaPosition).c_str());
-				mouseY = atoi(trail.substr(commaPosition + 1).c_str());
-				ImGuiIO& io = ImGui::GetIO();
-				io.MousePos = toPixels(vec2(mouseX, mouseY));
-
-				}*/
-
+				if (commaPosition > 0) { mouseX = atoi(trail.substr(0, commaPosition).c_str());
+				mouseY = atoi(trail.substr(commaPosition + 1).c_str()); ImGuiIO& io = ImGui::GetIO();
+				io.MousePos = toPixels(vec2(mouseX, mouseY)); }*/
 			}
 			else if (msg.substr(0, 12) == "ImMousePress") {
 				/*ImGuiIO& io = ImGui::GetIO(); // 1,0 left click 1,1 right click
-				io.MouseDown[0] = false;
-				io.MouseDown[1] = false;
-				int rightClick = atoi(msg.substr(15).c_str());
-				if (rightClick == 1) {
-
-				io.MouseDown[0] = false;
-				io.MouseDown[1] = true;
-				}
-				else {
-				io.MouseDown[0] = true;
-				io.MouseDown[1] = false;
+				io.MouseDown[0] = false; io.MouseDown[1] = false; int rightClick = atoi(msg.substr(15).c_str());
+				if (rightClick == 1) { io.MouseDown[0] = false; io.MouseDown[1] = true; }
+				else { io.MouseDown[0] = true; io.MouseDown[1] = false;
 				}*/
 			}
 		}
@@ -929,14 +908,5 @@ void VDRouter::update() {
 	ss << std::endl;
 	mVDSettings->mWebSocketsNewMsg = true;
 	mVDSettings->mWebSocketsMsg = ss.str();
-	// filter messages
-	if (routeMessage)
-	{
-	// avoid LiveOSC infinite loop
-	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender.sendMessage(message);
-	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort2 != 9000) mOSCSender2.sendMessage(message);
-
-	}
 	*/
-
 }
