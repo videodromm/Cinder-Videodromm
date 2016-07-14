@@ -422,7 +422,7 @@ namespace VideoDromm {
 		else if (ext == "xml") {
 		}
 		else if (ext == "mov") {
-			loadMovie(index, mFile);
+			loadMovie(aAbsolutePath, aIndex);
 		}
 		else if (ext == "txt") {
 		}
