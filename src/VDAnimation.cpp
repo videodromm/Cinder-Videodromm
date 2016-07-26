@@ -5,6 +5,9 @@ using namespace VideoDromm;
 void VDAnimation::setExposure(float aExposure) {
 	mExposure = aExposure;
 }
+void VDAnimation::setAutoBeatAnimation(bool aAutoBeatAnimation) {
+	mAutoBeatAnimation = aAutoBeatAnimation;
+}
 
 bool VDAnimation::handleKeyDown(KeyEvent &event)
 {
@@ -386,6 +389,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	JsonBag::add(&mText, "text", []() {
 		app::console() << "Updated text" << endl;
 	});
+	mAutoBeatAnimation = true;
 	JsonBag::add(&mAutoBeatAnimation, "autobeatanimation");
 	currentScene = 0;
 	// zoom

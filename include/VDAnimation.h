@@ -36,6 +36,8 @@ namespace VideoDromm
 		float						getExposure() { return mExposure; };
 		void						setExposure(float aExposure);
 		bool						getAutoBeatAnimation() { return mAutoBeatAnimation; };
+		void						setAutoBeatAnimation( bool aAutoBeatAnimation);
+
 		const int					maxBlendMode = 28;
 		// tap tempo
 		//float						mTempo;

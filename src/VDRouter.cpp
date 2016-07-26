@@ -62,6 +62,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			});
 			mOSCReceiver->setListener("/live/beat",
 				[&](const osc::Message &msg){
+				mVDAnimation->setAutoBeatAnimation(false);
 				mVDSettings->iBeat = msg[0].int32();
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
@@ -73,6 +74,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			});
 			mOSCReceiver->setListener("/live/tempo",
 				[&](const osc::Message &msg){
+				mVDAnimation->setAutoBeatAnimation(false);
 				// Animation
 				mVDSession->setBpm(msg[0].flt());
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
@@ -86,6 +88,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			});
 			mOSCReceiver->setListener("/live/track/meter",
 				[&](const osc::Message &msg){
+				mVDAnimation->setAutoBeatAnimation(false);
 				mVDSettings->liveMeter = msg[2].flt();
 				if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 			});
@@ -97,6 +100,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			});
 			mOSCReceiver->setListener("/live/name/trackblock",
 				[&](const osc::Message &msg){
+				mVDAnimation->setAutoBeatAnimation(false);
 				mVDSettings->mTrackName = msg[0].string();
 				for (int a = 0; a < MAX; a++)
 				{
@@ -105,6 +109,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 			});
 			mOSCReceiver->setListener("/live/play",
 				[&](const osc::Message &msg){
+				mVDAnimation->setAutoBeatAnimation(false);
 				osc::Message m;
 				m.setAddress("/tracklist");
 
