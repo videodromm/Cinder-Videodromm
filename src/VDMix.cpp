@@ -49,7 +49,19 @@ namespace VideoDromm {
 		mMixShaderIndex = 0;
 		// load shadertoy uniform variables declarations
 		//shaderInclude = loadString(loadAsset("shadertoy.inc"));
+		// create blendmodes preview fbos
+		gl::Texture::Format fmt;
+		fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+		fmt.setBorderColor(Color::black());
 
+		gl::Fbo::Format fboFmt;
+		fboFmt.setColorTextureFormat(fmt);
+
+		for (size_t i = 0; i < 27; i++)
+		{
+			mFboBlend.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
+		}
+		mCurrentBlend = 0;
 	}
 	bool VDMix::initFboList() {
 		bool isFirstLaunch = false;
