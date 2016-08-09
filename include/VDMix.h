@@ -35,6 +35,7 @@ namespace VideoDromm
 		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation);
 		~VDMix(void);
 		static VDMixRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation) { return std::make_shared<VDMix>(aVDSettings, aVDAnimation); }
+		void							update();
 		//! returns a shared pointer to this fbo
 		VDMixRef						getPtr() { return shared_from_this(); }
 		ci::ivec2						getSize();
