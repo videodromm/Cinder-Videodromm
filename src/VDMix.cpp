@@ -56,13 +56,6 @@ namespace VideoDromm {
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
-
-		gl::Texture::Format fmt;
-		fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
-		fmt.setBorderColor(Color::black());
-
-		gl::Fbo::Format fboFmt;
-		fboFmt.setColorTextureFormat(fmt);
 		mFboA = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mFboB = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mFboMix = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
@@ -207,7 +200,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslA);
-		mTexs[1]->getTexture()->bind(0);
+		mTextureList[1]->getTexture()->bind(0);
 
 		gl::drawSolidRect(Rectf(0, 0, mFboA->getWidth(), mFboA->getHeight()));
 	}
@@ -217,7 +210,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslB);
-		mTexs[2]->getTexture()->bind(0);
+		mTextureList[2]->getTexture()->bind(0);
 
 		gl::drawSolidRect(Rectf(0, 0, mFboB->getWidth(), mFboB->getHeight()));
 	}
