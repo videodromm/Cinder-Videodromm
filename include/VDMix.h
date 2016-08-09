@@ -166,5 +166,11 @@ namespace VideoDromm
 		// blendmodes fbos
 		vector<ci::gl::FboRef>			mFboBlend;
 		int								mCurrentBlend;
+		ci::gl::FboRef					mFboA, mFboB, mFboMix;
+		gl::GlslProgRef					mGlslA, mGlslB, mGlslMix, mGlslBlend;
+		void							renderSceneA();
+		void							renderSceneB();
+		void							renderMix();
+		void							renderBlend();
 	};
 }
