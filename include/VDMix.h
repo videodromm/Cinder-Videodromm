@@ -115,6 +115,11 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getShaderThumb(unsigned int aShaderIndex);
 		void							editShader(unsigned int aShaderIndex);
 		void							createShaderThumb(unsigned int aShaderIndex);
+		// blendmodes
+		unsigned int					getFboBlendCount();
+		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex);
+		void							useBlendmode(unsigned int aBlendIndex);
+		const unsigned int				MAXBLENDMODES = 27;
 	protected:
 		std::string						mName;
 		bool							mFlipV;

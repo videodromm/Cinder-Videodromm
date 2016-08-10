@@ -59,7 +59,7 @@ namespace VideoDromm {
 		mFboA = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mFboB = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mFboMix = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		for (size_t i = 0; i < 27; i++)
+		for (size_t i = 0; i < MAXBLENDMODES; i++)
 		{
 			mFboBlend.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 		}
@@ -69,13 +69,27 @@ namespace VideoDromm {
 		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 	}
+#pragma region blendmodes
+	unsigned int VDMix::getFboBlendCount() {
+		return mFboBlend.size();
+	}
+	ci::gl::Texture2dRef VDMix::getFboThumb(unsigned int aBlendIndex) {
+		if (aBlendIndex > mFboBlend.size() - 1) aBlendIndex = mFboBlend.size() - 1;
+		return mFboBlend[aBlendIndex]->getColorTexture();
+	}
+	void VDMix::useBlendmode(unsigned int aBlendIndex) {
+		if (aBlendIndex > mFboBlend.size() - 1) aBlendIndex = 0;
+		mVDSettings->iBlendMode = aBlendIndex;
+	}
+
+#pragma endregion blendmodes
 	void VDMix::update() {
 		mGlslA->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslA->uniform("iChannel0", 0);
 		mGlslB->uniform("iGlobalTime", (float)(getElapsedSeconds() / 2));
 		mGlslB->uniform("iChannel0", 0);
 
-		mVDSettings->iBlendMode = getElapsedFrames() / 48 % 27;
+		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
 		mGlslMix->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
@@ -97,7 +111,6 @@ namespace VideoDromm {
 		mGlslMix->uniform("iRenderXY", mVDSettings->mRenderXY);
 		mGlslMix->uniform("iZoom", mVDAnimation->controlValues[22]);
 		mGlslMix->uniform("iAlpha", mVDAnimation->controlValues[4] * mVDSettings->iAlpha);
-		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
 		mGlslMix->uniform("iChromatic", mVDAnimation->controlValues[10]);
 		mGlslMix->uniform("iRotationSpeed", mVDAnimation->controlValues[19]);
 		mGlslMix->uniform("iCrossfade", 0.5f);// mVDAnimation->controlValues[18]);
@@ -133,6 +146,8 @@ namespace VideoDromm {
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
 		mGlslMix->uniform("iBadTv", mVDSettings->iBadTv);
 
+		mCurrentBlend = getElapsedFrames() / 48 % MAXBLENDMODES;
+		mGlslBlend->uniform("iBlendmode", mCurrentBlend);
 		mGlslBlend->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslBlend->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
@@ -154,7 +169,6 @@ namespace VideoDromm {
 		mGlslBlend->uniform("iRenderXY", mVDSettings->mRenderXY);
 		mGlslBlend->uniform("iZoom", mVDAnimation->controlValues[22]);
 		mGlslBlend->uniform("iAlpha", mVDAnimation->controlValues[4] * mVDSettings->iAlpha);
-		mGlslBlend->uniform("iBlendmode", mCurrentBlend);
 		mGlslBlend->uniform("iChromatic", mVDAnimation->controlValues[10]);
 		mGlslBlend->uniform("iRotationSpeed", mVDAnimation->controlValues[19]);
 		mGlslBlend->uniform("iCrossfade", 0.5f);// mVDAnimation->controlValues[18]);

@@ -12,16 +12,27 @@ VDUIBlend::~VDUIBlend() {
 }
 
 void VDUIBlend::Run(const char* title) {
-	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
-	ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPosCol1, mVDSettings->uiMargin), ImGuiSetCond_Once);
+	for (int s = 0; s < mVDMix->getFboBlendCount(); s++) {
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
+		ui::SetNextWindowPos(ImVec2((s * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
+		int hue = 0;
+		sprintf(buf, "##s%d",  s);
+		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+		{
+			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+			ui::PushID(s);
+			ui::Image((void*)mVDMix->getFboThumb(s)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			
+			// select
+			sprintf(buf, "B##s%d", s);
+			if (ui::Button(buf)){
+				mVDMix->useBlendmode(s);
+			}
+			if (ui::IsItemHovered()) ui::SetTooltip("Use this blend");
 
-	ui::Begin("Blend");
-	{
-		// blend modes
-		if (ui::Button("x##blendmode")) { mVDSettings->iBlendMode = 0.0f; }
-		ui::SameLine();
-		ui::SliderInt("blendmode", &mVDSettings->iBlendMode, 0, mVDAnimation->maxBlendMode);
-
+			ui::PopID();
+			ui::PopItemWidth();
+		}
+		ui::End();
 	}
-	ui::End();
 }
