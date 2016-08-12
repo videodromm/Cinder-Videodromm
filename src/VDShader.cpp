@@ -5,17 +5,22 @@ using namespace VideoDromm;
 VDShader::VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVextexShaderFilePath = aVextexShaderFilePath;
-
+    mValid = false;
 	// shadertoy include
 	shaderInclude = loadString(loadAsset("shadertoy.inc"));
 
 	loadVertexStringFromFile(mVextexShaderFilePath);
-	loadFragmentStringFromFile(mFragmentShaderFilePath);
-	CI_LOG_V("VDShaders constructor");
-	mVDSettings = aVDSettings;
-	mError = "";
-	gl::Fbo::Format format;
-	mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
+    loadFragmentStringFromFile(mFragmentShaderFilePath);
+    if (mValid) {
+        CI_LOG_V("VDShaders constructor success");
+        mVDSettings = aVDSettings;
+        mError = "";
+        gl::Fbo::Format format;
+        mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
+    }
+    else {
+        CI_LOG_V("VDShaders constructor failed, do not use");
+    }
 }
 void VDShader::loadVertexStringFromFile(string aFileName) {
 	// load vertex shader
@@ -41,7 +46,9 @@ void VDShader::loadVertexStringFromFile(string aFileName) {
 	}
 }
 void VDShader::loadFragmentStringFromFile(string aFileName) {
+    mValid = false;
 	// load fragment shader
+    CI_LOG_V("loadFragmentStringFromFile, loading " + aFileName);
 	try
 	{
 		if (aFileName.length() == 0) {
@@ -61,7 +68,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 		std::size_t foundUniform = mFragmentShaderString.find("uniform");
 
 		if (foundUniform == std::string::npos) {
-
+            CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
 			mFragmentShaderString = shaderInclude + mFragmentShaderString;
 		}
 
@@ -69,16 +76,17 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);
 		mShader->setLabel(mFragFile.string());
 		CI_LOG_V(mFragFile.string() + " loaded and compiled");
+        mValid = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
 		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile fragment shader:" + string(exc.what()));
+		CI_LOG_V("unable to load/compile fragment shader:" + mFragmentShaderFilePath + string(exc.what()));
 	}
 	catch (const std::exception &e)
 	{
 		mError = string(e.what());
-		CI_LOG_V("unable to load mixfbo fragment shader:" + string(e.what()));
+		CI_LOG_V("unable to load mixfbo fragment shader:" + mFragmentShaderFilePath + string(e.what()));
 	}
 }
 void VDShader::fromXml(const XmlTree &xml) {

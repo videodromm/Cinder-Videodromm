@@ -271,7 +271,7 @@ namespace VideoDromm {
 		bool isFirstLaunch = false;
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDMix::init mShaderList");
-			isFirstLaunch = true;
+			
 			VDShaderRef s(new VDShader(mVDSettings, "", ""));
 			// create shader xml
 			XmlTree			shaderXml;
@@ -279,8 +279,14 @@ namespace VideoDromm {
 			shaderXml.setAttribute("id", "0");
 			shaderXml.setAttribute("vertfile", "passthru.vert");
 			shaderXml.setAttribute("fragfile", "mixfbo.frag");
-			s->fromXml(shaderXml);
-			mShaderList.push_back(s);
+            s->fromXml(shaderXml);
+            if (s->isValid()) {
+                mShaderList.push_back(s);
+                isFirstLaunch = true;
+            } else {
+                CI_LOG_V("VDMix::init mShaderList failed");
+                isFirstLaunch = false;
+            }
 		}
 		return isFirstLaunch;
 	}
@@ -411,7 +417,7 @@ namespace VideoDromm {
 				CI_LOG_V("Add Mix " + child->getValue());
 				VDMixRef t(new VDMix(aVDSettings, aVDAnimation));
 				t->fromXml(*child);
-				VDMixlist.push_back(t);
+                VDMixlist.push_back(t);
 			}
 		}
 
@@ -495,11 +501,12 @@ namespace VideoDromm {
 		int rtn = -1;
 		CI_LOG_V("fbo" + toString(aFboIndex) + ": loadPixelFragmentShader " + aFilePath);
 		VDShaderRef s(new VDShader(mVDSettings, aFilePath, ""));
-		mShaderList.push_back(s);
-
-		rtn = mShaderList.size() - 1;
-		mFboList[aFboIndex]->setShaderIndex(rtn);
-		mFboList[aFboIndex]->setFragmentShader(s->getFragmentString());
+        if (s->isValid()) {
+            mShaderList.push_back(s);
+            rtn = mShaderList.size() - 1;
+            mFboList[aFboIndex]->setShaderIndex(rtn);
+            mFboList[aFboIndex]->setFragmentShader(s->getFragmentString());
+        }
 		mVDSettings->mShaderToLoad = "";
 
 		return rtn;

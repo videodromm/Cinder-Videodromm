@@ -46,6 +46,7 @@ namespace VideoDromm
 		// thumb image
 		ci::gl::Texture2dRef			getThumb();
 		void							createThumb();
+        bool							isValid() { return mValid; };
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
@@ -57,6 +58,7 @@ namespace VideoDromm
 		bool							mActive;
 		int								mMicroSeconds;
 		string							mError;
+        bool							mValid;
 
 		//! vertex shader
 		std::string						mVextexShaderString;
