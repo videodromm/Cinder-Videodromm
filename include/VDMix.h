@@ -66,9 +66,8 @@ namespace VideoDromm
 		// shader
 		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
 		// fbos
-		ci::gl::Texture2dRef			getTexture();
-		ci::gl::Texture2dRef			getLeftFboTexture();
-		ci::gl::Texture2dRef			getRightFboTexture();
+		//ci::gl::Texture2dRef			getLeftFboTexture();
+		//ci::gl::Texture2dRef			getRightFboTexture();
 		void							setLeftFboIndex(unsigned int aFboIndex);
 		void							setRightFboIndex(unsigned int aFboIndex);
 		unsigned int					getLeftFboIndex() { return mLeftFboIndex; };
@@ -120,6 +119,10 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex);
 		void							useBlendmode(unsigned int aBlendIndex);
 		const unsigned int				MAXBLENDMODES = 27;
+		//ci::gl::Texture2dRef			getFboATexture();
+		//ci::gl::Texture2dRef			getFboBTexture();
+		ci::gl::Texture2dRef			getTexture(unsigned int aMixFboIndex = 0);
+		//ci::gl::Texture2dRef			getFboMixTexture();
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -150,7 +153,7 @@ namespace VideoDromm
 		// init
 		bool							initFboList();
 		//! Fbo
-		gl::FboRef						mMixFbo, mLeftFbo, mRightFbo;
+		//gl::FboRef						mMixFbo, mLeftFbo, mRightFbo;
 
 		unsigned int					mRightFboIndex;
 		unsigned int					mLeftFboIndex;
@@ -169,9 +172,10 @@ namespace VideoDromm
 		fs::path						mTexturesFilepath;
 		bool							initTextureList();
 		// blendmodes fbos
-		vector<ci::gl::FboRef>			mFboBlend;
+		vector<ci::gl::FboRef>			mBlendFbos;
 		int								mCurrentBlend;
-		ci::gl::FboRef					mFboA, mFboB, mFboMix;
+		//ci::gl::FboRef					mFboA, mFboB, mFboMix;
+		vector<ci::gl::FboRef>			mMixFbos;
 		gl::GlslProgRef					mGlslA, mGlslB, mGlslMix, mGlslBlend;
 		void							renderSceneA();
 		void							renderSceneB();

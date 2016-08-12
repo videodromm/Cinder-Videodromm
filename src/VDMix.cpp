@@ -36,11 +36,11 @@ namespace VideoDromm {
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		// init the fbo whatever happens next
-		gl::Fbo::Format format;
+		//gl::Fbo::Format format;
 		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-		mMixFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+		/*mMixFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
 		mLeftFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-		mRightFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
+		mRightFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());*/
 		// useless for now:
 		//mUseLeftFbo = mUseRightFbo = true;
 		// use fbo texture for live coding
@@ -56,12 +56,14 @@ namespace VideoDromm {
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
-		mFboA = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mFboB = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mFboMix = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 0 = Mix
+		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 1 = Left
+		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 2 = Right
+		/*mFboA = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		mFboB = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);*/
 		for (size_t i = 0; i < MAXBLENDMODES; i++)
 		{
-			mFboBlend.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
+			mBlendFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 		}
 		mCurrentBlend = 0;
 		mGlslA = gl::GlslProg::create(loadAsset("shaders/passthrough330.vert"), loadAsset("simple330a.frag"));
@@ -71,22 +73,74 @@ namespace VideoDromm {
 	}
 #pragma region blendmodes
 	unsigned int VDMix::getFboBlendCount() {
-		return mFboBlend.size();
+		return mBlendFbos.size();
 	}
 	ci::gl::Texture2dRef VDMix::getFboThumb(unsigned int aBlendIndex) {
-		if (aBlendIndex > mFboBlend.size() - 1) aBlendIndex = mFboBlend.size() - 1;
-		return mFboBlend[aBlendIndex]->getColorTexture();
+		if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = mBlendFbos.size() - 1;
+		return mBlendFbos[aBlendIndex]->getColorTexture();
 	}
 	void VDMix::useBlendmode(unsigned int aBlendIndex) {
-		if (aBlendIndex > mFboBlend.size() - 1) aBlendIndex = 0;
+		if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = 0;
 		mVDSettings->iBlendMode = aBlendIndex;
 	}
+	/*ci::gl::TextureRef VDMix::getFboATexture() {
+		return mFboA->getColorTexture();
+	}
+	ci::gl::TextureRef VDMix::getFboBTexture() {
+		return mFboB->getColorTexture();
+	}*/
+	//ci::gl::TextureRef VDMix::getFboMixTexture() {
+	ci::gl::TextureRef VDMix::getTexture(unsigned int aMixFboIndex) {
+		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = 0;
+		return mMixFbos[aMixFboIndex]->getColorTexture();
+	}
+	void VDMix::renderSceneA()
+	{
+		gl::ScopedFramebuffer scopedFbo(mMixFbos[1]);
+		gl::clear(Color::black());
 
+		gl::ScopedGlslProg glslScope(mGlslA);
+		mTextureList[1]->getTexture()->bind(0);
+		int a = mMixFbos[1]->getWidth();
+		gl::drawSolidRect(Rectf(0, 0, mMixFbos[1]->getWidth(), mMixFbos[1]->getHeight()));
+	}
+	void VDMix::renderSceneB()
+	{
+		gl::ScopedFramebuffer scopedFbo(mMixFbos[2]);
+		gl::clear(Color::black());
+
+		gl::ScopedGlslProg glslScope(mGlslB);
+		mTextureList[2]->getTexture()->bind(0);
+
+		gl::drawSolidRect(Rectf(0, 0, mMixFbos[2]->getWidth(), mMixFbos[2]->getHeight()));
+	}
+	void VDMix::renderMix()
+	{
+		gl::ScopedFramebuffer scopedFbo(mMixFbos[0]);
+		gl::clear(Color::black());
+
+		gl::ScopedGlslProg glslScope(mGlslMix);
+		mMixFbos[1]->getColorTexture()->bind(0);
+		mMixFbos[2]->getColorTexture()->bind(1);
+		gl::drawSolidRect(Rectf(0, 0, mMixFbos[0]->getWidth(), mMixFbos[0]->getHeight()));
+	}
+	void VDMix::renderBlend()
+	{
+		mCurrentBlend++;
+		if (mCurrentBlend>mBlendFbos.size() - 1) mCurrentBlend = 0;
+		gl::ScopedFramebuffer scopedFbo(mBlendFbos[mCurrentBlend]);
+		gl::clear(Color::black());
+
+		gl::ScopedGlslProg glslScope(mGlslBlend);
+		mMixFbos[1]->getColorTexture()->bind(0);
+		mMixFbos[2]->getColorTexture()->bind(1);
+		gl::drawSolidRect(Rectf(0, 0, mBlendFbos[mCurrentBlend]->getWidth(), mBlendFbos[mCurrentBlend]->getHeight()));
+	}
 #pragma endregion blendmodes
 	void VDMix::update() {
 		mGlslA->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslA->uniform("iChannel0", 0);
-		mGlslB->uniform("iGlobalTime", (float)(getElapsedSeconds() / 2));
+		mGlslB->uniform("iGlobalTime", (float)(getElapsedSeconds()));
 		mGlslB->uniform("iChannel0", 0);
 
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
@@ -208,48 +262,7 @@ namespace VideoDromm {
 		renderMix();
 		renderBlend();
 	}
-	void VDMix::renderSceneA()
-	{
-		gl::ScopedFramebuffer scopedFbo(mFboA);
-		gl::clear(Color::black());
 
-		gl::ScopedGlslProg glslScope(mGlslA);
-		mTextureList[1]->getTexture()->bind(0);
-
-		gl::drawSolidRect(Rectf(0, 0, mFboA->getWidth(), mFboA->getHeight()));
-	}
-	void VDMix::renderSceneB()
-	{
-		gl::ScopedFramebuffer scopedFbo(mFboB);
-		gl::clear(Color::black());
-
-		gl::ScopedGlslProg glslScope(mGlslB);
-		mTextureList[2]->getTexture()->bind(0);
-
-		gl::drawSolidRect(Rectf(0, 0, mFboB->getWidth(), mFboB->getHeight()));
-	}
-	void VDMix::renderMix()
-	{
-		gl::ScopedFramebuffer scopedFbo(mFboMix);
-		gl::clear(Color::black());
-
-		gl::ScopedGlslProg glslScope(mGlslMix);
-		mFboA->getColorTexture()->bind(0);
-		mFboB->getColorTexture()->bind(1);
-		gl::drawSolidRect(Rectf(0, 0, mFboMix->getWidth(), mFboMix->getHeight()));
-	}
-	void VDMix::renderBlend()
-	{
-		mCurrentBlend++;
-		if (mCurrentBlend>mFboBlend.size() - 1) mCurrentBlend = 0;
-		gl::ScopedFramebuffer scopedFbo(mFboBlend[mCurrentBlend]);
-		gl::clear(Color::black());
-
-		gl::ScopedGlslProg glslScope(mGlslBlend);
-		mFboA->getColorTexture()->bind(0);
-		mFboB->getColorTexture()->bind(1);
-		gl::drawSolidRect(Rectf(0, 0, mFboBlend[mCurrentBlend]->getWidth(), mFboBlend[mCurrentBlend]->getHeight()));
-	}
 	bool VDMix::initFboList() {
 		bool isFirstLaunch = false;
 		if (mFboList.size() == 0) {
@@ -580,24 +593,23 @@ namespace VideoDromm {
 		return mFboList[aFboIndex]->getInputTextureIndex();
 	}
 	ci::ivec2 VDMix::getSize() {
-		return mMixFbo->getSize();
+		return mMixFbos[0]->getSize();
 	}
 	ci::Area VDMix::getBounds() {
-		return mMixFbo->getBounds();
+		return mMixFbos[0]->getBounds();
 	}
 	GLuint VDMix::getId() {
-		return mMixFbo->getId();
+		return mMixFbos[0]->getId();
 	}
 	std::string VDMix::getName(){
 		return mName;
 	}
-
-	ci::gl::TextureRef VDMix::getRightFboTexture() {
+	/*ci::gl::TextureRef VDMix::getRightFboTexture() {
 		return mRightFbo->getColorTexture();
 	}
 	ci::gl::TextureRef VDMix::getLeftFboTexture() {
 		return mLeftFbo->getColorTexture();
-	}
+	}*/
 	void VDMix::setLeftFboIndex(unsigned int aFboIndex) {
 		if (aFboIndex < mFboList.size()) mLeftFboIndex = aFboIndex;
 	}
@@ -736,7 +748,7 @@ namespace VideoDromm {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->createThumb();
 	}
-	ci::gl::TextureRef VDMix::getTexture() {
+	/*ci::gl::TextureRef VDMix::getTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mMixFbo);
 		gl::clear(Color::gray(0.2f));
@@ -810,5 +822,5 @@ namespace VideoDromm {
 
 		gl::drawSolidRect(Rectf(0, 0, mMixFbo->getWidth(), mMixFbo->getHeight()));
 		return mMixFbo->getColorTexture();
-	}
+	}*/
 } // namespace VideoDromm
