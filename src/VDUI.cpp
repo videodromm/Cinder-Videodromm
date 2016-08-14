@@ -58,7 +58,11 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Tempo", &currentWindowRow1, 4); ui::SameLine();
 		ui::RadioButton("Mouse", &currentWindowRow1, 5); ui::SameLine();
 		ui::RadioButton("Osc", &currentWindowRow1, 6);  ui::SameLine();
-		ui::RadioButton("WS", &currentWindowRow1, 7); 
+		ui::RadioButton("WS", &currentWindowRow1, 7);  ui::SameLine();
+		// crossfade
+		if (ui::DragFloat("Xfade", &mVDAnimation->controlValues[18], 0.01f, 0.001f, 1.0f))
+		{
+		}
 
 		ui::RadioButton("Textures", &currentWindowRow2, 0); ui::SameLine();
 		ui::RadioButton("Fbos", &currentWindowRow2, 1); ui::SameLine();
@@ -66,7 +70,9 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Blend", &currentWindowRow2, 3); ui::SameLine();
 		ui::RadioButton("Chn", &currentWindowRow2, 4);ui::SameLine();
 
+
 #pragma region Info
+		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 		ui::Text("Msg: %s", mVDSettings->mMsg.c_str());
 		ui::Text("Target FPS %.2f ", mVDSession->getTargetFps());
 		ui::SameLine();

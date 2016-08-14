@@ -16,7 +16,7 @@ void VDUIBlend::Run(const char* title) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		ui::SetNextWindowPos(ImVec2((s * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		int hue = 0;
-		sprintf(buf, "##s%d",  s);
+		sprintf(buf, "bm##s%d",  s);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);

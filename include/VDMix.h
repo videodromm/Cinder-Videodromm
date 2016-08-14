@@ -119,10 +119,9 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex);
 		void							useBlendmode(unsigned int aBlendIndex);
 		const unsigned int				MAXBLENDMODES = 27;
-		//ci::gl::Texture2dRef			getFboATexture();
-		//ci::gl::Texture2dRef			getFboBTexture();
 		ci::gl::Texture2dRef			getTexture(unsigned int aMixFboIndex = 0);
-		//ci::gl::Texture2dRef			getFboMixTexture();
+		unsigned int					getMixFbosCount() { return mMixFbos.size(); }
+		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 	protected:
 		std::string						mName;
 		bool							mFlipV;

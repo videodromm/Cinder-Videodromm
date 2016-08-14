@@ -11,7 +11,7 @@ namespace VideoDromm {
 		: mFilePathOrText("")
 		, mFboName("fbo")
 		, mWidth(1024)
-		, mHeight(480)
+		, mHeight(768)
 	{
 		CI_LOG_V("VDFbo constructor");
 		mVDSettings = aVDSettings;

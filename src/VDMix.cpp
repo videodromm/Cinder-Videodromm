@@ -83,13 +83,6 @@ namespace VideoDromm {
 		if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = 0;
 		mVDSettings->iBlendMode = aBlendIndex;
 	}
-	/*ci::gl::TextureRef VDMix::getFboATexture() {
-		return mFboA->getColorTexture();
-	}
-	ci::gl::TextureRef VDMix::getFboBTexture() {
-		return mFboB->getColorTexture();
-	}*/
-	//ci::gl::TextureRef VDMix::getFboMixTexture() {
 	ci::gl::TextureRef VDMix::getTexture(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = 0;
 		return mMixFbos[aMixFboIndex]->getColorTexture();
@@ -167,7 +160,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iAlpha", mVDAnimation->controlValues[4] * mVDSettings->iAlpha);
 		mGlslMix->uniform("iChromatic", mVDAnimation->controlValues[10]);
 		mGlslMix->uniform("iRotationSpeed", mVDAnimation->controlValues[19]);
-		mGlslMix->uniform("iCrossfade", 0.5f);// mVDAnimation->controlValues[18]);
+		mGlslMix->uniform("iCrossfade", mVDAnimation->controlValues[18]);
 		mGlslMix->uniform("iPixelate", mVDAnimation->controlValues[15]);
 		mGlslMix->uniform("iExposure", mVDAnimation->controlValues[14]);
 		mGlslMix->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
@@ -225,7 +218,7 @@ namespace VideoDromm {
 		mGlslBlend->uniform("iAlpha", mVDAnimation->controlValues[4] * mVDSettings->iAlpha);
 		mGlslBlend->uniform("iChromatic", mVDAnimation->controlValues[10]);
 		mGlslBlend->uniform("iRotationSpeed", mVDAnimation->controlValues[19]);
-		mGlslBlend->uniform("iCrossfade", 0.5f);// mVDAnimation->controlValues[18]);
+		mGlslBlend->uniform("iCrossfade", 0.5f);// blendmode only work if different than 0 or 1.0 mVDAnimation->controlValues[18]);
 		mGlslBlend->uniform("iPixelate", mVDAnimation->controlValues[15]);
 		mGlslBlend->uniform("iExposure", mVDAnimation->controlValues[14]);
 		mGlslBlend->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
