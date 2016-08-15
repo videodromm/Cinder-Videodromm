@@ -84,19 +84,22 @@ void VDUIAnimation::Run(const char* title) {
 		}
 		if (ui::CollapsingHeader("Animation", NULL, true, true))
 		{
-
-			ui::SliderInt("UI Zoom", &mVDSettings->mUIZoom, 1, 8);
+			//ui::SliderInt("UI Zoom", &mVDSettings->mUIZoom, 1, 8);
 			int ctrl;
 			stringstream aParams;
 			aParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
 
 			// iChromatic
 			ctrl = 10;
-			if (ui::Button("a##chromatic")) { mVDAnimation->lockChromatic(); }
+			if (ui::Button("a##chromatic")) { 
+				mVDAnimation->lockChromatic(); 
+			}
 			ui::SameLine();
 			if (ui::Button("t##chromatic")) { mVDAnimation->tempoChromatic(); }
 			ui::SameLine();
-			if (ui::Button("x##chromatic")) { mVDAnimation->resetChromatic(); }
+			if (ui::Button("x##chromatic")) { 
+				mVDAnimation->resetChromatic(); 
+			}
 			ui::SameLine();
 			if (ui::SliderFloat("chromatic/min/max", &mVDAnimation->controlValues[ctrl], mVDAnimation->minChromatic, mVDAnimation->maxChromatic))
 			{

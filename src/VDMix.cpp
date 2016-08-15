@@ -35,14 +35,6 @@ namespace VideoDromm {
 		}
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
-		// init the fbo whatever happens next
-		//gl::Fbo::Format format;
-		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
-		/*mMixFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-		mLeftFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-		mRightFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());*/
-		// useless for now:
-		//mUseLeftFbo = mUseRightFbo = true;
 		// use fbo texture for live coding
 		mUseFbo = false;
 		// mix shader index
@@ -51,16 +43,15 @@ namespace VideoDromm {
 		//shaderInclude = loadString(loadAsset("shadertoy.inc"));
 		// create blendmodes preview fbos
 		gl::Texture::Format fmt;
-		fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
-		fmt.setBorderColor(Color::black());
+		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+		//fmt.setBorderColor(Color::black());
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 0 = Mix
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 1 = Left
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 2 = Right
-		/*mFboA = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mFboB = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);*/
+
 		for (size_t i = 0; i < MAXBLENDMODES; i++)
 		{
 			mBlendFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
@@ -93,7 +84,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslA);
-		mTextureList[1]->getTexture()->bind(0);
+		mTextureList[0]->getTexture()->bind(0);
 		int a = mMixFbos[1]->getWidth();
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[1]->getWidth(), mMixFbos[1]->getHeight()));
 	}
@@ -103,7 +94,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslB);
-		mTextureList[2]->getTexture()->bind(0);
+		mTextureList[0]->getTexture()->bind(0);
 
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[2]->getWidth(), mMixFbos[2]->getHeight()));
 	}
@@ -511,7 +502,8 @@ namespace VideoDromm {
             mShaderList.push_back(s);
             rtn = mShaderList.size() - 1;
             mFboList[aFboIndex]->setShaderIndex(rtn);
-            mFboList[aFboIndex]->setFragmentShader(s->getFragmentString());
+			mFboList[aFboIndex]->setFragmentShader(s->getFragmentString()); 
+			mGlslA = mFboList[aFboIndex]->getShader();
         }
 		mVDSettings->mShaderToLoad = "";
 

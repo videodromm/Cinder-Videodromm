@@ -158,15 +158,9 @@ void VDAnimation::loadAnimation() {
 		CI_LOG_W("Failed to parse json file.");
 	}
 }
+
 void VDAnimation::update() {
 
-	//chromatic
-	if (!controlValues[42]) {
-		lockChromatic();
-	}
-	else {
-		resetChromatic();
-	}
 	if (mBadTV[getElapsedFrames()] != 0) {
 		// duration = 0.2
 		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
@@ -403,7 +397,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	tExposure = autoExposure = false;
 	// Chromatic
 	defaultChromatic = 0.0;
-	minChromatic = 0.0;
+	minChromatic = 0.000000001;
 	maxChromatic = 1.0;
 	tChromatic = autoChromatic = false;
 	// ratio

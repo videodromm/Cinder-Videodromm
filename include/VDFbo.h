@@ -72,7 +72,7 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getTexture();
 		//void							loadImageFile(string aFile, unsigned int aTextureIndex);
 		//void							loadAudioFile(string aFile);
-
+		gl::GlslProgRef					getShader() { return mFboTextureShader; };
 	protected:
 		std::string						mFboName;
 		//bool							mFlipV;

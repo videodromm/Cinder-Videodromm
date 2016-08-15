@@ -32,6 +32,7 @@ void VDUITextures::Run(const char* title) {
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(t);
 			ui::Image((void*)mVDMix->getInputTexture(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::PushItemWidth(mVDSettings->mPreviewFboWidth/2);
 
 			XLeft[t] = mVDMix->getInputTextureXLeft(t);
 			if (anim[t]) {
@@ -199,6 +200,7 @@ void VDUITextures::Run(const char* title) {
 			}*/
 			//END
 #pragma endregion todo
+			ui::PopItemWidth();
 			ui::PopID();
 			ui::PopItemWidth();
 		}
