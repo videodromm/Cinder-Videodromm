@@ -68,7 +68,7 @@ int VDUtils::getWindowsResolution()
 		// for MODE_MIX and triplehead(or doublehead), we only want 1/3 of the screen centered	
 		for (auto display : Display::getDisplays())
 		{
-			CI_LOG_V("Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
+			CI_LOG_V("VDUtils Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
 			mVDSettings->mDisplayCount++;
 			mVDSettings->mRenderWidth = display->getWidth();
 			mVDSettings->mRenderHeight = display->getHeight();
@@ -78,15 +78,15 @@ int VDUtils::getWindowsResolution()
 	{
 		for (auto display : Display::getDisplays())
 		{
-			CI_LOG_V("Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
+			CI_LOG_V("VDUtils Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
 			mVDSettings->mDisplayCount++;
-
 		}
 	}
 	mVDSettings->mRenderY = 0;
 
-	CI_LOG_V(" mMainDisplayWidth:" + toString(mVDSettings->mMainWindowWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainWindowHeight));
-	CI_LOG_V(" mRenderX:" + toString(mVDSettings->mRenderX) + " mRenderY:" + toString(mVDSettings->mRenderY));
+	CI_LOG_V("VDUtils mMainDisplayWidth:" + toString(mVDSettings->mMainWindowWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainWindowHeight));
+	CI_LOG_V("VDUtils mRenderWidth:" + toString(mVDSettings->mRenderWidth) + " mRenderHeight:" + toString(mVDSettings->mRenderHeight));
+	CI_LOG_V("VDUtils mRenderX:" + toString(mVDSettings->mRenderX) + " mRenderY:" + toString(mVDSettings->mRenderY));
 	//mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;

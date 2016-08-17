@@ -84,8 +84,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslA);
-		mTextureList[0]->getTexture()->bind(0);
-		int a = mMixFbos[1]->getWidth();
+		mTextureList[mFboList[mLeftFboIndex]->getInputTextureIndex()]->getTexture()->bind(0); // TO MIGRATE
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[1]->getWidth(), mMixFbos[1]->getHeight()));
 	}
 	void VDMix::renderSceneB()
@@ -94,8 +93,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslB);
-		mTextureList[0]->getTexture()->bind(0);
-
+		mTextureList[mFboList[mRightFboIndex]->getInputTextureIndex()]->getTexture()->bind(0); // TO MIGRATE
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[2]->getWidth(), mMixFbos[2]->getHeight()));
 	}
 	void VDMix::renderMix()

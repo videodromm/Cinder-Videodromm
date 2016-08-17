@@ -34,7 +34,6 @@ namespace VideoDromm
 		// Mix
 		VDMixRef					mVDMix;
 		// imgui
-		float						f = 0.0f;
 		char						buf[64];
 	};
 }

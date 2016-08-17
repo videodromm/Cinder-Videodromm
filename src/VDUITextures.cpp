@@ -34,6 +34,23 @@ void VDUITextures::Run(const char* title) {
 			ui::Image((void*)mVDMix->getInputTexture(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth/2);
 
+			for (unsigned int f = 0; f < mVDMix->getFboCount(); f++) {
+				if (f > 0) ui::SameLine();
+				//int ti = mVDMix->getFboInputTextureIndex(f);
+				//CI_LOG_V("fbo" + toString(f) + " t" + toString(t) + " ti" + toString(ti));
+				if (mVDMix->getFboInputTextureIndex(f) == t) {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 1.0f, 1.0f));
+				}
+				else {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 0.1f, 0.1f));
+				}
+				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(t / 7.0f, 0.7f, 0.7f));
+				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(t / 7.0f, 0.8f, 0.8f));
+				sprintf(buf, "%d##fboinputtex%d%d", f, t, f);
+				if (ui::Button(buf)) mVDMix->setFboInputTexture(f, t);
+				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture for fbo");
+				ui::PopStyleColor(3);
+			}
 			XLeft[t] = mVDMix->getInputTextureXLeft(t);
 			if (anim[t]) {
 				if (rnd[t]) {
@@ -124,7 +141,7 @@ void VDUITextures::Run(const char* title) {
 			}
 			ui::PopStyleColor(3);
 			hue++;
-			//ui::SameLine();
+			
 
 
 
