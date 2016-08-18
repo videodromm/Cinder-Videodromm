@@ -13,8 +13,6 @@ VDUITextures::~VDUITextures() {
 
 void VDUITextures::Run(const char* title) {
 
-	//int t = 0;
-
 	static int XLeft[64];
 	static int YTop[64];
 	static int XRight[64];

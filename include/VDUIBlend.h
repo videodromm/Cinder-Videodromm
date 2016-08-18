@@ -38,7 +38,8 @@ namespace VideoDromm
 		// Animation
 		VDAnimationRef				mVDAnimation;
 		// imgui
-		float						f = 0.0f;
+		//float						f = 0.0f;
 		char						buf[64];
+		int							xPos, yPos;
 	};
 }

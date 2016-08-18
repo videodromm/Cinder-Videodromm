@@ -419,6 +419,7 @@ void VDSettings::resetSomeParams() {
 	uiElementWidth = mPreviewFboWidth + uiMargin;
 	uiElementHeight = mPreviewFboHeight * 2.3;
 	// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15 mPreviewWidth = 160;mPreviewHeight = 120;
+	uiPreviewH = mPreviewHeight + uiMargin;
 	uiLargeW = (mPreviewFboWidth + uiMargin) * 3;
 	uiLargeH = (mPreviewFboHeight + uiMargin) * 8;
 	uiLargePreviewW = (mPreviewFboWidth + uiMargin) * 1.1;

@@ -8,7 +8,7 @@ VDUIShaders::VDUIShaders(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef
 	mVDRouter = aVDRouter;
 }
 VDUIShaders::~VDUIShaders() {
-	
+
 }
 
 void VDUIShaders::Run(const char* title) {
@@ -29,6 +29,7 @@ void VDUIShaders::Run(const char* title) {
 				mVDMix->editShader(s);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Edit shader");
+			ui::SameLine();
 			// thumb
 			sprintf(buf, "T##s%d", s);
 			if (ui::Button(buf)){
@@ -36,10 +37,41 @@ void VDUIShaders::Run(const char* title) {
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Create thumb");
 
+			// left
+			if (mVDMix->getFboFragmentShaderIndex(0) == s) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 1.0f, 0.5f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.0f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.0f, 0.8f, 0.8f));
+			sprintf_s(buf, "L##s%d", s);
+			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(0, s);
+			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to left");
+			ui::PopStyleColor(3);
+
+			ui::SameLine();
+			// right
+			if (mVDMix->getFboFragmentShaderIndex(1) == s) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.3f, 1.0f, 0.5f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.3f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.3f, 0.8f, 0.8f));
+			sprintf_s(buf, "R##s%d", s);
+			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(1, s);
+			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to right");
+			ui::PopStyleColor(3);
+
+
+
 			ui::PopID();
 			ui::PopItemWidth();
 		}
 		ui::End();
 	}
-	
+
 }

@@ -302,6 +302,7 @@ namespace VideoDromm {
 		int							uiLargeH;
 		int							uiLargePreviewW;
 		int							uiLargePreviewH;
+		int							uiPreviewH;
 	private:
 		const string settingsFileName = "VDSettings.xml";
 	};

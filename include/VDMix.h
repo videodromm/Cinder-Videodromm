@@ -65,6 +65,9 @@ namespace VideoDromm
 		void							setZoom(float aZoom);
 		// shader
 		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
+		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
+		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
+
 		// fbos
 		//ci::gl::Texture2dRef			getLeftFboTexture();
 		//ci::gl::Texture2dRef			getRightFboTexture();
@@ -122,6 +125,7 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount() { return mMixFbos.size(); }
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
+
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -173,9 +177,8 @@ namespace VideoDromm
 		// blendmodes fbos
 		vector<ci::gl::FboRef>			mBlendFbos;
 		int								mCurrentBlend;
-		//ci::gl::FboRef					mFboA, mFboB, mFboMix;
 		vector<ci::gl::FboRef>			mMixFbos;
-		gl::GlslProgRef					mGlslA, mGlslB, mGlslMix, mGlslBlend;
+		gl::GlslProgRef					mGlslMix, mGlslBlend;//mGlslA, mGlslB, 
 		void							renderSceneA();
 		void							renderSceneB();
 		void							renderMix();

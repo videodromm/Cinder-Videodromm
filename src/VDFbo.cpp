@@ -98,10 +98,11 @@ namespace VideoDromm {
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
 	}
-	void VDFbo::setFragmentShader(string aFragmentShaderString) {
+	void VDFbo::setFragmentShader(string aFragmentShaderString, string aName) {
 		try {
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, aFragmentShaderString);
 			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
+			mFboTextureShader->setLabel(aName);
 		}
 		catch (gl::GlslProgCompileExc &exc) {
 			mError = string(exc.what());
@@ -112,9 +113,12 @@ namespace VideoDromm {
 			CI_LOG_V("unable to load fragment shader:" + string(e.what()));
 		}
 	}
+	void VDFbo::setShaderIndex(unsigned int aShaderIndex) { 
+		mShaderIndex = aShaderIndex; 
+	}
 
 	std::string VDFbo::getLabel() {
-		mFbo->setLabel(mId + " " + mFboTextureShader->getLabel());
+		mFbo->setLabel(mFboTextureShader->getLabel() + " " + mId); // add mId to make it unique for imgui
 		return mFbo->getLabel();
 	}
 
