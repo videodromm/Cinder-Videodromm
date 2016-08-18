@@ -61,6 +61,7 @@ namespace VideoDromm {
 		//mGlslB = gl::GlslProg::create(loadAsset("shaders/passthrough330.vert"), loadAsset("simple330b.frag"));
 		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
+		mBlendRender = false;
 	}
 #pragma region blendmodes
 	unsigned int VDMix::getFboBlendCount() {
@@ -173,7 +174,6 @@ namespace VideoDromm {
 		mGlslMix->uniform("iTempoTime", mVDAnimation->iTempoTime);
 		mGlslMix->uniform("iGlitch", (int)mVDAnimation->controlValues[45]);
 		mGlslMix->uniform("iTrixels", mVDAnimation->controlValues[16]);
-		mGlslMix->uniform("iGridSize", mVDAnimation->controlValues[17]);
 		mGlslMix->uniform("iBeat", mVDSettings->iBeat);
 		mGlslMix->uniform("iSeed", mVDSettings->iSeed);
 		mGlslMix->uniform("iRedMultiplier", mVDSettings->iRedMultiplier);
@@ -186,67 +186,70 @@ namespace VideoDromm {
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
 		mGlslMix->uniform("iBadTv", mVDSettings->iBadTv);
 
-		mCurrentBlend = getElapsedFrames() / 48 % MAXBLENDMODES;
-		mGlslBlend->uniform("iBlendmode", mCurrentBlend);
-		mGlslBlend->uniform("iGlobalTime", (float)getElapsedSeconds());
-		mGlslBlend->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
-		mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-		mGlslBlend->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
-		mGlslBlend->uniform("iChannel0", 0);
-		mGlslBlend->uniform("iChannel1", 1);
-		mGlslBlend->uniform("iAudio0", 0);
-		mGlslBlend->uniform("iFreq0", mVDAnimation->iFreqs[0]);
-		mGlslBlend->uniform("iFreq1", mVDAnimation->iFreqs[1]);
-		mGlslBlend->uniform("iFreq2", mVDAnimation->iFreqs[2]);
-		mGlslBlend->uniform("iFreq3", mVDAnimation->iFreqs[3]);
-		mGlslBlend->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
-		mGlslBlend->uniform("iColor", vec3(mVDAnimation->controlValues[1], mVDAnimation->controlValues[2], mVDAnimation->controlValues[3]));// mVDSettings->iColor);
-		mGlslBlend->uniform("iBackgroundColor", vec3(mVDAnimation->controlValues[5], mVDAnimation->controlValues[6], mVDAnimation->controlValues[7]));// mVDSettings->iBackgroundColor);
-		mGlslBlend->uniform("iSteps", (int)mVDAnimation->controlValues[20]);
-		mGlslBlend->uniform("iRatio", mVDAnimation->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio);
-		mGlslBlend->uniform("width", 1);
-		mGlslBlend->uniform("height", 1);
-		mGlslBlend->uniform("iRenderXY", mVDSettings->mRenderXY);
-		mGlslBlend->uniform("iZoom", mVDAnimation->controlValues[22]);
-		mGlslBlend->uniform("iAlpha", mVDAnimation->controlValues[4] * mVDSettings->iAlpha);
-		mGlslBlend->uniform("iChromatic", mVDAnimation->controlValues[10]);
-		mGlslBlend->uniform("iRotationSpeed", mVDAnimation->controlValues[19]);
-		mGlslBlend->uniform("iCrossfade", 0.5f);// blendmode only work if different than 0 or 1.0 mVDAnimation->controlValues[18]);
-		mGlslBlend->uniform("iPixelate", mVDAnimation->controlValues[15]);
-		mGlslBlend->uniform("iExposure", mVDAnimation->controlValues[14]);
-		mGlslBlend->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
-		mGlslBlend->uniform("iFade", (int)mVDSettings->iFade);
-		mGlslBlend->uniform("iToggle", (int)mVDAnimation->controlValues[46]);
-		mGlslBlend->uniform("iLight", (int)mVDSettings->iLight);
-		mGlslBlend->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
-		mGlslBlend->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
-		mGlslBlend->uniform("iTransition", mVDSettings->iTransition);
-		mGlslBlend->uniform("iAnim", mVDSettings->iAnim.value());
-		mGlslBlend->uniform("iRepeat", (int)mVDSettings->iRepeat);
-		mGlslBlend->uniform("iVignette", (int)mVDAnimation->controlValues[47]);
-		mGlslBlend->uniform("iInvert", (int)mVDAnimation->controlValues[48]);
-		mGlslBlend->uniform("iDebug", (int)mVDSettings->iDebug);
-		mGlslBlend->uniform("iShowFps", (int)mVDSettings->iShowFps);
-		mGlslBlend->uniform("iFps", mVDSettings->iFps);
-		mGlslBlend->uniform("iTempoTime", mVDAnimation->iTempoTime);
-		mGlslBlend->uniform("iGlitch", (int)mVDAnimation->controlValues[45]);
-		mGlslBlend->uniform("iTrixels", mVDAnimation->controlValues[16]);
-		mGlslBlend->uniform("iGridSize", mVDAnimation->controlValues[17]);
-		mGlslBlend->uniform("iBeat", mVDSettings->iBeat);
-		mGlslBlend->uniform("iSeed", mVDSettings->iSeed);
-		mGlslBlend->uniform("iRedMultiplier", mVDSettings->iRedMultiplier);
-		mGlslBlend->uniform("iGreenMultiplier", mVDSettings->iGreenMultiplier);
-		mGlslBlend->uniform("iBlueMultiplier", mVDSettings->iBlueMultiplier);
-		mGlslBlend->uniform("iFlipH", 0);
-		mGlslBlend->uniform("iFlipV", 0);
-		mGlslBlend->uniform("iParam1", mVDSettings->iParam1);
-		mGlslBlend->uniform("iParam2", mVDSettings->iParam2);
-		mGlslBlend->uniform("iXorY", mVDSettings->iXorY);
-		mGlslBlend->uniform("iBadTv", mVDSettings->iBadTv);
+
 		renderSceneA();
 		renderSceneB();
 		renderMix();
-		renderBlend();
+		// blendmodes preview
+		if (mBlendRender) {
+			mCurrentBlend = getElapsedFrames() / 48 % MAXBLENDMODES;
+			mGlslBlend->uniform("iBlendmode", mCurrentBlend);
+			mGlslBlend->uniform("iGlobalTime", (float)getElapsedSeconds());
+			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+			mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
+			mGlslBlend->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+			mGlslBlend->uniform("iChannel0", 0);
+			mGlslBlend->uniform("iChannel1", 1);
+			mGlslBlend->uniform("iAudio0", 0);
+			mGlslBlend->uniform("iFreq0", mVDAnimation->iFreqs[0]);
+			mGlslBlend->uniform("iFreq1", mVDAnimation->iFreqs[1]);
+			mGlslBlend->uniform("iFreq2", mVDAnimation->iFreqs[2]);
+			mGlslBlend->uniform("iFreq3", mVDAnimation->iFreqs[3]);
+			mGlslBlend->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
+			mGlslBlend->uniform("iColor", vec3(mVDAnimation->controlValues[1], mVDAnimation->controlValues[2], mVDAnimation->controlValues[3]));// mVDSettings->iColor);
+			mGlslBlend->uniform("iBackgroundColor", vec3(mVDAnimation->controlValues[5], mVDAnimation->controlValues[6], mVDAnimation->controlValues[7]));// mVDSettings->iBackgroundColor);
+			mGlslBlend->uniform("iSteps", (int)mVDAnimation->controlValues[20]);
+			mGlslBlend->uniform("iRatio", mVDAnimation->controlValues[11]);//check if needed: +1;//mVDSettings->iRatio);
+			mGlslBlend->uniform("width", 1);
+			mGlslBlend->uniform("height", 1);
+			mGlslBlend->uniform("iRenderXY", mVDSettings->mRenderXY);
+			mGlslBlend->uniform("iZoom", mVDAnimation->controlValues[22]);
+			mGlslBlend->uniform("iAlpha", mVDAnimation->controlValues[4] * mVDSettings->iAlpha);
+			mGlslBlend->uniform("iChromatic", mVDAnimation->controlValues[10]);
+			mGlslBlend->uniform("iRotationSpeed", mVDAnimation->controlValues[19]);
+			mGlslBlend->uniform("iCrossfade", 0.5f);// blendmode only work if different than 0 or 1.0 mVDAnimation->controlValues[18]);
+			mGlslBlend->uniform("iPixelate", mVDAnimation->controlValues[15]);
+			mGlslBlend->uniform("iExposure", mVDAnimation->controlValues[14]);
+			mGlslBlend->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
+			mGlslBlend->uniform("iFade", (int)mVDSettings->iFade);
+			mGlslBlend->uniform("iToggle", (int)mVDAnimation->controlValues[46]);
+			mGlslBlend->uniform("iLight", (int)mVDSettings->iLight);
+			mGlslBlend->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
+			mGlslBlend->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
+			mGlslBlend->uniform("iTransition", mVDSettings->iTransition);
+			mGlslBlend->uniform("iAnim", mVDSettings->iAnim.value());
+			mGlslBlend->uniform("iRepeat", (int)mVDSettings->iRepeat);
+			mGlslBlend->uniform("iVignette", (int)mVDAnimation->controlValues[47]);
+			mGlslBlend->uniform("iInvert", (int)mVDAnimation->controlValues[48]);
+			mGlslBlend->uniform("iDebug", (int)mVDSettings->iDebug);
+			mGlslBlend->uniform("iShowFps", (int)mVDSettings->iShowFps);
+			mGlslBlend->uniform("iFps", mVDSettings->iFps);
+			mGlslBlend->uniform("iTempoTime", mVDAnimation->iTempoTime);
+			mGlslBlend->uniform("iGlitch", (int)mVDAnimation->controlValues[45]);
+			mGlslBlend->uniform("iTrixels", mVDAnimation->controlValues[16]);
+			mGlslBlend->uniform("iBeat", mVDSettings->iBeat);
+			mGlslBlend->uniform("iSeed", mVDSettings->iSeed);
+			mGlslBlend->uniform("iRedMultiplier", mVDSettings->iRedMultiplier);
+			mGlslBlend->uniform("iGreenMultiplier", mVDSettings->iGreenMultiplier);
+			mGlslBlend->uniform("iBlueMultiplier", mVDSettings->iBlueMultiplier);
+			mGlslBlend->uniform("iFlipH", 0);
+			mGlslBlend->uniform("iFlipV", 0);
+			mGlslBlend->uniform("iParam1", mVDSettings->iParam1);
+			mGlslBlend->uniform("iParam2", mVDSettings->iParam2);
+			mGlslBlend->uniform("iXorY", mVDSettings->iXorY);
+			mGlslBlend->uniform("iBadTv", mVDSettings->iBadTv);
+			renderBlend();
+		}
 	}
 
 	bool VDMix::initFboList() {
@@ -356,7 +359,7 @@ namespace VideoDromm {
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 #endif
-						}
+					}
 						else if (texturetype == "shared") {
 							TextureSharedRef t(new TextureShared());
 							t->fromXml(detailsXml);
@@ -381,12 +384,12 @@ namespace VideoDromm {
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 						}
-					}
 				}
 			}
 		}
-		return isFirstLaunch;
 	}
+		return isFirstLaunch;
+}
 	VDMix::~VDMix(void) {
 
 	}

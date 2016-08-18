@@ -125,7 +125,7 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount() { return mMixFbos.size(); }
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
-
+		void							blendRenderEnable(bool render) { mBlendRender = render; };
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -183,5 +183,6 @@ namespace VideoDromm
 		void							renderSceneB();
 		void							renderMix();
 		void							renderBlend();
+		bool							mBlendRender;
 	};
 }

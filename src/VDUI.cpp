@@ -150,6 +150,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		mUIBlend->Run("Blend");
 		break;
 	}
-
+	mVDMix->blendRenderEnable(currentWindowRow2 == 3);
 
 }
