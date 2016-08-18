@@ -46,7 +46,7 @@ void VDUIShaders::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.0f, 0.8f, 0.8f));
-			sprintf_s(buf, "L##s%d", s);
+			sprintf(buf, "L##s%d", s);
 			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(0, s);
 			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to left");
 			ui::PopStyleColor(3);
@@ -61,7 +61,7 @@ void VDUIShaders::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.3f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.3f, 0.8f, 0.8f));
-			sprintf_s(buf, "R##s%d", s);
+			sprintf(buf, "R##s%d", s);
 			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(1, s);
 			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to right");
 			ui::PopStyleColor(3);
