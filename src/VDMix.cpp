@@ -192,10 +192,10 @@ namespace VideoDromm {
 		renderMix();
 		// blendmodes preview
 		if (mBlendRender) {
-			mCurrentBlend = getElapsedFrames() / 48 % MAXBLENDMODES;
+			mCurrentBlend = getElapsedFrames() % MAXBLENDMODES;
 			mGlslBlend->uniform("iBlendmode", mCurrentBlend);
 			mGlslBlend->uniform("iGlobalTime", (float)getElapsedSeconds());
-			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 			mGlslBlend->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
 			mGlslBlend->uniform("iChannel0", 0);
