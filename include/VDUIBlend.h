@@ -41,5 +41,6 @@ namespace VideoDromm
 		//float						f = 0.0f;
 		char						buf[64];
 		int							xPos, yPos;
+
 	};
 }

@@ -12,13 +12,15 @@ VDUIBlend::~VDUIBlend() {
 }
 
 void VDUIBlend::Run(const char* title) {
+	const char* blendModes[] = { "mix", "multiply", "colorBurn", "linearBurn", "darkerColor", "lighten", "screen", "colorDodge", "linearDodge", "lighterColor", "overlay", "softLight", "hardLight", "vividLight", "linearLight", "pinLight", "hardMix", "difference", "exclusion", "subtract", "divide", "hue", "color", "saturation", "luminosity", "darken", "left", "right" };
+
 	xPos = mVDSettings->uiMargin;
 	yPos = mVDSettings->uiYPosRow3;
 	for (int s = 0; s < mVDMix->getFboBlendCount(); s++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 		ui::SetNextWindowPos(ImVec2(xPos, yPos));
 		int hue = 0;
-		sprintf(buf, "bm##s%d",  s);
+		sprintf(buf, "%s", blendModes[s]);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
