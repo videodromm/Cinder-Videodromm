@@ -208,7 +208,7 @@ void VDAnimation::update() {
 	if (elapsed > 0)
 	{
 		double modulo = (time % elapsed) / 1000000.0;
-		iTempoTime = (float)modulo;
+		iTempoTime = (float)abs(modulo);
 		if (iTempoTime < previousTime)
 		{
 			//iBar++;

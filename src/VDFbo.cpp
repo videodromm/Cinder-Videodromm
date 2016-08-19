@@ -7,11 +7,9 @@ using namespace ci;
 using namespace ci::app;
 
 namespace VideoDromm {
-	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList)
+	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList)//, mWidth(640), mHeight(480)
 		: mFilePathOrText("")
-		, mFboName("fbo")
-		, mWidth(1024)
-		, mHeight(768)
+		, mFboName("fbo")		
 	{
 		CI_LOG_V("VDFbo constructor");
 		mVDSettings = aVDSettings;
@@ -24,8 +22,8 @@ namespace VideoDromm {
 
 		// init the fbo whatever happens next
 		gl::Fbo::Format format;
-		mFbo = gl::Fbo::create(mWidth, mHeight, format.depthTexture());
-
+		mFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, format.depthTexture());
+		mError = "";
 		// init with passthru shader
 		mShaderName = "fbotexture";
 		try
@@ -72,6 +70,7 @@ namespace VideoDromm {
 			mError = string(e.what());
 			CI_LOG_V("unable to load fbotexture fragment shader:" + string(e.what()));
 		}
+		if (mError.length() > 0) mVDSettings->mMsg = mError;
 	}
 	VDFbo::~VDFbo(void) {
 	}
@@ -81,8 +80,8 @@ namespace VideoDromm {
 		XmlTree		xml;
 		xml.setTag("details");
 		xml.setAttribute("path", mFilePathOrText);
-		xml.setAttribute("width", mWidth);
-		xml.setAttribute("height", mHeight);
+		xml.setAttribute("width", mVDSettings->mFboWidth);
+		xml.setAttribute("height", mVDSettings->mFboHeight);
 		xml.setAttribute("shadername", mShaderName);
 
 		return xml;
@@ -92,8 +91,8 @@ namespace VideoDromm {
 	{
 		mId = xml.getAttributeValue<string>("id", "");
 		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.glsl");
-		mWidth = xml.getAttributeValue<int>("width", 1024);
-		mHeight = xml.getAttributeValue<int>("height", 768);
+		mWidth = xml.getAttributeValue<int>("width", mVDSettings->mFboWidth);
+		mHeight = xml.getAttributeValue<int>("height", mVDSettings->mFboHeight);
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
@@ -123,19 +122,12 @@ namespace VideoDromm {
 	}
 
 	void VDFbo::setPosition(int x, int y) {
-		mPosX = ((float)x / (float)mWidth) - 0.5;
-		mPosY = ((float)y / (float)mHeight) - 0.5;
+		mPosX = ((float)x / (float)mVDSettings->mFboWidth ) - 0.5;
+		mPosY = ((float)y / (float)mVDSettings->mFboHeight) - 0.5;
 	}
 	void VDFbo::setZoom(float aZoom) {
 		mZoom = aZoom;
 	}
-	int VDFbo::getTextureWidth() {
-		return mWidth;
-	};
-
-	int VDFbo::getTextureHeight() {
-		return mHeight;
-	};
 
 	ci::ivec2 VDFbo::getSize() {
 		return mFbo->getSize();
@@ -157,11 +149,6 @@ namespace VideoDromm {
 		inputTextureIndex = aTextureIndex;
 	}
 
-	/*ci::gl::Texture2dRef VDFbo::getInputTexture(unsigned int aIndex) {
-		if (aIndex > mTextureList.size() - 1) aIndex = mTextureList.size() - 1;
-		return mTextureList[aIndex]->getTexture();
-		}
-		}*/
 	ci::gl::Texture2dRef VDFbo::getTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mFbo);
@@ -172,11 +159,13 @@ namespace VideoDromm {
 		//mFboTextureShader = mShaderList[mShaderIndex]->getShader();
 		mFboTextureShader->bind();
 		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
-		mFboTextureShader->uniform("iResolution", vec3(mWidth, mHeight, 1.0));
-		mFboTextureShader->uniform("iChannelResolution[0]", iChannelResolution0);
+		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+		//mFboTextureShader->uniform("iChannelResolution[0]", iChannelResolution0);
 		mFboTextureShader->uniform("iChannel0", 0);
 		mFboTextureShader->uniform("iZoom", mZoom);
 		gl::ScopedTextureBind tex(mTextureList[inputTextureIndex]->getTexture());
+		// lopocompris
+		//gl::drawSolidRect(Rectf(0, 0, 900, 700));
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 		return mFbo->getColorTexture();
 	}

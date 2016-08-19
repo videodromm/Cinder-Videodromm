@@ -51,8 +51,6 @@ namespace VideoDromm
 		void							setLabel(string aLabel) { mFboTextureShader->setLabel(aLabel); };
 		//bool							isFlipH() { return mFlipH; };
 		//bool							isFlipV() { return mFlipV; };
-		int								getTextureWidth();
-		int								getTextureHeight();
 		//!
 		void							fromXml(const ci::XmlTree &xml);
 		//!
@@ -64,14 +62,10 @@ namespace VideoDromm
 		void							setShaderIndex(unsigned int aShaderIndex);
 		unsigned int					getShaderIndex() { return mShaderIndex; };
 		void							setFragmentShader(string aFragmentShaderString, string aName);
-		//int								loadFragmentShader(string aFilePath);
-		//string							getFragmentShaderText();
 		// textures
 		void							setInputTexture(unsigned int aTextureIndex);
 		unsigned int					getInputTextureIndex() { return inputTextureIndex; };
 		ci::gl::Texture2dRef			getTexture();
-		//void							loadImageFile(string aFile, unsigned int aTextureIndex);
-		//void							loadAudioFile(string aFile);
 		gl::GlslProgRef					getShader() { return mFboTextureShader; };
 	protected:
 		std::string						mFboName;
@@ -80,8 +74,6 @@ namespace VideoDromm
 		TextureType						mType;
 		std::string						mFilePathOrText;
 		//bool							mTopDown;
-		int								mWidth;
-		int								mHeight;
 		float							mPosX;
 		float							mPosY;
 		float							mZoom;
@@ -108,7 +100,6 @@ namespace VideoDromm
 		unsigned int					inputTextureIndex;
 		//! Shaders
 		string							mShaderName;
-		//string							mFragmentShaderText;
 		unsigned int					mShaderIndex;
 		string							mId;
 	};
