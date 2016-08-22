@@ -21,6 +21,7 @@ VDConsole::VDConsole(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVD
 	Commands.push_back("WSCNF");
 	Commands.push_back("LOADSTOP");
 	Commands.push_back("TEMPO");
+	strcpy(InputBuf, "");
 }
 VDConsole::~VDConsole()
 {
@@ -49,8 +50,9 @@ void VDConsole::AddLog(const char* fmt, ...) IM_PRINTFARGS(2)
 
 void VDConsole::Run(const char* title)
 {
-	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiYPosRow2 - mVDSettings->uiMargin), ImGuiSetCond_Once);
-	ui::SetNextWindowPos(ImVec2(mVDSettings->mRenderWidth / 2 + mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
+
+	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiLargePreviewH));
+	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 
 	if (!ImGui::Begin(title))
 	{

@@ -44,7 +44,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	static int currentWindowRow2 = 0;
 	static int currentWindowRow3 = 0;
 	mVDSettings->uiXPos = mVDSettings->uiMargin;
-	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiYPosRow2 - mVDSettings->uiMargin), ImGuiSetCond_Once);
+	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPos, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 	sprintf(buf, "Videodromm Fps %c %d###fps", "|/-\\"[(int)(ui::GetTime() / 0.25f) & 3], fps);
 	ui::Begin(buf);
@@ -68,7 +68,8 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Fbos", &currentWindowRow2, 1); ui::SameLine();
 		ui::RadioButton("Shaders", &currentWindowRow2, 2); ui::SameLine();
 		ui::RadioButton("Blend", &currentWindowRow2, 3); ui::SameLine();
-		ui::RadioButton("Chn", &currentWindowRow2, 4);ui::SameLine();
+		ui::RadioButton("Console", &currentWindowRow2, 4); ui::SameLine();
+		ui::RadioButton("Chn", &currentWindowRow2, 5); ui::SameLine();
 
 
 #pragma region Info
@@ -147,9 +148,12 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		// Blend
 		mUIBlend->Run("Blend");
 		break;
+	case 4:
+		// Console
+		mVDConsole->Run("Console");
+		break;
 	}
-	// Console
-	mVDConsole->Run("Console");
+	
 	mVDMix->blendRenderEnable(currentWindowRow2 == 3);
 
 }

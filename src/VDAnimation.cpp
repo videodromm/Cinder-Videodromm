@@ -40,11 +40,20 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// invert
 		controlValues[48] = 1.0f;
 		break;
-	case KeyEvent::KEY_LEFT:		
-		if (controlValues[21]>0.1) controlValues[21] -= 0.1;
+	case KeyEvent::KEY_LEFT:
+		if (controlValues[21] > 0.1) controlValues[21] -= 0.1;
 		break;
 	case KeyEvent::KEY_RIGHT:
-		if (controlValues[21]<1.0) controlValues[21] += 0.1;
+		if (controlValues[21] < 1.0) controlValues[21] += 0.1;
+		break;
+
+	case KeyEvent::KEY_PAGEDOWN:
+		// crossfade right
+		if (controlValues[18] < 1.0) controlValues[18] += 0.1;
+		break;
+	case KeyEvent::KEY_PAGEUP:
+		// crossfade left
+		if (controlValues[18] > 0.0) controlValues[18] -= 0.1;
 		break;
 	case KeyEvent::KEY_x:
 	case KeyEvent::KEY_y:
@@ -87,7 +96,7 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 		break;
 	case KeyEvent::KEY_t:
 		// trixels
-		controlValues[16] = 0.0f; 
+		controlValues[16] = 0.0f;
 		break;
 	case KeyEvent::KEY_i:
 		// invert
@@ -193,14 +202,14 @@ void VDAnimation::update() {
 
 	int time = (currentTime - startTime)*1000000.0;
 	int elapsed = iDeltaTime*1000000.0;
-	int elapsedBeatPerBar = iDeltaTime/mVDSession->iBeatsPerBar*1000000.0;
+	int elapsedBeatPerBar = iDeltaTime / mVDSession->iBeatsPerBar*1000000.0;
 	if (elapsedBeatPerBar > 0)
 	{
 		double moduloBeatPerBar = (time % elapsedBeatPerBar) / 1000000.0;
 		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
 		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
 		{
-			if (iBeatIndex > mVDSession->iBeatsPerBar) iBeatIndex = 1;	
+			if (iBeatIndex > mVDSession->iBeatsPerBar) iBeatIndex = 1;
 			iBeatIndex++;
 		}
 		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
@@ -609,7 +618,7 @@ void VDAnimation::calculateTempo()
 	}
 	averageTime = (double)(tAverage / buffer.size());
 	iDeltaTime = averageTime;
-	mVDSession->setBpm( 60 / averageTime);
+	mVDSession->setBpm(60 / averageTime);
 }
 void VDAnimation::setTimeFactor(const int &aTimeFactor)
 {

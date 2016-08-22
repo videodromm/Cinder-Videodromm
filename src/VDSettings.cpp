@@ -423,13 +423,13 @@ void VDSettings::resetSomeParams() {
 	uiLargeW = (mPreviewFboWidth + uiMargin) * 3;
 	uiLargeH = (mPreviewFboHeight + uiMargin) * 8;
 	uiLargePreviewW = (mPreviewFboWidth + uiMargin) * 1.1;
-	uiLargePreviewH = (mPreviewHeight + uiMargin) * 2.4;
+	uiLargePreviewH = (mPreviewHeight + uiMargin) * 2.5;
 	uiXPosCol1 = uiLargeW + uiMargin*2;
 	uiXPosCol2 = uiXPosCol1 + uiMargin + uiElementWidth; //largeW + mVDSettings->uiMargin * 2;
 	uiXPosCol3 = uiXPosCol2 + uiMargin;
 	uiYPos;
 	uiYPosRow1 = 18;
-	uiYPosRow2 = 220;
+	uiYPosRow2 = 140;
 	uiYPosRow3 = uiYPosRow2 + uiLargeH + uiMargin * 2;
 	shaderEditIndex = 0;
 }
