@@ -99,7 +99,20 @@ namespace VideoDromm
 		void							toggleInputTextureLockBounds(unsigned int aTextureIndex);
 		unsigned int					getInputTextureOriginalWidth(unsigned int aTextureIndex);
 		unsigned int					getInputTextureOriginalHeight(unsigned int aTextureIndex);
-
+		void							togglePlayPause(unsigned int aTextureIndex);
+		// movie
+		bool							isMovie(unsigned int aTextureIndex);
+		// sequence
+		bool							isSequence(unsigned int aTextureIndex);
+		bool							isLoadingFromDisk(unsigned int aTextureIndex);
+		void							toggleLoadingFromDisk(unsigned int aTextureIndex);
+		void							syncToBeat(unsigned int aTextureIndex);
+		void							reverse(unsigned int aTextureIndex);
+		int								getSpeed(unsigned int aTextureIndex);
+		void							setSpeed(unsigned int aTextureIndex, int aSpeed);
+		int								getPlayheadPosition(unsigned int aTextureIndex);
+		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition);
+		int								getMaxFrame(unsigned int aTextureIndex);
 
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);

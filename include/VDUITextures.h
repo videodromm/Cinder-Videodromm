@@ -38,5 +38,8 @@ namespace VideoDromm
 		char						buf[64];
 		int							xStep = 1;
 		int							yStep = 1;
+		// sequence
+		int							playheadPositions[12];
+		int							speeds[12];
 	};
 }

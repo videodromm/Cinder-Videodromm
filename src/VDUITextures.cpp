@@ -21,7 +21,7 @@ void VDUITextures::Run(const char* title) {
 	static bool anim[64];
 
 	for (int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH + 20));
 		ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		int hue = 0;
 		sprintf(buf, "%s##s%d", mVDMix->getInputTextureName(t).c_str(), t);
@@ -30,7 +30,7 @@ void VDUITextures::Run(const char* title) {
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(t);
 			ui::Image((void*)mVDMix->getInputTexture(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-			ui::PushItemWidth(mVDSettings->mPreviewFboWidth/2);
+			ui::PushItemWidth(mVDSettings->mPreviewFboWidth / 2);
 
 			for (unsigned int f = 0; f < mVDMix->getFboCount(); f++) {
 				if (f > 0) ui::SameLine();
@@ -66,7 +66,7 @@ void VDUITextures::Run(const char* title) {
 				}
 			}
 			sprintf(buf, "XL##xl%d", t);
-			ui::SliderInt(buf, &XLeft[t], 0, mVDMix->getInputTextureOriginalWidth(t) - mVDSettings->mFboWidth);			
+			ui::SliderInt(buf, &XLeft[t], 0, mVDMix->getInputTextureOriginalWidth(t) - mVDSettings->mFboWidth);
 			mVDMix->setInputTextureXLeft(t, XLeft[t]);
 
 			YTop[t] = mVDMix->getInputTextureYTop(t);
@@ -88,7 +88,7 @@ void VDUITextures::Run(const char* title) {
 			sprintf(buf, "YT##yt%d", t);
 			ui::SliderInt(buf, &YTop[t], 0, mVDMix->getInputTextureOriginalHeight(t) - mVDSettings->mFboHeight);
 			mVDMix->setInputTextureYTop(t, YTop[t]);
-			
+
 
 			ui::SameLine();
 			(mVDMix->getInputTextureLockBounds(t)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
@@ -139,10 +139,6 @@ void VDUITextures::Run(const char* title) {
 			}
 			ui::PopStyleColor(3);
 			hue++;
-			
-
-
-
 
 #pragma region todo
 			//BEGIN
@@ -163,56 +159,60 @@ void VDUITextures::Run(const char* title) {
 			//  
 			//if (ui::Button("Stop Load")) mVDImageSequences[0]->stopLoading();
 			//ui::SameLine();
+			if (mVDMix->isSequence(t) || mVDMix->isMovie(t)) {
+				sprintf_s(buf, "p##s%d", t);
+				if (ui::Button(buf))
+				{
+					mVDMix->togglePlayPause(t);
+				}
+				if (ui::IsItemHovered()) ui::SetTooltip("Play/Pause");
+			}
+			if (mVDMix->isSequence(t)) {
+				ui::SameLine();
+				sprintf_s(buf, "b##s%d", t);
+				if (ui::Button(buf))
+				{
+					mVDMix->syncToBeat(t);
+				}
+				if (ui::IsItemHovered()) ui::SetTooltip("Sync to beat");
 
-			/*if (mVDTextures->inputTextureIsSequence(i)) {
-			if (!(mVDTextures->inputTextureIsLoadingFromDisk(i))) {
-			ui::SameLine();
-			sprintf_s(buf, "l##s%d", i);
-			if (ui::Button(buf))
-			{
-			mVDTextures->inputTextureToggleLoadingFromDisk(i);
-			}
-			if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
-			}
-			ui::SameLine();
-			sprintf_s(buf, "p##s%d", i);
-			if (ui::Button(buf))
-			{
-			mVDTextures->inputTexturePlayPauseSequence(i);
-			}
-			if (ui::IsItemHovered()) ui::SetTooltip("Play/Pause");
-			ui::SameLine();
-			sprintf_s(buf, "b##s%d", i);
-			if (ui::Button(buf))
-			{
-			mVDTextures->inputTextureSyncToBeatSequence(i);
-			}
-			if (ui::IsItemHovered()) ui::SetTooltip("Sync to beat");
-			ui::SameLine();
-			sprintf_s(buf, "r##s%d", i);
-			if (ui::Button(buf))
-			{
-			mVDTextures->inputTextureReverseSequence(i);
-			}
-			if (ui::IsItemHovered()) ui::SetTooltip("Reverse");
-			playheadPositions[i] = mVDTextures->inputTextureGetPlayheadPosition(i);
-			sprintf_s(buf, "p%d##s%d", playheadPositions[i], i);
-			if (ui::Button(buf))
-			{
-			mVDTextures->inputTextureSetPlayheadPosition(i, playheadPositions[i]);
-			}
+				ui::SameLine();
+				sprintf_s(buf, "r##s%d", t);
+				if (ui::Button(buf))
+				{
+					mVDMix->reverse(t);
+				}
+				if (ui::IsItemHovered()) ui::SetTooltip("Reverse");
 
-			if (ui::SliderInt("scrub", &playheadPositions[i], 0, mVDTextures->inputTextureGetMaxFrame(i)))
-			{
-			mVDTextures->inputTextureSetPlayheadPosition(i, playheadPositions[i]);
-			}
-			speeds[i] = mVDTextures->inputTextureGetSpeed(i);
-			if (ui::SliderInt("speed", &speeds[i], 0.0f, 6.0f))
-			{
-			mVDTextures->inputTextureSetSpeed(i, speeds[i]);
-			}
+				if (mVDMix->isLoadingFromDisk(t)) {
+					ui::SameLine();
+					sprintf_s(buf, "l##s%d", t);
+					if (ui::Button(buf))
+					{
+						mVDMix->toggleLoadingFromDisk(t);
+					}
+					if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
+				}
+				speeds[t] = mVDMix->getSpeed(t);
+				if (ui::SliderInt("speed", &speeds[t], 0.0f, 6.0f))
+				{
+					mVDMix->setSpeed(t, speeds[t]);
+				}				
+				
+				playheadPositions[t] = mVDMix->getPlayheadPosition(t);
+				sprintf_s(buf, "p%d##s%d", playheadPositions[t], t);
+				if (ui::Button(buf))
+				{
+					mVDMix->setPlayheadPosition(t, playheadPositions[t]);
+				}
 
-			}*/
+				if (ui::SliderInt("scrub", &playheadPositions[t], 0, mVDMix->getMaxFrame(t)))
+				{
+					mVDMix->setPlayheadPosition(t, playheadPositions[t]);
+				}
+
+
+			}
 			//END
 #pragma endregion todo
 			ui::PopItemWidth();

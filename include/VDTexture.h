@@ -102,6 +102,19 @@ namespace VideoDromm
 		void							toggleTopDown();
 		bool							getLockBounds();
 		void							toggleLockBounds();
+		// sequence and movie
+		virtual void					togglePlayPause();
+		// sequence only
+		virtual void					toggleLoadingFromDisk();
+		virtual bool					isLoadingFromDisk();
+		virtual void					syncToBeat();
+		virtual void					reverse();
+		virtual int						getSpeed();
+		virtual void					setSpeed(int speed);
+		virtual int						getPlayheadPosition();
+		virtual void					setPlayheadPosition(int position);
+		virtual int						getMaxFrame();
+
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -173,20 +186,21 @@ namespace VideoDromm
 
 		//! returns a shared pointer 
 		TextureImageSequenceRef	getPtr() { return std::static_pointer_cast<TextureImageSequence>(shared_from_this()); }
-		void						playPauseSequence();
-		void						syncToBeat();
+		void						togglePlayPause() override;
+		void						syncToBeat() override;
 		void						stopSequence();
-		void						toggleLoadingFromDisk();
+		void						toggleLoadingFromDisk() override;
+		bool						isLoadingFromDisk() override;
 		void						stopLoading();
-		int							getPlayheadPosition();
-		void						setPlayheadPosition(int position);
+		int							getPlayheadPosition() override;
+		void						setPlayheadPosition(int position) override;
 
-		int							getSpeed();
-		void						setSpeed(int speed);
-		void						reverseSequence();
-		bool						isLoadingFromDisk();
+		int							getSpeed() override;
+		void						setSpeed(int speed) override;
+		void						reverse() override;
+
 		bool						isValid(){ return mFramesLoaded > 0; };
-		int							getMaxFrame();	
+		int							getMaxFrame() override;	
 	protected:
 		//! 
 		virtual ci::gl::Texture2dRef	getTexture() override;
@@ -236,6 +250,7 @@ namespace VideoDromm
 
 		//! returns a shared pointer 
 		TextureMovieRef	getPtr() { return std::static_pointer_cast<TextureMovie>(shared_from_this()); }
+		void					togglePlayPause() override;
 	protected:
 		//! 
 		virtual ci::gl::Texture2dRef	getTexture() override;

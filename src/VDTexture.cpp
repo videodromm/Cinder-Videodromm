@@ -193,6 +193,31 @@ namespace VideoDromm {
 	void VDTexture::fromXml(const XmlTree &xml)
 	{
 	}
+	void VDTexture::toggleLoadingFromDisk() {
+
+	}
+	bool VDTexture::isLoadingFromDisk() {
+		return false;
+	}
+	void VDTexture::togglePlayPause() {
+	}
+	void VDTexture::syncToBeat() {
+	}
+	void VDTexture::reverse() {
+	}
+	int VDTexture::getSpeed() {
+		return 1;
+	}
+	void VDTexture::setSpeed(int speed) {
+	}
+	int VDTexture::getPlayheadPosition() {
+		return 1;
+	}
+	void VDTexture::setPlayheadPosition(int position) {
+	}
+	int VDTexture::getMaxFrame() {
+		return 1;
+	}
 	void VDTexture::loadFromFullPath(string aPath) {
 		// initialize texture
 		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
@@ -535,7 +560,7 @@ namespace VideoDromm {
 
 	}
 	// play/pause sequence
-	void TextureImageSequence::playPauseSequence() {
+	void TextureImageSequence::togglePlayPause() {
 
 		mPlaying = !mPlaying;
 	}
@@ -568,28 +593,23 @@ namespace VideoDromm {
 			loadNextImageFromDisk();
 		}
 	}
-
-	void TextureImageSequence::reverseSequence() {
+	void TextureImageSequence::reverse() {
 		mSpeed *= -1;
 	}
 	int TextureImageSequence::getSpeed() {
-
 		return mSpeed;
 	}
 	void TextureImageSequence::setSpeed(int speed) {
 		mSpeed = speed;
 	}
 	bool TextureImageSequence::isLoadingFromDisk() {
-
-		return mLoadingFilesComplete;
+		return !mLoadingFilesComplete;
 	}
 
 	void TextureImageSequence::toggleLoadingFromDisk() {
-
 		mLoadingPaused = !mLoadingPaused;
 	}
 	TextureImageSequence::~TextureImageSequence(void) {
-
 	}
 
 
@@ -648,6 +668,16 @@ namespace VideoDromm {
 			console() << "Unable to load the movie." << std::endl;
 		}
 
+	}
+	// play/pause movie
+	void TextureMovie::togglePlayPause() {
+
+		if (mMovie->isPlaying()) {
+			mMovie->stop();
+		}
+		else {
+			mMovie->play();
+		}
 	}
 	ci::gl::Texture2dRef TextureMovie::getTexture() {
 		if (mMovie) {

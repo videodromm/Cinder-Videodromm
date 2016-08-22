@@ -522,8 +522,8 @@ namespace VideoDromm {
 		return mShaderList[shaderIndex]->getFragmentString();
 	}
 	void VDMix::setPosition(int x, int y) {
-		mPosX = ((float)x / (float)mWidth) - 0.5;
-		mPosY = ((float)y / (float)mHeight) - 0.5;
+		mPosX = ((float)x / (float)mWidth) - 0.5f;
+		mPosY = ((float)y / (float)mHeight) - 0.5f;
 		for (auto &fbo : mFboList)
 		{
 			fbo->setPosition(mPosX, mPosY);
@@ -727,6 +727,56 @@ namespace VideoDromm {
 	void VDMix::toggleInputTextureLockBounds(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mTextureList[aTextureIndex]->toggleLockBounds();
+	}
+	void VDMix::togglePlayPause(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->togglePlayPause();
+	}
+	// movie
+	bool VDMix::isMovie(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return (mTextureList[aTextureIndex]->getType() == mTextureList[aTextureIndex]->MOVIE);
+	}
+	// sequence
+	bool VDMix::isSequence(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return (mTextureList[aTextureIndex]->getType() == mTextureList[aTextureIndex]->IMAGESEQUENCE);
+	}
+	bool VDMix::isLoadingFromDisk(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return (mTextureList[aTextureIndex]->isLoadingFromDisk());
+	}
+	void VDMix::toggleLoadingFromDisk(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->toggleLoadingFromDisk();
+	}
+	void VDMix::syncToBeat(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->syncToBeat();
+	}
+	void VDMix::reverse(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->reverse();
+	}
+	int VDMix::getSpeed(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getSpeed();
+	}
+	void VDMix::setSpeed(unsigned int aTextureIndex, int aSpeed) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->setSpeed(aSpeed);
+	}
+	int VDMix::getPlayheadPosition(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getPlayheadPosition();
+	}
+	void VDMix::setPlayheadPosition(unsigned int aTextureIndex, int aPosition) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->setPlayheadPosition(aPosition);
+	}
+	int VDMix::getMaxFrame(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getMaxFrame();
 	}
 
 	void VDMix::setCrossfade(float aCrossfade) {

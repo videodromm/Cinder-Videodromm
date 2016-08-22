@@ -44,7 +44,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	static int currentWindowRow2 = 0;
 	static int currentWindowRow3 = 0;
 	mVDSettings->uiXPos = mVDSettings->uiMargin;
-	ui::SetNextWindowSize(ImVec2(1000, 100), ImGuiSetCond_Once);
+	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiYPosRow2 - mVDSettings->uiMargin), ImGuiSetCond_Once);
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPos, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 	sprintf(buf, "Videodromm Fps %c %d###fps", "|/-\\"[(int)(ui::GetTime() / 0.25f) & 3], fps);
 	ui::Begin(buf);
@@ -142,14 +142,14 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	case 2:
 		// Shaders
 		mUIShaders->Run("Shaders");
-		// Console
-		mVDConsole->Run("Console");
 		break;
 	case 3:
 		// Blend
 		mUIBlend->Run("Blend");
 		break;
 	}
+	// Console
+	mVDConsole->Run("Console");
 	mVDMix->blendRenderEnable(currentWindowRow2 == 3);
 
 }
