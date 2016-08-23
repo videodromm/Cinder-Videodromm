@@ -361,7 +361,7 @@ namespace VideoDromm {
 							mTextureList.push_back(t);
 						}
 						else if (texturetype == "imagesequence") {
-							TextureImageSequenceRef t(new TextureImageSequence());
+							TextureImageSequenceRef t(new TextureImageSequence(mVDAnimation));
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
 						}

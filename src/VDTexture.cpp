@@ -24,6 +24,7 @@ namespace VideoDromm {
 		mAreaWidth = mWidth;
 		mAreaHeight = mHeight;
 		mFolder = "";
+		mSyncToBeat = false;
 		if (mName.length() == 0) {
 			mName = mPath;
 		}
@@ -201,7 +202,10 @@ namespace VideoDromm {
 	}
 	void VDTexture::togglePlayPause() {
 	}
+	// sync to beat
 	void VDTexture::syncToBeat() {
+
+		mSyncToBeat = !mSyncToBeat;
 	}
 	void VDTexture::reverse() {
 	}
@@ -371,7 +375,7 @@ namespace VideoDromm {
 		mNextIndexFrameToTry = 0;
 		mPlayheadPosition = 0;
 		mNumberOfDigits = 4;
-		mSyncToBeat = false;
+
 
 	}
 	void TextureImageSequence::loadFromFullPath(string aPath)
@@ -568,11 +572,7 @@ namespace VideoDromm {
 
 		mPlaying = !mPlaying;
 	}
-	// sync to beat
-	void TextureImageSequence::syncToBeat() {
 
-		mSyncToBeat = !mSyncToBeat;
-	}
 
 	// Stops playback and resets the playhead to zero
 	void TextureImageSequence::stopSequence() {

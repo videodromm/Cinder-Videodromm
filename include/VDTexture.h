@@ -107,7 +107,7 @@ namespace VideoDromm
 		// sequence only
 		virtual void					toggleLoadingFromDisk();
 		virtual bool					isLoadingFromDisk();
-		virtual void					syncToBeat();
+		void							syncToBeat();
 		virtual void					reverse();
 		virtual float					getSpeed();
 		virtual void					setSpeed(float speed);
@@ -187,7 +187,6 @@ namespace VideoDromm
 		//! returns a shared pointer 
 		TextureImageSequenceRef	getPtr() { return std::static_pointer_cast<TextureImageSequence>(shared_from_this()); }
 		void						togglePlayPause() override;
-		void						syncToBeat() override;
 		void						stopSequence();
 		void						toggleLoadingFromDisk() override;
 		bool						isLoadingFromDisk() override;
