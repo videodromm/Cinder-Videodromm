@@ -57,8 +57,7 @@ namespace VideoDromm {
 		{
 			mBlendFbos.push_back(gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, fboFmt));
 		}
-		//mGlslA = gl::GlslProg::create(loadAsset("shaders/passthrough330.vert"), loadAsset("simple330a.frag"));
-		//mGlslB = gl::GlslProg::create(loadAsset("shaders/passthrough330.vert"), loadAsset("simple330b.frag"));
+
 		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 		mBlendRender = false;
@@ -273,9 +272,8 @@ namespace VideoDromm {
 		bool isFirstLaunch = false;
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDMix::init mShaderList");
-
+			// mix shader
 			VDShaderRef s(new VDShader(mVDSettings, "", ""));
-			// create shader xml
 			XmlTree			shaderXml;
 			shaderXml.setTag("mix");
 			shaderXml.setAttribute("id", "0");
@@ -287,8 +285,37 @@ namespace VideoDromm {
 				isFirstLaunch = true;
 			}
 			else {
-				CI_LOG_V("VDMix::init mShaderList failed");
-				isFirstLaunch = false;
+				CI_LOG_V("VDMix::init mShaderList mixfbo failed");
+			}
+			// direct input texture channel 0
+			VDShaderRef t0(new VDShader(mVDSettings, "", ""));
+			XmlTree			t0Xml;
+			t0Xml.setTag("texture0");
+			t0Xml.setAttribute("id", "1");
+			t0Xml.setAttribute("vertfile", "passthru.vert");
+			t0Xml.setAttribute("fragfile", "texture0.frag");
+			t0->fromXml(t0Xml);
+			if (t0->isValid()) {
+				mShaderList.push_back(t0);
+				isFirstLaunch = true;
+			}
+			else {
+				CI_LOG_V("VDMix::init mShaderList texture0 failed");
+			}
+			// direct input texture channel 1
+			VDShaderRef t1(new VDShader(mVDSettings, "", ""));
+			XmlTree			t1Xml;
+			t1Xml.setTag("texture1");
+			t1Xml.setAttribute("id", "2");
+			t1Xml.setAttribute("vertfile", "passthru.vert");
+			t1Xml.setAttribute("fragfile", "texture1.frag");
+			t1->fromXml(t1Xml);
+			if (t1->isValid()) {
+				mShaderList.push_back(t1);
+				isFirstLaunch = true;
+			}
+			else {
+				CI_LOG_V("VDMix::init mShaderList texture1 failed");
 			}
 		}
 		return isFirstLaunch;
@@ -740,7 +767,7 @@ namespace VideoDromm {
 	// sequence
 	bool VDMix::isSequence(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-		return (mTextureList[aTextureIndex]->getType() == mTextureList[aTextureIndex]->IMAGESEQUENCE);
+		return (mTextureList[aTextureIndex]->getType() == mTextureList[aTextureIndex]->SEQUENCE);
 	}
 	bool VDMix::isLoadingFromDisk(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;

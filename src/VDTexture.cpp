@@ -161,7 +161,7 @@ namespace VideoDromm {
 			texture.setAttribute("id", i + 1);
 			switch (vdtexturelist[i]->mType) {
 			case IMAGE: texture.setAttribute("texturetype", "image"); break;
-			case IMAGESEQUENCE: texture.setAttribute("texturetype", "imagesequence"); break;
+			case SEQUENCE: texture.setAttribute("texturetype", "imagesequence"); break;
 			case MOVIE: texture.setAttribute("texturetype", "movie"); break;
 			case SHARED: texture.setAttribute("texturetype", "shared"); break;
 			case CAMERA: texture.setAttribute("texturetype", "camera"); break;
@@ -356,7 +356,7 @@ namespace VideoDromm {
 	*/
 	TextureImageSequence::TextureImageSequence() {
 		// constructor
-		mType = IMAGESEQUENCE;
+		mType = SEQUENCE;
 		playheadFrameInc = 1;
 		mLoadingFilesComplete = true;
 		mLoadingPaused = false;

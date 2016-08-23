@@ -58,7 +58,7 @@ namespace VideoDromm
 
 	class VDTexture: public std::enable_shared_from_this < VDTexture > {
 	public:
-		typedef enum { UNKNOWN, IMAGE, IMAGESEQUENCE, MOVIE, CAMERA, SHARED, AUDIO } TextureType;
+		typedef enum { UNKNOWN, IMAGE, SEQUENCE, MOVIE, CAMERA, SHARED, AUDIO } TextureType;
 	public:
 		VDTexture( TextureType aType = UNKNOWN);
 		virtual ~VDTexture( void );
