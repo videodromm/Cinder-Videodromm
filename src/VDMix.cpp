@@ -785,11 +785,11 @@ namespace VideoDromm {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mTextureList[aTextureIndex]->reverse();
 	}
-	int VDMix::getSpeed(unsigned int aTextureIndex) {
+	float VDMix::getSpeed(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		return mTextureList[aTextureIndex]->getSpeed();
 	}
-	void VDMix::setSpeed(unsigned int aTextureIndex, int aSpeed) {
+	void VDMix::setSpeed(unsigned int aTextureIndex, float aSpeed) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mTextureList[aTextureIndex]->setSpeed(aSpeed);
 	}

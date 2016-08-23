@@ -109,8 +109,8 @@ namespace VideoDromm
 		virtual bool					isLoadingFromDisk();
 		virtual void					syncToBeat();
 		virtual void					reverse();
-		virtual int						getSpeed();
-		virtual void					setSpeed(int speed);
+		virtual float					getSpeed();
+		virtual void					setSpeed(float speed);
 		virtual int						getPlayheadPosition();
 		virtual void					setPlayheadPosition(int position);
 		virtual int						getMaxFrame();
@@ -174,14 +174,14 @@ namespace VideoDromm
 		: public VDTexture {
 	public:
 		//
-		static TextureImageSequenceRef	create() { return std::make_shared<TextureImageSequence>(); }
+		static TextureImageSequenceRef	create(VDAnimationRef aVDAnimation) { return std::make_shared<TextureImageSequence>(aVDAnimation); }
 		//!
 		void					fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree			toXml() const override;
 		//!
 		virtual void			loadFromFullPath(string aPath) override;
-		TextureImageSequence();
+		TextureImageSequence(VDAnimationRef aVDAnimation);
 		virtual ~TextureImageSequence(void);
 
 		//! returns a shared pointer 
@@ -195,8 +195,8 @@ namespace VideoDromm
 		int							getPlayheadPosition() override;
 		void						setPlayheadPosition(int position) override;
 
-		int							getSpeed() override;
-		void						setSpeed(int speed) override;
+		float						getSpeed() override;
+		void						setSpeed(float speed) override;
 		void						reverse() override;
 
 		bool						isValid(){ return mFramesLoaded > 0; };
@@ -206,7 +206,10 @@ namespace VideoDromm
 		virtual ci::gl::Texture2dRef	getTexture() override;
 
 	private:
-		int							playheadFrameInc;
+		// Animation
+		VDAnimationRef				mVDAnimation;
+
+		float						playheadFrameInc;
 		void						loadNextImageFromDisk();
 		void						updateSequence();
 		bool						mIsSequence;
@@ -221,7 +224,7 @@ namespace VideoDromm
 		bool						mLoadingPaused;
 		bool						mLoadingFilesComplete;
 		bool						mPlaying;
-		int							mSpeed;
+		float						mSpeed;
 		bool						mSyncToBeat;
 		vector<ci::gl::TextureRef>	mSequenceTextures;
 	};

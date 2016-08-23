@@ -40,6 +40,6 @@ namespace VideoDromm
 		int							yStep = 1;
 		// sequence
 		int							playheadPositions[12];
-		int							speeds[12];
+		float						speeds[12];
 	};
 }

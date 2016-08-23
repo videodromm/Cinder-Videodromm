@@ -71,7 +71,7 @@ namespace VideoDromm {
 					vdtexturelist.push_back(t);
 				}
 				else if (texturetype == "imagesequence") {
-					TextureImageSequenceRef t(new TextureImageSequence());
+					TextureImageSequenceRef t(new TextureImageSequence(aVDAnimation));
 					t->fromXml(detailsXml);
 					vdtexturelist.push_back(t);
 				}
@@ -205,10 +205,10 @@ namespace VideoDromm {
 	}
 	void VDTexture::reverse() {
 	}
-	int VDTexture::getSpeed() {
+	float VDTexture::getSpeed() {
 		return 1;
 	}
-	void VDTexture::setSpeed(int speed) {
+	void VDTexture::setSpeed(float speed) {
 	}
 	int VDTexture::getPlayheadPosition() {
 		return 1;
@@ -354,17 +354,18 @@ namespace VideoDromm {
 	/*
 	** TextureImageSequence
 	*/
-	TextureImageSequence::TextureImageSequence() {
+	TextureImageSequence::TextureImageSequence(VDAnimationRef aVDAnimation) {
 		// constructor
+		mVDAnimation = aVDAnimation;
 		mType = SEQUENCE;
-		playheadFrameInc = 1;
+		playheadFrameInc = 0.0f;
 		mLoadingFilesComplete = true;
 		mLoadingPaused = false;
 		mFramesLoaded = 0;
 		mCurrentLoadedFrame = 0;
 		mNextIndexFrameToTry = 0;
 		mPlaying = false;
-		mSpeed = 1;
+		mSpeed = 1.0f;
 		mExt = "png";
 		mPrefix = "none";
 		mNextIndexFrameToTry = 0;
@@ -520,11 +521,13 @@ namespace VideoDromm {
 	}
 	void TextureImageSequence::updateSequence() {
 		int newPosition;
-		// TODO check: getTexture()
+
 		if (mSequenceTextures.size() > 0) {
 			// Call on each frame to update the playhead
 			if (mPlaying) {
-				newPosition = mPlayheadPosition + (playheadFrameInc * mSpeed);
+				playheadFrameInc += mSpeed;
+				newPosition = mPlayheadPosition + (int)playheadFrameInc;
+				if (playheadFrameInc > 1.0f) playheadFrameInc = 0.0f;
 				if (newPosition < 0) newPosition = mSequenceTextures.size() - 1;
 				if (newPosition > mSequenceTextures.size() - 1) newPosition = 0;
 			}
@@ -532,6 +535,7 @@ namespace VideoDromm {
 				if (mSyncToBeat) {
 					//newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
 					// TODO newPosition = (int)(((int)(mVDSettings->iBeat / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
+					newPosition = (int)(mVDAnimation->iBeatIndex % mSequenceTextures.size());
 				}
 				else {
 					newPosition = mPlayheadPosition;
@@ -594,12 +598,12 @@ namespace VideoDromm {
 		}
 	}
 	void TextureImageSequence::reverse() {
-		mSpeed *= -1;
+		mSpeed *= -1.0f;
 	}
-	int TextureImageSequence::getSpeed() {
+	float TextureImageSequence::getSpeed() {
 		return mSpeed;
 	}
-	void TextureImageSequence::setSpeed(int speed) {
+	void TextureImageSequence::setSpeed(float speed) {
 		mSpeed = speed;
 	}
 	bool TextureImageSequence::isLoadingFromDisk() {

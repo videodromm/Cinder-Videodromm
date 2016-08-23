@@ -108,8 +108,8 @@ namespace VideoDromm
 		void							toggleLoadingFromDisk(unsigned int aTextureIndex);
 		void							syncToBeat(unsigned int aTextureIndex);
 		void							reverse(unsigned int aTextureIndex);
-		int								getSpeed(unsigned int aTextureIndex);
-		void							setSpeed(unsigned int aTextureIndex, int aSpeed);
+		float							getSpeed(unsigned int aTextureIndex);
+		void							setSpeed(unsigned int aTextureIndex, float aSpeed);
 		int								getPlayheadPosition(unsigned int aTextureIndex);
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition);
 		int								getMaxFrame(unsigned int aTextureIndex);
