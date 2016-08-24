@@ -681,7 +681,7 @@ void VDRouter::wsConnect() {
 void VDRouter::wsClientConnect()
 {
 	stringstream s;
-	s << "ws://" << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
+	s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
 	mClient.connect(s.str());
 }
 void VDRouter::wsClientDisconnect()
@@ -708,7 +708,7 @@ void VDRouter::wsWrite(string msg)
 void VDRouter::sendJSON(string params) {
 	wsWrite(params);
 	if (mVDSettings->mOSCEnabled) {
-
+		// TODO send OSC
 	}
 }
 void VDRouter::colorWrite()

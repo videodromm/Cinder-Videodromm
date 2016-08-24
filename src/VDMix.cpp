@@ -7,7 +7,7 @@ using namespace ci;
 using namespace ci::app;
 
 namespace VideoDromm {
-	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation)
+	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter)
 		: mFbosPath("fbos.xml")
 		, mName("")
 		, mFlipV(false)
@@ -19,6 +19,9 @@ namespace VideoDromm {
 		mVDSettings = aVDSettings;
 		// Animation
 		mVDAnimation = aVDAnimation;
+		// Router
+		mVDRouter = aVDRouter;
+
 		mLeftFboIndex = mRightFboIndex = 0;
 
 		// initialize the shaders list 
@@ -420,7 +423,7 @@ namespace VideoDromm {
 	VDMix::~VDMix(void) {
 
 	}
-	VDMixList VDMix::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, const DataSourceRef &source) {
+	VDMixList VDMix::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const DataSourceRef &source) {
 		XmlTree			doc;
 		VDMixList	VDMixlist;
 
@@ -445,7 +448,7 @@ namespace VideoDromm {
 			for (XmlTree::ConstIter child = mixXml.begin("mix"); child != mixXml.end(); ++child) {
 				// add the mix to the list
 				CI_LOG_V("Add Mix " + child->getValue());
-				VDMixRef t(new VDMix(aVDSettings, aVDAnimation));
+				VDMixRef t(new VDMix(aVDSettings, aVDAnimation, aVDRouter));
 				t->fromXml(*child);
 				VDMixlist.push_back(t);
 			}
@@ -704,6 +707,11 @@ namespace VideoDromm {
 		if (aFboShaderIndex > mShaderList.size() - 1) aFboShaderIndex = mShaderList.size() - 1;
 		mFboList[aFboIndex]->setShaderIndex(aFboShaderIndex);
 		mFboList[aFboIndex]->setFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
+		// route message
+		stringstream aParams;
+		aParams << "{\"params\" :[{\"name\" : " << aFboIndex + 100 << ",\"value\" : " << aFboShaderIndex << "}]}"; // TODO update all to this way
+		string strAParams = aParams.str();
+		mVDRouter->sendJSON(strAParams);
 	}
 	unsigned int VDMix::getFboFragmentShaderIndex(unsigned int aFboIndex) {
 		unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();

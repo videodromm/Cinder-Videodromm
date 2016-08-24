@@ -13,6 +13,8 @@
 #include "VDSettings.h"
 // Animation
 #include "VDAnimation.h"
+// Message router
+#include "VDRouter.h"
 // Fbos
 #include "VDFbo.h"
 
@@ -32,9 +34,9 @@ namespace VideoDromm
 
 	class VDMix : public std::enable_shared_from_this < VDMix > {
 	public:
-		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation);
+		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter);
 		~VDMix(void);
-		static VDMixRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation) { return std::make_shared<VDMix>(aVDSettings, aVDAnimation); }
+		static VDMixRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter) { return std::make_shared<VDMix>(aVDSettings, aVDAnimation, aVDRouter); }
 		void							update();
 		//! returns a shared pointer to this fbo
 		VDMixRef						getPtr() { return shared_from_this(); }
@@ -57,7 +59,7 @@ namespace VideoDromm
 		//!
 		XmlTree							toXml() const;
 		//! read a xml file and pass back a vector of VDMixs
-		static VDMixList				readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, const ci::DataSourceRef &source);
+		static VDMixList				readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const ci::DataSourceRef &source);
 		//! write a xml file
 		static void						writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target);
 		// move, rotate, zoom methods
@@ -166,6 +168,8 @@ namespace VideoDromm
 		VDAnimationRef					mVDAnimation;
 		// Settings
 		VDSettingsRef					mVDSettings;
+		// Router
+		VDRouterRef						mVDRouter;
 		// init
 		bool							initFboList();
 		//! Fbo

@@ -65,14 +65,14 @@ void VDUITextures::Run(const char* title) {
 			/*sprintf(buf, "WS##s%d", i);
 			if (ui::Button(buf))
 			{
-			sprintf_s(buf, "IMG=%d.jpg", i);
+			sprintf(buf, "IMG=%d.jpg", i);
 			//mBatchass->wsWrite(buf);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Send texture file name via WebSockets");
 			*/
 
 			if (mVDMix->isSequence(t) || mVDMix->isMovie(t)) {
-				sprintf_s(buf, "p##s%d", t);
+				sprintf(buf, "p##s%d", t);
 				if (ui::Button(buf))
 				{
 					mVDMix->togglePlayPause(t);
@@ -81,7 +81,7 @@ void VDUITextures::Run(const char* title) {
 			}
 			if (mVDMix->isSequence(t)) {
 				ui::SameLine();
-				sprintf_s(buf, "b##s%d", t);
+				sprintf(buf, "b##s%d", t);
 				if (ui::Button(buf))
 				{
 					mVDMix->syncToBeat(t);
@@ -89,7 +89,7 @@ void VDUITextures::Run(const char* title) {
 				if (ui::IsItemHovered()) ui::SetTooltip("Sync to beat");
 
 				ui::SameLine();
-				sprintf_s(buf, "r##s%d", t);
+				sprintf(buf, "r##s%d", t);
 				if (ui::Button(buf))
 				{
 					mVDMix->reverse(t);
@@ -98,7 +98,7 @@ void VDUITextures::Run(const char* title) {
 
 				if (mVDMix->isLoadingFromDisk(t)) {
 					ui::SameLine();
-					sprintf_s(buf, "l##s%d", t);
+					sprintf(buf, "l##s%d", t);
 					if (ui::Button(buf))
 					{
 						mVDMix->toggleLoadingFromDisk(t);
@@ -112,11 +112,6 @@ void VDUITextures::Run(const char* title) {
 				}
 
 				playheadPositions[t] = mVDMix->getPlayheadPosition(t);
-				//sprintf_s(buf, "p%d##s%d", playheadPositions[t], t);
-				//if (ui::Button(buf))
-				//{
-				//	mVDMix->setPlayheadPosition(t, playheadPositions[t]);
-				//}
 
 				if (ui::SliderInt("scrub", &playheadPositions[t], 0, mVDMix->getMaxFrame(t)))
 				{

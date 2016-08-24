@@ -103,7 +103,7 @@ namespace VideoDromm
 		bool							getLockBounds();
 		void							toggleLockBounds();
 		// sequence and movie
-		virtual void					togglePlayPause();
+		void							togglePlayPause();
 		// sequence only
 		virtual void					toggleLoadingFromDisk();
 		virtual bool					isLoadingFromDisk();
@@ -136,6 +136,7 @@ namespace VideoDromm
 		int								mXLeft, mYTop, mXRight, mYBottom, mOriginalWidth, mOriginalHeight;
 		bool							mBoundsLocked;
 		bool							mSyncToBeat;
+		bool							mPlaying;
 	private:
 	};
 	/*
@@ -186,7 +187,6 @@ namespace VideoDromm
 
 		//! returns a shared pointer 
 		TextureImageSequenceRef	getPtr() { return std::static_pointer_cast<TextureImageSequence>(shared_from_this()); }
-		void						togglePlayPause() override;
 		void						stopSequence();
 		void						toggleLoadingFromDisk() override;
 		bool						isLoadingFromDisk() override;
@@ -222,7 +222,6 @@ namespace VideoDromm
 		int							mPlayheadPosition;
 		bool						mLoadingPaused;
 		bool						mLoadingFilesComplete;
-		bool						mPlaying;
 		float						mSpeed;
 		vector<ci::gl::TextureRef>	mSequenceTextures;
 	};
@@ -251,7 +250,6 @@ namespace VideoDromm
 
 		//! returns a shared pointer 
 		TextureMovieRef	getPtr() { return std::static_pointer_cast<TextureMovie>(shared_from_this()); }
-		void					togglePlayPause() override;
 	protected:
 		//! 
 		virtual ci::gl::Texture2dRef	getTexture() override;

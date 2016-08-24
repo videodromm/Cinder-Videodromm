@@ -13,6 +13,10 @@ VDUIAnimation::~VDUIAnimation() {
 }
 
 void VDUIAnimation::Run(const char* title) {
+	int ctrl;
+	stringstream aParams;
+	aParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
+
 	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH));
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2));
 	ui::Begin("Animation", NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
@@ -30,33 +34,49 @@ void VDUIAnimation::Run(const char* title) {
 			hue++;
 			ui::SameLine();
 
-			(mVDAnimation->controlValues[45]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			ctrl = 45;
+			(mVDAnimation->controlValues[ctrl]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			if (ui::Button("glitch")) { mVDAnimation->controlValues[45] = !mVDAnimation->controlValues[45]; }
+			if (ui::Button("glitch")) {
+				mVDAnimation->controlValues[ctrl] = !mVDAnimation->controlValues[ctrl];
+				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
+			}
 			ui::PopStyleColor(3);
 			hue++;
 			ui::SameLine();
 
-			(mVDAnimation->controlValues[46]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			ctrl = 46;
+			(mVDAnimation->controlValues[ctrl]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			if (ui::Button("toggle")) { mVDAnimation->controlValues[46] = !mVDAnimation->controlValues[46]; }
+			if (ui::Button("toggle")) {
+				mVDAnimation->controlValues[ctrl] = !mVDAnimation->controlValues[ctrl];
+				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
+			}
 			ui::PopStyleColor(3);
 			hue++;
 
+			ctrl = 47;
 			(mVDAnimation->controlValues[47]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			if (ui::Button("vignette")) { mVDAnimation->controlValues[47] = !mVDAnimation->controlValues[47]; }
+			if (ui::Button("vignette")) {
+				mVDAnimation->controlValues[ctrl] = !mVDAnimation->controlValues[ctrl];
+				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
+			}
 			ui::PopStyleColor(3);
 			hue++;
 			ui::SameLine();
 
+			ctrl = 48;
 			(mVDAnimation->controlValues[48]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			if (ui::Button("invert")) { mVDAnimation->controlValues[48] = !mVDAnimation->controlValues[48]; }
+			if (ui::Button("invert")) {
+				mVDAnimation->controlValues[ctrl] = !mVDAnimation->controlValues[ctrl];
+				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
+			}
 			ui::PopStyleColor(3);
 			hue++;
 			ui::SameLine();
@@ -85,20 +105,17 @@ void VDUIAnimation::Run(const char* title) {
 		if (ui::CollapsingHeader("Animation", NULL, true, true))
 		{
 			//ui::SliderInt("UI Zoom", &mVDSettings->mUIZoom, 1, 8);
-			int ctrl;
-			stringstream aParams;
-			aParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
 
 			// iChromatic
 			ctrl = 10;
-			if (ui::Button("a##chromatic")) { 
-				mVDAnimation->lockChromatic(); 
+			if (ui::Button("a##chromatic")) {
+				mVDAnimation->lockChromatic();
 			}
 			ui::SameLine();
 			if (ui::Button("t##chromatic")) { mVDAnimation->tempoChromatic(); }
 			ui::SameLine();
-			if (ui::Button("x##chromatic")) { 
-				mVDAnimation->resetChromatic(); 
+			if (ui::Button("x##chromatic")) {
+				mVDAnimation->resetChromatic();
 			}
 			ui::SameLine();
 			if (ui::SliderFloat("chromatic/min/max", &mVDAnimation->controlValues[ctrl], mVDAnimation->minChromatic, mVDAnimation->maxChromatic))
@@ -225,13 +242,7 @@ void VDUIAnimation::Run(const char* title) {
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
 			}
 
-			aParams << "]}";
-			string strAParams = aParams.str();
-			if (strAParams.length() > 60)
-			{
-				mVDRouter->sendJSON(strAParams);
 
-			}
 		}
 
 
@@ -250,6 +261,13 @@ void VDUIAnimation::Run(const char* title) {
 
 		}
 		ui::PopItemWidth();
+		// finish message and send if a value changed
+		aParams << "]}";
+		string strAParams = aParams.str();
+		if (strAParams.length() > 60)
+		{
+			mVDRouter->sendJSON(strAParams);
+		}
 	}
 	ui::End();
 }

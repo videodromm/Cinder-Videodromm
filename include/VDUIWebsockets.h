@@ -15,6 +15,8 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+#define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
+
 namespace VideoDromm
 {
 	// stores the pointer to the VDUIWebsockets instance

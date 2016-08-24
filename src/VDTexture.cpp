@@ -25,6 +25,7 @@ namespace VideoDromm {
 		mAreaHeight = mHeight;
 		mFolder = "";
 		mSyncToBeat = false;
+		mPlaying = true;
 		if (mName.length() == 0) {
 			mName = mPath;
 		}
@@ -200,9 +201,12 @@ namespace VideoDromm {
 	bool VDTexture::isLoadingFromDisk() {
 		return false;
 	}
-	/*void VDTexture::togglePlayPause() {
-		
-	}*/
+	// play/pause (sequence/movie)
+	void VDTexture::togglePlayPause() {
+
+		mPlaying = !mPlaying;
+	}
+	
 	// sync to beat
 	void VDTexture::syncToBeat() {
 
@@ -568,12 +572,6 @@ namespace VideoDromm {
 		return mTexture;
 
 	}
-	// play/pause sequence
-	void TextureImageSequence::togglePlayPause() {
-
-		mPlaying = !mPlaying;
-	}
-
 
 	// Stops playback and resets the playhead to zero
 	void TextureImageSequence::stopSequence() {
@@ -674,18 +672,16 @@ namespace VideoDromm {
 		}
 
 	}
-	// play/pause movie
-	void TextureMovie::togglePlayPause() {
 
-		if (mMovie->isPlaying()) {
-			mMovie->stop();
-		}
-		else {
-			mMovie->play();
-		}
-	}
 	ci::gl::Texture2dRef TextureMovie::getTexture() {
 		if (mMovie) {
+			// toggle play if necessary
+			if (mMovie->isPlaying()) {
+				if (!mPlaying) mMovie->stop();
+			}
+			else {
+				if (mPlaying) mMovie->play();
+			}
 			mTexture = mMovie->getTexture();
 			// if codec is not recognized the texture is empty, return an initialized texture
 			if (!mTexture) {

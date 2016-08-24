@@ -273,8 +273,9 @@ namespace VideoDromm {
 		bool						mIsRouter;
 		bool						mAreWebSocketsEnabledAtStartup;
 		bool						mIsWebSocketsServer;
-		uint16_t					mWebSocketsPort;
+		string						mWebSocketsProtocol;
 		string						mWebSocketsHost;
+		uint16_t					mWebSocketsPort;
 		std::string					mWebSocketsMsg;
 		bool						mWebSocketsNewMsg;
 		// abp

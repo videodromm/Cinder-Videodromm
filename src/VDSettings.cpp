@@ -151,8 +151,12 @@ bool VDSettings::save()
 	IsWebSocketsServer.setAttribute("value", toString(mIsWebSocketsServer));
 	settings.push_back(IsWebSocketsServer);
 
+	XmlTree WebSocketsProtocol("WebSocketsProtocol", "");
+	WebSocketsProtocol.setAttribute("value", mWebSocketsProtocol);
+	settings.push_back(WebSocketsProtocol);
+
 	XmlTree WebSocketsHost("WebSocketsHost", "");
-	WebSocketsHost.setAttribute("value", toString(mWebSocketsHost));
+	WebSocketsHost.setAttribute("value", mWebSocketsHost);
 	settings.push_back(WebSocketsHost);
 
 	XmlTree WebSocketsPort("WebSocketsPort", "");
@@ -286,6 +290,10 @@ bool VDSettings::restore()
 			if (settings.hasChild("IsWebSocketsServer")) {
 				XmlTree IsWebSocketsServer = settings.getChild("IsWebSocketsServer");
 				mIsWebSocketsServer = IsWebSocketsServer.getAttributeValue<bool>("value");
+			}
+			if (settings.hasChild("WebSocketsProtocol")) {
+				XmlTree WebSocketsProtocol = settings.getChild("WebSocketsProtocol");
+				mWebSocketsProtocol = WebSocketsProtocol.getAttributeValue<string>("value");
 			}
 			if (settings.hasChild("WebSocketsHost")) {
 				XmlTree WebSocketsHost = settings.getChild("WebSocketsHost");
@@ -591,6 +599,7 @@ void VDSettings::reset()
 	mIsRouter = false;
 	mAreWebSocketsEnabledAtStartup = false;
 	mIsWebSocketsServer = false;
+	mWebSocketsProtocol = "ws://";
 	mWebSocketsHost = "localhost";
 	mWebSocketsPort = 9002;
 	// Blendmode 
