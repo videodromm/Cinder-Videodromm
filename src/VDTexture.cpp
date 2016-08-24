@@ -200,8 +200,9 @@ namespace VideoDromm {
 	bool VDTexture::isLoadingFromDisk() {
 		return false;
 	}
-	void VDTexture::togglePlayPause() {
-	}
+	/*void VDTexture::togglePlayPause() {
+		
+	}*/
 	// sync to beat
 	void VDTexture::syncToBeat() {
 

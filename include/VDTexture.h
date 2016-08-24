@@ -135,8 +135,8 @@ namespace VideoDromm
 		Surface							mProcessedSurface;
 		int								mXLeft, mYTop, mXRight, mYBottom, mOriginalWidth, mOriginalHeight;
 		bool							mBoundsLocked;
+		bool							mSyncToBeat;
 	private:
-
 	};
 	/*
 	** ---- TextureImage ------------------------------------------------
@@ -224,7 +224,6 @@ namespace VideoDromm
 		bool						mLoadingFilesComplete;
 		bool						mPlaying;
 		float						mSpeed;
-		bool						mSyncToBeat;
 		vector<ci::gl::TextureRef>	mSequenceTextures;
 	};
 
