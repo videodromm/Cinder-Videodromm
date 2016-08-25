@@ -75,6 +75,9 @@ void VDUI::Run(const char* title, unsigned int fps) {
 #pragma region Info
 		ui::Text("fp %dx%d f %dx%d r %dx%d t %d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, mVDAnimation->iTempoTime);
 		ui::Text("Msg: %s", mVDSettings->mMsg.c_str());
+		ui::Text("WS Msg: %s", mVDSettings->mWebSocketsMsg.c_str());
+		ui::Text("OSC Msg: %s", mVDSettings->mOSCMsg.c_str());
+		
 		ui::Text("Target FPS %.2f ", mVDSession->getTargetFps());
 		ui::SameLine();
 

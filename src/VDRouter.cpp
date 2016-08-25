@@ -59,6 +59,8 @@ void VDRouter::setupOSCReceiver() {
 	mOSCReceiver->setListener("/layer1/clip*", myFuncForLayerClips);*/
 	mOSCReceiver->setListener("/cc",
 		[&](const osc::Message &msg){
+		mVDSettings->mOSCMsg = "/cc";
+		mVDSettings->mOSCNewMsg = true;
 		mVDAnimation->controlValues[msg[0].int32()] = msg[1].flt();
 		updateParams(msg[0].int32(), msg[1].flt());
 	});
@@ -125,6 +127,9 @@ void VDRouter::setupOSCReceiver() {
 	});
 	mOSCReceiver->setListener("/live/play",
 		[&](const osc::Message &msg){
+		mVDSettings->mOSCMsg = "/live/play";
+		mVDSettings->mOSCNewMsg = true;
+
 		mVDAnimation->setAutoBeatAnimation(false);
 		osc::Message m;
 		m.setAddress("/tracklist");
@@ -195,6 +200,9 @@ void VDRouter::setupOSCReceiver() {
 	// json
 	mOSCReceiver->setListener("/json/params",
 		[&](const osc::Message &msg){
+		mVDSettings->mOSCMsg = "/json/params:" + msg[0].string();
+		mVDSettings->mOSCNewMsg = true;
+
 		parseMessage(msg[0].string());
 
 	});
