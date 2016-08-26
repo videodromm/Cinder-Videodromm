@@ -494,10 +494,10 @@ void VDRouter::parseMessage(string msg) {
 						mVDAnimation->controlValues[name] = value;
 					}
 				}
-				JsonTree jsonSelectShader = json.getChild("selectShader");
+				/* NOT IMPLEMENTED and EXCEPTION JsonTree jsonSelectShader = json.getChild("selectShader");
 				for (JsonTree::ConstIter jsonElement = jsonSelectShader.begin(); jsonElement != jsonSelectShader.end(); ++jsonElement)
 				{
-				}
+				}*/
 			}
 			catch (cinder::JsonTree::Exception exception) {
 				mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
