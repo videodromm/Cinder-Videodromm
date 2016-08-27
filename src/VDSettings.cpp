@@ -227,10 +227,6 @@ bool VDSettings::restore()
 				XmlTree FboWidth = settings.getChild("FboWidth");
 				mFboWidth = FboWidth.getAttributeValue<int>("value");
 			}
-			if (settings.hasChild("OSCEnabled")) {
-				XmlTree OSCEnabled = settings.getChild("OSCEnabled");
-				mOSCEnabled = OSCEnabled.getAttributeValue<bool>("value");
-			}
 			if (settings.hasChild("FboHeight")) {
 				XmlTree FboHeight = settings.getChild("FboHeight");
 				mFboHeight = FboHeight.getAttributeValue<int>("value");
@@ -583,7 +579,7 @@ void VDSettings::reset()
 	mMIDIEnabled = true;
 
 	// OSC
-	mOSCEnabled = true;
+	mOSCEnabled = false;
 	mOSCDestinationHost = "127.0.0.1";
 	mOSCDestinationPort = 7001;
 	mOSCDestinationHost2 = "127.0.0.1";
