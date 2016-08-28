@@ -16,7 +16,7 @@ JsonBag::JsonBag()
 {
 	// needs to call load() to init
 }
-
+	#if defined( CINDER_MSW )
 void JsonBag::load(ci::fs::path aJsonFilePath)
 {
 	mJsonFilePath = aJsonFilePath;
@@ -65,7 +65,7 @@ void JsonBag::save(ci::fs::path aJsonFilePath)// const
 	doc.pushBack( params );
 	doc.write( writeFile( mJsonFilePath ), JsonTree::WriteOptions() );
 }
-
+#endif
 
 void JsonBag::removeTarget( void *target )
 {
@@ -90,7 +90,7 @@ JsonBag* live::bag()
 	
 	return JsonBag::mInstance.get();
 }
-
+	#if defined( CINDER_MSW )
 template<>
 void Parameter<bool>::save( const std::string& name, ci::JsonTree* tree ) const
 {
@@ -239,3 +239,4 @@ void Parameter<ci::Color>::load( const std::string& name, ci::JsonTree::ConstIte
 	c.b = iter->getChild( "b" ).getValue<float>();
 	update( c );
 }
+#endif
