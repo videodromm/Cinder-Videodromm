@@ -396,7 +396,9 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		if (iarg0 == 13) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * 10;
 		// exposure
 		if (iarg0 == 14) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * mVDAnimation->maxExposure;
+			#if defined( CINDER_MSW )
 		wsWrite("{\"params\" :[{\"name\":" + toString( iarg0) + ",\"value\":" + toString(mVDAnimation->controlValues[iarg0]) + "}]}");
+#endif
 	}
 	// buttons
 	if (iarg0 > 20 && iarg0 < 29) {
@@ -553,9 +555,11 @@ void VDRouter::parseMessage(string msg) {
 
 					//mShaders->loadLiveShader(processedContent); // need uniforms declared
 					// route it to websockets clients
+						#if defined( CINDER_MSW )
 					if (mVDSettings->mIsRouter) {
 						wsWrite(msg);
 					}
+					#endif
 					// save processed file
 					fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
 					ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
@@ -578,18 +582,21 @@ void VDRouter::parseMessage(string msg) {
 			//mShaders->loadLiveShader(msg);
 			mVDSettings->mShaderToLoad = msg;
 			// route it to websockets clients
+				#if defined( CINDER_MSW )
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
+			#endif
 		}
 		else if (msg.substr(0, 7) == "#version") {
 			// fragment shader from live coding
 			//mShaders->loadLiveShader(msg);
 			// route it to websockets clients
+				#if defined( CINDER_MSW )
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
-
+#endif
 		}
 		else if (first == "/")
 		{
@@ -734,7 +741,9 @@ void VDRouter::wsWrite(string msg)
 }
 #endif
 void VDRouter::sendJSON(string params) {
+		#if defined( CINDER_MSW )
 	wsWrite(params);
+	#endif
 	if (mVDSettings->mOSCEnabled) {
 		// send OSC
 		if (mVDSettings->mIsOSCSender) {
