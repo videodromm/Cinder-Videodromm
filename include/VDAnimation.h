@@ -4,7 +4,7 @@
 #include "cinder/app/App.h"
 
 // json
-#include "cinder/json.h"
+#include "cinder/Json.h"
 // Settings
 #include "VDSettings.h"
 // Session
