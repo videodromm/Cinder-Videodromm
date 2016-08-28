@@ -35,9 +35,10 @@ namespace live {
 		void setOwner( ParamOwner *owner ) { mOwner = owner; }
 		
 		void * getTarget() const { return mVoidPtr; }
-		
+			#if defined( CINDER_MSW )
 		virtual void save( const std::string& name, ci::JsonTree* tree ) const = 0;
 		virtual void load( const std::string& name, ci::JsonTree::ConstIter& iter ) = 0;
+		#endif
 	private:
 		ParamOwner*	mOwner;
 		void*		mVoidPtr;
@@ -80,10 +81,10 @@ namespace live {
 				mUpdateFn();
 			}
 		}
-		
+			#if defined( CINDER_MSW )
 		void save( const std::string& name, ci::JsonTree* tree ) const override;
 		void load( const std::string& name, ci::JsonTree::ConstIter& iter ) override;
-	
+	#endif
 		T						mValue;
 		std::function<void()>	mUpdateFn;
 		friend class JsonBag;
@@ -105,9 +106,10 @@ namespace live {
 			param->setUpdateFn( updateFn );
 			bag->mItems.emplace( key, param );
 		}
-		
+			#if defined( CINDER_MSW )
 		void save(ci::fs::path aJsonFilePath) ;//const
 		void load(ci::fs::path aJsonFilePath);
+		#endif
 	private:	
 		JsonBag();
 		void removeTarget( void *target ) override;
