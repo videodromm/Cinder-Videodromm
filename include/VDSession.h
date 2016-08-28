@@ -4,7 +4,7 @@
 #include "cinder/gl/gl.h"
 #include "cinder/gl/GlslProg.h"
 // json
-#include "cinder/json.h"
+#include "cinder/Json.h"
 // Settings
 #include "VDSettings.h"
 // Logger
