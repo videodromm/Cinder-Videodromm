@@ -87,8 +87,9 @@ namespace VideoDromm
 		void						wsConnect();
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
+		#endif
 		void						colorWrite();
-	#endif
+	
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
