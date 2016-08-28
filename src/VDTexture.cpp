@@ -948,6 +948,7 @@ namespace VideoDromm {
 		if (!initialized) {
 			CI_LOG_V("TextureAudio::getTexture() init");
 			auto ctx = audio::Context::master();
+			#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 			if (mVDAnimation->mUseLineIn) {
 				// linein
 				CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed so put UseLineIn to false in the textures.xml file");
@@ -959,6 +960,7 @@ namespace VideoDromm {
 				mLineIn >> mMonitorLineInSpectralNode;
 				mLineIn->enable();
 			}
+			#endif
 			// also initialize wave monitor
 			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(2048).windowSize(1024);
 			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
@@ -966,14 +968,16 @@ namespace VideoDromm {
 			ctx->enable();
 			initialized = true;
 		}
-
+#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		if (mVDAnimation->mUseLineIn) {
 			mMagSpectrum = mMonitorLineInSpectralNode->getMagSpectrum();
 		}
 		else {
+			#endif
 			if (mSamplePlayerNode) mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+			#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		}
-
+#endif
 		if (!mMagSpectrum.empty()) {
 
 			unsigned char signal[kBands];
