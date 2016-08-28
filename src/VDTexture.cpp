@@ -619,6 +619,7 @@ namespace VideoDromm {
 	/*
 	** ---- TextureMovie ------------------------------------------------
 	*/
+	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	TextureMovie::TextureMovie() {
 		mType = MOVIE;
 
@@ -646,6 +647,8 @@ namespace VideoDromm {
 		xml.setAttribute("topdown", mTopDown);
 		return xml;
 	}
+	#endif
+	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	void TextureMovie::loadFromFullPath(string aPath)
 	{
 		try {
@@ -692,7 +695,7 @@ namespace VideoDromm {
 	}
 	TextureMovie::~TextureMovie(void) {
 	}
-
+#endif
 	/*
 	** ---- TextureCamera ------------------------------------------------
 	*/
@@ -756,6 +759,7 @@ namespace VideoDromm {
 	/*
 	** ---- TextureShared ------------------------------------------------
 	*/
+	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	TextureShared::TextureShared() {
 		mType = SHARED;
 #if defined( CINDER_MSW )
@@ -862,7 +866,7 @@ namespace VideoDromm {
 #endif
 
 	}
-
+#endif
 	/*
 	** ---- TextureAudio ------------------------------------------------
 	*/
