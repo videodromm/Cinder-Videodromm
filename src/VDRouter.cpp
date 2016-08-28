@@ -24,10 +24,12 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 		}
 	}
 	// WebSockets
+		#if defined( CINDER_MSW )
 	clientConnected = false;
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
 	mPingTime = getElapsedSeconds();
 	if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
+	#endif
 }
 void VDRouter::setupOSCSender() {
 	// OSC sender with broadcast
@@ -452,7 +454,7 @@ void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float
 	updateParams(iarg0, farg1);
 	sendOSCFloatMessage(controlType, iarg0, farg1, farg2);
 }
-
+	#if defined( CINDER_MSW )
 void VDRouter::wsPing() {
 	if (clientConnected) {
 		if (!mVDSettings->mIsWebSocketsServer) {
@@ -460,6 +462,7 @@ void VDRouter::wsPing() {
 		}
 	}
 }
+#endif
 void VDRouter::parseMessage(string msg) {
 	int left;
 	int index;
@@ -625,6 +628,7 @@ void VDRouter::parseMessage(string msg) {
 		}
 	}
 }
+	#if defined( CINDER_MSW )
 void VDRouter::wsConnect() {
 	// either a client or a server
 	if (mVDSettings->mIsWebSocketsServer) {
@@ -728,6 +732,7 @@ void VDRouter::wsWrite(string msg)
 		}
 	}
 }
+#endif
 void VDRouter::sendJSON(string params) {
 	wsWrite(params);
 	if (mVDSettings->mOSCEnabled) {
@@ -761,6 +766,7 @@ void VDRouter::colorWrite()
 
 void VDRouter::update() {
 	// websockets
+		#if defined( CINDER_MSW )
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
 	{
 		if (mVDSettings->mIsWebSocketsServer)
@@ -775,6 +781,7 @@ void VDRouter::update() {
 			}
 		}
 	}
+	#endif
 	/*
 	// check for mouse moved message
 	if(m.getAddress() == "/mouse/position"){
