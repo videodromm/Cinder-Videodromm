@@ -55,18 +55,14 @@ void VDUtils::createWarpFbos()
 
 int VDUtils::getWindowsResolution()
 {
-	CI_LOG_V("VDUtils::getWindowsResolution start");
 
 	mVDSettings->mDisplayCount = 0;
-	int w = 1024;// Display::getMainDisplay()->getWidth();
-	int h = 768;//Display::getMainDisplay()->getHeight();
-	CI_LOG_V("VDUtils::getWindowsResolution 1");
+	int w = Display::getMainDisplay()->getWidth();
+	int h = Display::getMainDisplay()->getHeight();
 
 	// Display sizes
 	if (mVDSettings->mAutoLayout)
 	{
-	CI_LOG_V("VDUtils::getWindowsResolution 2");
-
 		mVDSettings->mMainWindowWidth = w;
 		mVDSettings->mMainWindowHeight = h;
 		mVDSettings->mRenderX = mVDSettings->mMainWindowWidth;
@@ -81,8 +77,6 @@ int VDUtils::getWindowsResolution()
 	}
 	else
 	{
-	CI_LOG_V("VDUtils::getWindowsResolution 3");
-
 		for (auto display : Display::getDisplays())
 		{
 			CI_LOG_V("VDUtils Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
@@ -98,6 +92,7 @@ int VDUtils::getWindowsResolution()
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;
 	splitWarp(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+	
 	return w;
 }
 void VDUtils::splitWarp(int fboWidth, int fboHeight) {
