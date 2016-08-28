@@ -13,14 +13,14 @@
 // MIDI (only on windows for now)
 #if defined( CINDER_MSW )
 #include "CinderMidi.h"
+// WebSockets
+#include "WebSocketClient.h"
+#include "WebSocketServer.h"
 #endif
 // OSC
 #include "Osc.h"
 #define USE_UDP 1
 
-// WebSockets
-#include "WebSocketClient.h"
-#include "WebSocketServer.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -81,13 +81,14 @@ namespace VideoDromm
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
 		// WebSockets
+	#if defined( CINDER_MSW )
 		void						wsWrite(std::string msg);
 		void						wsWriteBinary(const void *data, int size);
 		void						wsConnect();
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
 		void						colorWrite();
-
+	#endif
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -115,6 +116,7 @@ namespace VideoDromm
 		// WebSockets
 		void						parseMessage(string msg);
 		// Web socket client
+	#if defined( CINDER_MSW )
 		void						wsClientDisconnect();
 		WebSocketClient				mClient;
 		void						wsClientConnect();
@@ -130,6 +132,7 @@ namespace VideoDromm
 		void						serverConnect();
 		void						serverDisconnect();
 		double						mPingTime;
+	#endif
 		// osc
 		ReceiverRef					mOSCReceiver;
 
