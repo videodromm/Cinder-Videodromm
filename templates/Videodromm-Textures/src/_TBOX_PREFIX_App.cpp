@@ -120,7 +120,7 @@ void _TBOX_PREFIX_App::fileDrop(FileDropEvent event)
 		for (auto tex : mTexs)
 		{
 			if (!found) {
-				if (tex->getType() == VDTexture::IMAGESEQUENCE) {
+				if (tex->getType() == VDTexture::SEQUENCE) {
 					tex->loadFromFullPath(mFile);
 					found = true;
 				}
