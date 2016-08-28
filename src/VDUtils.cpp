@@ -58,8 +58,8 @@ int VDUtils::getWindowsResolution()
 	CI_LOG_V("VDUtils::getWindowsResolution start");
 
 	mVDSettings->mDisplayCount = 0;
-	int w = Display::getMainDisplay()->getWidth();
-	int h = Display::getMainDisplay()->getHeight();
+	int w = 1024;// Display::getMainDisplay()->getWidth();
+	int h = 768;//Display::getMainDisplay()->getHeight();
 	CI_LOG_V("VDUtils::getWindowsResolution 1");
 
 	// Display sizes
