@@ -12,6 +12,7 @@ VDUIWebsockets::~VDUIWebsockets() {
 }
 
 void VDUIWebsockets::Run(const char* title) {
+	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH));
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2));
 
@@ -68,4 +69,5 @@ void VDUIWebsockets::Run(const char* title) {
 
 	}
 	ui::End();
+	#endif
 }
