@@ -397,8 +397,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	currentScene = 0;
 	// zoom
 	defaultZoom = 1.0f;
-	minZoom = 0.1;
-	maxZoom = 3.0;
+	minZoom = -3.1f;
+	maxZoom = 3.0f;
 	tZoom = autoZoom = false;
 	// exposure
 	defaultExposure = 1.0;

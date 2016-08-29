@@ -7,6 +7,9 @@ VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRoute
 	mVDMix = aVDMix;
 	mVDRouter = aVDRouter;
 	mVDAnimation = aVDAnimation;
+	// zoom
+	minZoom = -3.0f;
+	maxZoom = 3.0f;
 }
 VDUIAnimation::~VDUIAnimation() {
 
@@ -163,6 +166,8 @@ void VDUIAnimation::Run(const char* title) {
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
 			}
+			ui::DragFloat("minzoom", &mVDAnimation->minZoom, 0.1f, minZoom, maxZoom);
+			ui::DragFloat("maxzoom", &mVDAnimation->maxZoom, 0.1f, minZoom, maxZoom);
 			// z position
 			ctrl = 9;
 			if (ui::Button("a##zpos")) { mVDAnimation->lockZPos(); }

@@ -44,5 +44,8 @@ namespace VideoDromm
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];
+		// zoom
+		float						minZoom;
+		float						maxZoom;
 	};
 }
