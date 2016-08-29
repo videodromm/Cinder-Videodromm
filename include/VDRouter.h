@@ -48,6 +48,11 @@ namespace VideoDromm
 		string			portName;
 		bool			isConnected;
 	};
+	struct midiOutput
+	{
+		string			portName;
+		bool			isConnected;
+	};
 
 	class VDRouter {
 	public:
@@ -67,9 +72,15 @@ namespace VideoDromm
 		int							getMidiInPortsCount() { return mMidiInputs.size(); };
 		string						getMidiInPortName(int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
 		bool						isMidiInConnected(int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
+		int							getMidiOutPortsCount() { return mMidiOutputs.size(); };
+		string						getMidiOutPortName(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].portName : "No midi out ports"; };
+		bool						isMidiOutConnected(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].isConnected : false; };
+
 #endif
 		void						openMidiInPort(int i);
 		void						closeMidiInPort(int i);
+		void						openMidiOutPort(int i);
+		void						closeMidiOutPort(int i);
 		// OSC
 		void						setupOSCSender();
 		void						setupOSCReceiver();
@@ -106,6 +117,9 @@ namespace VideoDromm
 		midi::MidiInput				mMidiIn2;
 		midi::MidiInput				mMidiIn3;
 		void						midiListener(midi::MidiMessage msg);
+		// midi output
+		midi::MidiOutput			mMidiOut;
+		vector<midiOutput>			mMidiOutputs;
 #endif
 		string						midiControlType;
 		int							midiControl;

@@ -217,6 +217,7 @@ void VDRouter::shutdown() {
 	mMidiIn0.ClosePort();
 	mMidiIn1.ClosePort();
 	mMidiIn2.ClosePort();
+	mMidiOut.closePort();
 #endif
 }
 
@@ -241,22 +242,46 @@ void VDRouter::midiSetup() {
 				if (mVDSettings->mMIDIOpenAllInputPorts) {
 					openMidiInPort(i);
 					mMidiInputs[i].isConnected = true;
-					ss << "Opening MIDI port " << i << " " << mMidiInputs[i].portName;
+					ss << "Opening MIDI in port " << i << " " << mMidiInputs[i].portName;
 				}
 				else {
 					mMidiInputs[i].isConnected = false;
-					ss << "Available MIDI port " << i << " " << mMidiIn0.GetPortName(i);
+					ss << "Available MIDI in port " << i << " " << mMidiIn0.GetPortName(i);
 				}
 			}
 		}
 	}
 	else {
-		ss << "No MIDI Ports found!!!!" << std::endl;
+		ss << "No MIDI in ports found!" << std::endl;
 	}
 	ss << std::endl;
 
-	mVDSettings->mWebSocketsNewMsg = true;
-	mVDSettings->mWebSocketsMsg = ss.str();
+	mVDSettings->mNewMsg = true;
+	mVDSettings->mMsg = ss.str();
+	// midi out
+	mMidiOut.getPortList();
+	if (mMidiOut.getNumPorts() > 0) {
+		for (int i = 0; i < mMidiOut.getNumPorts(); i++)
+		{
+			bool alreadyListed = false;
+			for (int j = 0; j < mMidiOutputs.size(); j++)
+			{
+				if (mMidiOutputs[j].portName == mMidiOut.getPortName(i)) alreadyListed = true;
+			}
+			if (!alreadyListed) {
+				midiOutput mOut;
+				mOut.portName = mMidiOut.getPortName(i);
+				mMidiOutputs.push_back(mOut);
+
+				mMidiOutputs[i].isConnected = false;
+				ss << "Available MIDI output port " << i << " " << mMidiOut.getPortName(i);
+
+			}
+		}
+	}
+	else {
+		ss << "No MIDI Out Ports found!!!!" << std::endl;
+	}
 	midiControlType = "none";
 	midiControl = midiPitch = midiVelocity = midiNormalizedValue = midiValue = midiChannel = 0;
 #endif
@@ -282,9 +307,9 @@ void VDRouter::openMidiInPort(int i) {
 			}
 		}
 		mMidiInputs[i].isConnected = true;
-		ss << "Opening MIDI port " << i << " " << mMidiInputs[i].portName << std::endl;
-		mVDSettings->mWebSocketsMsg = ss.str();
-		mVDSettings->mWebSocketsNewMsg = true;
+		ss << "Opening MIDI in port " << i << " " << mMidiInputs[i].portName << std::endl;
+		mVDSettings->mMsg = ss.str();
+		mVDSettings->mNewMsg = true;
 	}
 #endif
 }
@@ -305,6 +330,27 @@ void VDRouter::closeMidiInPort(int i) {
 	mMidiInputs[i].isConnected = false;
 #endif
 }
+void VDRouter::openMidiOutPort(int i) {
+#if defined( CINDER_MSW )
+	stringstream ss;
+	if (mMidiOut.openPort(i)) {
+		mMidiOutputs[i].isConnected = true;
+		ss << "Opening MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+	}
+	else {
+		ss << "Can't open MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+	}
+	mVDSettings->mMsg = ss.str();
+	mVDSettings->mNewMsg = true;
+#endif
+}
+void VDRouter::closeMidiOutPort(int i) {
+#if defined( CINDER_MSW )
+	mMidiOut.closePort();
+	mMidiOutputs[i].isConnected = false;
+#endif
+}
+
 #if defined( CINDER_MSW )
 void VDRouter::midiListener(midi::MidiMessage msg) {
 	stringstream ss;

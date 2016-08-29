@@ -116,7 +116,7 @@ namespace VideoDromm {
 		std::string					mOSCMsg;
 		bool						mOSCNewMsg;		// log to console
 		std::string					mMsg;
-		bool						newMsg;
+		bool						mNewMsg;
 		std::string					InfoMsg;
 		bool						mIsOSCSender;
 		// render windows

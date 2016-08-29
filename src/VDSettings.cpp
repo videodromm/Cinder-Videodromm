@@ -589,7 +589,7 @@ void VDSettings::reset()
 	mOSCNewMsg = false;
 	mMsg = "";
 	mWebSocketsMsg = "";
-	newMsg = false;
+	mNewMsg = false;
 	mWebSocketsNewMsg = false;
 	InfoMsg = "";
 	mIsOSCSender = false;
