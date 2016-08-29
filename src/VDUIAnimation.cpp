@@ -239,17 +239,14 @@ void VDUIAnimation::Run(const char* title) {
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
 			}
 			// grid
-			ctrl = 17;
+			/*ctrl = 17;
 			if (ui::Button("x##grid")) { mVDAnimation->controlValues[ctrl] = 0.0f; }
 			ui::SameLine();
 			if (ui::SliderFloat("grid", &mVDAnimation->controlValues[ctrl], 0.00f, 60.0f))
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
-			}
-
-
+			}*/
 		}
-
 
 		if (ui::CollapsingHeader("Camera", NULL, true, true))
 		{
