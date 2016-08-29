@@ -187,7 +187,7 @@ void VDConsole::ExecCommand(const char* command_line)
 			//if (firstDigit > -1) mVDSettings->mTempo = std::stoi(to.substr(firstDigit));
 		}
 	}
-	#if (defined(  CINDER_MSW) )
+#if (defined(  CINDER_MSW) )
 	else if (Stricmp(command_line, "WSCNX") == 0)
 	{
 		mVDRouter->wsConnect();
@@ -208,7 +208,7 @@ void VDConsole::ExecCommand(const char* command_line)
 			AddLog("Client %s \n", mVDSettings->mWebSocketsHost.c_str());
 		}
 	}
-	#endif
+#endif
 	else
 	{
 		AddLog("Unknown command: '%s'\n", command_line);

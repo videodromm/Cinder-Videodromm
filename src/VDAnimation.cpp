@@ -500,7 +500,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 }
 void VDAnimation::load() {
 	// Create json file if it doesn't already exist.
-		#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 	if (fs::exists(mJsonFilePath)) {
 		bag()->load(mJsonFilePath);
 	}
@@ -511,10 +511,10 @@ void VDAnimation::load() {
 #endif
 }
 void VDAnimation::save() {
-		#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 	bag()->save(mJsonFilePath);
 	saveAnimation();
-	#endif
+#endif
 }
 #pragma region utility
 void VDAnimation::tempoZoom()

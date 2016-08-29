@@ -18,17 +18,17 @@ namespace VideoDromm {
 	/* obsolete
 	struct Texta
 	{
-		char						name[32];
-		int							sequenceIndex;
-		bool						isSequence;
+	char						name[32];
+	int							sequenceIndex;
+	bool						isSequence;
 	};
 	//! struct for thumbs fbos only
 	struct FrameBuffa
 	{
-		string						name;
-		gl::FboRef					fbo;
-		bool						isFlipV;
-		bool						isFlipH;
+	string						name;
+	gl::FboRef					fbo;
+	bool						isFlipV;
+	bool						isFlipH;
 	};
 	struct ShadaFbo
 	{
@@ -64,10 +64,10 @@ namespace VideoDromm {
 	};
 	struct WarpFbo
 	{
-		ci::gl::FboRef				fbo;
-		int							textureIndex;
-		int							textureMode;	// 0 for input texture, 1 for shader
-		bool						active;
+	ci::gl::FboRef				fbo;
+	int							textureIndex;
+	int							textureMode;	// 0 for input texture, 1 for shader
+	bool						active;
 	};*/
 
 	class VDSettings
@@ -251,7 +251,7 @@ namespace VideoDromm {
 		//vector<WarpFbo>				mWarpFbos;
 		int							selectedWarp;
 		int							mWarpCount;
-		bool						mOptimizeUI; 
+		bool						mOptimizeUI;
 		bool						mSplitWarpH;
 		bool						mSplitWarpV;
 		int							mUIZoom;

@@ -56,12 +56,12 @@ namespace VideoDromm
 	// for profiling
 	typedef std::chrono::high_resolution_clock Clock;
 
-	class VDTexture: public std::enable_shared_from_this < VDTexture > {
+	class VDTexture : public std::enable_shared_from_this < VDTexture > {
 	public:
 		typedef enum { UNKNOWN, IMAGE, SEQUENCE, MOVIE, CAMERA, SHARED, AUDIO } TextureType;
 	public:
-		VDTexture( TextureType aType = UNKNOWN);
-		virtual ~VDTexture( void );
+		VDTexture(TextureType aType = UNKNOWN);
+		virtual ~VDTexture(void);
 
 		virtual ci::gl::Texture2dRef	getTexture();
 		//! returns a shared pointer to this input texture
@@ -199,7 +199,7 @@ namespace VideoDromm
 		void						reverse() override;
 
 		bool						isValid(){ return mFramesLoaded > 0; };
-		int							getMaxFrame() override;	
+		int							getMaxFrame() override;
 	protected:
 		//! 
 		virtual ci::gl::Texture2dRef	getTexture() override;
@@ -337,7 +337,7 @@ namespace VideoDromm
 	};
 #endif
 	/*
-	** ---- TextureAudio ------------------------------------------------ 
+	** ---- TextureAudio ------------------------------------------------
 	*/
 	typedef std::shared_ptr<class TextureAudio>	TextureAudioRef;
 

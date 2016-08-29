@@ -206,7 +206,7 @@ namespace VideoDromm {
 
 		mPlaying = !mPlaying;
 	}
-	
+
 	// sync to beat
 	void VDTexture::syncToBeat() {
 
@@ -236,34 +236,34 @@ namespace VideoDromm {
 		mAreaWidth = aWidth;
 		mAreaHeight = aHeight;
 	}
-	void VDTexture::setXLeft(int aXleft) { 
-		mXLeft = aXleft; 
+	void VDTexture::setXLeft(int aXleft) {
+		mXLeft = aXleft;
 		if (mBoundsLocked) {
-			mXRight = mXLeft+ mAreaWidth;
+			mXRight = mXLeft + mAreaWidth;
 		}
 	};
-	void VDTexture::setYTop(int aYTop) { 
-		mYTop = aYTop; 
+	void VDTexture::setYTop(int aYTop) {
+		mYTop = aYTop;
 		if (mBoundsLocked) {
 			mYBottom = mYTop + mAreaHeight;
 		}
 	};
 	void VDTexture::setXRight(int aXRight) {
-		mXRight = aXRight; 
+		mXRight = aXRight;
 		if (mBoundsLocked) {
 			mXLeft = mXRight - mAreaWidth;
 		}
 	};
-	void VDTexture::setYBottom(int aYBottom) { 
-		mYBottom = aYBottom; 
+	void VDTexture::setYBottom(int aYBottom) {
+		mYBottom = aYBottom;
 		if (mBoundsLocked) {
 			mYTop = mYBottom - mAreaHeight;
-		}	
+		}
 	}
 	bool VDTexture::isTopDown() {
 		return mTopDown;
 	}
-	void VDTexture::toggleTopDown() { 
+	void VDTexture::toggleTopDown() {
 		mTopDown = !mTopDown;
 	}
 	bool VDTexture::getLockBounds() {
@@ -332,7 +332,7 @@ namespace VideoDromm {
 		mName = mPath;
 		if (mPath.length() > 0) {
 			fs::path fullPath = getAssetPath("") / mFolder / mPath;
-			loadFromFullPath(fullPath.string());			
+			loadFromFullPath(fullPath.string());
 		}
 	}
 	void TextureImage::loadFromFullPath(string aPath) {
@@ -619,7 +619,7 @@ namespace VideoDromm {
 	/*
 	** ---- TextureMovie ------------------------------------------------
 	*/
-	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
+#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	TextureMovie::TextureMovie() {
 		mType = MOVIE;
 
@@ -647,8 +647,8 @@ namespace VideoDromm {
 		xml.setAttribute("topdown", mTopDown);
 		return xml;
 	}
-	#endif
-	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
+#endif
+#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	void TextureMovie::loadFromFullPath(string aPath)
 	{
 		try {
@@ -658,9 +658,9 @@ namespace VideoDromm {
 			mMovie = qtime::MovieGlHap::create(aPath);
 #endif
 #if defined( CINDER_MAC )
-			mMovie = qtime::MovieGl::create( aPath );
+			mMovie = qtime::MovieGl::create(aPath);
 #endif
-			if ( mName.length() > 0) mName = aPath;
+			if (mName.length() > 0) mName = aPath;
 			mLoopVideo = (mMovie->getDuration() < 30.0f);
 			mMovie->setLoop(mLoopVideo);
 			mMovie->play();
@@ -759,7 +759,7 @@ namespace VideoDromm {
 	/*
 	** ---- TextureShared ------------------------------------------------
 	*/
-	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
+#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	TextureShared::TextureShared() {
 		mType = SHARED;
 #if defined( CINDER_MSW )
@@ -911,7 +911,7 @@ namespace VideoDromm {
 		mName = (mVDAnimation->mUseLineIn) ? "line in" : "wave";
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt); 
+		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
 	}
 	void TextureAudio::loadFromFullPath(string aPath)
 	{
@@ -948,7 +948,7 @@ namespace VideoDromm {
 		if (!initialized) {
 			CI_LOG_V("TextureAudio::getTexture() init");
 			auto ctx = audio::Context::master();
-			#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
+#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 			if (mVDAnimation->mUseLineIn) {
 				// linein
 				CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed so put UseLineIn to false in the textures.xml file");
@@ -960,7 +960,7 @@ namespace VideoDromm {
 				mLineIn >> mMonitorLineInSpectralNode;
 				mLineIn->enable();
 			}
-			#endif
+#endif
 			// also initialize wave monitor
 			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(2048).windowSize(1024);
 			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
@@ -973,9 +973,9 @@ namespace VideoDromm {
 			mMagSpectrum = mMonitorLineInSpectralNode->getMagSpectrum();
 		}
 		else {
-			#endif
+#endif
 			if (mSamplePlayerNode) mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
-			#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
+#if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		}
 #endif
 		if (!mMagSpectrum.empty()) {

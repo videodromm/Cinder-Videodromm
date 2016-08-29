@@ -37,7 +37,7 @@ void VDUIOsc::Run(const char* title) {
 		}
 		else {
 			ui::Text("OSC disabled");
-			
+
 			if (mVDSettings->mIsOSCSender) {
 				if (ui::Button("sender->receiver"))
 				{

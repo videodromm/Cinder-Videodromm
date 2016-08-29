@@ -41,7 +41,7 @@ namespace VideoDromm
 	typedef std::shared_ptr<class osc::ReceiverTcp> ReceiverRef;
 #endif
 	// stores the pointer to the SenderUdp instance
-	typedef std::shared_ptr<class osc::SenderUdp> SenderRef; 
+	typedef std::shared_ptr<class osc::SenderUdp> SenderRef;
 
 	struct midiInput
 	{
@@ -63,12 +63,12 @@ namespace VideoDromm
 		void						updateParams(int iarg0, float farg1);
 		// MIDI
 		void						midiSetup();
-        #if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 		int							getMidiInPortsCount() { return mMidiInputs.size(); };
-		string						getMidiInPortName(int i) { return (i<mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
-		bool						isMidiInConnected(int i) { return (i<mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
-        #endif
-        void						openMidiInPort(int i);
+		string						getMidiInPortName(int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
+		bool						isMidiInConnected(int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
+#endif
+		void						openMidiInPort(int i);
 		void						closeMidiInPort(int i);
 		// OSC
 		void						setupOSCSender();
@@ -81,15 +81,15 @@ namespace VideoDromm
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
 		// WebSockets
-	#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 		void						wsWrite(std::string msg);
 		void						wsWriteBinary(const void *data, int size);
 		void						wsConnect();
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
-		#endif
+#endif
 		void						colorWrite();
-	
+
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -98,7 +98,7 @@ namespace VideoDromm
 		// Session
 		VDSessionRef				mVDSession;
 		// MIDI
-        #if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 		vector<midiInput>			mMidiInputs;
 		// midi inputs: couldn't make a vector
 		midi::MidiInput				mMidiIn0;
@@ -106,7 +106,7 @@ namespace VideoDromm
 		midi::MidiInput				mMidiIn2;
 		midi::MidiInput				mMidiIn3;
 		void						midiListener(midi::MidiMessage msg);
-        #endif
+#endif
 		string						midiControlType;
 		int							midiControl;
 		int							midiPitch;
@@ -117,7 +117,7 @@ namespace VideoDromm
 		// WebSockets
 		void						parseMessage(string msg);
 		// Web socket client
-	#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 		void						wsClientDisconnect();
 		WebSocketClient				mClient;
 		void						wsClientConnect();
@@ -133,7 +133,7 @@ namespace VideoDromm
 		void						serverConnect();
 		void						serverDisconnect();
 		double						mPingTime;
-	#endif
+#endif
 		// osc
 		ReceiverRef					mOSCReceiver;
 

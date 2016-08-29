@@ -369,11 +369,11 @@ namespace VideoDromm {
 							mTextureList.push_back(t);
 						}
 						else if (texturetype == "movie") {
-								#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 							TextureMovieRef t(new TextureMovie());
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
-							#endif
+#endif
 						}
 						else if (texturetype == "camera") {
 #if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
@@ -391,13 +391,13 @@ namespace VideoDromm {
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 #endif
-					}
+						}
 						else if (texturetype == "shared") {
-								#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 							TextureSharedRef t(new TextureShared());
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
-							#endif
+#endif
 						}
 						else if (texturetype == "audio") {
 							/* audio texture done in initTextures
@@ -418,12 +418,12 @@ namespace VideoDromm {
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 						}
+					}
 				}
 			}
 		}
-	}
 		return isFirstLaunch;
-}
+	}
 	VDMix::~VDMix(void) {
 
 	}
@@ -677,7 +677,7 @@ namespace VideoDromm {
 	}
 
 	void VDMix::loadMovie(string aFile, unsigned int aTextureIndex) {
-			#if defined( CINDER_MSW )
+#if defined( CINDER_MSW )
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		CI_LOG_V("loadMovie " + aFile + " at textureIndex " + toString(aTextureIndex));
 		// add texture xml
@@ -688,7 +688,7 @@ namespace VideoDromm {
 		TextureMovieRef t(new TextureMovie());
 		t->fromXml(textureXml);
 		mTextureList.push_back(t);
-		#endif
+#endif
 	}
 
 	void VDMix::loadImageFile(string aFile, unsigned int aTextureIndex, bool right) {

@@ -9,7 +9,7 @@ using namespace ci::app;
 namespace VideoDromm {
 	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList)//, mWidth(640), mHeight(480)
 		: mFilePathOrText("")
-		, mFboName("fbo")		
+		, mFboName("fbo")
 	{
 		CI_LOG_V("VDFbo constructor");
 		mVDSettings = aVDSettings;
@@ -112,8 +112,8 @@ namespace VideoDromm {
 			CI_LOG_V("unable to load fragment shader:" + string(e.what()));
 		}
 	}
-	void VDFbo::setShaderIndex(unsigned int aShaderIndex) { 
-		mShaderIndex = aShaderIndex; 
+	void VDFbo::setShaderIndex(unsigned int aShaderIndex) {
+		mShaderIndex = aShaderIndex;
 	}
 
 	std::string VDFbo::getLabel() {
@@ -122,7 +122,7 @@ namespace VideoDromm {
 	}
 
 	void VDFbo::setPosition(int x, int y) {
-		mPosX = ((float)x / (float)mVDSettings->mFboWidth ) - 0.5;
+		mPosX = ((float)x / (float)mVDSettings->mFboWidth) - 0.5;
 		mPosY = ((float)y / (float)mVDSettings->mFboHeight) - 0.5;
 	}
 	void VDFbo::setZoom(float aZoom) {

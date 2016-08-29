@@ -76,7 +76,7 @@ void VDSession::restore()
 	try {
 		JsonTree doc(loadFile(sessionPath));
 
-		JsonTree settings(doc.getChild("settings")); 
+		JsonTree settings(doc.getChild("settings"));
 		if (settings.hasChild("bpm")) mBpm = mOriginalBpm = settings.getValueForKey<float>("bpm");
 		if (settings.hasChild("beatsperbar")) iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
 		if (iBeatsPerBar < 1) iBeatsPerBar = 1;
@@ -104,7 +104,7 @@ void VDSession::restore()
 
 void VDSession::resetSomeParams() {
 	// parameters not exposed in json file
-	mFpb = 16; 
+	mFpb = 16;
 	mBpm = mOriginalBpm;
 	mTargetFps = mBpm / 60.0f * mFpb;
 }
@@ -121,7 +121,7 @@ void VDSession::reset()
 	mMovieFileName = "";
 	mImageSequencePath = "";
 	mMoviePlaybackDelay = 10;
-	mFadeInDelay= 1;
+	mFadeInDelay = 1;
 	mFadeOutDelay = 1;
 	mEndFrame = 20000000;
 	mText = "";

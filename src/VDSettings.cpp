@@ -35,9 +35,9 @@ bool VDSettings::save()
 	fs::path directory = getAppPath();
 	/*if (!fs::exists(directory)) {
 		if (!createDirectories(directory / settingsFileName)) {
-			return false;
+		return false;
 		}
-	}*/
+		}*/
 
 	fs::path path = directory / settingsFileName;
 
@@ -146,7 +146,7 @@ bool VDSettings::save()
 	XmlTree IsRouter("IsRouter", "");
 	IsRouter.setAttribute("value", toString(mIsRouter));
 	settings.push_back(IsRouter);
- 
+
 	XmlTree IsWebSocketsServer("IsWebSocketsServer", "");
 	IsWebSocketsServer.setAttribute("value", toString(mIsWebSocketsServer));
 	settings.push_back(IsWebSocketsServer);
@@ -323,7 +323,7 @@ bool VDSettings::restore()
 			/*if (settings.hasChild("UseLineIn")) {
 				XmlTree UseLineIn = settings.getChild("UseLineIn");
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
-			}*/
+				}*/
 			if (settings.hasChild("SplitWarpH")) {
 				XmlTree SplitWarpH = settings.getChild("SplitWarpH");
 				mSplitWarpH = SplitWarpH.getAttributeValue<bool>("value");
@@ -340,7 +340,7 @@ bool VDSettings::restore()
 				mMainWindowWidth = 1024;
 				mMainWindowHeight = 768;
 				mRenderWidth = 1024;
-				mRenderHeight =768;
+				mRenderHeight = 768;
 				mRenderX = 1024;
 				mRenderY = 0;
 				iResolution = vec3(mFboWidth, mFboHeight, 1.0);
@@ -428,7 +428,7 @@ void VDSettings::resetSomeParams() {
 	uiLargeH = (mPreviewFboHeight + uiMargin) * 8;
 	uiLargePreviewW = (mPreviewFboWidth + uiMargin) * 1.3;
 	uiLargePreviewH = (mPreviewHeight + uiMargin) * 2.6;
-	uiXPosCol1 = uiLargeW + uiMargin*2;
+	uiXPosCol1 = uiLargeW + uiMargin * 2;
 	uiXPosCol2 = uiXPosCol1 + uiMargin + uiElementWidth; //largeW + mVDSettings->uiMargin * 2;
 	uiXPosCol3 = uiXPosCol2 + uiMargin;
 	uiYPos;
@@ -491,7 +491,7 @@ void VDSettings::reset()
 	/*mData = new float[1024];
 	for (int i = 0; i < 1024; i++)
 	{
-		mData[i] = 0;
+	mData[i] = 0;
 	}*/
 
 

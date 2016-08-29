@@ -5,22 +5,22 @@ using namespace VideoDromm;
 VDShader::VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVextexShaderFilePath = aVextexShaderFilePath;
-    mValid = false;
+	mValid = false;
 	// shadertoy include
 	shaderInclude = loadString(loadAsset("shadertoy.inc"));
 
 	loadVertexStringFromFile(mVextexShaderFilePath);
-    loadFragmentStringFromFile(mFragmentShaderFilePath);
-    if (mValid) {
-        CI_LOG_V("VDShaders constructor success");
-        mVDSettings = aVDSettings;
-        mError = "";
-        gl::Fbo::Format format;
-        mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
-    }
-    else {
-        CI_LOG_V("VDShaders constructor failed, do not use");
-    }
+	loadFragmentStringFromFile(mFragmentShaderFilePath);
+	if (mValid) {
+		CI_LOG_V("VDShaders constructor success");
+		mVDSettings = aVDSettings;
+		mError = "";
+		gl::Fbo::Format format;
+		mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
+	}
+	else {
+		CI_LOG_V("VDShaders constructor failed, do not use");
+	}
 }
 void VDShader::loadVertexStringFromFile(string aFileName) {
 	// load vertex shader
@@ -46,9 +46,9 @@ void VDShader::loadVertexStringFromFile(string aFileName) {
 	}
 }
 void VDShader::loadFragmentStringFromFile(string aFileName) {
-    mValid = false;
+	mValid = false;
 	// load fragment shader
-    CI_LOG_V("loadFragmentStringFromFile, loading " + aFileName);
+	CI_LOG_V("loadFragmentStringFromFile, loading " + aFileName);
 	try
 	{
 		if (aFileName.length() == 0) {
@@ -68,7 +68,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 		std::size_t foundUniform = mFragmentShaderString.find("uniform");
 
 		if (foundUniform == std::string::npos) {
-            CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
+			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
 			mFragmentShaderString = shaderInclude + mFragmentShaderString;
 		}
 
@@ -76,7 +76,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);
 		mShader->setLabel(mFragFile.string());
 		CI_LOG_V(mFragFile.string() + " loaded and compiled");
-        mValid = true;
+		mValid = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
