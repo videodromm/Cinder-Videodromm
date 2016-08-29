@@ -69,11 +69,11 @@ void VDUIMidi::Run(const char* title) {
 
 				if (mVDRouter->isMidiOutConnected(i))
 				{
-					sprintf(buf, "Disconnect %d", i);
+					sprintf(buf, "Disconnect  %d", i);
 				}
 				else
 				{
-					sprintf(buf, "Connect %d", i);
+					sprintf(buf, "Connect  %d", i);
 				}
 
 				if (ui::Button(buf))

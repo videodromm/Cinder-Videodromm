@@ -118,7 +118,10 @@ namespace VideoDromm
 		midi::MidiInput				mMidiIn3;
 		void						midiListener(midi::MidiMessage msg);
 		// midi output
-		midi::MidiOutput			mMidiOut;
+		midi::MidiOutput			mMidiOut0;
+		midi::MidiOutput			mMidiOut1;
+		midi::MidiOutput			mMidiOut2;
+		midi::MidiOutput			mMidiOut3;
 		vector<midiOutput>			mMidiOutputs;
 #endif
 		string						midiControlType;

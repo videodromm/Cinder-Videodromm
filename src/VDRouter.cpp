@@ -217,7 +217,9 @@ void VDRouter::shutdown() {
 	mMidiIn0.ClosePort();
 	mMidiIn1.ClosePort();
 	mMidiIn2.ClosePort();
-	mMidiOut.closePort();
+	mMidiOut0.closePort();
+	mMidiOut1.closePort();
+	mMidiOut2.closePort();
 #endif
 }
 
@@ -259,22 +261,22 @@ void VDRouter::midiSetup() {
 	mVDSettings->mNewMsg = true;
 	mVDSettings->mMsg = ss.str();
 	// midi out
-	mMidiOut.getPortList();
-	if (mMidiOut.getNumPorts() > 0) {
-		for (int i = 0; i < mMidiOut.getNumPorts(); i++)
+	mMidiOut0.getPortList();
+	if (mMidiOut0.getNumPorts() > 0) {
+		for (int i = 0; i < mMidiOut0.getNumPorts(); i++)
 		{
 			bool alreadyListed = false;
 			for (int j = 0; j < mMidiOutputs.size(); j++)
 			{
-				if (mMidiOutputs[j].portName == mMidiOut.getPortName(i)) alreadyListed = true;
+				if (mMidiOutputs[j].portName == mMidiOut0.getPortName(i)) alreadyListed = true;
 			}
 			if (!alreadyListed) {
 				midiOutput mOut;
-				mOut.portName = mMidiOut.getPortName(i);
+				mOut.portName = mMidiOut0.getPortName(i);
 				mMidiOutputs.push_back(mOut);
 
 				mMidiOutputs[i].isConnected = false;
-				ss << "Available MIDI output port " << i << " " << mMidiOut.getPortName(i);
+				ss << "Available MIDI output port " << i << " " << mMidiOut0.getPortName(i);
 
 			}
 		}
@@ -286,6 +288,7 @@ void VDRouter::midiSetup() {
 	midiControl = midiPitch = midiVelocity = midiNormalizedValue = midiValue = midiChannel = 0;
 #endif
 }
+
 void VDRouter::openMidiInPort(int i) {
 #if defined( CINDER_MSW )
 	// HACK Push2 has 2 midi ports, we keep the internal one not useable 
@@ -333,12 +336,38 @@ void VDRouter::closeMidiInPort(int i) {
 void VDRouter::openMidiOutPort(int i) {
 #if defined( CINDER_MSW )
 	stringstream ss;
-	if (mMidiOut.openPort(i)) {
-		mMidiOutputs[i].isConnected = true;
-		ss << "Opening MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
-	}
-	else {
-		ss << "Can't open MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+	ss << "Port " << i << " ";
+	if (i < mMidiOutputs.size()) {
+		if (i == 0) {
+			if (mMidiOut0.openPort(i)) {
+				mMidiOutputs[i].isConnected = true;
+				ss << "Opened MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+				mMidiOut0.sendNoteOn(1, 40, 64);
+			}
+			else {
+				ss << "Can't open MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+			}
+		}
+		if (i == 1) {
+			if (mMidiOut1.openPort(i)) {
+				mMidiOutputs[i].isConnected = true;
+				ss << "Opened MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+				mMidiOut1.sendNoteOn(1, 40, 64);
+			}
+			else {
+				ss << "Can't open MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+			}
+		}
+		if (i == 2) {
+			if (mMidiOut2.openPort(i)) {
+				mMidiOutputs[i].isConnected = true;
+				ss << "Opened MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+				mMidiOut2.sendNoteOn(1, 40, 64);
+			}
+			else {
+				ss << "Can't open MIDI out port " << i << " " << mMidiOutputs[i].portName << std::endl;
+			}
+		}
 	}
 	mVDSettings->mMsg = ss.str();
 	mVDSettings->mNewMsg = true;
@@ -346,7 +375,18 @@ void VDRouter::openMidiOutPort(int i) {
 }
 void VDRouter::closeMidiOutPort(int i) {
 #if defined( CINDER_MSW )
-	mMidiOut.closePort();
+	if (i == 0)
+	{
+		mMidiOut0.closePort();
+	}
+	if (i == 1)
+	{
+		mMidiOut1.closePort();
+	}
+	if (i == 2)
+	{
+		mMidiOut2.closePort();
+	}
 	mMidiOutputs[i].isConnected = false;
 #endif
 }
