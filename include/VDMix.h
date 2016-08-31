@@ -131,6 +131,7 @@ namespace VideoDromm
 		string							getShaderName(unsigned int aShaderIndex);
 		ci::gl::Texture2dRef			getShaderThumb(unsigned int aShaderIndex);
 		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString);
+		string							getFragmentShaderString(unsigned int aShaderIndex);
 		void							createShaderThumb(unsigned int aShaderIndex);
 		// blendmodes
 		unsigned int					getFboBlendCount();

@@ -100,6 +100,7 @@ void VDShader::setFragmentString(string aFragmentShaderString) {
 		mFragmentShaderString = aFragmentShaderString;
 		CI_LOG_V(mFragFile.string() + " live edited, loaded and compiled");
 		mValid = true;
+		createThumb();
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{

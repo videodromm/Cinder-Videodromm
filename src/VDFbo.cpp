@@ -97,11 +97,13 @@ namespace VideoDromm {
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
 	}
-	void VDFbo::setFragmentShader(string aFragmentShaderString, string aName) {
+	void VDFbo::setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 		try {
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, aFragmentShaderString);
 			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
-			mFboTextureShader->setLabel(aName);
+			mFboTextureShader->setLabel("lbl"+aName);
+			mFboName = aName;
+			mShaderIndex = aShaderIndex;
 		}
 		catch (gl::GlslProgCompileExc &exc) {
 			mError = string(exc.what());

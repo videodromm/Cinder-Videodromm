@@ -541,8 +541,8 @@ namespace VideoDromm {
 		if (s->isValid()) {
 			mShaderList.push_back(s);
 			rtn = mShaderList.size() - 1;
-			mFboList[aFboIndex]->setShaderIndex(rtn);
-			mFboList[aFboIndex]->setFragmentShader(s->getFragmentString(), s->getName());
+			//mFboList[aFboIndex]->setShaderIndex(rtn);
+			mFboList[aFboIndex]->setFragmentShader(rtn, s->getFragmentString(), s->getName());
 			//mGlslA = mFboList[aFboIndex]->getShader();
 		}
 		mVDSettings->mShaderToLoad = "";
@@ -713,8 +713,8 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		if (aFboShaderIndex > mShaderList.size() - 1) aFboShaderIndex = mShaderList.size() - 1;
 		CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
-		mFboList[aFboIndex]->setShaderIndex(aFboShaderIndex);
-		mFboList[aFboIndex]->setFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
+		//mFboList[aFboIndex]->setShaderIndex(aFboShaderIndex);
+		mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
 		// route message
 		stringstream aParams;
 		aParams << "{\"params\" :[{\"name\" : " << aFboIndex + 100 << ",\"value\" : " << aFboShaderIndex << "}]}"; // TODO update all to this way
@@ -723,6 +723,7 @@ namespace VideoDromm {
 	}
 	unsigned int VDMix::getFboFragmentShaderIndex(unsigned int aFboIndex) {
 		unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();
+		//CI_LOG_V("getFboFragmentShaderIndex, fboIndex: " + toString(aFboIndex)+" shaderIndex: " + toString(rtn));
 		if (rtn > mShaderList.size() - 1) rtn = mShaderList.size() - 1;
 		return rtn;
 	}
@@ -839,6 +840,10 @@ namespace VideoDromm {
 	void VDMix::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString);
+	}
+	string VDMix::getFragmentShaderString(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->getFragmentString();
 	}
 	void VDMix::createShaderThumb(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;

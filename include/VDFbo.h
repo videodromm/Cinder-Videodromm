@@ -61,7 +61,7 @@ namespace VideoDromm
 		// shader
 		void							setShaderIndex(unsigned int aShaderIndex);
 		unsigned int					getShaderIndex() { return mShaderIndex; };
-		void							setFragmentShader(string aFragmentShaderString, string aName);
+		void							setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName);
 		// textures
 		void							setInputTexture(unsigned int aTextureIndex);
 		unsigned int					getInputTextureIndex() { return inputTextureIndex; };

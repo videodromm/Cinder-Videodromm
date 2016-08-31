@@ -110,9 +110,10 @@ void VDUIShaders::Run(const char* title) {
 		// editor
 #pragma region Editor
 		if (shaderToEdit == s) {
+			mVDSettings->mMsg = "Editing shader " + toString(shaderToEdit) + " name " + mVDMix->getShaderName(shaderToEdit);
 			ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW * 3, mVDSettings->uiLargeH), ImGuiSetCond_FirstUseEver);
-			sprintf(buf, "Editor - %s##edit%d", mVDMix->getShaderName(shaderToEdit).c_str(), shaderToEdit);
+			sprintf(buf, "Editor - %s - %d##edit%d", mVDMix->getShaderName(shaderToEdit).c_str(), shaderToEdit, shaderToEdit);
 			ui::Begin(buf);
 			{
 				size_t const MAX = 32768; // maximum number of chars
@@ -135,7 +136,7 @@ void VDUIShaders::Run(const char* title) {
 					"}\n";
 				// check if shader text needs to be loaded in the editor
 				if (mVDSettings->shaderEditIndex != shaderToEdit) {
-					mFboTextureFragmentShaderString = mVDMix->getFboFragmentShaderText(shaderToEdit);
+					mFboTextureFragmentShaderString = mVDMix->getFragmentShaderString(shaderToEdit);
 					mVDSettings->shaderEditIndex = shaderToEdit;
 					// delete content
 					memset(&mShaderText[0], 0, sizeof(mShaderText));
