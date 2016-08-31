@@ -75,6 +75,7 @@ namespace VideoDromm
 		int							getMidiOutPortsCount() { return mMidiOutputs.size(); };
 		string						getMidiOutPortName(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].portName : "No midi out ports"; };
 		bool						isMidiOutConnected(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].isConnected : false; };
+		void						midiOutSendNoteOn(int i, int channel, int pitch, int velocity);
 #endif
 		void						openMidiInPort(int i);
 		void						closeMidiInPort(int i);

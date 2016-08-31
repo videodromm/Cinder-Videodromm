@@ -333,6 +333,23 @@ void VDRouter::closeMidiInPort(int i) {
 	mMidiInputs[i].isConnected = false;
 #endif
 }
+void VDRouter::midiOutSendNoteOn(int i, int channel, int pitch, int velocity) {
+#if defined( CINDER_MSW )
+	if (i == 0)
+	{
+		if (mMidiOutputs[i].isConnected) mMidiOut0.sendNoteOn(channel, pitch, velocity);
+	}
+	if (i == 1)
+	{
+		if (mMidiOutputs[i].isConnected) mMidiOut1.sendNoteOn(channel, pitch, velocity);
+	}
+	if (i == 2)
+	{
+		if (mMidiOutputs[i].isConnected) mMidiOut2.sendNoteOn(channel, pitch, velocity);
+	}
+#endif
+
+}
 void VDRouter::openMidiOutPort(int i) {
 #if defined( CINDER_MSW )
 	stringstream ss;
