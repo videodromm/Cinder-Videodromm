@@ -49,6 +49,8 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	static int currentWindowRow2 = 0;
 	static int currentWindowRow3 = 0;
 
+	ImGuiStyle& style = ui::GetStyle();
+
 	if (mIsResizing) {
 		mIsResizing = false;
 
@@ -58,7 +60,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 
 #pragma region style
 		// our theme variables
-		ImGuiStyle& style = ui::GetStyle();
 		style.WindowRounding = 4;
 		style.WindowPadding = ImVec2(3, 3);
 		style.FramePadding = ImVec2(2, 2);
@@ -104,7 +105,18 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
 #pragma endregion style
 	}
+#pragma region menu
+	if (ImGui::BeginMainMenuBar()) {
 
+		if (ImGui::BeginMenu("Options"))
+		{
+			ImGui::DragFloat("Global Alpha", &style.Alpha, 0.005f, 0.20f, 1.0f, "%.2f");
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
+#pragma endregion menu
 	mVDSettings->uiXPos = mVDSettings->uiMargin;
 	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPos, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
