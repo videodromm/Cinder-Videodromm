@@ -14,6 +14,7 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
+#define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 namespace VideoDromm
 {
@@ -39,5 +40,11 @@ namespace VideoDromm
 		VDRouterRef					mVDRouter;
 		// imgui
 		char						buf[64];
+		//! default fragment shader
+		std::string					mFboTextureFragmentShaderString;
+		string						mError;
+		gl::GlslProgRef				aShader;
+		std::string					mPassthruVextexShaderString;
+
 	};
 }

@@ -834,9 +834,9 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef VDMix::getShaderThumb(unsigned int aShaderIndex) {
 		return mShaderList[aShaderIndex]->getThumb();
 	}
-	void VDMix::editShader(unsigned int aShaderIndex) {
+	/*void VDMix::editShader(unsigned int aShaderIndex) {
 		mVDSettings->shaderEditIndex = aShaderIndex;
-	}
+	}*/
 	void VDMix::createShaderThumb(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->createThumb();
