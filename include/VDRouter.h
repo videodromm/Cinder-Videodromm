@@ -75,7 +75,6 @@ namespace VideoDromm
 		int							getMidiOutPortsCount() { return mMidiOutputs.size(); };
 		string						getMidiOutPortName(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].portName : "No midi out ports"; };
 		bool						isMidiOutConnected(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].isConnected : false; };
-
 #endif
 		void						openMidiInPort(int i);
 		void						closeMidiInPort(int i);
@@ -92,13 +91,11 @@ namespace VideoDromm
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
 		// WebSockets
-#if defined( CINDER_MSW )
 		void						wsWrite(std::string msg);
 		void						wsWriteBinary(const void *data, int size);
 		void						wsConnect();
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
-#endif
 		void						colorWrite();
 
 	private:
@@ -134,6 +131,7 @@ namespace VideoDromm
 		// WebSockets
 		void						parseMessage(string msg);
 		// Web socket client
+		bool						clientConnected;
 #if defined( CINDER_MSW )
 		void						wsClientDisconnect();
 		WebSocketClient				mClient;
@@ -144,7 +142,6 @@ namespace VideoDromm
 		void						onWsInterrupt();
 		void						onWsPing(std::string msg);
 		void						onWsRead(std::string msg);
-		bool						clientConnected;
 		// Web socket  server
 		WebSocketServer				mServer;
 		void						serverConnect();

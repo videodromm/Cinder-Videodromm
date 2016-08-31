@@ -61,6 +61,8 @@ namespace VideoDromm
 		}
 		~VDUI();
 		void    Run(const char* title, unsigned int fps);
+		void	resize();
+		bool	isReady() { return !mIsResizing; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -125,7 +127,7 @@ namespace VideoDromm
 		bool						showUIShaders;
 		void						showVDUIShaders();
 
-
 		char						buf[64];
+		bool						mIsResizing;
 	};
 }

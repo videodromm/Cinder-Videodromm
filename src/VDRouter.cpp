@@ -24,8 +24,8 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 		}
 	}
 	// WebSockets
-#if defined( CINDER_MSW )
 	clientConnected = false;
+#if defined( CINDER_MSW )
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
 	mPingTime = getElapsedSeconds();
 	if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
@@ -484,9 +484,9 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		if (iarg0 == 13) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * 10;
 		// exposure
 		if (iarg0 == 14) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * mVDAnimation->maxExposure;
-#if defined( CINDER_MSW )
+
 		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->controlValues[iarg0]) + "}]}");
-#endif
+
 	}
 	// buttons
 	if (iarg0 > 20 && iarg0 < 29) {
@@ -544,15 +544,16 @@ void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float
 	updateParams(iarg0, farg1);
 	sendOSCFloatMessage(controlType, iarg0, farg1, farg2);
 }
-#if defined( CINDER_MSW )
 void VDRouter::wsPing() {
+#if defined( CINDER_MSW )
 	if (clientConnected) {
 		if (!mVDSettings->mIsWebSocketsServer) {
 			mClient.ping();
 		}
 	}
-}
 #endif
+}
+
 void VDRouter::parseMessage(string msg) {
 	int left;
 	int index;
@@ -643,11 +644,10 @@ void VDRouter::parseMessage(string msg) {
 
 					//mShaders->loadLiveShader(processedContent); // need uniforms declared
 					// route it to websockets clients
-#if defined( CINDER_MSW )
 					if (mVDSettings->mIsRouter) {
 						wsWrite(msg);
 					}
-#endif
+
 					// save processed file
 					fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
 					ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
@@ -670,21 +670,21 @@ void VDRouter::parseMessage(string msg) {
 			//mShaders->loadLiveShader(msg);
 			mVDSettings->mShaderToLoad = msg;
 			// route it to websockets clients
-#if defined( CINDER_MSW )
+
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
-#endif
+
 		}
 		else if (msg.substr(0, 7) == "#version") {
 			// fragment shader from live coding
 			//mShaders->loadLiveShader(msg);
 			// route it to websockets clients
-#if defined( CINDER_MSW )
+
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
-#endif
+
 		}
 		else if (first == "/")
 		{
@@ -723,8 +723,9 @@ void VDRouter::parseMessage(string msg) {
 		}
 	}
 }
-#if defined( CINDER_MSW )
+
 void VDRouter::wsConnect() {
+#if defined( CINDER_MSW )
 	// either a client or a server
 	if (mVDSettings->mIsWebSocketsServer) {
 		mServer.connectOpenEventHandler([&]() {
@@ -799,22 +800,28 @@ void VDRouter::wsConnect() {
 	}
 	mVDSettings->mAreWebSocketsEnabledAtStartup = true;
 	clientConnected = true;
+#endif
 }
 void VDRouter::wsClientConnect()
 {
+#if defined( CINDER_MSW )
 	stringstream s;
 	s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
 	mClient.connect(s.str());
+#endif
 }
 void VDRouter::wsClientDisconnect()
 {
+#if defined( CINDER_MSW )	
 	if (clientConnected)
 	{
 		mClient.disconnect();
 	}
+#endif
 }
 void VDRouter::wsWrite(string msg)
 {
+#if defined( CINDER_MSW )
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
 	{
 		if (mVDSettings->mIsWebSocketsServer)
@@ -826,8 +833,9 @@ void VDRouter::wsWrite(string msg)
 			if (clientConnected) mClient.write(msg);
 		}
 	}
-}
 #endif
+}
+
 void VDRouter::sendJSON(string params) {
 #if defined( CINDER_MSW )
 	wsWrite(params);
@@ -852,6 +860,7 @@ void VDRouter::colorWrite()
 		sendOSCColorMessage("/fa", mVDAnimation->controlValues[4]);
 	}
 #if defined( CINDER_MSW )
+	// lights4events
 	char col[8];
 	int r = mVDAnimation->controlValues[1] * 255;
 	int g = mVDAnimation->controlValues[2] * 255;
