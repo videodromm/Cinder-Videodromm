@@ -72,7 +72,6 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 			mFragmentShaderString = shaderInclude + mFragmentShaderString;
 		}
 
-
 		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);
 		mShader->setLabel(mFragFile.string());
 		CI_LOG_V(mFragFile.string() + " loaded and compiled");
@@ -82,6 +81,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 	{
 		mError = string(exc.what());
 		CI_LOG_V("unable to load/compile fragment shader:" + mFragmentShaderFilePath + string(exc.what()));
+		// TODO trying without adding uniforms from shaderInclude (in case uniform word is use in a comment for instance)
 	}
 	catch (const std::exception &e)
 	{

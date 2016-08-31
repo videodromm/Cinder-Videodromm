@@ -46,7 +46,6 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 	case KeyEvent::KEY_RIGHT:
 		if (controlValues[21] < 1.0) controlValues[21] += 0.1;
 		break;
-
 	case KeyEvent::KEY_PAGEDOWN:
 		// crossfade right
 		if (controlValues[18] < 1.0) controlValues[18] += 0.1;
