@@ -86,9 +86,33 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 	catch (const std::exception &e)
 	{
 		mError = string(e.what());
-		CI_LOG_V("unable to load mixfbo fragment shader:" + mFragmentShaderFilePath + string(e.what()));
+		CI_LOG_V("unable to load fragment shader:" + mFragmentShaderFilePath + string(e.what()));
 	}
 }
+void VDShader::setFragmentString(string aFragmentShaderString) {
+	mValid = false;
+	// load fragment shader
+	CI_LOG_V("setFragmentString, live loading");
+	try
+	{
+		mShader = gl::GlslProg::create(mVextexShaderString, aFragmentShaderString);
+		// update only if success
+		mFragmentShaderString = aFragmentShaderString;
+		CI_LOG_V(mFragFile.string() + " live edited, loaded and compiled");
+		mValid = true;
+	}
+	catch (gl::GlslProgCompileExc &exc)
+	{
+		mError = string(exc.what());
+		CI_LOG_V("setFragmentString, unable to compile live fragment shader:" + string(exc.what()));
+	}
+	catch (const std::exception &e)
+	{
+		mError = string(e.what());
+		CI_LOG_V("setFragmentString, error on live fragment shader:" + string(e.what()));
+	}
+}
+
 void VDShader::fromXml(const XmlTree &xml) {
 	mId = xml.getAttributeValue<string>("id", "");
 	string mVertfile = xml.getAttributeValue<string>("vertfile", "passthru.vert");
@@ -157,6 +181,7 @@ ci::gl::Texture2dRef VDShader::getThumb() {
 gl::GlslProgRef VDShader::getShader() {
 	return mShader;
 };
+
 VDShader::~VDShader() {
 	CI_LOG_V("VDShader destructor");
 }

@@ -39,7 +39,7 @@ void VDUIShaders::Run(const char* title) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		ui::SetNextWindowPos(ImVec2((s * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		int hue = 0;
-		sprintf(buf, "%s##s%d", mVDMix->getShaderName(s).c_str(), s);
+		sprintf(buf, "%s##sh%d", mVDMix->getShaderName(s).c_str(), s);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
@@ -54,16 +54,21 @@ void VDUIShaders::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.8f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.8f, 0.8f, 0.8f));
-			sprintf(buf, "E##s%d", s);
+			sprintf(buf, "E##se%d", s);
 			if (ui::Button(buf)){
-				//mVDMix->editShader(s);
-				shaderToEdit = s;
+				if (s == shaderToEdit) {
+					// if the same button pressed we hide the editor
+					shaderToEdit = -1;
+				}
+				else{
+					shaderToEdit = s;
+				}
 			}
-			ui::PopStyleColor(3);			
+			ui::PopStyleColor(3);
 			if (ui::IsItemHovered()) ui::SetTooltip("Edit shader");
 			ui::SameLine();
 			// thumb
-			sprintf(buf, "T##s%d", s);
+			sprintf(buf, "T##st%d", s);
 			if (ui::Button(buf)){
 				mVDMix->createShaderThumb(s);
 			}
@@ -78,14 +83,14 @@ void VDUIShaders::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.0f, 0.8f, 0.8f));
-			sprintf(buf, "L##s%d", s);
+			sprintf(buf, "L##sl%d", s);
 			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(1, s);
 			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to left");
 			ui::PopStyleColor(3);
 
 			ui::SameLine();
 			// right
-			if (mVDMix->getFboFragmentShaderIndex(1) == s) {
+			if (mVDMix->getFboFragmentShaderIndex(2) == s) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.3f, 1.0f, 0.5f));
 			}
 			else {
@@ -93,7 +98,7 @@ void VDUIShaders::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.3f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.3f, 0.8f, 0.8f));
-			sprintf(buf, "R##s%d", s);
+			sprintf(buf, "R##sr%d", s);
 			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(2, s);
 			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to right");
 			ui::PopStyleColor(3);
@@ -107,7 +112,7 @@ void VDUIShaders::Run(const char* title) {
 		if (shaderToEdit == s) {
 			ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW * 3, mVDSettings->uiLargeH), ImGuiSetCond_FirstUseEver);
-			sprintf(buf, "Editor - %s##s%d", mVDMix->getShaderName(s).c_str(), s);
+			sprintf(buf, "Editor - %s##edit%d", mVDMix->getShaderName(shaderToEdit).c_str(), shaderToEdit);
 			ui::Begin(buf);
 			{
 				size_t const MAX = 32768; // maximum number of chars
@@ -137,11 +142,12 @@ void VDUIShaders::Run(const char* title) {
 					// copy content from string
 					std::copy(mFboTextureFragmentShaderString.begin(), (mFboTextureFragmentShaderString.size() >= MAX ? mFboTextureFragmentShaderString.begin() + MAX : mFboTextureFragmentShaderString.end()), mShaderText);
 				}
-				
+
 				ui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 				ui::PopStyleVar();
-				ui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "uniform");
-				sprintf(buf, "Src - %s##s%d", mVDMix->getShaderName(s).c_str(), s);
+				ui::TextColored(ImColor(255, 0, 0), mError.c_str());
+				//ui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "uniform");
+				sprintf(buf, "Src - %s##src%d", mVDMix->getShaderName(shaderToEdit).c_str(), shaderToEdit);
 				if (ui::InputTextMultiline(buf, mShaderText, IM_ARRAYSIZE(mShaderText), ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput)) {
 					// text changed // TODO height ? mVDSettings->uiYPosRow2 - 200.0f
 					CI_LOG_V("text changed");
@@ -156,6 +162,8 @@ void VDUIShaders::Run(const char* title) {
 						mVDRouter->wsWrite(sParams.str());
 						//OK mVDRouter->wsWrite("/*{ \"title\" : \"live\" }*/ " + mFboTextureFragmentShaderString);
 						mError = "";
+						// compiles, update the shader for display
+						mVDMix->setFragmentShaderString(shaderToEdit, mFboTextureFragmentShaderString);
 					}
 					catch (gl::GlslProgCompileExc &exc)
 					{
@@ -171,7 +179,6 @@ void VDUIShaders::Run(const char* title) {
 				else {
 					// nothing changed 
 				}
-				ui::TextColored(ImColor(255, 0, 0), mError.c_str());
 			}
 			ui::End();
 		}

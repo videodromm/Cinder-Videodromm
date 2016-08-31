@@ -709,8 +709,10 @@ namespace VideoDromm {
 		mFboList[aFboIndex]->setInputTexture(aFboInputTextureIndex);
 	}
 	void VDMix::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) {
+		CI_LOG_V("setFboFragmentShaderIndex, before, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		if (aFboShaderIndex > mShaderList.size() - 1) aFboShaderIndex = mShaderList.size() - 1;
+		CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
 		mFboList[aFboIndex]->setShaderIndex(aFboShaderIndex);
 		mFboList[aFboIndex]->setFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
 		// route message
@@ -834,9 +836,10 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef VDMix::getShaderThumb(unsigned int aShaderIndex) {
 		return mShaderList[aShaderIndex]->getThumb();
 	}
-	/*void VDMix::editShader(unsigned int aShaderIndex) {
-		mVDSettings->shaderEditIndex = aShaderIndex;
-	}*/
+	void VDMix::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString);
+	}
 	void VDMix::createShaderThumb(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->createThumb();
