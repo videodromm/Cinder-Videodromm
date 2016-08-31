@@ -132,10 +132,10 @@ namespace VideoDromm
 		void						parseMessage(string msg);
 		// Web socket client
 		bool						clientConnected;
-#if defined( CINDER_MSW )
-		void						wsClientDisconnect();
-		WebSocketClient				mClient;
 		void						wsClientConnect();
+		void						wsClientDisconnect();
+#if defined( CINDER_MSW )
+		WebSocketClient				mClient;
 		void						onWsConnect();
 		void						onWsDisconnect();
 		void						onWsError(std::string err);
