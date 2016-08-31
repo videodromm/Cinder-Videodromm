@@ -69,7 +69,7 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 
 		if (foundUniform == std::string::npos) {
 			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
-			mFragmentShaderString = shaderInclude + mFragmentShaderString;
+			mFragmentShaderString = "/*" + mFragFile.string() + "*/\n" + shaderInclude + mFragmentShaderString;
 		}
 
 		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);

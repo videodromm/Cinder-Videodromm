@@ -132,13 +132,17 @@ void VDUIShaders::Run(const char* title) {
 				if (mVDSettings->shaderEditIndex != shaderToEdit) {
 					mFboTextureFragmentShaderString = mVDMix->getFboFragmentShaderText(shaderToEdit);
 					mVDSettings->shaderEditIndex = shaderToEdit;
+					// delete content
+					memset(&mShaderText[0], 0, sizeof(mShaderText));
+					// copy content from string
 					std::copy(mFboTextureFragmentShaderString.begin(), (mFboTextureFragmentShaderString.size() >= MAX ? mFboTextureFragmentShaderString.begin() + MAX : mFboTextureFragmentShaderString.end()), mShaderText);
 				}
 				
 				ui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 				ui::PopStyleVar();
 				ui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "uniform");
-				if (ui::InputTextMultiline("##source", mShaderText, IM_ARRAYSIZE(mShaderText), ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput)) {
+				sprintf(buf, "Src - %s##s%d", mVDMix->getShaderName(s).c_str(), s);
+				if (ui::InputTextMultiline(buf, mShaderText, IM_ARRAYSIZE(mShaderText), ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput)) {
 					// text changed // TODO height ? mVDSettings->uiYPosRow2 - 200.0f
 					CI_LOG_V("text changed");
 					try
