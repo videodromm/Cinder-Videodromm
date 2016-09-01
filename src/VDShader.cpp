@@ -74,6 +74,12 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 
 		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);
 		mShader->setLabel(mFragFile.string());
+
+		auto &uniforms = mShader->getActiveUniforms();
+		for (const auto &uniform : uniforms) {
+			CI_LOG_V("uniform name:" + uniform.getName());
+			
+		}
 		CI_LOG_V(mFragFile.string() + " loaded and compiled");
 		mValid = true;
 	}
