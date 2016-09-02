@@ -160,6 +160,7 @@ namespace VideoDromm
 		std::unordered_map<int, float>	mBadTV;
 		// shaders
 		map<string, VDUniform>		shaderUniforms;
+		void createFloatUniform(int aCtrlIndex, string aName, float aValue = 0.01f);
 
 	};
 }

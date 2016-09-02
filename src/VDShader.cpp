@@ -65,15 +65,16 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 	mName = mFragFile.filename().string();
 	mFragmentShaderFilePath = mFragFile.string();
 	mFragmentShaderString = loadString(loadFile(mFragFile));
-	mValid = setFragmentString(mFragmentShaderString);
+	mValid = setFragmentString(mFragmentShaderString, mName);
 
 	CI_LOG_V(mFragFile.string() + " loaded and compiled");
 	true;
 }
-bool VDShader::setFragmentString(string aFragmentShaderString) {
-	mValid = false;
+bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mOriginalFragmentString = aFragmentShaderString;
 	string mCurrentUniformsString = "";
+	if (aName.length() == 0) aName = getElapsedSeconds();
+	mValid = false;
 	// load fragment shader
 	CI_LOG_V("setFragmentString, live loading");
 	try
@@ -98,14 +99,13 @@ bool VDShader::setFragmentString(string aFragmentShaderString) {
 				mCurrentUniformsString += "uniform float " + uniform.getName() + "; // " + toString(mVDAnimation->getUniformValue(uniform.getName())) + "\n";
 			}
 		}
-		/*
-							fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
-							ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-							mFragProcessed << processedContent;
-							mFragProcessed.close();
-							CI_LOG_V("processed file saved:" + processedFile.string());
+		// save .frag file
+		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
+		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
+		mFragProcessed << mCurrentUniformsString << mOriginalFragmentString << ".frag";
+		mFragProcessed.close();
+		CI_LOG_V("processed file saved:" + processedFile.string());
 
-							*/
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{

@@ -73,6 +73,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	{
 		controlValues[c] = 0.01f;
 	}
+	int ctrl;
 	// red
 	controlValues[1] = 1.0f;
 	// green
@@ -92,17 +93,25 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// pointsphere zPosition
 	controlValues[9] = -0.7f;
 	// iChromatic
-	controlValues[10] = 0.0f;
+	ctrl = 10;
+	controlValues[ctrl] = 0.0f;
+	shaderUniforms["iChromatic"].controlValueIndex = ctrl;
+	shaderUniforms["iChromatic"].uniformType = UniformTypes::FLOAT;
+	shaderUniforms["iChromatic"].isValid = true;
 	// ratio
-	controlValues[11] = 20.0f;
+	ctrl = 11;
+	controlValues[ctrl] = 20.0f;
+	shaderUniforms["iRatio"].controlValueIndex = ctrl;
+	shaderUniforms["iRatio"].uniformType = UniformTypes::FLOAT;
+	shaderUniforms["iRatio"].isValid = true;
 	// Speed 
 	controlValues[12] = 12.0f;
 	// Audio multfactor 
 	controlValues[13] = 1.0f;
 	// exposure
-	controlValues[14] = 1.0f;
+	createFloatUniform(14, "iExposure", 1.0f);
 	// Pixelate
-	controlValues[15] = 1.0f;
+	createFloatUniform(15, "iPixelate", 1.0f);
 	// Trixels
 	controlValues[16] = 0.0f;
 	// GridSize
@@ -110,26 +119,30 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// iCrossfade
 	controlValues[18] = 1.0f;
 	// RotationSpeed
-	controlValues[19] = 0.0f;
+	createFloatUniform(19, "iRotationSpeed", 0.0f);
 	// Steps
-	controlValues[20] = 16.0f;
+	createFloatUniform(20, "iSteps", 16.0f);
 	// iPreviewCrossfade
 	controlValues[21] = 0.0f;
 	// zoom
-	controlValues[22] = 1.0f;
-	shaderUniforms["iZoom"].controlValueIndex = 22;
-	shaderUniforms["iZoom"].uniformType = UniformTypes::FLOAT;
-	shaderUniforms["iZoom"].isValid = true;
+	createFloatUniform(22, "iZoom", 1.0f);
 	// glitch
 	controlValues[45] = 0.0f;
 	// toggle
-	controlValues[46] = 0.0f;
+	createFloatUniform(46, "iToggle", 0.0f);
 	// vignette
-	controlValues[47] = 0.0f;
+	createFloatUniform(47, "iVignette", 0.0f);
 	// invert
-	controlValues[48] = 0.0f;
+	createFloatUniform(48, "iInvert", 0.0f);
 	load();
 	loadAnimation();
+}
+void VDAnimation::createFloatUniform(int aCtrlIndex, string aName, float aValue) {
+	controlValues[aCtrlIndex] = aValue;
+	shaderUniforms[aName].controlValueIndex = aCtrlIndex;
+	shaderUniforms[aName].uniformType = UniformTypes::FLOAT;
+	shaderUniforms[aName].isValid = true;
+
 }
 bool VDAnimation::isExistingUniform(string aName) {
 	CI_LOG_V("isExistingUniform, name:" + aName + " valid:" + toString(shaderUniforms[aName].isValid));
