@@ -42,8 +42,6 @@ namespace VideoDromm {
 		mUseFbo = false;
 		// mix shader index
 		mMixShaderIndex = 0;
-		// load shadertoy uniform variables declarations
-		//shaderInclude = loadString(loadAsset("shadertoy.inc"));
 		// create blendmodes preview fbos
 		gl::Texture::Format fmt;
 		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
@@ -276,7 +274,7 @@ namespace VideoDromm {
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDMix::init mShaderList");
 			// mix shader
-			VDShaderRef s(new VDShader(mVDSettings, "", ""));
+			VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, "", ""));
 			XmlTree			shaderXml;
 			shaderXml.setTag("mix");
 			shaderXml.setAttribute("id", "0");
@@ -291,7 +289,7 @@ namespace VideoDromm {
 				CI_LOG_V("VDMix::init mShaderList mixfbo failed");
 			}
 			// direct input texture channel 0
-			VDShaderRef t0(new VDShader(mVDSettings, "", ""));
+			VDShaderRef t0(new VDShader(mVDSettings, mVDAnimation, "", ""));
 			XmlTree			t0Xml;
 			t0Xml.setTag("texture0");
 			t0Xml.setAttribute("id", "1");
@@ -306,7 +304,7 @@ namespace VideoDromm {
 				CI_LOG_V("VDMix::init mShaderList texture0 failed");
 			}
 			// direct input texture channel 1
-			VDShaderRef t1(new VDShader(mVDSettings, "", ""));
+			VDShaderRef t1(new VDShader(mVDSettings, mVDAnimation, "", ""));
 			XmlTree			t1Xml;
 			t1Xml.setTag("texture1");
 			t1Xml.setAttribute("id", "2");
@@ -537,7 +535,7 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 		int rtn = -1;
 		CI_LOG_V("fbo" + toString(aFboIndex) + ": loadPixelFragmentShader " + aFilePath);
-		VDShaderRef s(new VDShader(mVDSettings, aFilePath, ""));
+		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aFilePath, ""));
 		if (s->isValid()) {
 			mShaderList.push_back(s);
 			rtn = mShaderList.size() - 1;

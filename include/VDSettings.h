@@ -209,9 +209,7 @@ namespace VideoDromm {
 		ColorA						ColorYellow;
 		ColorA						ColorPurple;
 		// audio
-		//float						*mData;
 		bool						mIsPlaying;
-		//float						mAudioMultFactor; now mVDAnimation->controlValues[13]
 		int							iBeat;
 		int							mFftSize;
 		int							mWindowSize;

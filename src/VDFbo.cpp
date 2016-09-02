@@ -101,7 +101,7 @@ namespace VideoDromm {
 		try {
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, aFragmentShaderString);
 			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
-			mFboTextureShader->setLabel("lbl"+aName);
+			mFboTextureShader->setLabel(aName);
 			mFboName = aName;
 			mShaderIndex = aShaderIndex;
 		}
@@ -159,7 +159,16 @@ namespace VideoDromm {
 		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
 		//mFboTextureShader = mShaderList[mShaderIndex]->getShader();
+
 		mFboTextureShader->bind();
+		/*auto &uniforms = mFboTextureShader->getActiveUniforms();
+		for (const auto &uniform : uniforms) {
+			CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
+			if (mVDAnimation->getUniformValue(uniform.getName())) {
+				mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getUniformValue());
+			}
+		}*/
+
 		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
 		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		//mFboTextureShader->uniform("iChannelResolution[0]", iChannelResolution0);

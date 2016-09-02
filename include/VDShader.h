@@ -11,6 +11,8 @@
 #include "VDLog.h"
 // Settings
 #include "VDSettings.h"
+// Animation
+#include "VDAnimation.h"
 // Watchdog
 #include "Watchdog.h"
 
@@ -30,12 +32,12 @@ namespace VideoDromm
 
 	class VDShader {
 	public:
-		VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath, string aVextexShaderFilePath);
+		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath);
 		virtual					~VDShader();
 		void update();
-		static VDShaderRef	create(VDSettingsRef aVDSettings, string aFragmentShaderFilePath, string aVextexShaderFilePath)
+		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath)
 		{
-			return shared_ptr<VDShader>(new VDShader(aVDSettings, aFragmentShaderFilePath, aVextexShaderFilePath));
+			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFragmentShaderFilePath, aVextexShaderFilePath));
 		}
 		void fromXml(const XmlTree &xml);
 		gl::GlslProgRef					getShader();
@@ -43,7 +45,7 @@ namespace VideoDromm
 		void							loadVertexStringFromFile(string aFileName);
 		void							loadFragmentStringFromFile(string aFileName);
 		string							getFragmentString() { return mFragmentShaderString; };
-		void							setFragmentString(string aFragmentShaderString);
+		bool							setFragmentString(string aFragmentShaderString);
 		// thumb image
 		ci::gl::Texture2dRef			getThumb();
 		void							createThumb();
@@ -51,6 +53,8 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
+		// Animation
+		VDAnimationRef					mVDAnimation;
 
 		string							mId;
 		gl::GlslProgRef					mShader;

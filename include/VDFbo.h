@@ -88,10 +88,10 @@ namespace VideoDromm
 		// uniforms
 		vec3							iChannelResolution0;
 	private:
-		// Animation
-		VDAnimationRef					mVDAnimation;
 		// Settings
 		VDSettingsRef					mVDSettings;
+		// Animation
+		VDAnimationRef					mVDAnimation;
 
 		//! Fbo
 		gl::FboRef						mFbo;

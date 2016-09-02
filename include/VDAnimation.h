@@ -21,6 +21,16 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDAnimation instance
 	typedef std::shared_ptr<class VDAnimation> VDAnimationRef;
+
+	enum class UniformTypes { FLOAT, INT, BOOL, VEC2, VEC3, VEC4, SAMPLER2D };
+
+	struct VDUniform
+	{
+		bool						isValid;
+		UniformTypes				uniformType;
+		int							controlValueIndex;
+	};
+
 	class VDAnimation {
 	public:		
 		VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
@@ -118,7 +128,9 @@ namespace VideoDromm
 		float						iFreqs[7];
 		// OSC/MIDI/JSON controlled UI and params
 		map<int, float>				controlValues;
-
+		// shaders
+		bool						isExistingUniform(string aName);
+		float						getUniformValue(string aName);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -146,6 +158,8 @@ namespace VideoDromm
 		void						saveAnimation();
 
 		std::unordered_map<int, float>	mBadTV;
+		// shaders
+		map<string, VDUniform>		shaderUniforms;
 
 	};
 }

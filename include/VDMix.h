@@ -71,20 +71,15 @@ namespace VideoDromm
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
 
 		// fbos
-		//ci::gl::Texture2dRef			getLeftFboTexture();
-		//ci::gl::Texture2dRef			getRightFboTexture();
 		void							setLeftFboIndex(unsigned int aFboIndex);
 		void							setRightFboIndex(unsigned int aFboIndex);
 		unsigned int					getLeftFboIndex() { return mLeftFboIndex; };
 		unsigned int					getRightFboIndex() { return mRightFboIndex; };
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
-		/*bool							isLeftFboUsed() { return mUseLeftFbo; };
-		bool							isRightFboUsed() { return mUseRightFbo; };*/
 		bool							isFboUsed() { return mUseFbo; };
 		void							toggleFboUsed() { mUseFbo = !mUseFbo; };
 		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex);
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aFboInputTextureIndex);
-		/*string							getInputTextureName(unsigned int aTextureIndex);*/
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);
 		int								getInputTextureXLeft(unsigned int aTextureIndex);
 		void							setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft);
@@ -153,15 +148,9 @@ namespace VideoDromm
 		float							mPosX;
 		float							mPosY;
 		float							mZoom;
-		//! default vertex shader
-		//std::string						mPassthruVextexShaderString;
-		//! default fragment shader
-		//std::string						mMixFragmentShaderString;
+
 		//! mix shader
 		gl::GlslProgRef					mMixShader;
-		// include shader lines
-		//std::string						shaderInclude;
-		//string							mError;
 		// uniforms
 		vec3							iChannelResolution0;
 	private:
@@ -171,11 +160,9 @@ namespace VideoDromm
 		VDSettingsRef					mVDSettings;
 		// Router
 		VDRouterRef						mVDRouter;
-		// init
-		bool							initFboList();
-		//! Fbo
-		//gl::FboRef						mMixFbo, mLeftFbo, mRightFbo;
 
+		//! Fbo
+		bool							initFboList();
 		unsigned int					mRightFboIndex;
 		unsigned int					mLeftFboIndex;
 		bool							mUseLeftFbo;
@@ -196,7 +183,8 @@ namespace VideoDromm
 		vector<ci::gl::FboRef>			mBlendFbos;
 		int								mCurrentBlend;
 		vector<ci::gl::FboRef>			mMixFbos;
-		gl::GlslProgRef					mGlslMix, mGlslBlend;//mGlslA, mGlslB, 
+		gl::GlslProgRef					mGlslMix, mGlslBlend; 
+		// render
 		void							renderSceneA();
 		void							renderSceneB();
 		void							renderMix();

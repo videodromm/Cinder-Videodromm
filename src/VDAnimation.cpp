@@ -2,6 +2,203 @@
 
 using namespace VideoDromm;
 
+VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
+	mVDSettings = aVDSettings;
+	mVDSession = aVDSession;
+	//audio
+	mUseLineIn = true;
+	maxVolume = 0.0f;
+	for (int i = 0; i < 7; i++)
+	{
+		iFreqs[i] = i;
+	}
+	// live json params
+	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json";
+	JsonBag::add(&mBackgroundColor, "background_color");
+	JsonBag::add(&mExposure, "exposure", []() {
+		app::console() << "Updated exposure" << endl;
+
+	});
+	JsonBag::add(&mText, "text", []() {
+		app::console() << "Updated text" << endl;
+	});
+	mAutoBeatAnimation = true;
+	JsonBag::add(&mAutoBeatAnimation, "autobeatanimation");
+	currentScene = 0;
+	// zoom
+	defaultZoom = 1.0f;
+	minZoom = -3.1f;
+	maxZoom = 3.0f;
+	tZoom = autoZoom = false;
+	// exposure
+	defaultExposure = 1.0;
+	minExposure = 0.0001;
+	tExposure = autoExposure = false;
+	// Chromatic
+	defaultChromatic = 0.0;
+	minChromatic = 0.000000001;
+	maxChromatic = 1.0;
+	tChromatic = autoChromatic = false;
+	// ratio
+	defaultRatio = 20.0;
+	minRatio = 0.00000000001;
+	maxRatio = 20.0;
+	tRatio = autoRatio = false;
+	// z position
+	defaultZPos = -0.7;
+	minZPos = -1.0;
+	maxZPos = 1.0;
+	tZPos = autoZPos = false;
+	// RotationSpeed
+	defaultRotationSpeed = 0.0;
+	minRotationSpeed = -2.0;
+	maxRotationSpeed = 2.0;
+	tRotationSpeed = autoRotationSpeed = false;
+
+	previousTime = 0.0f;
+	iBeatIndex = 1;
+	counter = 0;
+	iTempoTime = 0.0;
+	iTimeFactor = 1.0f;
+	// tempo
+	mUseTimeWithTempo = false;
+	// init timer
+	timer.start();
+	startTime = currentTime = timer.getSeconds();
+
+	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
+	//iBar = 0;
+	//iBadTvRunning = false;
+	for (int c = 0; c < 128; c++)
+	{
+		controlValues[c] = 0.01f;
+	}
+	// red
+	controlValues[1] = 1.0f;
+	// green
+	controlValues[2] = 0.3f;
+	// blue
+	controlValues[3] = 0.0f;
+	// Alpha 
+	controlValues[4] = 1.0f;
+	// background red
+	controlValues[5] = 0.1f;
+	// background green
+	controlValues[6] = 0.1f;
+	// background blue
+	controlValues[7] = 0.1f;
+	// background alpha
+	controlValues[8] = 0.2f;
+	// pointsphere zPosition
+	controlValues[9] = -0.7f;
+	// iChromatic
+	controlValues[10] = 0.0f;
+	// ratio
+	controlValues[11] = 20.0f;
+	// Speed 
+	controlValues[12] = 12.0f;
+	// Audio multfactor 
+	controlValues[13] = 1.0f;
+	// exposure
+	controlValues[14] = 1.0f;
+	// Pixelate
+	controlValues[15] = 1.0f;
+	// Trixels
+	controlValues[16] = 0.0f;
+	// GridSize
+	controlValues[17] = 0.0f;
+	// iCrossfade
+	controlValues[18] = 1.0f;
+	// RotationSpeed
+	controlValues[19] = 0.0f;
+	// Steps
+	controlValues[20] = 16.0f;
+	// iPreviewCrossfade
+	controlValues[21] = 0.0f;
+	// zoom
+	controlValues[22] = 1.0f;
+	shaderUniforms["iZoom"].controlValueIndex = 22;
+	shaderUniforms["iZoom"].uniformType = UniformTypes::FLOAT;
+	shaderUniforms["iZoom"].isValid = true;
+	// glitch
+	controlValues[45] = 0.0f;
+	// toggle
+	controlValues[46] = 0.0f;
+	// vignette
+	controlValues[47] = 0.0f;
+	// invert
+	controlValues[48] = 0.0f;
+	load();
+	loadAnimation();
+}
+bool VDAnimation::isExistingUniform(string aName) {
+	CI_LOG_V("isExistingUniform, name:" + aName + " valid:" + toString(shaderUniforms[aName].isValid));
+	return shaderUniforms[aName].isValid;
+}
+float VDAnimation::getUniformValue(string aName) {
+	return controlValues[shaderUniforms[aName].controlValueIndex];
+}
+void VDAnimation::load() {
+	// Create json file if it doesn't already exist.
+#if defined( CINDER_MSW )
+	if (fs::exists(mJsonFilePath)) {
+		bag()->load(mJsonFilePath);
+	}
+	else {
+		bag()->save(mJsonFilePath);
+		bag()->load(mJsonFilePath);
+	}
+#endif
+}
+void VDAnimation::save() {
+#if defined( CINDER_MSW )
+	bag()->save(mJsonFilePath);
+	saveAnimation();
+#endif
+}
+void VDAnimation::saveAnimation() {
+	// save 
+	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+	JsonTree doc;
+	JsonTree badtv = JsonTree::makeArray("badtv");
+
+	for (const auto& item : mBadTV) {
+		if (item.second > 0.0001) badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
+	}
+
+	doc.pushBack(badtv);
+	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
+	// backup save
+	string fileName = "animation" + toString(getElapsedFrames()) + ".json";
+	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / fileName;
+	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
+}
+void VDAnimation::loadAnimation() {
+
+	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+	// Create json file if it doesn't already exist.
+	if (!fs::exists(mJsonFilePath)) {
+		std::ofstream oStream(mJsonFilePath.string());
+		oStream.close();
+	}
+	if (!fs::exists(mJsonFilePath)) {
+		return;
+	}
+	try {
+		JsonTree doc(loadFile(mJsonFilePath));
+		JsonTree badtv(doc.getChild("badtv"));
+		for (JsonTree::ConstIter item = badtv.begin(); item != badtv.end(); ++item) {
+			const auto& key = std::stoi(item->getKey());
+			const auto& value = item->getValue<float>();
+			mBadTV[key] = value;
+
+		}
+	}
+	catch (const JsonTree::ExcJsonParserError&)  {
+		CI_LOG_W("Failed to parse json file.");
+	}
+}
+
 void VDAnimation::setExposure(float aExposure) {
 	mExposure = aExposure;
 }
@@ -123,48 +320,6 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	event.setHandled(handled);
 
 	return event.isHandled();
-}
-void VDAnimation::saveAnimation() {
-	// save 
-	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
-	JsonTree doc;
-	JsonTree badtv = JsonTree::makeArray("badtv");
-
-	for (const auto& item : mBadTV) {
-		if (item.second > 0.0001) badtv.addChild(ci::JsonTree(ci::toString(item.first), ci::toString(item.second)));
-	}
-
-	doc.pushBack(badtv);
-	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
-	// backup save
-	string fileName = "animation" + toString(getElapsedFrames()) + ".json";
-	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / fileName;
-	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
-}
-void VDAnimation::loadAnimation() {
-
-	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
-	// Create json file if it doesn't already exist.
-	if (!fs::exists(mJsonFilePath)) {
-		std::ofstream oStream(mJsonFilePath.string());
-		oStream.close();
-	}
-	if (!fs::exists(mJsonFilePath)) {
-		return;
-	}
-	try {
-		JsonTree doc(loadFile(mJsonFilePath));
-		JsonTree badtv(doc.getChild("badtv"));
-		for (JsonTree::ConstIter item = badtv.begin(); item != badtv.end(); ++item) {
-			const auto& key = std::stoi(item->getKey());
-			const auto& value = item->getValue<float>();
-			mBadTV[key] = value;
-
-		}
-	}
-	catch (const JsonTree::ExcJsonParserError&)  {
-		CI_LOG_W("Failed to parse json file.");
-	}
 }
 
 void VDAnimation::update() {
@@ -371,150 +526,6 @@ void VDAnimation::update() {
 #pragma endregion animation
 }
 
-VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
-	mVDSettings = aVDSettings;
-	mVDSession = aVDSession;
-	//audio
-	mUseLineIn = true;
-	maxVolume = 0.0f;
-	for (int i = 0; i < 7; i++)
-	{
-		iFreqs[i] = i;
-	}
-	// live json params
-	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "live_params.json";
-	JsonBag::add(&mBackgroundColor, "background_color");
-	JsonBag::add(&mExposure, "exposure", []() {
-		app::console() << "Updated exposure" << endl;
-
-	});
-	JsonBag::add(&mText, "text", []() {
-		app::console() << "Updated text" << endl;
-	});
-	mAutoBeatAnimation = true;
-	JsonBag::add(&mAutoBeatAnimation, "autobeatanimation");
-	currentScene = 0;
-	// zoom
-	defaultZoom = 1.0f;
-	minZoom = -3.1f;
-	maxZoom = 3.0f;
-	tZoom = autoZoom = false;
-	// exposure
-	defaultExposure = 1.0;
-	minExposure = 0.0001;
-	tExposure = autoExposure = false;
-	// Chromatic
-	defaultChromatic = 0.0;
-	minChromatic = 0.000000001;
-	maxChromatic = 1.0;
-	tChromatic = autoChromatic = false;
-	// ratio
-	defaultRatio = 20.0;
-	minRatio = 0.00000000001;
-	maxRatio = 20.0;
-	tRatio = autoRatio = false;
-	// z position
-	defaultZPos = -0.7;
-	minZPos = -1.0;
-	maxZPos = 1.0;
-	tZPos = autoZPos = false;
-	// RotationSpeed
-	defaultRotationSpeed = 0.0;
-	minRotationSpeed = -2.0;
-	maxRotationSpeed = 2.0;
-	tRotationSpeed = autoRotationSpeed = false;
-
-	previousTime = 0.0f;
-	iBeatIndex = 1;
-	counter = 0;
-	iTempoTime = 0.0;
-	iTimeFactor = 1.0f;
-	// tempo
-	mUseTimeWithTempo = false;
-	// init timer
-	timer.start();
-	startTime = currentTime = timer.getSeconds();
-
-	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
-	//iBar = 0;
-	//iBadTvRunning = false;
-	for (int c = 0; c < 128; c++)
-	{
-		controlValues[c] = 0.01f;
-	}
-	// red
-	controlValues[1] = 1.0f;
-	// green
-	controlValues[2] = 0.3f;
-	// blue
-	controlValues[3] = 0.0f;
-	// Alpha 
-	controlValues[4] = 1.0f;
-	// background red
-	controlValues[5] = 0.1f;
-	// background green
-	controlValues[6] = 0.1f;
-	// background blue
-	controlValues[7] = 0.1f;
-	// background alpha
-	controlValues[8] = 0.2f;
-	// pointsphere zPosition
-	controlValues[9] = -0.7f;
-	// iChromatic
-	controlValues[10] = 0.0f;
-	// ratio
-	controlValues[11] = 20.0f;
-	// Speed 
-	controlValues[12] = 12.0f;
-	// Audio multfactor 
-	controlValues[13] = 1.0f;
-	// exposure
-	controlValues[14] = 1.0f;
-	// Pixelate
-	controlValues[15] = 1.0f;
-	// Trixels
-	controlValues[16] = 0.0f;
-	// GridSize
-	controlValues[17] = 0.0f;
-	// iCrossfade
-	controlValues[18] = 1.0f;
-	// RotationSpeed
-	controlValues[19] = 0.0f;
-	// Steps
-	controlValues[20] = 16.0f;
-	// iPreviewCrossfade
-	controlValues[21] = 0.0f;
-	// zoom
-	controlValues[22] = 1.0f;
-	// glitch
-	controlValues[45] = 0.0f;
-	// toggle
-	controlValues[46] = 0.0f;
-	// vignette
-	controlValues[47] = 0.0f;
-	// invert
-	controlValues[48] = 0.0f;
-	load();
-	loadAnimation();
-}
-void VDAnimation::load() {
-	// Create json file if it doesn't already exist.
-#if defined( CINDER_MSW )
-	if (fs::exists(mJsonFilePath)) {
-		bag()->load(mJsonFilePath);
-	}
-	else {
-		bag()->save(mJsonFilePath);
-		bag()->load(mJsonFilePath);
-	}
-#endif
-}
-void VDAnimation::save() {
-#if defined( CINDER_MSW )
-	bag()->save(mJsonFilePath);
-	saveAnimation();
-#endif
-}
 #pragma region utility
 void VDAnimation::tempoZoom()
 {

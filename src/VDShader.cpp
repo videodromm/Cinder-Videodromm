@@ -2,21 +2,22 @@
 
 using namespace VideoDromm;
 
-VDShader::VDShader(VDSettingsRef aVDSettings, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
+VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVextexShaderFilePath = aVextexShaderFilePath;
 	mValid = false;
 	// shadertoy include
 	shaderInclude = loadString(loadAsset("shadertoy.inc"));
+	mVDSettings = aVDSettings;
+	mVDAnimation = aVDAnimation;
+	mError = "";
+	gl::Fbo::Format format;
+	mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
 
 	loadVertexStringFromFile(mVextexShaderFilePath);
 	loadFragmentStringFromFile(mFragmentShaderFilePath);
 	if (mValid) {
 		CI_LOG_V("VDShaders constructor success");
-		mVDSettings = aVDSettings;
-		mError = "";
-		gl::Fbo::Format format;
-		mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
 	}
 	else {
 		CI_LOG_V("VDShaders constructor failed, do not use");
@@ -49,64 +50,62 @@ void VDShader::loadFragmentStringFromFile(string aFileName) {
 	mValid = false;
 	// load fragment shader
 	CI_LOG_V("loadFragmentStringFromFile, loading " + aFileName);
-	try
-	{
-		if (aFileName.length() == 0) {
-			mFragFile = getAssetPath("") / "0.glsl";
-		}
-		else {
-			mFragFile = aFileName;
-		}
-		if (!fs::exists(mFragFile)) {
-			mError = mFragFile.string() + " does not exist";
-			CI_LOG_V(mError);
-			mFragFile = getAssetPath("") / "0.glsl";
-		}
-		mName = mFragFile.filename().string();
-		mFragmentShaderFilePath = mFragFile.string();
-		mFragmentShaderString = loadString(loadFile(mFragFile));
-		std::size_t foundUniform = mFragmentShaderString.find("uniform");
 
-		if (foundUniform == std::string::npos) {
-			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
-			mFragmentShaderString = "/*" + mFragFile.string() + "*/\n" + shaderInclude + mFragmentShaderString;
-		}
+	if (aFileName.length() == 0) {
+		mFragFile = getAssetPath("") / "0.glsl";
+	}
+	else {
+		mFragFile = aFileName;
+	}
+	if (!fs::exists(mFragFile)) {
+		mError = mFragFile.string() + " does not exist";
+		CI_LOG_V(mError);
+		mFragFile = getAssetPath("") / "0.glsl";
+	}
+	mName = mFragFile.filename().string();
+	mFragmentShaderFilePath = mFragFile.string();
+	mFragmentShaderString = loadString(loadFile(mFragFile));
+	mValid = setFragmentString(mFragmentShaderString);
 
-		mShader = gl::GlslProg::create(mVextexShaderString, mFragmentShaderString);
-		mShader->setLabel(mFragFile.string());
-
-		auto &uniforms = mShader->getActiveUniforms();
-		for (const auto &uniform : uniforms) {
-			CI_LOG_V("uniform name:" + uniform.getName());
-			
-		}
-		CI_LOG_V(mFragFile.string() + " loaded and compiled");
-		mValid = true;
-	}
-	catch (gl::GlslProgCompileExc &exc)
-	{
-		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile fragment shader:" + mFragmentShaderFilePath + string(exc.what()));
-		// TODO trying without adding uniforms from shaderInclude (in case uniform word is use in a comment for instance)
-	}
-	catch (const std::exception &e)
-	{
-		mError = string(e.what());
-		CI_LOG_V("unable to load fragment shader:" + mFragmentShaderFilePath + string(e.what()));
-	}
+	CI_LOG_V(mFragFile.string() + " loaded and compiled");
+	true;
 }
-void VDShader::setFragmentString(string aFragmentShaderString) {
+bool VDShader::setFragmentString(string aFragmentShaderString) {
 	mValid = false;
+	string mOriginalFragmentString = aFragmentShaderString;
+	string mCurrentUniformsString = "";
 	// load fragment shader
 	CI_LOG_V("setFragmentString, live loading");
 	try
 	{
+		std::size_t foundUniform = mOriginalFragmentString.find("uniform ");
+
+		if (foundUniform == std::string::npos) {
+			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
+			aFragmentShaderString = "/*" + mFragFile.string() + "*/\n" + shaderInclude + mOriginalFragmentString;
+		}
 		mShader = gl::GlslProg::create(mVextexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
 		CI_LOG_V(mFragFile.string() + " live edited, loaded and compiled");
 		mValid = true;
 		createThumb();
+		auto &uniforms = mShader->getActiveUniforms();
+		for (const auto &uniform : uniforms) {
+			CI_LOG_V(mShader->getLabel() + ", uniform name:" + uniform.getName());
+			if (mVDAnimation->isExistingUniform(uniform.getName())) {
+				mShader->uniform(uniform.getName(), mVDAnimation->getUniformValue(uniform.getName()));
+				mCurrentUniformsString += "uniform float " + uniform.getName() + "; // " + toString(mVDAnimation->getUniformValue(uniform.getName())) + "\n";
+			}
+		}
+		/*
+							fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
+							ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
+							mFragProcessed << processedContent;
+							mFragProcessed.close();
+							CI_LOG_V("processed file saved:" + processedFile.string());
+
+							*/
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
@@ -118,6 +117,7 @@ void VDShader::setFragmentString(string aFragmentShaderString) {
 		mError = string(e.what());
 		CI_LOG_V("setFragmentString, error on live fragment shader:" + string(e.what()));
 	}
+	return mValid;
 }
 
 void VDShader::fromXml(const XmlTree &xml) {
