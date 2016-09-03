@@ -44,6 +44,7 @@ namespace VideoDromm
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];
+		int							ctrl;
 		// zoom
 		float						minZoom;
 		float						maxZoom;

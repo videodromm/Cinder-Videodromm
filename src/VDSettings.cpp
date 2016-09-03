@@ -391,8 +391,6 @@ bool VDSettings::restore()
 }
 
 void VDSettings::resetSomeParams() {
-	mLockFR = mLockFG = mLockFB = mLockFA = mLockBR = mLockBG = mLockBB = mLockBA = false;
-	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
 	mCamPosXY = vec2(0.0f);
 	mCount = 1;
 

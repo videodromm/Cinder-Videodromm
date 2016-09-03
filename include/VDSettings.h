@@ -138,7 +138,6 @@ namespace VideoDromm {
 		bool						isUIDirty;
 		bool						mMIDIOpenAllInputPorts;
 		int							mCount;
-		bool						mLockFR, mLockFG, mLockFB, mLockFA, mLockBR, mLockBG, mLockBB, mLockBA;
 		string						mImageFile;
 
 		// shader uniforms	
@@ -221,8 +220,6 @@ namespace VideoDromm {
 		float						maxEyePointZ;
 		bool						tEyePointZ;
 		bool						autoEyePointZ;
-		// colors
-		bool						tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
 
 		ci::Anim<float>				mStateTransition;
 

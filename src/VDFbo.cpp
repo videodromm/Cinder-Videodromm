@@ -161,13 +161,33 @@ namespace VideoDromm {
 		//mFboTextureShader = mShaderList[mShaderIndex]->getShader();
 
 		mFboTextureShader->bind();
-		/*auto &uniforms = mFboTextureShader->getActiveUniforms();
+		auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
 			CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
-			if (mVDAnimation->getUniformValue(uniform.getName())) {
-				mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getUniformValue());
+			if (mVDAnimation->isExistingUniform(uniform.getName())) {
+				int uniformType = mVDAnimation->getUniformType(uniform.getName());
+				switch (uniformType)
+				{
+				case 0:
+					// float
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValue(uniform.getName()));
+					break;
+				case 1:
+					// sampler2D
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getSampler2DUniformValue(uniform.getName()));
+					break;
+				case 3:
+					// vec3
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName())); 
+					break;
+				default:
+					break;
+				}
 			}
-		}*/
+			else {
+				CI_LOG_V(mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName());
+			}
+		}
 
 		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
 		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));

@@ -22,12 +22,12 @@ namespace VideoDromm
 	// stores the pointer to the VDAnimation instance
 	typedef std::shared_ptr<class VDAnimation> VDAnimationRef;
 
-	enum class UniformTypes { FLOAT, INT, BOOL, VEC2, VEC3, VEC4, SAMPLER2D };
+	//enum class UniformTypes { FLOAT, SAMPLER2D, VEC2, VEC3, VEC4, INT, BOOL };
 
 	struct VDUniform
 	{
 		bool						isValid;
-		UniformTypes				uniformType;
+		int							uniformType;
 		int							controlValueIndex;
 	};
 
@@ -42,6 +42,7 @@ namespace VideoDromm
 		void						update();
 		void						load();
 		void						save();
+
 		Color						getBackgroundColor() { return mBackgroundColor; };
 		float						getExposure() { return mExposure; };
 		void						setExposure(float aExposure);
@@ -92,25 +93,32 @@ namespace VideoDromm
 		float						maxRotationSpeed;
 		bool						tRotationSpeed;
 		bool						autoRotationSpeed;
+		// colors
+		bool						tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
+		bool						autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
+
 		// animation functions
-		void						resetExposure();
-		void						tempoExposure();
-		void						resetZoom();
-		void						tempoZoom();
 		void						resetChromatic();
 		void						tempoChromatic();
+		void						lockChromatic() { autoChromatic = !autoChromatic; };
 		void						resetRatio();
 		void						tempoRatio();
+		void						lockRatio() { autoRatio = !autoRatio; };
+		void						resetExposure();
+		void						tempoExposure();
+		void						lockExposure() { autoExposure = !autoExposure; };
+		void						resetZoom();
+		void						tempoZoom();
+		void						lockZoom() { autoZoom = !autoZoom; };
 		void						resetZPos();
 		void						tempoZPos();
+		void						lockZPos() { autoZPos = !autoZPos; };
 		void						resetRotationSpeed();
 		void						tempoRotationSpeed();
-		void						lockChromatic() { autoChromatic = !autoChromatic; };
-		void						lockRatio() { autoRatio = !autoRatio; };
-		void						lockExposure() { autoExposure = !autoExposure; };
-		void						lockZoom() { autoZoom = !autoZoom; };
-		void						lockZPos() { autoZPos = !autoZPos; };
 		void						lockRotationSpeed() { autoRotationSpeed = !autoRotationSpeed; };
+		void						resetRed();
+		void						tempoRed();
+		void						lockRed() { autoFR = !autoFR; };
 		// tempo
 		void						tapTempo();
 		void						setTimeFactor(const int &aTimeFactor);
@@ -128,9 +136,13 @@ namespace VideoDromm
 		float						iFreqs[7];
 		// OSC/MIDI/JSON controlled UI and params
 		map<int, float>				controlValues;
+		map<int, vec3>				vec3Values;
 		// shaders
 		bool						isExistingUniform(string aName);
-		float						getUniformValue(string aName);
+		int							getUniformType(string aName);
+		float						getFloatUniformValue(string aName);
+		int							getSampler2DUniformValue(string aName);
+		vec3						getVec3UniformValue(string aName);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -160,7 +172,8 @@ namespace VideoDromm
 		std::unordered_map<int, float>	mBadTV;
 		// shaders
 		map<string, VDUniform>		shaderUniforms;
-		void createFloatUniform(int aCtrlIndex, string aName, float aValue = 0.01f);
-
+		void						createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f);
+		void						createSampler2DUniform(string aName, int aValue = 0);
+		void						createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
 	};
 }

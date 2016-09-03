@@ -54,6 +54,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	minRotationSpeed = -2.0;
 	maxRotationSpeed = 2.0;
 	tRotationSpeed = autoRotationSpeed = false;
+	//colors
+	autoFR = autoFG = autoFB = autoFA = autoBR = autoBG = autoBB = autoBA = false;
+	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
 
 	previousTime = 0.0f;
 	iBeatIndex = 1;
@@ -93,63 +96,85 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// pointsphere zPosition
 	controlValues[9] = -0.7f;
 	// iChromatic
-	ctrl = 10;
-	controlValues[ctrl] = 0.0f;
-	shaderUniforms["iChromatic"].controlValueIndex = ctrl;
-	shaderUniforms["iChromatic"].uniformType = UniformTypes::FLOAT;
-	shaderUniforms["iChromatic"].isValid = true;
+	createFloatUniform("iChromatic", 10, 0.0f);
 	// ratio
-	ctrl = 11;
-	controlValues[ctrl] = 20.0f;
-	shaderUniforms["iRatio"].controlValueIndex = ctrl;
-	shaderUniforms["iRatio"].uniformType = UniformTypes::FLOAT;
-	shaderUniforms["iRatio"].isValid = true;
+	createFloatUniform("iRatio", 11, 20.0f);
 	// Speed 
 	controlValues[12] = 12.0f;
 	// Audio multfactor 
 	controlValues[13] = 1.0f;
 	// exposure
-	createFloatUniform(14, "iExposure", 1.0f);
+	createFloatUniform("iExposure", 14, 1.0f);
 	// Pixelate
-	createFloatUniform(15, "iPixelate", 1.0f);
+	createFloatUniform("iPixelate", 15, 1.0f);
 	// Trixels
-	createFloatUniform(16, "iTrixels", 0.0f);
+	createFloatUniform("iTrixels", 16, 0.0f);
 	// GridSize
 	controlValues[17] = 0.0f;
 	// iCrossfade
 	controlValues[18] = 1.0f;
 	// RotationSpeed
-	createFloatUniform(19, "iRotationSpeed", 0.0f);
+	createFloatUniform("iRotationSpeed", 19, 0.0f);
 	// Steps
-	createFloatUniform(20, "iSteps", 16.0f);
+	createFloatUniform("iSteps", 20, 16.0f);
 	// iPreviewCrossfade
 	controlValues[21] = 0.0f;
 	// zoom
-	createFloatUniform(22, "iZoom", 1.0f);
+	createFloatUniform("iZoom", 22, 1.0f);
 	// glitch
-	createFloatUniform(45, "iGlitch", 0.0f);
+	createFloatUniform("iGlitch", 45, 0.0f);
 	// toggle
-	createFloatUniform(46, "iToggle", 0.0f);
+	createFloatUniform("iToggle", 46, 0.0f);
 	// vignette
-	createFloatUniform(47, "iVignette", 0.0f);
+	createFloatUniform("iVignette", 47, 0.0f);
 	// invert
-	createFloatUniform(48, "iInvert", 0.0f);
+	createFloatUniform("iInvert", 48, 0.0f);
+	// global time in seconds
+	createFloatUniform("iGlobalTime", 49, 0.0f);
+	// vec3
+	createVec3Uniform("iResolution", 0, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+	createVec3Uniform("iColor", 1, vec3(1.0,0.5,0.0));
+	createVec3Uniform("iBackgroundColor", 2);
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		createSampler2DUniform("iChannel" + i, i);
+	}
 	load();
 	loadAnimation();
 }
-void VDAnimation::createFloatUniform(int aCtrlIndex, string aName, float aValue) {
+void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue) {
 	controlValues[aCtrlIndex] = aValue;
 	shaderUniforms[aName].controlValueIndex = aCtrlIndex;
-	shaderUniforms[aName].uniformType = UniformTypes::FLOAT;
+	shaderUniforms[aName].uniformType = 0;
 	shaderUniforms[aName].isValid = true;
-
+}
+void VDAnimation::createSampler2DUniform(string aName, int aValue) {
+	shaderUniforms[aName].controlValueIndex = aValue;
+	shaderUniforms[aName].uniformType = 1;
+	shaderUniforms[aName].isValid = true;
+}
+void VDAnimation::createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue) {
+	vec3Values[aCtrlIndex] = aValue;
+	shaderUniforms[aName].controlValueIndex = aCtrlIndex;
+	shaderUniforms[aName].uniformType = 3;
+	shaderUniforms[aName].isValid = true;
 }
 bool VDAnimation::isExistingUniform(string aName) {
 	CI_LOG_V("isExistingUniform, name:" + aName + " valid:" + toString(shaderUniforms[aName].isValid));
 	return shaderUniforms[aName].isValid;
 }
-float VDAnimation::getUniformValue(string aName) {
+int VDAnimation::getUniformType(string aName) {
+	return shaderUniforms[aName].uniformType;
+}
+float VDAnimation::getFloatUniformValue(string aName) {
 	return controlValues[shaderUniforms[aName].controlValueIndex];
+}
+int VDAnimation::getSampler2DUniformValue(string aName) {
+	return shaderUniforms[aName].controlValueIndex;
+}
+vec3 VDAnimation::getVec3UniformValue(string aName) {
+	return vec3Values[shaderUniforms[aName].controlValueIndex];
 }
 void VDAnimation::load() {
 	// Create json file if it doesn't already exist.
@@ -361,6 +386,7 @@ void VDAnimation::update() {
 		mVDSettings->iGlobalTime = getElapsedSeconds();
 	}
 	mVDSettings->iGlobalTime *= mVDSettings->iSpeedMultiplier;
+	controlValues[49] = mVDSettings->iGlobalTime;
 #pragma region animation
 
 	currentTime = timer.getSeconds();
@@ -450,76 +476,76 @@ void VDAnimation::update() {
 		}
 
 		// Front Red
-		if (mVDSettings->tFR)
+		if (tFR)
 		{
 			controlValues[1] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[1] = mVDSettings->mLockFR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[1];
+			controlValues[1] = autoFR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[1];
 		}
 		// Front Green
-		if (mVDSettings->tFG)
+		if (tFG)
 		{
 			controlValues[2] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[2] = mVDSettings->mLockFG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[2];
+			controlValues[2] = autoFG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[2];
 		}
 		// front blue
-		if (mVDSettings->tFB)
+		if (tFB)
 		{
 			controlValues[3] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[3] = mVDSettings->mLockFB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[3];
+			controlValues[3] = autoFB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[3];
 		}
 		// front alpha
-		if (mVDSettings->tFA)
+		if (tFA)
 		{
 			controlValues[4] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[4] = mVDSettings->mLockFA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[4];
+			controlValues[4] = autoFA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[4];
 		}
 		// 
-		if (mVDSettings->tBR)
+		if (tBR)
 		{
 			controlValues[5] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[5] = mVDSettings->mLockBR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[5];
+			controlValues[5] = autoBR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[5];
 		}
 		// 
-		if (mVDSettings->tBG)
+		if (tBG)
 		{
 			controlValues[6] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[6] = mVDSettings->mLockBG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[6];
+			controlValues[6] = autoBG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[6];
 		}
 		// 
-		if (mVDSettings->tBB)
+		if (tBB)
 		{
 			controlValues[7] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[7] = mVDSettings->mLockBB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[7];
+			controlValues[7] = autoBB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[7];
 		}
 		// 
-		if (mVDSettings->tBA)
+		if (tBA)
 		{
 			controlValues[8] = (modulo < 0.1) ? 1.0 : 0.0;
 		}
 		else
 		{
-			controlValues[8] = mVDSettings->mLockBA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[8];
+			controlValues[8] = autoBA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[8];
 		}
 		if (mVDSettings->autoInvert)
 		{
@@ -609,6 +635,17 @@ void VDAnimation::resetRatio()
 	autoRatio = false;
 	tRatio = false;
 	controlValues[11] = defaultRatio;
+}
+// red
+void VDAnimation::tempoRed()
+{
+	tFR = !tFR;
+	if (!tFR) resetRed();
+}
+void VDAnimation::resetRed()
+{
+	autoFR = false;
+	tFR = false;
 }
 #pragma endregion utility
 

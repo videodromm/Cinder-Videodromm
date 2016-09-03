@@ -28,6 +28,19 @@ void VDUIColor::Run(const char* title) {
 			color[3] = mVDAnimation->controlValues[4];
 			ui::ColorEdit4("f", color);
 
+
+			// red
+			ctrl = 1;
+			if (ui::Button("a##red")) { mVDAnimation->lockRed(); }
+			ui::SameLine();
+			if (ui::Button("t##red")) { mVDAnimation->tempoRed(); }
+			ui::SameLine();
+			if (ui::Button("x##red")) { mVDAnimation->resetRed(); }
+			ui::SameLine();
+			if (ui::SliderFloat("red/min/max", &mVDAnimation->controlValues[ctrl], 0.0f, 1.0f))
+			{
+				// TODO
+			}
 			for (int i = 0; i < 4; i++)
 			{
 				if (mVDAnimation->controlValues[i + 1] != color[i])
@@ -37,8 +50,10 @@ void VDUIColor::Run(const char* title) {
 					colorChanged = true;
 				}
 			}
-			if (colorChanged) mVDRouter->colorWrite(); //lights4events
-
+			if (colorChanged) {
+				mVDAnimation->vec3Values[1] = vec3(color[0], color[1], color[2]);
+				mVDRouter->colorWrite(); //lights4events
+			}
 			// background color
 			backcolor[0] = mVDAnimation->controlValues[5];
 			backcolor[1] = mVDAnimation->controlValues[6];

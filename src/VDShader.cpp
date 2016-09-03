@@ -84,6 +84,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mOriginalFragmentString = aFragmentShaderString;
 	string mCurrentUniformsString = "";
+	string mNotFoundUniformsString = "/*\n";
 	if (aName.length() == 0) aName = getElapsedSeconds();
 	mName = aName;
 	aName += ".frag";
@@ -108,14 +109,37 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		for (const auto &uniform : uniforms) {
 			CI_LOG_V(mShader->getLabel() + ", uniform name:" + uniform.getName());
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
-				mShader->uniform(uniform.getName(), mVDAnimation->getUniformValue(uniform.getName()));
-				mCurrentUniformsString += "uniform float " + uniform.getName() + "; // " + toString(mVDAnimation->getUniformValue(uniform.getName())) + "\n";
+				int uniformType = mVDAnimation->getUniformType(uniform.getName());
+				switch (uniformType)
+				{
+				case 0:
+					// float
+					mShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform float " + uniform.getName() + "; // " + toString(mVDAnimation->getFloatUniformValue(uniform.getName())) + "\n";
+					break;
+				case 1:
+					// sampler2D
+					mShader->uniform(uniform.getName(), mVDAnimation->getSampler2DUniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform sampler2D " + uniform.getName() + "; // " + toString(mVDAnimation->getSampler2DUniformValue(uniform.getName())) + "\n";
+					break;
+				case 3:
+					// vec3
+					mShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform vec3 " + uniform.getName() + "; // " + toString(mVDAnimation->getVec3UniformValue(uniform.getName())) + "\n";
+					break;
+				default:
+					break;
+				}
+			}
+			else {
+				mNotFoundUniformsString += "not found " + uniform.getName() + "\n";
 			}
 		}
+		mNotFoundUniformsString += "*/\n";
 		// save .frag file
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
 		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-		mFragProcessed << mCurrentUniformsString << mOriginalFragmentString;
+		mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
 

@@ -46,5 +46,6 @@ namespace VideoDromm
 		char						buf[64];
 		float						color[4];
 		float						backcolor[4];
+		int							ctrl;
 	};
 }
