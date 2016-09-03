@@ -113,7 +113,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// Pixelate
 	createFloatUniform(15, "iPixelate", 1.0f);
 	// Trixels
-	controlValues[16] = 0.0f;
+	createFloatUniform(16, "iTrixels", 0.0f);
 	// GridSize
 	controlValues[17] = 0.0f;
 	// iCrossfade
@@ -127,7 +127,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// zoom
 	createFloatUniform(22, "iZoom", 1.0f);
 	// glitch
-	controlValues[45] = 0.0f;
+	createFloatUniform(45, "iGlitch", 0.0f);
 	// toggle
 	createFloatUniform(46, "iToggle", 0.0f);
 	// vignette

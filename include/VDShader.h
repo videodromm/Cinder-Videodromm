@@ -43,7 +43,7 @@ namespace VideoDromm
 		gl::GlslProgRef					getShader();
 		string							getName() { return mName; };
 		void							loadVertexStringFromFile(string aFileName);
-		void							loadFragmentStringFromFile(string aFileName);
+		bool							loadFragmentStringFromFile(string aFileName);
 		string							getFragmentString() { return mFragmentShaderString; };
 		bool							setFragmentString(string aFragmentShaderString, string aName = "");
 		// thumb image
