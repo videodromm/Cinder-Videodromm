@@ -85,20 +85,39 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mOriginalFragmentString = aFragmentShaderString;
 	string mCurrentUniformsString = "";
 	string mNotFoundUniformsString = "/*\n";
+	// we would like a name
 	if (aName.length() == 0) aName = getElapsedSeconds();
+	// name of the shader
 	mName = aName;
+	// filename to save
 	aName += ".frag";
 	mValid = false;
 	// load fragment shader
-	CI_LOG_V("setFragmentString, live loading");
+	CI_LOG_V("setFragmentString, live loading" + mName);
 	try
 	{
+		// shadertoy imported shaders need to be edited
+		// change texture2D to texture for version > 150?
+		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
+		std::size_t mainImage = mOriginalFragmentString.find("mainImage");
+		if (mainImage != std::string::npos) {
+			string begin = mOriginalFragmentString.substr(0, mainImage + 4) + "()";
+			string remaining = mOriginalFragmentString.substr(mainImage + 9);
+			std::size_t mainParams = remaining.find(")");
+			if (mainParams != std::string::npos) {
+				string end = remaining.substr(mainParams+1);
+				mOriginalFragmentString = begin + end;
+			}
+		}
+		// change fragCoord to gl_FragCoord
+		// change gl_FragColor to fragColor
+		// check if uniforms were declared in the file
 		std::size_t foundUniform = mOriginalFragmentString.find("uniform ");
-
 		if (foundUniform == std::string::npos) {
 			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
 			aFragmentShaderString = "/*" + mFragFile.string() + "*/\n" + shaderInclude + mOriginalFragmentString;
 		}
+		// try to compile
 		mShader = gl::GlslProg::create(mVextexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
@@ -108,6 +127,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		auto &uniforms = mShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
 			CI_LOG_V(mShader->getLabel() + ", uniform name:" + uniform.getName());
+			// if uniform is handled
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
 				int uniformType = mVDAnimation->getUniformType(uniform.getName());
 				switch (uniformType)
@@ -156,13 +176,12 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 			}
 		}
 		mNotFoundUniformsString += "*/\n";
-		// save .frag file
+		// save .frag file to migrate old shaders
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
 		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
 		mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
-
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{

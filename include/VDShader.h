@@ -64,7 +64,6 @@ namespace VideoDromm
 		int								mMicroSeconds;
 		string							mError;
         bool							mValid;
-
 		//! vertex shader
 		std::string						mVextexShaderString;
 		std::string						mVextexShaderFilePath;

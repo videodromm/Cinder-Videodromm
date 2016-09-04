@@ -98,8 +98,7 @@ namespace VideoDromm {
 	{
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[1]);
 		gl::clear(Color::black());
-
-		gl::ScopedGlslProg glslScope(mFboList[mLeftFboIndex]->getShader());// was mGlslA
+		gl::ScopedGlslProg glslScope(mFboList[mLeftFboIndex]->getShader());
 		mTextureList[mFboList[mLeftFboIndex]->getInputTextureIndex()]->getTexture()->bind(0); // TO MIGRATE
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[1]->getWidth(), mMixFbos[1]->getHeight()));
 	}
@@ -108,7 +107,7 @@ namespace VideoDromm {
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[2]);
 		gl::clear(Color::black());
 
-		gl::ScopedGlslProg glslScope(mFboList[mRightFboIndex]->getShader());// was mGlslB
+		gl::ScopedGlslProg glslScope(mFboList[mRightFboIndex]->getShader());
 		mTextureList[mFboList[mRightFboIndex]->getInputTextureIndex()]->getTexture()->bind(0); // TO MIGRATE
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[2]->getWidth(), mMixFbos[2]->getHeight()));
 	}
@@ -125,10 +124,6 @@ namespace VideoDromm {
 
 #pragma endregion blendmodes
 	void VDMix::update() {
-		/*mGlslA->uniform("iGlobalTime", (float)getElapsedSeconds());
-		mGlslA->uniform("iChannel0", 0);
-		mGlslB->uniform("iGlobalTime", (float)(getElapsedSeconds()));
-		mGlslB->uniform("iChannel0", 0);*/
 
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
 		mGlslMix->uniform("iGlobalTime", (float)getElapsedSeconds());
@@ -711,7 +706,6 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		if (aFboShaderIndex > mShaderList.size() - 1) aFboShaderIndex = mShaderList.size() - 1;
 		CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
-		//mFboList[aFboIndex]->setShaderIndex(aFboShaderIndex);
 		mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
 		// route message
 		stringstream aParams;
@@ -838,6 +832,11 @@ namespace VideoDromm {
 	void VDMix::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString);
+		// if live coding shader compiles and is used by a fbo reload it
+		for (int i = 0; i < mFboList.size(); i++)
+		{
+			if (mFboList[i]->getShaderIndex() == aShaderIndex) setFboFragmentShaderIndex(i, aShaderIndex);
+		}
 	}
 	string VDMix::getFragmentShaderString(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
