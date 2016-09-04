@@ -158,12 +158,11 @@ namespace VideoDromm {
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
-		//mFboTextureShader = mShaderList[mShaderIndex]->getShader();
 
 		mFboTextureShader->bind();
 		auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
-			CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
+			//CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
 				int uniformType = mVDAnimation->getUniformType(uniform.getName());
 				switch (uniformType)
@@ -174,26 +173,36 @@ namespace VideoDromm {
 					break;
 				case 1:
 					// sampler2D
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getSampler2DUniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), inputTextureIndex);
+					break;
+				case 2:
+					// vec2
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValue(uniform.getName()));
 					break;
 				case 3:
 					// vec3
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName())); 
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName()));
+					break;
+				case 4:
+					// vec4
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValue(uniform.getName()));
+					break;
+				case 5:
+					// int
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValue(uniform.getName()));
+					break;
+				case 6:
+					// bool
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValue(uniform.getName()));
 					break;
 				default:
 					break;
 				}
 			}
 			else {
-				CI_LOG_V(mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName());
+				if (uniform.getName() != "ciModelViewProjection") CI_LOG_V(mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName());
 			}
 		}
-
-		mFboTextureShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
-		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
-		//mFboTextureShader->uniform("iChannelResolution[0]", iChannelResolution0);
-		mFboTextureShader->uniform("iChannel0", 0);
-		mFboTextureShader->uniform("iZoom", mZoom);
 		gl::ScopedTextureBind tex(mTextureList[inputTextureIndex]->getTexture());
 		// lopocompris
 		//gl::drawSolidRect(Rectf(0, 0, 900, 700));

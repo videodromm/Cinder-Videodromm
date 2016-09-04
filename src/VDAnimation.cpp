@@ -135,46 +135,83 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	createVec3Uniform("iResolution", 0, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 	createVec3Uniform("iColor", 1, vec3(1.0,0.5,0.0));
 	createVec3Uniform("iBackgroundColor", 2);
-
+	// boolean
+	createBoolUniform("iFlipH", 0);
+	createBoolUniform("iFlipV", 1);
 	for (size_t i = 0; i < 8; i++)
 	{
-		createSampler2DUniform("iChannel" + i, i);
+		createSampler2DUniform("iChannel" + toString(i), i);
 	}
 	load();
 	loadAnimation();
 }
 void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue) {
 	controlValues[aCtrlIndex] = aValue;
-	shaderUniforms[aName].controlValueIndex = aCtrlIndex;
+	shaderUniforms[aName].indexOrValue = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 0;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createSampler2DUniform(string aName, int aValue) {
-	shaderUniforms[aName].controlValueIndex = aValue;
+	shaderUniforms[aName].indexOrValue = aValue;
 	shaderUniforms[aName].uniformType = 1;
+	shaderUniforms[aName].isValid = true;
+}
+void VDAnimation::createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue) {
+	vec2Values[aCtrlIndex] = aValue;
+	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].uniformType = 2;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue) {
 	vec3Values[aCtrlIndex] = aValue;
-	shaderUniforms[aName].controlValueIndex = aCtrlIndex;
+	shaderUniforms[aName].indexOrValue = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 3;
 	shaderUniforms[aName].isValid = true;
 }
+void VDAnimation::createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue) {
+	vec4Values[aCtrlIndex] = aValue;
+	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].uniformType = 4;
+	shaderUniforms[aName].isValid = true;
+}
+void VDAnimation::createIntUniform(string aName, int aCtrlIndex, int aValue) {
+	intValues[aCtrlIndex] = aValue;
+	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].uniformType = 5;
+	shaderUniforms[aName].isValid = true;
+}
+void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
+	boolValues[aCtrlIndex] = aValue;
+	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].uniformType = 6;
+	shaderUniforms[aName].isValid = true;
+}
+float VDAnimation::getFloatUniformValue(string aName) {
+	return controlValues[shaderUniforms[aName].indexOrValue];
+}
+int VDAnimation::getSampler2DUniformValue(string aName) {
+	return shaderUniforms[aName].indexOrValue;
+}
+vec2 VDAnimation::getVec2UniformValue(string aName) {
+	return vec2Values[shaderUniforms[aName].indexOrValue];
+}
+vec3 VDAnimation::getVec3UniformValue(string aName) {
+	return vec3Values[shaderUniforms[aName].indexOrValue];
+}
+vec4 VDAnimation::getVec4UniformValue(string aName) {
+	return vec4Values[shaderUniforms[aName].indexOrValue];
+}
+int VDAnimation::getIntUniformValue(string aName) {
+	return intValues[shaderUniforms[aName].indexOrValue];
+}
+bool VDAnimation::getBoolUniformValue(string aName) {
+	return boolValues[shaderUniforms[aName].indexOrValue];
+}
 bool VDAnimation::isExistingUniform(string aName) {
-	CI_LOG_V("isExistingUniform, name:" + aName + " valid:" + toString(shaderUniforms[aName].isValid));
 	return shaderUniforms[aName].isValid;
 }
 int VDAnimation::getUniformType(string aName) {
 	return shaderUniforms[aName].uniformType;
-}
-float VDAnimation::getFloatUniformValue(string aName) {
-	return controlValues[shaderUniforms[aName].controlValueIndex];
-}
-int VDAnimation::getSampler2DUniformValue(string aName) {
-	return shaderUniforms[aName].controlValueIndex;
-}
-vec3 VDAnimation::getVec3UniformValue(string aName) {
-	return vec3Values[shaderUniforms[aName].controlValueIndex];
 }
 void VDAnimation::load() {
 	// Create json file if it doesn't already exist.
@@ -502,6 +539,9 @@ void VDAnimation::update() {
 		{
 			controlValues[3] = autoFB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[3];
 		}
+		// foreground color vec3 update
+		vec3Values[1] = vec3(controlValues[1], controlValues[2], controlValues[3]);
+
 		// front alpha
 		if (tFA)
 		{
@@ -538,6 +578,8 @@ void VDAnimation::update() {
 		{
 			controlValues[7] = autoBB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[7];
 		}
+		// background color vec3 update
+		vec3Values[2] = vec3(controlValues[5], controlValues[6], controlValues[7]);
 		// 
 		if (tBA)
 		{

@@ -122,10 +122,30 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 					mShader->uniform(uniform.getName(), mVDAnimation->getSampler2DUniformValue(uniform.getName()));
 					mCurrentUniformsString += "uniform sampler2D " + uniform.getName() + "; // " + toString(mVDAnimation->getSampler2DUniformValue(uniform.getName())) + "\n";
 					break;
+				case 2:
+					// vec2
+					mShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform vec2 " + uniform.getName() + "; // " + toString(mVDAnimation->getVec2UniformValue(uniform.getName())) + "\n";
+					break;
 				case 3:
 					// vec3
 					mShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName()));
 					mCurrentUniformsString += "uniform vec3 " + uniform.getName() + "; // " + toString(mVDAnimation->getVec3UniformValue(uniform.getName())) + "\n";
+					break;
+				case 4:
+					// vec4
+					mShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform vec4 " + uniform.getName() + "; // " + toString(mVDAnimation->getVec4UniformValue(uniform.getName())) + "\n";
+					break;
+				case 5:
+					// int
+					mShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform int " + uniform.getName() + "; // " + toString(mVDAnimation->getIntUniformValue(uniform.getName())) + "\n";
+					break;
+				case 6:
+					// bool
+					mShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValue(uniform.getName()));
+					mCurrentUniformsString += "uniform bool " + uniform.getName() + "; // " + toString(mVDAnimation->getBoolUniformValue(uniform.getName())) + "\n";
 					break;
 				default:
 					break;

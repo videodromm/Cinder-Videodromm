@@ -26,9 +26,9 @@ namespace VideoDromm
 
 	struct VDUniform
 	{
-		bool						isValid;
 		int							uniformType;
-		int							controlValueIndex;
+		int							indexOrValue;
+		bool						isValid;
 	};
 
 	class VDAnimation {
@@ -136,13 +136,21 @@ namespace VideoDromm
 		float						iFreqs[7];
 		// OSC/MIDI/JSON controlled UI and params
 		map<int, float>				controlValues;
+		map<int, vec2>				vec2Values;
 		map<int, vec3>				vec3Values;
+		map<int, vec4>				vec4Values;
+		map<int, int>				intValues;
+		map<int, bool>				boolValues;
 		// shaders
 		bool						isExistingUniform(string aName);
 		int							getUniformType(string aName);
 		float						getFloatUniformValue(string aName);
 		int							getSampler2DUniformValue(string aName);
+		vec2						getVec2UniformValue(string aName);
 		vec3						getVec3UniformValue(string aName);
+		vec4						getVec4UniformValue(string aName);
+		int							getIntUniformValue(string aName);
+		bool						getBoolUniformValue(string aName);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -154,6 +162,15 @@ namespace VideoDromm
 		Parameter<float>			mExposure;
 		Parameter<string>			mText;
 		Parameter<bool>				mAutoBeatAnimation;
+		// shaders
+		map<string, VDUniform>		shaderUniforms;
+		void						createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f);
+		void						createSampler2DUniform(string aName, int aValue = 0);
+		void						createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue = vec2(0.0));
+		void						createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
+		void						createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue = vec4(0.0));
+		void						createIntUniform(string aName, int aCtrlIndex, int aValue = 1);
+		void						createBoolUniform(string aName, int aCtrlIndex, bool aValue = false);
 
 		// timed animation
 		ci::Timer					timer;
@@ -170,10 +187,5 @@ namespace VideoDromm
 		void						saveAnimation();
 
 		std::unordered_map<int, float>	mBadTV;
-		// shaders
-		map<string, VDUniform>		shaderUniforms;
-		void						createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f);
-		void						createSampler2DUniform(string aName, int aValue = 0);
-		void						createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
 	};
 }
