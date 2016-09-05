@@ -697,7 +697,7 @@ namespace VideoDromm {
 					ext = fileName.substr(dotIndex + 1);
 					if (ext == "glsl")
 					{
-						loadFragmentShader(fileName);
+						loadFragmentShader(aFolder + "/" + fileName);
 					}
 				}
 			}
