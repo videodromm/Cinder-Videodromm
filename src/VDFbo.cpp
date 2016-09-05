@@ -87,7 +87,7 @@ namespace VideoDromm {
 		return xml;
 	}
 
-	void VDFbo::fromXml(const XmlTree &xml)
+	bool VDFbo::fromXml(const XmlTree &xml)
 	{
 		mId = xml.getAttributeValue<string>("id", "");
 		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.glsl");
@@ -96,6 +96,7 @@ namespace VideoDromm {
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
+		return true;
 	}
 	void VDFbo::setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 		try {

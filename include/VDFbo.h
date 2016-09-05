@@ -52,7 +52,7 @@ namespace VideoDromm
 		//bool							isFlipH() { return mFlipH; };
 		//bool							isFlipV() { return mFlipV; };
 		//!
-		void							fromXml(const ci::XmlTree &xml);
+		bool							fromXml(const ci::XmlTree &xml);
 		//!
 		XmlTree							toXml() const;
 		// move, rotate, zoom methods

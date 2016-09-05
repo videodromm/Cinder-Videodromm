@@ -389,7 +389,7 @@ namespace VideoDromm {
 	}
 	bool TextureImageSequence::loadFromFullPath(string aPath)
 	{
-		bool noValidFile = true; // if no valid files in the folder, we keep existing vector
+		bool validFile = false; // if no valid files in the folder, we keep existing vector
 		string anyImagefileName = "0.jpg";
 		string folder = "";
 		string fileName;
@@ -429,9 +429,9 @@ namespace VideoDromm {
 						// only if proper image sequence
 						if (firstIndexFound) {
 							if (mExt == "png" || mExt == "jpg") {
-								if (noValidFile) {
+								if (!validFile) {
 									// we found a valid file
-									noValidFile = false;
+									validFile = true;
 									mSequenceTextures.clear();
 									// TODO only store folder relative to assets, not full path 
 									size_t found = fullPath.string().find_last_of("/\\");
@@ -455,7 +455,8 @@ namespace VideoDromm {
 			}
 
 			// init: if no valid file found we take the default 0.jpg
-			if (noValidFile) {
+			if (!validFile) {
+				// might want to remove default file as we are now using a boolean to notify the caller
 				if (anyImagefileName.length() > 0) {
 					mTexture = ci::gl::Texture::create(loadImage(loadAsset(anyImagefileName)), ci::gl::Texture::Format().loadTopDown(mTopDown));
 					mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(loadAsset(anyImagefileName)), gl::Texture::Format().loadTopDown(mTopDown)));
@@ -464,8 +465,7 @@ namespace VideoDromm {
 				}
 			}
 		}
-		return noValidFile;
-
+		return validFile;
 	}
 	bool TextureImageSequence::fromXml(const XmlTree &xml)
 	{
@@ -477,11 +477,15 @@ namespace VideoDromm {
 		mName = mPath;
 		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
 		if (mPath.length() > 0) {
-			fs::path fullPath = getAssetPath("") / mPath;// TODO / mVDSettings->mAssetsPath
-			rtn = loadFromFullPath(fullPath.string());
+			if (fs::exists(mPath)) {
+				rtn = loadFromFullPath(mPath);
+			}
+			else {
+				fs::path fullPath = getAssetPath("") / mPath;// TODO / mVDSettings->mAssetsPath
+				rtn = loadFromFullPath(fullPath.string());
+			}
 		}
 		return rtn;
-
 	}
 	XmlTree	TextureImageSequence::toXml() const {
 		XmlTree xml = VDTexture::toXml();

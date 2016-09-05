@@ -54,6 +54,7 @@ namespace VideoDromm
 		void							loadImageFile(string aFile, unsigned int aTextureIndex, bool right);
 		void							loadAudioFile(string aFile);
 		void							loadMovie(string aFile, unsigned int aTextureIndex);
+		bool							loadImageSequence(string aFile, unsigned int aTextureIndex);
 		//!
 		void							fromXml(const ci::XmlTree &xml);
 		//!

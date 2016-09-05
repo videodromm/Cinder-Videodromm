@@ -664,11 +664,30 @@ namespace VideoDromm {
 		}
 		else if (ext == "") {
 			// try loading image sequence from dir
-			//loadImageSequence(index, mFile);
+			if (!loadImageSequence(aAbsolutePath, aIndex)) {
+				// try to load a folder of shaders
+			}
 		}
 		return rtn;
 	}
-
+	bool VDMix::loadImageSequence(string aFile, unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		CI_LOG_V("loadImageSequence " + aFile + " at textureIndex " + toString(aTextureIndex));
+		// add texture xml
+		XmlTree			textureXml;
+		textureXml.setTag("texture");
+		textureXml.setAttribute("id", "0");
+		textureXml.setAttribute("texturetype", "sequence");
+		textureXml.setAttribute("path", aFile);
+		TextureImageSequenceRef t(new TextureImageSequence(mVDAnimation));
+		if (t->fromXml(textureXml)) {
+			mTextureList.push_back(t);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	void VDMix::loadMovie(string aFile, unsigned int aTextureIndex) {
 #if defined( CINDER_MSW )
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
