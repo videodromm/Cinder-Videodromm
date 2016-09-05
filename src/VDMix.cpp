@@ -526,6 +526,16 @@ namespace VideoDromm {
 			if (mFboList.size() > 1) mRightFboIndex = mFboList.size() - 1;
 		}
 	}
+	int VDMix::loadFragmentShader(string aFilePath) {
+		int rtn = -1;
+		CI_LOG_V("loadFragmentShader " + aFilePath);
+		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aFilePath, ""));
+		if (s->isValid()) {
+			mShaderList.push_back(s);
+			rtn = mShaderList.size() - 1;
+		}
+		return rtn;
+	}
 	int VDMix::loadFboFragmentShader(string aFilePath, unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 		int rtn = -1;
@@ -653,7 +663,7 @@ namespace VideoDromm {
 		}
 		else if (ext == "glsl") {
 			if (aIndex > getFboCount() - 1) aIndex = getFboCount() - 1;
-			rtn = loadFboFragmentShader(aAbsolutePath, aIndex);
+			rtn = loadFragmentShader(aAbsolutePath);
 		}
 		else if (ext == "xml") {
 		}
@@ -666,19 +676,43 @@ namespace VideoDromm {
 			// try loading image sequence from dir
 			if (!loadImageSequence(aAbsolutePath, aIndex)) {
 				// try to load a folder of shaders
+				loadShaderFolder(aAbsolutePath);
 			}
 		}
 		return rtn;
 	}
-	bool VDMix::loadImageSequence(string aFile, unsigned int aTextureIndex) {
+	bool VDMix::loadShaderFolder(string aFolder) {
+		int i = 0;
+		string ext = "";
+		fs::path p(aFolder);
+		for (fs::directory_iterator it(p); it != fs::directory_iterator(); ++it)
+		{
+			if (fs::is_regular_file(*it))
+			{
+				string fileName = it->path().filename().string();
+				int dotIndex = fileName.find_last_of(".");
+
+				if (dotIndex != std::string::npos)
+				{
+					ext = fileName.substr(dotIndex + 1);
+					if (ext == "glsl")
+					{
+						loadFragmentShader(fileName);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	bool VDMix::loadImageSequence(string aFolder, unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-		CI_LOG_V("loadImageSequence " + aFile + " at textureIndex " + toString(aTextureIndex));
+		CI_LOG_V("loadImageSequence " + aFolder + " at textureIndex " + toString(aTextureIndex));
 		// add texture xml
 		XmlTree			textureXml;
 		textureXml.setTag("texture");
 		textureXml.setAttribute("id", "0");
 		textureXml.setAttribute("texturetype", "sequence");
-		textureXml.setAttribute("path", aFile);
+		textureXml.setAttribute("path", aFolder);
 		TextureImageSequenceRef t(new TextureImageSequence(mVDAnimation));
 		if (t->fromXml(textureXml)) {
 			mTextureList.push_back(t);

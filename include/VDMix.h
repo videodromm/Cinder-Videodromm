@@ -54,7 +54,7 @@ namespace VideoDromm
 		void							loadImageFile(string aFile, unsigned int aTextureIndex, bool right);
 		void							loadAudioFile(string aFile);
 		void							loadMovie(string aFile, unsigned int aTextureIndex);
-		bool							loadImageSequence(string aFile, unsigned int aTextureIndex);
+		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex);
 		//!
 		void							fromXml(const ci::XmlTree &xml);
 		//!
@@ -70,7 +70,8 @@ namespace VideoDromm
 		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
-
+		bool							loadShaderFolder(string aFolder);
+		int								loadFragmentShader(string aFilePath);
 		// fbos
 		void							setLeftFboIndex(unsigned int aFboIndex);
 		void							setRightFboIndex(unsigned int aFboIndex);
