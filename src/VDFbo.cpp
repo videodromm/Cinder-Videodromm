@@ -200,7 +200,7 @@ namespace VideoDromm {
 				}
 			}
 			else {
-				if (uniform.getName() != "ciModelViewProjection") CI_LOG_V(mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName());
+				if (uniform.getName() != "ciModelViewProjection") mVDSettings->mMsg = mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName();
 			}
 		}
 		gl::ScopedTextureBind tex(mTextureList[inputTextureIndex]->getTexture());

@@ -79,14 +79,14 @@ namespace VideoDromm
 		unsigned int					getOriginalWidth();
 		unsigned int					getOriginalHeight();
 		//!
-		virtual void					fromXml(const ci::XmlTree &xml);
+		virtual bool					fromXml(const ci::XmlTree &xml);
 		//!
 		virtual XmlTree					toXml() const;
 		//! read a xml file and pass back a vector of VDTextures
 		static VDTextureList			readSettings(VDAnimationRef aVDAnimation, const ci::DataSourceRef &source);
 		//! write a xml file
 		static void						writeSettings(const VDTextureList &vdtexturelist, const ci::DataTargetRef &target);
-		virtual void					loadFromFullPath(string aPath);
+		virtual bool					loadFromFullPath(string aPath);
 		string							getStatus() { return mStatus; };
 		//! area to display
 		void							lockBounds(bool lock, unsigned int aWidth, unsigned int aHeight);
@@ -150,10 +150,10 @@ namespace VideoDromm
 		//
 		static TextureImageRef	create() { return std::make_shared<TextureImage>(); }
 		//!
-		void					fromXml(const XmlTree &xml) override;
+		bool					fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree			toXml() const override;
-		virtual void			loadFromFullPath(string aPath) override;
+		virtual bool			loadFromFullPath(string aPath) override;
 
 	public:
 		TextureImage();
@@ -177,11 +177,11 @@ namespace VideoDromm
 		//
 		static TextureImageSequenceRef	create(VDAnimationRef aVDAnimation) { return std::make_shared<TextureImageSequence>(aVDAnimation); }
 		//!
-		void					fromXml(const XmlTree &xml) override;
+		bool					fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree			toXml() const override;
 		//!
-		virtual void			loadFromFullPath(string aPath) override;
+		virtual bool			loadFromFullPath(string aPath) override;
 		TextureImageSequence(VDAnimationRef aVDAnimation);
 		virtual ~TextureImageSequence(void);
 
@@ -238,11 +238,11 @@ namespace VideoDromm
 		//
 		static TextureMovieRef	create() { return std::make_shared<TextureMovie>(); }
 		//!
-		void					fromXml(const XmlTree &xml) override;
+		bool					fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree			toXml() const override;
 		//!
-		virtual void			loadFromFullPath(string aPath) override;
+		virtual bool			loadFromFullPath(string aPath) override;
 
 	public:
 		TextureMovie();
@@ -276,7 +276,7 @@ namespace VideoDromm
 		//
 		static TextureCameraRef create() { return std::make_shared<TextureCamera>(); }
 		//!
-		void				fromXml(const XmlTree &xml) override;
+		bool				fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree	toXml() const override;
 
@@ -307,7 +307,7 @@ namespace VideoDromm
 		//
 		static TextureSharedRef create() { return std::make_shared<TextureShared>(); }
 		//!
-		void				fromXml(const XmlTree &xml) override;
+		bool				fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree	toXml() const override;
 
@@ -347,11 +347,11 @@ namespace VideoDromm
 		//
 		static TextureAudioRef	create(VDAnimationRef aVDAnimation) { return std::make_shared<TextureAudio>(aVDAnimation); }
 		//!
-		void					fromXml(const XmlTree &xml) override;
+		bool					fromXml(const XmlTree &xml) override;
 		//!
 		virtual	XmlTree			toXml() const override;
 		//!
-		virtual void			loadFromFullPath(string aPath) override;
+		virtual bool			loadFromFullPath(string aPath) override;
 
 	public:
 		TextureAudio(VDAnimationRef aVDAnimation);

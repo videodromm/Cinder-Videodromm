@@ -192,8 +192,9 @@ namespace VideoDromm {
 		return xml;
 	}
 
-	void VDTexture::fromXml(const XmlTree &xml)
+	bool VDTexture::fromXml(const XmlTree &xml)
 	{
+		return true;
 	}
 	void VDTexture::toggleLoadingFromDisk() {
 
@@ -227,9 +228,10 @@ namespace VideoDromm {
 	int VDTexture::getMaxFrame() {
 		return 1;
 	}
-	void VDTexture::loadFromFullPath(string aPath) {
+	bool VDTexture::loadFromFullPath(string aPath) {
 		// initialize texture
 		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		return true;
 	}
 	void VDTexture::lockBounds(bool lock, unsigned int aWidth, unsigned int aHeight) {
 		mBoundsLocked = lock;
@@ -322,7 +324,7 @@ namespace VideoDromm {
 		return xml;
 	}
 
-	void TextureImage::fromXml(const XmlTree &xml)
+	bool TextureImage::fromXml(const XmlTree &xml)
 	{
 		VDTexture::fromXml(xml);
 		// retrieve attributes specific to this type of texture
@@ -334,8 +336,9 @@ namespace VideoDromm {
 			fs::path fullPath = getAssetPath("") / mFolder / mPath;
 			loadFromFullPath(fullPath.string());
 		}
+		return true;
 	}
-	void TextureImage::loadFromFullPath(string aPath) {
+	bool TextureImage::loadFromFullPath(string aPath) {
 		if (fs::exists(aPath)) {
 			mTexture = ci::gl::Texture::create(loadImage(aPath));
 			mInputSurface = Surface(loadImage(aPath));
@@ -348,6 +351,7 @@ namespace VideoDromm {
 		mYTop = 0;
 		mXRight = mOriginalWidth = mTexture->getWidth();
 		mYBottom = mOriginalHeight = mTexture->getHeight();
+		return true;
 	}
 
 	ci::gl::Texture2dRef TextureImage::getTexture() {
@@ -383,7 +387,7 @@ namespace VideoDromm {
 
 
 	}
-	void TextureImageSequence::loadFromFullPath(string aPath)
+	bool TextureImageSequence::loadFromFullPath(string aPath)
 	{
 		bool noValidFile = true; // if no valid files in the folder, we keep existing vector
 		string anyImagefileName = "0.jpg";
@@ -460,9 +464,12 @@ namespace VideoDromm {
 				}
 			}
 		}
+		return noValidFile;
+
 	}
-	void TextureImageSequence::fromXml(const XmlTree &xml)
+	bool TextureImageSequence::fromXml(const XmlTree &xml)
 	{
+		bool rtn = false;
 		// init		
 		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
 		// retrieve attributes specific to this type of texture
@@ -471,8 +478,10 @@ namespace VideoDromm {
 		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
 		if (mPath.length() > 0) {
 			fs::path fullPath = getAssetPath("") / mPath;// TODO / mVDSettings->mAssetsPath
-			loadFromFullPath(fullPath.string());
+			rtn = loadFromFullPath(fullPath.string());
 		}
+		return rtn;
+
 	}
 	XmlTree	TextureImageSequence::toXml() const {
 		XmlTree xml = VDTexture::toXml();
@@ -624,8 +633,9 @@ namespace VideoDromm {
 		mType = MOVIE;
 
 	}
-	void TextureMovie::fromXml(const XmlTree &xml)
+	bool TextureMovie::fromXml(const XmlTree &xml)
 	{
+		bool rtn = false;
 		// init		
 		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
 		// retrieve attributes specific to this type of texture
@@ -634,10 +644,11 @@ namespace VideoDromm {
 		if (mPath.length() > 0) {
 			fs::path fullPath = getAssetPath("") / mPath;// TODO / mVDSettings->mAssetsPath
 			if (fs::exists(fullPath)) {
-				loadFromFullPath(fullPath.string());
+				rtn = loadFromFullPath(fullPath.string());
 			}
 		}
 		mName = mPath;
+		return rtn;
 	}
 	XmlTree	TextureMovie::toXml() const {
 		XmlTree xml = VDTexture::toXml();
@@ -649,8 +660,9 @@ namespace VideoDromm {
 	}
 #endif
 #if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
-	void TextureMovie::loadFromFullPath(string aPath)
+	bool TextureMovie::loadFromFullPath(string aPath)
 	{
+		bool rtn = false;
 		try {
 			mMovie.reset();
 			// load up the movie, set it to loop, and begin playing
@@ -667,13 +679,14 @@ namespace VideoDromm {
 			mWidth = mMovie->getWidth();
 			mHeight = mMovie->getHeight();
 			mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+			rtn = true;
 		}
 		catch (ci::Exception &e)
 		{
 			console() << string(e.what()) << std::endl;
 			console() << "Unable to load the movie." << std::endl;
 		}
-
+		return true;
 	}
 
 	ci::gl::Texture2dRef TextureMovie::getTexture() {
@@ -713,12 +726,13 @@ namespace VideoDromm {
 			CI_LOG_EXCEPTION("Failed to init capture ", exc);
 		}
 	}
-	void TextureCamera::fromXml(const XmlTree &xml) {
+	bool TextureCamera::fromXml(const XmlTree &xml) {
 		// init		
 		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
 		// retrieve attributes specific to this type of texture
 		mPath = xml.getAttributeValue<string>("path", "");
 		mName = "camera";
+		return true;
 	}
 	XmlTree	TextureCamera::toXml() const {
 		XmlTree xml = VDTexture::toXml();
@@ -774,7 +788,7 @@ namespace VideoDromm {
 		mClientSyphon.bind();
 #endif
 	}
-	void TextureShared::fromXml(const XmlTree &xml)
+	bool TextureShared::fromXml(const XmlTree &xml)
 	{
 		// init		
 		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
@@ -782,6 +796,7 @@ namespace VideoDromm {
 		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
 		mPath = xml.getAttributeValue<string>("path", "");
 		mName = "shared";
+		return true;
 	}
 	XmlTree	TextureShared::toXml() const {
 		XmlTree xml = VDTexture::toXml();
@@ -902,7 +917,7 @@ namespace VideoDromm {
 		return xml;
 	}
 
-	void TextureAudio::fromXml(const XmlTree &xml)
+	bool TextureAudio::fromXml(const XmlTree &xml)
 	{
 		VDTexture::fromXml(xml);
 		// retrieve attributes specific to this type of texture
@@ -912,8 +927,9 @@ namespace VideoDromm {
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
 		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
+		return true;
 	}
-	void TextureAudio::loadFromFullPath(string aPath)
+	bool TextureAudio::loadFromFullPath(string aPath)
 	{
 		CI_LOG_V("TextureAudio::loadFromFullPath: " + aPath);
 		try {
@@ -940,6 +956,7 @@ namespace VideoDromm {
 		catch (...) {
 			CI_LOG_W("could not open wavefile");
 		}
+		return true;
 	}
 
 	ci::gl::Texture2dRef TextureAudio::getTexture() {
