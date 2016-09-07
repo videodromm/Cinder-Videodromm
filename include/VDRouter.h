@@ -95,6 +95,7 @@ namespace VideoDromm
 		void						wsWrite(std::string msg);
 		void						wsWriteBinary(const void *data, int size);
 		void						wsConnect();
+		void						wsDisconnect();
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
 		void						colorWrite();

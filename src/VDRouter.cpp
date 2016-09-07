@@ -687,21 +687,17 @@ void VDRouter::parseMessage(string msg) {
 			//mShaders->loadLiveShader(msg);
 			mVDSettings->mShaderToLoad = msg;
 			// route it to websockets clients
-
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
-
 		}
 		else if (msg.substr(0, 7) == "#version") {
 			// fragment shader from live coding
 			//mShaders->loadLiveShader(msg);
 			// route it to websockets clients
-
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
-
 		}
 		else if (first == "/")
 		{
@@ -712,7 +708,6 @@ void VDRouter::parseMessage(string msg) {
 			int t = msg[13];
 			int u = msg[14];
 			CI_LOG_V(msg);
-
 		}
 		else if (first == "I") {
 
@@ -739,6 +734,16 @@ void VDRouter::parseMessage(string msg) {
 			}
 		}
 	}
+}
+
+void VDRouter::wsDisconnect() {
+	/* done automatically already
+	if (mVDSettings->mIsWebSocketsServer) {
+		mServer.cancel();
+	}
+	else {
+		mClient.disconnect();
+	} */
 }
 
 void VDRouter::wsConnect() {
