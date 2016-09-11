@@ -4,7 +4,7 @@ using namespace VideoDromm;
 
 VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
-	mVextexShaderFilePath = aVextexShaderFilePath;
+	mVertexShaderFilePath = aVextexShaderFilePath;
 	mValid = false;
 	// shadertoy include
 	shaderInclude = loadString(loadAsset("shadertoy.inc"));
@@ -14,7 +14,7 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	gl::Fbo::Format format;
 	mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
 
-	loadVertexStringFromFile(mVextexShaderFilePath);
+	loadVertexStringFromFile(mVertexShaderFilePath);
 	loadFragmentStringFromFile(mFragmentShaderFilePath);
 	if (mValid) {
 		CI_LOG_V("VDShaders constructor success");
@@ -37,8 +37,8 @@ void VDShader::loadVertexStringFromFile(string aFileName) {
 			CI_LOG_V(mError);
 			mVertexFile = getAssetPath("") / "passthru.vert";
 		}
-		mVextexShaderString = loadString(loadFile(mVertexFile));
-		mVextexShaderFilePath = mVertexFile.string();
+		mVertexShaderString = loadString(loadFile(mVertexFile));
+		mVertexShaderFilePath = mVertexFile.string();
 		CI_LOG_V("successfully loaded " + mVertexFile.string());
 	}
 	catch (const std::exception &e) {
@@ -118,7 +118,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 			aFragmentShaderString = "/*" + mFragFile.string() + "*/\n" + shaderInclude + mOriginalFragmentString;
 		}
 		// try to compile
-		mShader = gl::GlslProg::create(mVextexShaderString, aFragmentShaderString);
+		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
 		CI_LOG_V(mFragFile.string() + " live edited, loaded and compiled");
@@ -202,7 +202,7 @@ void VDShader::fromXml(const XmlTree &xml) {
 	mName = xml.getAttributeValue<string>("fragfile", "0.glsl");
 	CI_LOG_V("shader id " + mId + " name " + mName);
 	mVertexFile = getAssetPath("") / mVDSettings->mAssetsPath / mVertfile;
-	loadVertexStringFromFile(mVextexShaderFilePath);
+	loadVertexStringFromFile(mVertexShaderFilePath);
 
 	mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / mName;
 	loadFragmentStringFromFile(mFragFile.string());

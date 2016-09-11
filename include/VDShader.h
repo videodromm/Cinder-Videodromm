@@ -45,6 +45,7 @@ namespace VideoDromm
 		void							loadVertexStringFromFile(string aFileName);
 		bool							loadFragmentStringFromFile(string aFileName);
 		string							getFragmentString() { return mFragmentShaderString; };
+		string							getVertexString() { return mVertexShaderString; };
 		bool							setFragmentString(string aFragmentShaderString, string aName = "");
 		// thumb image
 		ci::gl::Texture2dRef			getThumb();
@@ -65,8 +66,8 @@ namespace VideoDromm
 		string							mError;
         bool							mValid;
 		//! vertex shader
-		std::string						mVextexShaderString;
-		std::string						mVextexShaderFilePath;
+		std::string						mVertexShaderString;
+		std::string						mVertexShaderFilePath;
 		fs::path						mVertexFile;
 		//! fragment shader
 		std::string						mFragmentShaderString;

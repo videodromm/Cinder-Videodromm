@@ -875,6 +875,7 @@ namespace VideoDromm {
 	unsigned int VDMix::getShadersCount() {
 		return mShaderList.size();
 	}
+
 	string VDMix::getShaderName(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getName();
@@ -894,6 +895,10 @@ namespace VideoDromm {
 	string VDMix::getFragmentShaderString(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getFragmentString();
+	}
+	string VDMix::getVertexShaderString(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->getVertexString();
 	}
 	void VDMix::createShaderThumb(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;

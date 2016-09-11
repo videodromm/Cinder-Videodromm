@@ -3,6 +3,7 @@
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
+#include "cinder/gl/GlslProg.h"
 #include "cinder/Xml.h"
 #include "cinder/Json.h"
 #include "cinder/Capture.h"
@@ -66,12 +67,6 @@ namespace VideoDromm
 		// move, rotate, zoom methods
 		void							setPosition(int x, int y);
 		void							setZoom(float aZoom);
-		// shader
-		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
-		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
-		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
-		bool							loadShaderFolder(string aFolder);
-		int								loadFragmentShader(string aFilePath);
 		// fbos
 		void							setLeftFboIndex(unsigned int aFboIndex);
 		void							setRightFboIndex(unsigned int aFboIndex);
@@ -124,10 +119,17 @@ namespace VideoDromm
 		// uniforms
 		void							setCrossfade(float aCrossfade);
 		// shaders
+		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
+		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
+		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
+		bool							loadShaderFolder(string aFolder);
+		int								loadFragmentShader(string aFilePath);
 		unsigned int					getShadersCount();
+		//ci::gl:GlslProgRef				getShader(unsigned int aShaderIndex);
 		string							getShaderName(unsigned int aShaderIndex);
 		ci::gl::Texture2dRef			getShaderThumb(unsigned int aShaderIndex);
 		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString);
+		string							getVertexShaderString(unsigned int aShaderIndex);
 		string							getFragmentShaderString(unsigned int aShaderIndex);
 		void							createShaderThumb(unsigned int aShaderIndex);
 		// blendmodes
