@@ -34,7 +34,25 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VD
 	mUIMouse = VDUIMouse::create(mVDSettings, mVDMix, mVDAnimation);		
 	// UIShaders
 	mUIShaders = VDUIShaders::create(mVDSettings, mVDMix, mVDRouter);
+	// imgui
+	margin = 3;
+	inBetween = 3;
+	// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15 mPreviewWidth = 160;mPreviewHeight = 120;
+	w = mVDSettings->mPreviewFboWidth + margin;
+	h = mVDSettings->mPreviewFboHeight * 2.3;
+	largeW = (mVDSettings->mPreviewFboWidth + margin) * 4;
+	largeH = (mVDSettings->mPreviewFboHeight + margin) * 5;
+	largePreviewW = mVDSettings->mPreviewWidth + margin;
+	largePreviewH = (mVDSettings->mPreviewHeight + margin) * 2.4;
+	displayHeight = mVDSettings->mMainWindowHeight - 50;
+	yPosRow1 = 100 + margin;
+	yPosRow2 = yPosRow1 + largePreviewH + margin;
+	yPosRow3 = yPosRow2 + h*1.4 + margin;
+
+	mouseGlobal = false;
+	
 	mIsResizing = true;
+
 }
 VDUI::~VDUI() {
 
