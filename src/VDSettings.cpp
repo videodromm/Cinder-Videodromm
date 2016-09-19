@@ -599,7 +599,7 @@ void VDSettings::reset()
 	mWebSocketsHost = "localhost";
 	mWebSocketsPort = 9002;
 	// Blendmode 
-	iBlendMode = 4;
+	iBlendMode = 0;
 	// abp
 	mBend = 1.0f;
 	// mix shader color multipliers

@@ -8,7 +8,7 @@ VDUIBlend::VDUIBlend(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef 
 	mVDAnimation = aVDAnimation;
 }
 VDUIBlend::~VDUIBlend() {
-	
+
 }
 
 void VDUIBlend::Run(const char* title) {
@@ -49,7 +49,8 @@ void VDUIBlend::Run(const char* title) {
 		}
 		ui::End();
 		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
-		if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW) )
+		//if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW))
+		if (s % 8 == 7)
 		{
 			xPos = mVDSettings->uiMargin;
 			yPos += mVDSettings->uiPreviewH + mVDSettings->uiMargin;
