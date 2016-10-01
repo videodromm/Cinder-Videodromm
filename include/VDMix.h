@@ -143,6 +143,7 @@ namespace VideoDromm
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// warps
 		string							getWarpName(unsigned int aWarpIndex) { return toString(aWarpIndex); };// TODO
+		unsigned int					getWarpFboIndex(unsigned int aFboIndex) { return 0; };// TODO
 	protected:
 		std::string						mName;
 		bool							mFlipV;
