@@ -41,6 +41,8 @@
 #include "VDUIMouse.h"
 // Shaders
 #include "VDUIShaders.h"
+// Warps
+#include "VDUIWarps.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -75,7 +77,7 @@ namespace VideoDromm
 		// Session
 		VDSessionRef				mVDSession;
 		// Console
-		VDConsoleRef				mVDConsole;
+		VDConsoleRef				mUIConsole;
 		bool						showConsole;
 		void						showVDConsole(bool* opened);
 		// UITextures
@@ -126,7 +128,11 @@ namespace VideoDromm
 		VDUIShadersRef				mUIShaders;
 		bool						showUIShaders;
 		void						showVDUIShaders();
-
+		// UIWarps
+		VDUIWarpsRef				mUIWarps;
+		bool						showUIWarps;
+		void						showVDUIWarps();
+		
 		char						buf[64];
 		bool						mIsResizing;
 		// imgui

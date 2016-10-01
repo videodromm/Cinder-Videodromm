@@ -141,6 +141,8 @@ namespace VideoDromm
 		unsigned int					getMixFbosCount() { return mMixFbos.size(); }
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
+		// warps
+		string							getWarpName(unsigned int aWarpIndex) { return toString(aWarpIndex); };// TODO
 	protected:
 		std::string						mName;
 		bool							mFlipV;

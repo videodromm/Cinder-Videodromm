@@ -113,6 +113,8 @@ namespace VideoDromm {
 	}
 	void VDMix::renderMix()
 	{
+		renderSceneA();
+		renderSceneB();
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[0]);
 		gl::clear(Color::black());
 
@@ -181,9 +183,6 @@ namespace VideoDromm {
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
 		mGlslMix->uniform("iBadTv", mVDSettings->iBadTv);
 
-
-		renderSceneA();
-		renderSceneB();
 		renderMix();
 		// blendmodes preview
 		if (mBlendRender) {

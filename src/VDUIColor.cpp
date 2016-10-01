@@ -33,7 +33,7 @@ void VDUIColor::Run(const char* title) {
 			ui::SameLine();
 			if (ui::Button("x##red")) { mVDAnimation->resetRed(); }
 			ui::SameLine();
-			if (ui::SliderFloat("red/min/max", &mVDAnimation->controlValues[ctrl], 0.0f, 1.0f))
+			if (ui::SliderFloat("red/min/max", &color[ctrl], 0.0f, 1.0f))
 			{
 				// TODO color[0] not mVDAnimation->controlValues[ctrl]??
 			}
