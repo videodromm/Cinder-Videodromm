@@ -77,32 +77,34 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 		controlValues[c] = 0.01f;
 	}
 	int ctrl;
+	// not used
+	createFloatUniform("iUseless", 0, 1.0f);
 	// red
-	controlValues[1] = 1.0f;
+	createFloatUniform("iFR", 1, 1.0f);
 	// green
-	controlValues[2] = 0.3f;
+	createFloatUniform("iFG", 2, 0.3f);
 	// blue
-	controlValues[3] = 0.0f;
+	createFloatUniform("iFB", 3, 0.0f);
 	// Alpha 
-	controlValues[4] = 1.0f;
+	createFloatUniform("iAlpha", 4, 1.0f);
 	// background red
-	controlValues[5] = 0.1f;
+	createFloatUniform("iBR", 5, 0.1f);
 	// background green
-	controlValues[6] = 0.1f;
+	createFloatUniform("iBG", 6, 0.1f);
 	// background blue
-	controlValues[7] = 0.1f;
+	createFloatUniform("iBB", 7, 0.1f);
 	// background alpha
-	controlValues[8] = 0.2f;
+	createFloatUniform("iBA", 8, 0.2f);
 	// pointsphere zPosition
-	controlValues[9] = -0.7f;
+	createFloatUniform("iZPos", 9, -0.7f);
 	// iChromatic
 	createFloatUniform("iChromatic", 10, 0.0f);
 	// ratio
 	createFloatUniform("iRatio", 11, 20.0f);
 	// Speed 
-	controlValues[12] = 12.0f;
+	createFloatUniform("iSpeed", 12, 12.0f);
 	// Audio multfactor 
-	controlValues[13] = 1.0f;
+	createFloatUniform("iAudioMult", 13, 1.0f);
 	// exposure
 	createFloatUniform("iExposure", 14, 1.0f);
 	// Pixelate
@@ -110,15 +112,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// Trixels
 	createFloatUniform("iTrixels", 16, 0.0f);
 	// GridSize
-	controlValues[17] = 0.0f;
+	createFloatUniform("iGridSize", 17, 0.0f);
 	// iCrossfade
-	controlValues[18] = 1.0f;
+	createFloatUniform("iCrossFade", 18, 1.0f);
 	// RotationSpeed
 	createFloatUniform("iRotationSpeed", 19, 0.0f);
 	// Steps
 	createFloatUniform("iSteps", 20, 16.0f);
 	// iPreviewCrossfade
-	controlValues[21] = 0.0f;
+	createFloatUniform("iPreviewCrossfade", 21, 0.0f);
 	// zoom
 	createFloatUniform("iZoom", 22, 1.0f);
 	// glitch
@@ -133,8 +135,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	createFloatUniform("iGlobalTime", 49, 0.0f);
 	// vec3
 	createVec3Uniform("iResolution", 0, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
-	createVec3Uniform("iColor", 1, vec3(1.0,0.5,0.0));
+	createVec3Uniform("iColor", 1, vec3(1.0, 0.5, 0.0));
 	createVec3Uniform("iBackgroundColor", 2);
+	createVec3Uniform("iChannelResolution[0]", 3, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 	// boolean
 	createBoolUniform("iFlipH", 0);
 	createBoolUniform("iFlipV", 1);
@@ -145,67 +148,90 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	load();
 	loadAnimation();
 }
-void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue) {
-	controlValues[aCtrlIndex] = aValue;
-	shaderUniforms[aName].indexOrValue = aCtrlIndex;
-	shaderUniforms[aName].uniformType = 0;
+void VDAnimation::createSampler2DUniform(string aName, int aTextureIndex) {
+	shaderUniforms[aName].textureIndex = aTextureIndex;
+	shaderUniforms[aName].uniformType = 1;
 	shaderUniforms[aName].isValid = true;
 }
-void VDAnimation::createSampler2DUniform(string aName, int aValue) {
-	shaderUniforms[aName].indexOrValue = aValue;
-	shaderUniforms[aName].uniformType = 1;
+void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue) {
+	controlValues[aCtrlIndex] = aValue;
+	controlIndexes[aCtrlIndex] = aName;
+	shaderUniforms[aName].index = aCtrlIndex;
+	shaderUniforms[aName].floatValue = aValue;
+	shaderUniforms[aName].uniformType = 0;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue) {
 	vec2Values[aCtrlIndex] = aValue;
-	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 2;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue) {
 	vec3Values[aCtrlIndex] = aValue;
-	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 3;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue) {
 	vec4Values[aCtrlIndex] = aValue;
-	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 4;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createIntUniform(string aName, int aCtrlIndex, int aValue) {
 	intValues[aCtrlIndex] = aValue;
-	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 5;
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
 	boolValues[aCtrlIndex] = aValue;
-	shaderUniforms[aName].indexOrValue = aCtrlIndex;
+	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 6;
 	shaderUniforms[aName].isValid = true;
 }
-float VDAnimation::getFloatUniformValue(string aName) {
-	return controlValues[shaderUniforms[aName].indexOrValue];
+string VDAnimation::getUniformNameForIndex(int aIndex) {
+	if (aIndex > controlIndexes.size() - 1) aIndex = 0;
+	return controlIndexes[aIndex];
+}
+bool VDAnimation::hasFloatChanged(int aIndex) {
+	return (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != controlValues[aIndex]);
+}
+bool VDAnimation::changeFloatValue(int aIndex, float aValue) {
+	bool rtn = false;
+	if (aIndex < controlValues.size() - 1 && aIndex > 0) {
+		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
+			controlValues[aIndex] = shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
+			rtn = true;
+		}
+	}
+	return rtn;
+}
+float VDAnimation::getFloatUniformValueByIndex(int aIndex) {
+	if (aIndex > controlValues.size() - 1) aIndex = 0;
+	return controlValues[aIndex];
 }
 int VDAnimation::getSampler2DUniformValue(string aName) {
-	return shaderUniforms[aName].indexOrValue;
+	return shaderUniforms[aName].textureIndex;
+}
+float VDAnimation::getFloatUniformValueByName(string aName) {
+	return controlValues[shaderUniforms[aName].index];
 }
 vec2 VDAnimation::getVec2UniformValue(string aName) {
-	return vec2Values[shaderUniforms[aName].indexOrValue];
+	return vec2Values[shaderUniforms[aName].index];
 }
 vec3 VDAnimation::getVec3UniformValue(string aName) {
-	return vec3Values[shaderUniforms[aName].indexOrValue];
+	return vec3Values[shaderUniforms[aName].index];
 }
 vec4 VDAnimation::getVec4UniformValue(string aName) {
-	return vec4Values[shaderUniforms[aName].indexOrValue];
+	return vec4Values[shaderUniforms[aName].index];
 }
 int VDAnimation::getIntUniformValue(string aName) {
-	return intValues[shaderUniforms[aName].indexOrValue];
+	return intValues[shaderUniforms[aName].index];
 }
 bool VDAnimation::getBoolUniformValue(string aName) {
-	return boolValues[shaderUniforms[aName].indexOrValue];
+	return boolValues[shaderUniforms[aName].index];
 }
 bool VDAnimation::isExistingUniform(string aName) {
 	return shaderUniforms[aName].isValid;
@@ -280,12 +306,7 @@ void VDAnimation::setExposure(float aExposure) {
 void VDAnimation::setAutoBeatAnimation(bool aAutoBeatAnimation) {
 	mAutoBeatAnimation = aAutoBeatAnimation;
 }
-void VDAnimation::changeControlValue(int aControl, float aValue) {
-	// check if changed
-	if (controlValues[aControl] != aValue) {
 
-	}
-}
 
 bool VDAnimation::handleKeyDown(KeyEvent &event)
 {
@@ -314,32 +335,32 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 	case KeyEvent::KEY_r:
 		newValue = controlValues[1] + 0.1f;
 		if (newValue > 1.0f) newValue = 0.0f;
-		changeControlValue(1, newValue);
+		changeFloatValue(1, newValue);
 		break;
 	case KeyEvent::KEY_g:
 		newValue = controlValues[2] + 0.1f;
 		if (newValue > 1.0f) newValue = 0.0f;
-		changeControlValue(2, newValue);
+		changeFloatValue(2, newValue);
 		break;
 	case KeyEvent::KEY_b:
 		newValue = controlValues[3] + 0.1f;
 		if (newValue > 1.0f) newValue = 0.0f;
-		changeControlValue(3, newValue);
+		changeFloatValue(3, newValue);
 		break;
 	case KeyEvent::KEY_e:
 		newValue = controlValues[1] - 0.1f;
 		if (newValue < 0.0f) newValue = 1.0;
-		changeControlValue(1, newValue);
+		changeFloatValue(1, newValue);
 		break;
 	case KeyEvent::KEY_f:
 		newValue = controlValues[2] - 0.1f;
 		if (newValue < 0.0f) newValue = 1.0;
-		changeControlValue(2, newValue);
+		changeFloatValue(2, newValue);
 		break;
 	case KeyEvent::KEY_v:
 		newValue = controlValues[3] - 0.1f;
 		if (newValue < 0.0f) newValue = 1.0;
-		changeControlValue(3, newValue);
+		changeFloatValue(3, newValue);
 		break;
 	case KeyEvent::KEY_t:
 		// glitch
@@ -363,7 +384,7 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// crossfade left
 		if (controlValues[18] > 0.0) controlValues[18] -= 0.1;
 		break;
-	//case KeyEvent::KEY_x:
+		//case KeyEvent::KEY_x:
 	case KeyEvent::KEY_y:
 		mVDSettings->iXorY = !mVDSettings->iXorY;
 		break;

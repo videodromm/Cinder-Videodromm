@@ -170,7 +170,7 @@ namespace VideoDromm {
 				{
 				case 0:
 					// float
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValueByName(uniform.getName()));
 					break;
 				case 1:
 					// sampler2D
@@ -201,7 +201,10 @@ namespace VideoDromm {
 				}
 			}
 			else {
-				if (uniform.getName() != "ciModelViewProjection") mVDSettings->mMsg = mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName();
+				if (uniform.getName() != "ciModelViewProjection") {
+					mVDSettings->mMsg = mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName();
+					CI_LOG_V(mVDSettings->mMsg);
+				}
 			}
 		}
 		gl::ScopedTextureBind tex(mTextureList[inputTextureIndex]->getTexture());

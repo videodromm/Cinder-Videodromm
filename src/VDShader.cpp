@@ -134,8 +134,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 				{
 				case 0:
 					// float
-					mShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValue(uniform.getName()));
-					mCurrentUniformsString += "uniform float " + uniform.getName() + "; // " + toString(mVDAnimation->getFloatUniformValue(uniform.getName())) + "\n";
+					mShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValueByName(uniform.getName()));
+					mCurrentUniformsString += "uniform float " + uniform.getName() + "; // " + toString(mVDAnimation->getFloatUniformValueByName(uniform.getName())) + "\n";
 					break;
 				case 1:
 					// sampler2D

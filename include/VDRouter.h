@@ -98,8 +98,8 @@ namespace VideoDromm
 		void						wsDisconnect();
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
-		void						colorWrite();
-
+		// change a control value and update network clients
+		void						changeControlValue(int aControl, float aValue);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -107,6 +107,12 @@ namespace VideoDromm
 		VDAnimationRef				mVDAnimation;
 		// Session
 		VDSessionRef				mVDSession;
+		// lights4events
+		void						colorWrite();
+		// only send if a control value has changed
+		bool						somethingToSend;
+		bool						colorChanged;
+		bool						jsonReady;
 		// MIDI
 #if defined( CINDER_MSW )
 		vector<midiInput>			mMidiInputs;

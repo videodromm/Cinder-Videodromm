@@ -18,9 +18,6 @@ void VDUIColor::Run(const char* title) {
 
 		ui::Begin("Color");
 		{
-			stringstream sParams;
-			bool colorChanged = false;
-			sParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
 			// foreground color
 			color[0] = mVDAnimation->controlValues[1];
 			color[1] = mVDAnimation->controlValues[2];
@@ -38,21 +35,16 @@ void VDUIColor::Run(const char* title) {
 			ui::SameLine();
 			if (ui::SliderFloat("red/min/max", &mVDAnimation->controlValues[ctrl], 0.0f, 1.0f))
 			{
-				// TODO
+				// TODO color[0] not mVDAnimation->controlValues[ctrl]??
 			}
 			for (int i = 0; i < 4; i++)
 			{
 				if (mVDAnimation->controlValues[i + 1] != color[i])
 				{
-					sParams << ",{\"name\" : " << i + 1 << ",\"value\" : " << color[i] << "}";
-					mVDAnimation->controlValues[i + 1] = color[i];
-					colorChanged = true;
+					mVDRouter->changeControlValue(i + 1, color[i]);
 				}
 			}
-			if (colorChanged) {
-				mVDAnimation->vec3Values[1] = vec3(color[0], color[1], color[2]);
-				mVDRouter->colorWrite(); //lights4events
-			}
+
 			// background color
 			backcolor[0] = mVDAnimation->controlValues[5];
 			backcolor[1] = mVDAnimation->controlValues[6];
@@ -63,8 +55,7 @@ void VDUIColor::Run(const char* title) {
 			{
 				if (mVDAnimation->controlValues[i + 5] != backcolor[i])
 				{
-					sParams << ",{\"name\" : " << i + 5 << ",\"value\" : " << backcolor[i] << "}";
-					mVDAnimation->controlValues[i + 5] = backcolor[i];
+					mVDRouter->changeControlValue(i + 5, backcolor[i]);
 				}
 
 			}
@@ -85,12 +76,7 @@ void VDUIColor::Run(const char* title) {
 			{
 			}
 
-			sParams << "]}";
-			string strParams = sParams.str();
-			if (strParams.length() > 60)
-			{
-				mVDRouter->sendJSON(strParams);
-			}
+
 		}
 		ui::End();
 

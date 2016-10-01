@@ -27,7 +27,9 @@ namespace VideoDromm
 	struct VDUniform
 	{
 		int							uniformType;
-		int							indexOrValue;
+		int							index;
+		float						floatValue;
+		int							textureIndex;
 		bool						isValid;
 	};
 
@@ -94,7 +96,6 @@ namespace VideoDromm
 		bool						tRotationSpeed;
 		bool						autoRotationSpeed;
 		// colors
-		void						changeControlValue(int aControl, float aValue);
 		bool						tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
 		bool						autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
 
@@ -136,16 +137,22 @@ namespace VideoDromm
 		bool						mUseLineIn;
 		float						iFreqs[7];
 		// OSC/MIDI/JSON controlled UI and params
+		map<int, string>			controlIndexes;
 		map<int, float>				controlValues;
 		map<int, vec2>				vec2Values;
 		map<int, vec3>				vec3Values;
 		map<int, vec4>				vec4Values;
 		map<int, int>				intValues;
 		map<int, bool>				boolValues;
+		int							getValuesSize() { return controlValues.size(); };
 		// shaders
 		bool						isExistingUniform(string aName);
 		int							getUniformType(string aName);
-		float						getFloatUniformValue(string aName);
+		string						getUniformNameForIndex(int aIndex);
+		bool						hasFloatChanged(int aIndex);
+		bool						changeFloatValue(int aIndex, float aValue);
+		float						getFloatUniformValueByIndex(int aIndex);
+		float						getFloatUniformValueByName(string aName);
 		int							getSampler2DUniformValue(string aName);
 		vec2						getVec2UniformValue(string aName);
 		vec3						getVec3UniformValue(string aName);
@@ -166,7 +173,7 @@ namespace VideoDromm
 		// shaders
 		map<string, VDUniform>		shaderUniforms;
 		void						createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f);
-		void						createSampler2DUniform(string aName, int aValue = 0);
+		void						createSampler2DUniform(string aName, int aTextureIndex = 0);
 		void						createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue = vec2(0.0));
 		void						createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
 		void						createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue = vec4(0.0));
