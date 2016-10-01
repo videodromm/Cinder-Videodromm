@@ -280,31 +280,68 @@ void VDAnimation::setExposure(float aExposure) {
 void VDAnimation::setAutoBeatAnimation(bool aAutoBeatAnimation) {
 	mAutoBeatAnimation = aAutoBeatAnimation;
 }
+void VDAnimation::changeControlValue(int aControl, float aValue) {
+	// check if changed
+	if (controlValues[aControl] != aValue) {
+
+	}
+}
 
 bool VDAnimation::handleKeyDown(KeyEvent &event)
 {
+	float newValue;
 	bool handled = true;
 	switch (event.getCode()) {
 	case KeyEvent::KEY_s:
 		// save animation
 		save();
 		break;
-	case KeyEvent::KEY_b:
+	case KeyEvent::KEY_a:
 		// save badtv keyframe
 		mBadTV[getElapsedFrames() - 10] = 1.0f;
 		//iBadTvRunning = true;
 		// duration = 0.2
 		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
 		break;
-	case KeyEvent::KEY_e:
+	case KeyEvent::KEY_d:
 		// save end keyframe
 		mVDSession->setEndFrame(getElapsedFrames() - 10);
 		break;
-	case KeyEvent::KEY_t:
+	case KeyEvent::KEY_x:
 		// trixels
 		controlValues[16] = controlValues[16] + 0.05f;
 		break;
+	case KeyEvent::KEY_r:
+		newValue = controlValues[1] + 0.1f;
+		if (newValue > 1.0f) newValue = 0.0f;
+		changeControlValue(1, newValue);
+		break;
 	case KeyEvent::KEY_g:
+		newValue = controlValues[2] + 0.1f;
+		if (newValue > 1.0f) newValue = 0.0f;
+		changeControlValue(2, newValue);
+		break;
+	case KeyEvent::KEY_b:
+		newValue = controlValues[3] + 0.1f;
+		if (newValue > 1.0f) newValue = 0.0f;
+		changeControlValue(3, newValue);
+		break;
+	case KeyEvent::KEY_e:
+		newValue = controlValues[1] - 0.1f;
+		if (newValue < 0.0f) newValue = 1.0;
+		changeControlValue(1, newValue);
+		break;
+	case KeyEvent::KEY_f:
+		newValue = controlValues[2] - 0.1f;
+		if (newValue < 0.0f) newValue = 1.0;
+		changeControlValue(2, newValue);
+		break;
+	case KeyEvent::KEY_v:
+		newValue = controlValues[3] - 0.1f;
+		if (newValue < 0.0f) newValue = 1.0;
+		changeControlValue(3, newValue);
+		break;
+	case KeyEvent::KEY_t:
 		// glitch
 		controlValues[45] = 1.0f;
 		break;
@@ -326,7 +363,7 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// crossfade left
 		if (controlValues[18] > 0.0) controlValues[18] -= 0.1;
 		break;
-	case KeyEvent::KEY_x:
+	//case KeyEvent::KEY_x:
 	case KeyEvent::KEY_y:
 		mVDSettings->iXorY = !mVDSettings->iXorY;
 		break;

@@ -94,6 +94,7 @@ namespace VideoDromm
 		bool						tRotationSpeed;
 		bool						autoRotationSpeed;
 		// colors
+		void						changeControlValue(int aControl, float aValue);
 		bool						tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
 		bool						autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
 

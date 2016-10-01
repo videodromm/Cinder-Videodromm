@@ -28,7 +28,6 @@ void VDUIColor::Run(const char* title) {
 			color[3] = mVDAnimation->controlValues[4];
 			ui::ColorEdit4("f", color);
 
-
 			// red
 			ctrl = 1;
 			if (ui::Button("a##red")) { mVDAnimation->lockRed(); }
