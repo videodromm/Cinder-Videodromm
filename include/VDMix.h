@@ -19,6 +19,7 @@
 // Fbos
 #include "VDFbo.h"
 
+
 #include <atomic>
 #include <vector>
 
@@ -142,8 +143,9 @@ namespace VideoDromm
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// warps
-		string							getWarpName(unsigned int aWarpIndex) { return toString(aWarpIndex); };// TODO
-		unsigned int					getWarpFboIndex(unsigned int aFboIndex) { return 0; };// TODO
+		string							getWarpName(unsigned int aWarpIndex) { return toString(mWarpFboIndex[aWarpIndex]); };// TODO
+		unsigned int					getWarpFboIndex(unsigned int aFboIndex) { return mWarpFboIndex[aFboIndex]; };// TODO
+		void							createWarp(unsigned int aIndex);
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -160,6 +162,8 @@ namespace VideoDromm
 		gl::GlslProgRef					mMixShader;
 		// uniforms
 		vec3							iChannelResolution0;
+		// warps
+		void							createWarp();
 	private:
 		// Animation
 		VDAnimationRef					mVDAnimation;
@@ -192,10 +196,11 @@ namespace VideoDromm
 		vector<ci::gl::FboRef>			mMixFbos;
 		gl::GlslProgRef					mGlslMix, mGlslBlend; 
 		// render
-		void							renderSceneA();
-		void							renderSceneB();
+		void							renderScene(unsigned int aMixFboIndex);
 		void							renderMix();
 		void							renderBlend();
 		bool							mBlendRender;
+		map<int, int>					mFboIndex;
+		map<int, int>					mWarpFboIndex;
 	};
 }
