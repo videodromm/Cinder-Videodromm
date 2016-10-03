@@ -19,7 +19,6 @@
 // Fbos
 #include "VDFbo.h"
 
-
 #include <atomic>
 #include <vector>
 
@@ -146,6 +145,11 @@ namespace VideoDromm
 		string							getWarpName(unsigned int aWarpIndex) { return toString(mWarpFboIndex[aWarpIndex]); };// TODO
 		unsigned int					getWarpFboIndex(unsigned int aFboIndex) { return mWarpFboIndex[aFboIndex]; };// TODO
 		void							createWarp(unsigned int aIndex);
+		void							setWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
+		void							renderWarp();
+		void							renderWarpScene(unsigned int aMixFboIndex);
+		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
+
 	protected:
 		std::string						mName;
 		bool							mFlipV;

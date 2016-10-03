@@ -23,7 +23,7 @@ void VDUIWarps::Run(const char* title) {
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(w);
-			ui::Image((void*)mVDMix->getTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDMix->getWarpTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			// loop on the fbos
 			for (unsigned int f = 0; f < mVDMix->getFboCount(); f++) {
 				if (f > 0) ui::SameLine();
@@ -37,11 +37,10 @@ void VDUIWarps::Run(const char* title) {
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(f / 7.0f, 0.8f, 0.8f));
 
 				sprintf(buf, "%d##wif%d%d", f, w, f);
-				if (ui::Button(buf)) mVDMix->setFboInputTexture(w, f);
-				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
+				if (ui::Button(buf)) mVDMix->setWarpFboIndex(w, f);
+				if (ui::IsItemHovered()) ui::SetTooltip("Set input fbo");
 				ui::PopStyleColor(3);
 			}
-
 			ui::PopID();
 			ui::PopItemWidth();
 		}
