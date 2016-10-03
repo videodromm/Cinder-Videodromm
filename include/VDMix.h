@@ -138,7 +138,7 @@ namespace VideoDromm
 		void							useBlendmode(unsigned int aBlendIndex);
 		const unsigned int				MAXBLENDMODES = 27;
 		ci::gl::Texture2dRef			getTexture(unsigned int aMixFboIndex = 0);
-		unsigned int					getMixFbosCount() { return mMixFbos.size(); }
+		unsigned int					getMixFbosCount() { return mMixFbos.size(); };
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// warps
@@ -149,7 +149,8 @@ namespace VideoDromm
 		void							renderWarp();
 		void							renderWarpScene(unsigned int aMixFboIndex);
 		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
-
+		void							renderWarps();
+		unsigned int					getWarpCount() { return mWarpFboIndex.size(); };
 	protected:
 		std::string						mName;
 		bool							mFlipV;

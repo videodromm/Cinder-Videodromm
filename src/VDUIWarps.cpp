@@ -14,7 +14,7 @@ VDUIWarps::~VDUIWarps() {
 
 void VDUIWarps::Run(const char* title) {
 	static int shaderToEdit = -1;
-	for (int w = 0; w < mVDMix->getMixFbosCount(); w++) {
+	for (int w = 0; w < mVDMix->getWarpCount(); w++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		ui::SetNextWindowPos(ImVec2((w * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		int hue = 0;
