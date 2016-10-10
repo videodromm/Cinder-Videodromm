@@ -66,7 +66,7 @@ namespace VideoDromm
 		void							setInputTexture(unsigned int aTextureIndex);
 		unsigned int					getInputTextureIndex() { return inputTextureIndex; };
 		ci::gl::Texture2dRef			getTexture();
-		gl::GlslProgRef					getShader() { return mFboTextureShader; };
+		gl::GlslProgRef					getShader();
 	protected:
 		std::string						mFboName;
 		//bool							mFlipV;

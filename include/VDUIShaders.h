@@ -45,6 +45,6 @@ namespace VideoDromm
 		string						mError;
 		gl::GlslProgRef				aShader;
 		std::string					mPassthruVextexShaderString;
-
+		int							xPos, yPos;
 	};
 }

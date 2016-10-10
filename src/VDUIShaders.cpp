@@ -35,9 +35,12 @@ VDUIShaders::~VDUIShaders() {
 
 void VDUIShaders::Run(const char* title) {
 	static int shaderToEdit = -1;
+
+	xPos = mVDSettings->uiMargin;
+	yPos = mVDSettings->uiYPosRow3;
 	for (int s = 0; s < mVDMix->getShadersCount(); s++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
-		ui::SetNextWindowPos(ImVec2((s * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
+		ui::SetNextWindowPos(ImVec2(xPos, yPos));
 		int hue = 0;
 		sprintf(buf, "%s##sh%d", mVDMix->getShaderName(s).c_str(), s);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
@@ -73,6 +76,7 @@ void VDUIShaders::Run(const char* title) {
 				mVDMix->createShaderThumb(s);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Create thumb");
+			ui::SameLine();
 
 			// left
 			if (mVDMix->getFboFragmentShaderIndex(1) == s) {
@@ -107,6 +111,13 @@ void VDUIShaders::Run(const char* title) {
 			ui::PopItemWidth();
 		}
 		ui::End();
+		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
+		//if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW))
+		if (s % 8 == 7)
+		{
+			xPos = mVDSettings->uiMargin;
+			yPos += mVDSettings->uiPreviewH + mVDSettings->uiMargin;
+		}
 		// editor
 #pragma region Editor
 		if (shaderToEdit == s) {

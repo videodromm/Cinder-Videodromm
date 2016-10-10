@@ -25,19 +25,19 @@ void VDUIWarps::Run(const char* title) {
 			ui::PushID(w);
 			ui::Image((void*)mVDMix->getWarpTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			// loop on the fbos
-			for (unsigned int f = 0; f < mVDMix->getFboCount(); f++) {
-				if (f > 0) ui::SameLine();
-				if (mVDMix->getWarpFboIndex(w) == f) {
-					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(f / 7.0f, 1.0f, 1.0f));
+			for (unsigned int s = 0; s < mVDMix->getShadersCount(); s++) {
+				if (s > 0) ui::SameLine();
+				if (mVDMix->getWarpFboIndex(w) == s) {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(s / 7.0f, 1.0f, 1.0f));
 				}
 				else {
-					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(f / 7.0f, 0.1f, 0.1f));
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(s / 7.0f, 0.1f, 0.1f));
 				}
-				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(f / 7.0f, 0.7f, 0.7f));
-				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(f / 7.0f, 0.8f, 0.8f));
+				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(s / 7.0f, 0.7f, 0.7f));
+				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(s / 7.0f, 0.8f, 0.8f));
 
-				sprintf(buf, "%d##wif%d%d", f, w, f);
-				if (ui::Button(buf)) mVDMix->setWarpFboIndex(w, f);
+				sprintf(buf, "%d##wis%d%d", s, w, s);
+				if (ui::Button(buf)) mVDMix->setWarpFboIndex(w, s);
 				if (ui::IsItemHovered()) ui::SetTooltip("Set input fbo");
 				ui::PopStyleColor(3);
 			}

@@ -151,6 +151,55 @@ namespace VideoDromm {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		inputTextureIndex = aTextureIndex;
 	}
+	gl::GlslProgRef VDFbo::getShader() { 
+		/*auto &uniforms = mFboTextureShader->getActiveUniforms();
+		for (const auto &uniform : uniforms) {
+			//CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
+			if (mVDAnimation->isExistingUniform(uniform.getName())) {
+				int uniformType = mVDAnimation->getUniformType(uniform.getName());
+				switch (uniformType)
+				{
+				case 0:
+					// float
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValueByName(uniform.getName()));
+					break;
+				case 1:
+					// sampler2D
+					mFboTextureShader->uniform(uniform.getName(), inputTextureIndex);
+					break;
+				case 2:
+					// vec2
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValue(uniform.getName()));
+					break;
+				case 3:
+					// vec3
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName()));
+					break;
+				case 4:
+					// vec4
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValue(uniform.getName()));
+					break;
+				case 5:
+					// int
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValue(uniform.getName()));
+					break;
+				case 6:
+					// bool
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValue(uniform.getName()));
+					break;
+				default:
+					break;
+				}
+			}
+			else {
+				if (uniform.getName() != "ciModelViewProjection") {
+					mVDSettings->mMsg = mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName();
+					CI_LOG_V(mVDSettings->mMsg);
+				}
+			}
+		}*/
+		return mFboTextureShader; 
+	}
 
 	ci::gl::Texture2dRef VDFbo::getTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);

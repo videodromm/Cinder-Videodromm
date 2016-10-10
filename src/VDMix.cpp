@@ -47,8 +47,8 @@ namespace VideoDromm {
 		mLeftFboIndex = mRightFboIndex = 0;
 		// to remove:
 		mWarpFboIndex[0] = 0;
-		mWarpFboIndex[1] = 1;
-		mWarpFboIndex[2] = 2;
+		//mWarpFboIndex[1] = 1;
+		//mWarpFboIndex[2] = 2;
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
@@ -199,12 +199,12 @@ namespace VideoDromm {
 		mGlslMix->uniform("iLight", (int)mVDSettings->iLight);
 		mGlslMix->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
 		mGlslMix->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
-		/*mGlslMix->uniform("iAudio0", 0);
+		mGlslMix->uniform("iAudio0", 0);
 		mGlslMix->uniform("iFreq0", mVDAnimation->iFreqs[0]);
 		mGlslMix->uniform("iFreq1", mVDAnimation->iFreqs[1]);
 		mGlslMix->uniform("iFreq2", mVDAnimation->iFreqs[2]);
 		mGlslMix->uniform("iFreq3", mVDAnimation->iFreqs[3]);
-		mGlslMix->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
+		/*mGlslMix->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
 		mGlslMix->uniform("iColor", vec3(mVDAnimation->controlValues[1], mVDAnimation->controlValues[2], mVDAnimation->controlValues[3]));// mVDSettings->iColor);
 		mGlslMix->uniform("iBackgroundColor", vec3(mVDAnimation->controlValues[5], mVDAnimation->controlValues[6], mVDAnimation->controlValues[7]));// mVDSettings->iBackgroundColor);
 		mGlslMix->uniform("iSteps", (int)mVDAnimation->controlValues[20]);
@@ -686,12 +686,6 @@ namespace VideoDromm {
 	std::string VDMix::getName(){
 		return mName;
 	}
-	/*ci::gl::TextureRef VDMix::getRightFboTexture() {
-		return mRightFbo->getColorTexture();
-		}
-		ci::gl::TextureRef VDMix::getLeftFboTexture() {
-		return mLeftFbo->getColorTexture();
-		}*/
 	void VDMix::setLeftFboIndex(unsigned int aFboIndex) {
 		if (aFboIndex < mFboList.size()) mLeftFboIndex = aFboIndex;
 	}
