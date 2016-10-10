@@ -75,8 +75,7 @@ namespace VideoDromm {
 	VDFbo::~VDFbo(void) {
 	}
 
-	XmlTree	VDFbo::toXml() const
-	{
+	XmlTree	VDFbo::toXml() const {
 		XmlTree		xml;
 		xml.setTag("details");
 		xml.setAttribute("path", mFilePathOrText);
@@ -87,8 +86,7 @@ namespace VideoDromm {
 		return xml;
 	}
 
-	bool VDFbo::fromXml(const XmlTree &xml)
-	{
+	bool VDFbo::fromXml(const XmlTree &xml) {
 		mId = xml.getAttributeValue<string>("id", "");
 		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.glsl");
 		mWidth = xml.getAttributeValue<int>("width", mVDSettings->mFboWidth);
