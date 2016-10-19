@@ -150,7 +150,7 @@ namespace VideoDromm {
 		inputTextureIndex = aTextureIndex;
 	}
 	gl::GlslProgRef VDFbo::getShader() { 
-		/*auto &uniforms = mFboTextureShader->getActiveUniforms();
+		auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
 			//CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
@@ -195,7 +195,7 @@ namespace VideoDromm {
 					CI_LOG_V(mVDSettings->mMsg);
 				}
 			}
-		}*/
+		}
 		return mFboTextureShader; 
 	}
 

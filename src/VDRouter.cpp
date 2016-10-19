@@ -11,7 +11,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 	somethingToSend = colorChanged = jsonReady = false;
 	// kinect
 	for (int i = 0; i < 20; i++) {
-		skeleton[i] = ivec4(0.0f);
+		skeleton[i] = ivec4(0);
 	}
 	// OSC
 	if (mVDSettings->mOSCEnabled) {
