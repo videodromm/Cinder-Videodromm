@@ -43,10 +43,10 @@ namespace VideoDromm
 		void							update();
 		void							resize();
 		void							save();
-		void							mouseMove(MouseEvent event);
-		void							mouseDown(MouseEvent event);
-		void							mouseDrag(MouseEvent event);
-		void							mouseUp(MouseEvent event);
+		bool							handleMouseMove(MouseEvent &event);
+		bool							handleMouseDown(MouseEvent &event);
+		bool							handleMouseDrag(MouseEvent &event);
+		bool							handleMouseUp(MouseEvent &event);
 
 		bool							handleKeyDown(KeyEvent &event);
 		bool							handleKeyUp(KeyEvent &event);
@@ -162,6 +162,7 @@ namespace VideoDromm
 		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
 		void							renderWarps();
 		unsigned int					getWarpCount() { return mWarpFboIndex.size(); };
+		ci::gl::TextureRef				getRenderTexture();
 	protected:
 		std::string						mName;
 		bool							mFlipV;
@@ -223,5 +224,7 @@ namespace VideoDromm
 		WarpList						mWarps;
 		string							fileWarpsName;
 		fs::path						mWarpSettings;
+		gl::FboRef						mRenderFbo;
+
 	};
 }

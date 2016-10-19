@@ -49,6 +49,7 @@ namespace VideoDromm {
 		mWarpFboIndex[0] = 0;
 		//mWarpFboIndex[1] = 1;
 		//mWarpFboIndex[2] = 2;
+		// mWarpFboIndex = 1; 
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
@@ -58,6 +59,10 @@ namespace VideoDromm {
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 3 = warp mix
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 4 = warp left
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 5 = warp right
+		// render fbo
+		gl::Fbo::Format format;
+		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
+		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, format.colorTexture());
 
 		mCurrentBlend = 0;
 		for (size_t i = 0; i < MAXBLENDMODES; i++)
@@ -177,42 +182,78 @@ namespace VideoDromm {
 		// save warp settings
 		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
 	}
+	// Render the scene into the FBO
+
+	ci::gl::TextureRef VDMix::getRenderTexture()
+	{
+		// this will restore the old framebuffer binding when we leave this function
+		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
+		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
+		gl::ScopedFramebuffer fbScp(mRenderFbo);
+		gl::clear(Color::black());
+		// setup the viewport to match the dimensions of the FBO
+		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
+		// iterate over the warps and draw their content
+		int i = 0;
+		for (auto &warp : mWarps) {
+			//warp->draw(mMixes[0]->getFboTexture(mWarpFboIndex), mMixes[0]->getFboTexture(mWarpFboIndex)->getBounds());
+			warp->draw(getWarpTexture(i), getWarpTexture(i)->getBounds());
+			i++;
+		}
+		return mRenderFbo->getColorTexture();
+	}
 #pragma endregion warps
 #pragma region events
-	void VDMix::mouseMove(MouseEvent event)
+	bool VDMix::handleMouseMove(MouseEvent &event)
 	{
+		bool handled = true;
 		// pass this mouse event to the warp editor first
 		if (!Warp::handleMouseMove(mWarps, event)) {
 			// let your application perform its mouseMove handling here
+			handled = false;
 		}
+		event.setHandled(handled);
+		return event.isHandled();
 	}
 
-	void VDMix::mouseDown(MouseEvent event)
+	bool VDMix::handleMouseDown(MouseEvent &event)
 	{
+		bool handled = true;
 		// pass this mouse event to the warp editor first
 		if (!Warp::handleMouseDown(mWarps, event)) {
 			// let your application perform its mouseDown handling here
 			mVDAnimation->controlValues[21] = event.getX() / getWindowWidth();
+			handled = false;
 		}
+		event.setHandled(handled);
+		return event.isHandled();
 	}
 
-	void VDMix::mouseDrag(MouseEvent event)
+	bool VDMix::handleMouseDrag(MouseEvent &event)
 	{
+		bool handled = true;
 		// pass this mouse event to the warp editor first
 		if (!Warp::handleMouseDrag(mWarps, event)) {
 			// let your application perform its mouseDrag handling here
+			handled = false;
 		}
+		event.setHandled(handled);
+		return event.isHandled();
 	}
 
-	void VDMix::mouseUp(MouseEvent event)
+	bool VDMix::handleMouseUp(MouseEvent &event)
 	{
+		bool handled = true;
 		// pass this mouse event to the warp editor first
 		if (!Warp::handleMouseUp(mWarps, event)) {
 			// let your application perform its mouseUp handling here
+			handled = false;
 		}
+		event.setHandled(handled);
+		return event.isHandled();
 	}
 
-	void VDMix::handleKeyDown(KeyEvent &event)
+	bool VDMix::handleKeyDown(KeyEvent &event)
 	{
 		bool handled = true;
 
@@ -239,12 +280,35 @@ namespace VideoDromm {
 
 			// pass this key event to the warp editor first
 			if (!Warp::handleKeyDown(mWarps, event)) {
-				handled = false;
+				// pass this event to Mix handler
+				if (!mVDAnimation->handleKeyDown(event)) {
+					switch (event.getCode()) {
+					case KeyEvent::KEY_w:
+						// toggle warp edit mode
+						Warp::enableEditMode(!Warp::isEditModeEnabled());
+						break;
+					case KeyEvent::KEY_n:
+						createWarp(mWarps.size());
+						mWarps.push_back(WarpPerspectiveBilinear::create());
+						Warp::handleResize(mWarps);
+						break;
+					case KeyEvent::KEY_0:
+						//mWarpFboIndex = 0;
+						break;
+					case KeyEvent::KEY_1:
+						//mWarpFboIndex = 1;
+						break;
+					case KeyEvent::KEY_2:
+						//mWarpFboIndex = 2;
+						break;
+					default:
+						handled = false;
+						break;
+					}
+				}
 			}
-
 		}
 		event.setHandled(handled);
-
 		return event.isHandled();
 	}
 
@@ -260,7 +324,6 @@ namespace VideoDromm {
 			}
 		}
 		event.setHandled(handled);
-
 		return event.isHandled();
 	}
 #pragma endregion events
