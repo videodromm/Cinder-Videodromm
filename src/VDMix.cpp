@@ -68,6 +68,24 @@ namespace VideoDromm {
 		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mix.frag"));
 		mBlendRender = false;
+		// warping
+		gl::enableDepthRead();
+		gl::enableDepthWrite();
+		// initialize warps
+		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+		if (fs::exists(mWarpSettings)) {
+			// load warp settings from file if one exists
+			mWarps = Warp::readSettings(loadFile(mWarpSettings));
+		}
+		else {
+			// otherwise create a warp from scratch
+			mWarps.push_back(WarpPerspectiveBilinear::create());
+			createWarp(0);
+		}
+
+		//Warp::setSize(mWarps, ivec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));// create small new warps too
+		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
+		Warp::handleResize(mWarps);
 	}
 #pragma region blendmodes
 	unsigned int VDMix::getFboBlendCount() {
@@ -151,8 +169,101 @@ namespace VideoDromm {
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[warpToRender]->getWidth(), mMixFbos[warpToRender]->getHeight()));
 
 	}
+	void VDMix::resize() {
+		// tell the warps our window has been resized, so they properly scale up or down
+		Warp::handleResize(mWarps);
+	}
+	void VDMix::save() {
+		// save warp settings
+		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
+	}
 #pragma endregion warps
+#pragma region events
+	void VDMix::mouseMove(MouseEvent event)
+	{
+		// pass this mouse event to the warp editor first
+		if (!Warp::handleMouseMove(mWarps, event)) {
+			// let your application perform its mouseMove handling here
+		}
+	}
 
+	void VDMix::mouseDown(MouseEvent event)
+	{
+		// pass this mouse event to the warp editor first
+		if (!Warp::handleMouseDown(mWarps, event)) {
+			// let your application perform its mouseDown handling here
+			mVDAnimation->controlValues[21] = event.getX() / getWindowWidth();
+		}
+	}
+
+	void VDMix::mouseDrag(MouseEvent event)
+	{
+		// pass this mouse event to the warp editor first
+		if (!Warp::handleMouseDrag(mWarps, event)) {
+			// let your application perform its mouseDrag handling here
+		}
+	}
+
+	void VDMix::mouseUp(MouseEvent event)
+	{
+		// pass this mouse event to the warp editor first
+		if (!Warp::handleMouseUp(mWarps, event)) {
+			// let your application perform its mouseUp handling here
+		}
+	}
+
+	void VDMix::handleKeyDown(KeyEvent &event)
+	{
+		bool handled = true;
+
+#if defined( CINDER_COCOA )
+		bool isModDown = event.isMetaDown();
+#else // windows
+		bool isModDown = event.isControlDown();
+#endif
+
+		if (isModDown) {
+			switch (event.getCode()) {
+			case KeyEvent::KEY_s:
+				fileWarpsName = "warps" + toString(getElapsedFrames()) + ".xml";
+				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / fileWarpsName;
+				Warp::writeSettings(mWarps, writeFile(mWarpSettings));
+				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+				break;
+			default:
+				handled = false;
+				break;
+			}
+		}
+		else {
+
+			// pass this key event to the warp editor first
+			if (!Warp::handleKeyDown(mWarps, event)) {
+				handled = false;
+			}
+
+		}
+		event.setHandled(handled);
+
+		return event.isHandled();
+	}
+
+	bool VDMix::handleKeyUp(KeyEvent &event)
+	{
+		bool handled = true;
+
+		// pass this key event to the warp editor first
+		if (!Warp::handleKeyUp(mWarps, event)) {
+			if (!mVDAnimation->handleKeyUp(event)) {
+				// Animation did not handle the key, so handle it here
+				handled = false;
+			}
+		}
+		event.setHandled(handled);
+
+		return event.isHandled();
+	}
+#pragma endregion events
 	void VDMix::renderScene(unsigned int aMixFboIndex) {
 		if (aMixFboIndex < mMixFbos.size()) {
 			gl::ScopedFramebuffer scopedFbo(mMixFbos[aMixFboIndex]);

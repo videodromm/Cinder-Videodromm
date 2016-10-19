@@ -18,12 +18,14 @@
 #include "VDRouter.h"
 // Fbos
 #include "VDFbo.h"
-
+// Warping
+#include "Warp.h"
 #include <atomic>
 #include <vector>
 
 using namespace ci;
 using namespace ci::app;
+using namespace ph::warping;
 using namespace std;
 using namespace VideoDromm;
 
@@ -39,6 +41,15 @@ namespace VideoDromm
 		~VDMix(void);
 		static VDMixRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter) { return std::make_shared<VDMix>(aVDSettings, aVDAnimation, aVDRouter); }
 		void							update();
+		void							resize();
+		void							save();
+		void							mouseMove(MouseEvent event);
+		void							mouseDown(MouseEvent event);
+		void							mouseDrag(MouseEvent event);
+		void							mouseUp(MouseEvent event);
+
+		bool							handleKeyDown(KeyEvent &event);
+		bool							handleKeyUp(KeyEvent &event);
 		//! returns a shared pointer to this fbo
 		VDMixRef						getPtr() { return shared_from_this(); }
 		ci::ivec2						getSize();
@@ -207,5 +218,10 @@ namespace VideoDromm
 		bool							mBlendRender;
 		map<int, int>					mFboIndex;
 		map<int, int>					mWarpFboIndex;
+		// warping
+		gl::TextureRef					mImage;
+		WarpList						mWarps;
+		string							fileWarpsName;
+		fs::path						mWarpSettings;
 	};
 }
