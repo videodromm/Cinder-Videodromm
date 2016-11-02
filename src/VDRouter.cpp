@@ -212,7 +212,14 @@ void VDRouter::setupOSCReceiver() {
 	});
 
 	mOSCReceiver->bind();
-	mOSCReceiver->listen();
+	mOSCReceiver->listen([](asio::error_code error, protocol::endpoint endpoint) -> bool {
+		if (error) {
+			CI_LOG_E("Error Listening: " << error.message() << " val: " << error.value() << " endpoint: " << endpoint);
+			return false;
+		}
+		else
+			return true;
+	});
 }
 void VDRouter::shutdown() {
 #if defined( CINDER_MSW )

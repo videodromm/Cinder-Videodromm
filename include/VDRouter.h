@@ -27,7 +27,11 @@ using namespace ci::app;
 using namespace std;
 using namespace asio;
 using namespace asio::ip;
-
+#if USE_UDP
+using protocol = asio::ip::udp;
+#else
+using protocol = asio::ip::tcp;
+#endif
 namespace VideoDromm
 {
 	// stores the pointer to the VDRouter instance
