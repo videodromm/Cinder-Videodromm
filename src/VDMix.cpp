@@ -352,7 +352,7 @@ namespace VideoDromm {
 
 
 	void VDMix::update() {
-		if (mVDRouter->hasReceivedShader()) setFragmentShaderString(1, mVDRouter->getReceivedShader());
+		if (mVDRouter->hasReceivedShader()) setFragmentShaderString(0, mVDRouter->getReceivedShader());
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
 		mGlslMix->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
@@ -1106,9 +1106,9 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef VDMix::getShaderThumb(unsigned int aShaderIndex) {
 		return mShaderList[aShaderIndex]->getThumb();
 	}
-	void VDMix::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString) {
+	void VDMix::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-		mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString);
+		mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString, aName);
 		// if live coding shader compiles and is used by a fbo reload it
 		for (int i = 0; i < mFboList.size(); i++)
 		{

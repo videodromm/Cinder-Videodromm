@@ -139,7 +139,7 @@ namespace VideoDromm
 		//ci::gl:GlslProgRef				getShader(unsigned int aShaderIndex);
 		string							getShaderName(unsigned int aShaderIndex);
 		ci::gl::Texture2dRef			getShaderThumb(unsigned int aShaderIndex);
-		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString);
+		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName="");
 		string							getVertexShaderString(unsigned int aShaderIndex);
 		string							getFragmentShaderString(unsigned int aShaderIndex);
 		void							createShaderThumb(unsigned int aShaderIndex);

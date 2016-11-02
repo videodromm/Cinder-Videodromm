@@ -86,7 +86,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mCurrentUniformsString = "";
 	string mNotFoundUniformsString = "/*\n";
 	// we would like a name
-	if (aName.length() == 0) aName = getElapsedSeconds();
+	if (aName.length() == 0) aName = toString( getElapsedSeconds() );
 	// name of the shader
 	mName = aName;
 	// filename to save
@@ -179,7 +179,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		// save .frag file to migrate old shaders
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
 		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-		mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
+		//mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
+		mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
 	}
