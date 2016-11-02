@@ -8,7 +8,8 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 	mVDSession = aVDSessionRef;
 
 	CI_LOG_V("VDRouter constructor");
-	somethingToSend = colorChanged = jsonReady = false;
+	somethingToSend = colorChanged = jsonReady = shaderReceived = false;
+	receivedFragString = "";
 	// kinect
 	for (int i = 0; i < 20; i++) {
 		skeleton[i] = ivec4(0);
@@ -585,25 +586,34 @@ void VDRouter::parseMessage(string msg) {
 			JsonTree json;
 			try {
 				json = JsonTree(msg);
-				JsonTree jsonParams = json.getChild("params");
-				for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
-					int name = jsonElement->getChild("name").getValue<int>();
-					float value = jsonElement->getChild("value").getValue<float>();
-					if (name > mVDAnimation->controlValues.size()) {
-						switch (name) {
-						case 300:
-							//selectShader
-							left = jsonElement->getChild("left").getValue<int>();
-							index = jsonElement->getChild("index").getValue<int>();
-							//selectShader(left, index);
-							break;
-						default:
-							break;
+				if (json.hasChild("params")) {
+					JsonTree jsonParams = json.getChild("params");
+					for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
+						int name = jsonElement->getChild("name").getValue<int>();
+						float value = jsonElement->getChild("value").getValue<float>();
+						if (name > mVDAnimation->controlValues.size()) {
+							switch (name) {
+							case 300:
+								//selectShader
+								left = jsonElement->getChild("left").getValue<int>();
+								index = jsonElement->getChild("index").getValue<int>();
+								//selectShader(left, index);
+								break;
+							default:
+								break;
+							}
+						}
+						else {
+							// basic name value 
+							mVDAnimation->controlValues[name] = value;
 						}
 					}
-					else {
-						// basic name value 
-						mVDAnimation->controlValues[name] = value;
+				}
+				if (json.hasChild("event")) {
+					string evt = json.getChild("event").getValue<string>();
+					if (json.hasChild("message")) {
+						receivedFragString = json.getChild("message").getValue<string>();
+						shaderReceived = true;
 					}
 				}
 				/* NOT IMPLEMENTED and EXCEPTION JsonTree jsonSelectShader = json.getChild("selectShader");
@@ -736,7 +746,10 @@ void VDRouter::parseMessage(string msg) {
 		}
 	}
 }
-
+string VDRouter::getReceivedShader() {
+	shaderReceived = false;
+	return receivedFragString;
+}
 void VDRouter::wsDisconnect() {
 	/* done automatically already
 	if (mVDSettings->mIsWebSocketsServer) {

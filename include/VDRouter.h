@@ -101,6 +101,9 @@ namespace VideoDromm
 		bool						isWsClientConnected() { return clientConnected; };
 		// change a control value and update network clients
 		void						changeControlValue(int aControl, float aValue);
+		// received shaders
+		bool						hasReceivedShader() { return shaderReceived; };
+		string						getReceivedShader();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -169,6 +172,9 @@ namespace VideoDromm
 		//string						sargs[MAX];
 		// ableton liveOSC
 		string						tracks[MAX];
+		// received shaders
+		bool						shaderReceived;
+		string						receivedFragString;
 	};
 }
 

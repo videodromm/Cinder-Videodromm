@@ -352,7 +352,7 @@ namespace VideoDromm {
 
 
 	void VDMix::update() {
-
+		if (mVDRouter->hasReceivedShader()) setFragmentShaderString(1, mVDRouter->getReceivedShader());
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
 		mGlslMix->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
