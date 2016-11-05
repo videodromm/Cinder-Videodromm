@@ -42,7 +42,7 @@ void VDUITextures::Run(const char* title) {
 			ui::PopStyleColor(3);
 			hue++;
 
-			for (unsigned int f = 0; f < mVDMix->getFboCount(); f++) {
+			for (unsigned int f = 0; f < mVDMix->getMixFboCount(); f++) {
 				if (f > 0) ui::SameLine();
 				//int ti = mVDMix->getFboInputTextureIndex(f);
 				//CI_LOG_V("fbo" + toString(f) + " t" + toString(t) + " ti" + toString(ti));

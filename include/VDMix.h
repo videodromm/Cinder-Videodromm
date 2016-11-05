@@ -86,7 +86,7 @@ namespace VideoDromm
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		bool							isFboUsed() { return mUseFbo; };
 		void							toggleFboUsed() { mUseFbo = !mUseFbo; };
-		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex);
+		//ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex);
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aFboInputTextureIndex);
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);
 		int								getInputTextureXLeft(unsigned int aTextureIndex);
@@ -122,7 +122,8 @@ namespace VideoDromm
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getInputTexturesCount();
-		unsigned int					getFboCount() { return mFboList.size(); };
+		//unsigned int					getFboCount() { return mFboList.size(); };
+		unsigned int					getMixFboCount() { return mMixFbos.size(); };
 		string							getFboName(unsigned int aFboIndex);
 		string							getFboLabel(unsigned int aFboIndex);
 		string							getFboFragmentShaderText(unsigned int aFboIndex);

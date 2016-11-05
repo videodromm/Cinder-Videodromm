@@ -340,7 +340,8 @@ namespace VideoDromm {
 	void VDMix::renderMix() {
 		//renderScene((getElapsedFrames() % 2) + 1); 
 		// ping-pong render the fbo
-		renderScene(mWarpFboIndex[(getElapsedFrames() % 2) + 1]);
+		int mixFboToRender = (getElapsedFrames() % 2) + 1;
+		renderScene(mWarpFboIndex[mixFboToRender]);
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[0]);
 		gl::clear(Color::black());
 
@@ -884,7 +885,7 @@ namespace VideoDromm {
 			loadImageFile(aAbsolutePath, aIndex, true);
 		}
 		else if (ext == "glsl") {
-			if (aIndex > getFboCount() - 1) aIndex = getFboCount() - 1;
+			//if (aIndex > getFboCount() - 1) aIndex = getFboCount() - 1;
 			rtn = loadFragmentShader(aAbsolutePath);
 		}
 		else if (ext == "xml") {
@@ -967,10 +968,11 @@ namespace VideoDromm {
 	void VDMix::loadAudioFile(string aFile) {
 		mTextureList[0]->loadFromFullPath(aFile);
 	}
-	ci::gl::Texture2dRef VDMix::getFboTexture(unsigned int aFboIndex) {
+	/*ci::gl::Texture2dRef VDMix::getFboTexture(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getTexture();
-	}
+	}*/
+
 	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aFboInputTextureIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		if (aFboInputTextureIndex > mTextureList.size() - 1) aFboInputTextureIndex = mTextureList.size() - 1;

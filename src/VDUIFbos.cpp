@@ -12,7 +12,7 @@ VDUIFbos::~VDUIFbos() {
 
 void VDUIFbos::Run(const char* title) {
 
-	for (unsigned int f = 0; f < mVDMix->getFboCount(); f++) {
+	for (unsigned int f = 0; f < mVDMix->getMixFboCount(); f++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		ui::SetNextWindowPos(ImVec2((f * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		// TODO ui::Begin(mVDMix->getFboLabel(f).c_str(), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
@@ -20,7 +20,8 @@ void VDUIFbos::Run(const char* title) {
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushID(f);
-			ui::Image((void*)mVDMix->getFboTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			//ui::Image((void*)mVDMix->getFboTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDMix->getTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			for (unsigned int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
 				if (t > 0) ui::SameLine();
 				if (mVDMix->getFboInputTextureIndex(f) == t) {
@@ -69,7 +70,8 @@ void VDUIFbos::Run(const char* title) {
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Set fbo to right");
 			ui::PopStyleColor(3);
-			ui::Text("wh %dx%d", mVDMix->getFboTexture(f)->getWidth(), mVDMix->getFboTexture(f)->getHeight());
+			//ui::Text("wh %dx%d", mVDMix->getFboTexture(f)->getWidth(), mVDMix->getFboTexture(f)->getHeight());
+			ui::Text("wh %dx%d", mVDMix->getTexture(f)->getWidth(), mVDMix->getTexture(f)->getHeight());
 
 
 			ui::PopID();
