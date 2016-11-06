@@ -81,7 +81,7 @@ namespace VideoDromm
 		std::string						mPassthruVextexShaderString;
 		//! default fragment shader
 		std::string						mFboTextureFragmentShaderString;
-		//! passthru shader
+		//! shader
 		gl::GlslProgRef					mFboTextureShader;
 
 		string							mError;

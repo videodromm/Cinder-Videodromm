@@ -34,7 +34,19 @@ namespace VideoDromm
 	// stores the pointer to the VDMix instance
 	typedef std::shared_ptr<class VDMix> 	VDMixRef;
 	typedef std::vector<VDMixRef>			VDMixList;
-
+	struct WarpMix
+	{
+		unsigned int				AFboIndex;		// index of the fbo A
+		unsigned int				AShaderIndex;	// index of the shader used by the fbo A
+		unsigned int				ATextureIndex;	// index of the texture used by the shader A
+		unsigned int				AMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
+		unsigned int				BFboIndex;		// index of the fbo B
+		unsigned int				BShaderIndex;	// index of the shader used by the fbo B
+		unsigned int				BTextureIndex;	// index of the texture used by the shader B
+		unsigned int				BMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
+		float						ABCrossfade;	// from 0 A to 1 B
+		unsigned int				MixFboIndex;	// index of the fbo mixing A and B
+	};
 	class VDMix : public std::enable_shared_from_this < VDMix > {
 	public:
 		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter);
@@ -154,15 +166,15 @@ namespace VideoDromm
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// warps
-		string							getWarpName(unsigned int aWarpIndex) { return toString(mWarpFboIndex[aWarpIndex]); };// TODO
-		unsigned int					getWarpFboIndex(unsigned int aFboIndex) { return mWarpFboIndex[aFboIndex]; };// TODO
-		void							createWarp(unsigned int aIndex);
+		string							getWarpName(unsigned int aWarpIndex) { return toString(mWarpMix[aWarpIndex].AFboIndex); };// TODO
+		unsigned int					getWarpFboIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].AFboIndex; };// TODO
+		void							createWarp();
 		void							setWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
-		void							renderWarp();
-		void							renderWarpScene(unsigned int aMixFboIndex);
+		//void							renderWarp();
+		//void							renderWarpScene(unsigned int aMixFboIndex);
 		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
-		void							renderWarps();
-		unsigned int					getWarpCount() { return mWarpFboIndex.size(); };
+		//void							renderWarps();
+		unsigned int					getWarpCount() { return mWarpMix.size(); };
 		ci::gl::TextureRef				getRenderTexture();
 	protected:
 		std::string						mName;
@@ -180,8 +192,6 @@ namespace VideoDromm
 		gl::GlslProgRef					mMixShader;
 		// uniforms
 		vec3							iChannelResolution0;
-		// warps
-		void							createWarp();
 	private:
 		// Animation
 		VDAnimationRef					mVDAnimation;
@@ -218,14 +228,16 @@ namespace VideoDromm
 		void							renderMix();
 		void							renderBlend();
 		bool							mBlendRender;
-		map<int, int>					mFboIndex;
-		map<int, int>					mWarpFboIndex;
+		//map<int, int>					mFboIndex;
+		//map<int, int>					mWarpFboIndex;
 		// warping
 		gl::TextureRef					mImage;
 		WarpList						mWarps;
 		string							fileWarpsName;
 		fs::path						mWarpSettings;
 		gl::FboRef						mRenderFbo;
+		int								warpMixToRender;
+		map<int, WarpMix>				mWarpMix;
 
 	};
 }

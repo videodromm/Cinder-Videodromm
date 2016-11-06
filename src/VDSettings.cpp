@@ -431,7 +431,7 @@ void VDSettings::resetSomeParams() {
 	uiXPosCol3 = uiXPosCol2 + uiMargin;
 	uiYPos;
 	uiYPosRow1 = 18;
-	uiYPosRow2 = 140;
+	uiYPosRow2 = 160;
 	uiYPosRow3 = uiYPosRow2 + uiLargeH + uiMargin * 2;
 	shaderEditIndex = 0;
 }

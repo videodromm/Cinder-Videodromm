@@ -35,7 +35,7 @@ namespace VideoDromm {
 	ci::gl::Fbo					fbo;
 	int							shadaIndex;
 	bool						active;
-	};*/
+	};
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures 
 	struct Sender
 	{
@@ -51,7 +51,7 @@ namespace VideoDromm {
 		string						text;
 		bool						active;
 		int							microseconds;
-	};
+	};*/
 	/*struct WarpInput
 	{
 	int							leftIndex;
