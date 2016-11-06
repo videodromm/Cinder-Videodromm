@@ -134,7 +134,7 @@ namespace VideoDromm {
 	}
 	void VDMix::updateWarpName(unsigned int aWarpIndex) {
 		if (aWarpIndex < mWarpMix.size()) {
-			mWarpMix[aWarpIndex].Name = toString(mWarpMix[aWarpIndex].MixFboIndex) + " " + getFboName(mWarpMix[aWarpIndex].AFboIndex) + "/" + getFboName(mWarpMix[aWarpIndex].BFboIndex);
+			mWarpMix[aWarpIndex].Name = toString(mWarpMix[aWarpIndex].MixFboIndex) + getFboName(mWarpMix[aWarpIndex].AFboIndex).substr(0,4) + "/" + getFboName(mWarpMix[aWarpIndex].BFboIndex).substr(0,4);
 		}
 	}
 	void VDMix::resize() {
