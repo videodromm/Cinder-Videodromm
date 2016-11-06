@@ -125,7 +125,7 @@ void VDUIAnimation::Run(const char* title) {
 			{
 				aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << mVDAnimation->controlValues[ctrl] << "}";
 			}
-
+			
 			// ratio
 			ctrl = 11;
 			if (ui::Button("a##ratio")) { mVDAnimation->lockRatio(); }

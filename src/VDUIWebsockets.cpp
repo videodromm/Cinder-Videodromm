@@ -13,9 +13,8 @@ VDUIWebsockets::~VDUIWebsockets() {
 
 void VDUIWebsockets::Run(const char* title) {
 	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
-	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH));
-	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2));
-
+	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
+	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 	ui::Begin("Websockets");
 	{
 		// websockets
@@ -57,15 +56,15 @@ void VDUIWebsockets::Run(const char* title) {
 		if (ui::Button("Connect")) { mVDRouter->wsConnect(); }
 		ui::SameLine();
 		if (ui::Button("Ping")) { mVDRouter->wsPing(); }
-		ui::PushItemWidth(mVDSettings->uiLargeW); // useless?
-		ui::Text(">%s", mVDSettings->mWebSocketsMsg.c_str());
-		ui::PopItemWidth();
 		static char host[128] = "127.0.0.1";
 		std::copy(mVDSettings->mWebSocketsHost.begin(), (mVDSettings->mWebSocketsHost.size() >= 128 ? mVDSettings->mWebSocketsHost.begin() + 128 : mVDSettings->mWebSocketsHost.end()), host);
 
 		static int port = mVDSettings->mWebSocketsPort;
 		ui::InputText("address", host, IM_ARRAYSIZE(host));
 		if (ui::InputInt("port", &port)) mVDSettings->mWebSocketsPort = port;
+		//ui::PushItemWidth(mVDSettings->uiLargeW/3); // useless?
+		ui::TextWrapped(">%s", mVDSettings->mWebSocketsMsg.c_str());
+		//ui::PopItemWidth();
 
 	}
 	ui::End();
