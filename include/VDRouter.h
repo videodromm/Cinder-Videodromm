@@ -118,9 +118,9 @@ namespace VideoDromm
 		// lights4events
 		void						colorWrite();
 		// only send if a control value has changed
-		bool						somethingToSend;
+		/*bool						somethingToSend;
 		bool						colorChanged;
-		bool						jsonReady;
+		bool						jsonReady;*/
 		// MIDI
 #if defined( CINDER_MSW )
 		vector<midiInput>			mMidiInputs;

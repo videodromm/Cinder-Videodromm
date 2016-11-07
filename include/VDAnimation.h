@@ -149,7 +149,7 @@ namespace VideoDromm
 		bool						isExistingUniform(string aName);
 		int							getUniformType(string aName);
 		string						getUniformNameForIndex(int aIndex);
-		bool						hasFloatChanged(int aIndex);
+		//bool						hasFloatChanged(int aIndex);
 		bool						changeFloatValue(int aIndex, float aValue);
 		float						getFloatUniformValueByIndex(int aIndex);
 		float						getFloatUniformValueByName(string aName);

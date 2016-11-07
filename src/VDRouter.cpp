@@ -896,7 +896,20 @@ void VDRouter::sendJSON(string params) {
 }
 void VDRouter::changeControlValue(int aControl, float aValue) {
 	// check if changed
-	if (mVDAnimation->changeFloatValue(aControl, aValue)) somethingToSend = true;
+	if (mVDAnimation->changeFloatValue(aControl, aValue)) {
+		stringstream sParams;
+		sParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
+
+		if (aControl > 0 && aControl < 4) {
+			mVDAnimation->vec3Values[1] = vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3));
+			colorWrite(); //lights4events
+			sParams << ",{\"name\" : " << aControl << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(aControl) << "}";
+
+		}
+		sParams << "]}";
+		string strParams = sParams.str();
+		sendJSON(strParams);
+	}
 }
 void VDRouter::colorWrite()
 {
@@ -918,37 +931,7 @@ void VDRouter::colorWrite()
 }
 
 void VDRouter::update() {
-	// send if needed
-	if (getElapsedFrames() % 10 == 0) {
-		if (somethingToSend) {
-			somethingToSend = jsonReady = colorChanged = false;
-			stringstream sParams;
-			sParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
 
-			for (unsigned int i = 0; i < mVDAnimation->getValuesSize(); i++)
-			{
-				if (mVDAnimation->hasFloatChanged(i)) {
-					if (i > 0 && i < 4) {
-						colorChanged = true;
-					}
-					sParams << ",{\"name\" : " << i << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(i) << "}";
-					jsonReady = true;
-				}
-
-			}
-			if (colorChanged) {
-				mVDAnimation->vec3Values[1] = vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3));
-				colorWrite(); //lights4events
-			}
-			sParams << "]}";
-			string strParams = sParams.str();
-			if (jsonReady)
-			{
-				jsonReady = false;
-				sendJSON(strParams);
-			}
-		}
-	}
 	// websockets
 #if defined( CINDER_MSW )
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
