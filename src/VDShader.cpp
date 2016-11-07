@@ -115,13 +115,13 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		std::size_t foundUniform = mOriginalFragmentString.find("uniform ");
 		if (foundUniform == std::string::npos) {
 			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
-			aFragmentShaderString = "/*" + mFragFile.string() + "*/\n" + shaderInclude + mOriginalFragmentString;
+			aFragmentShaderString = "/*" + aName + "*/\n" + shaderInclude + mOriginalFragmentString;
 		}
 		// try to compile
 		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
-		CI_LOG_V(mFragFile.string() + " live edited, loaded and compiled");
+		CI_LOG_V(aName + " live edited, loaded and compiled");
 		mValid = true;
 		createThumb();
 		auto &uniforms = mShader->getActiveUniforms();

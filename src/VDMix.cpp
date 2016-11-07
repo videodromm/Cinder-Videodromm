@@ -87,6 +87,7 @@ namespace VideoDromm {
 		//Warp::setSize(mWarps, ivec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));// create small new warps too
 		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
 		Warp::handleResize(mWarps);
+
 	}
 
 #pragma region warps
@@ -99,7 +100,7 @@ namespace VideoDromm {
 		mWarps.push_back(WarpPerspectiveBilinear::create());
 		Warp::handleResize(mWarps);
 		int i = mWarps.size() - 1; // must have at least 1 warp!
-		mWarpMix[i].ABCrossfade = 0.5;
+		mWarpMix[i].ABCrossfade = 1.0;
 		mWarpMix[i].AFboIndex = 1;
 		mWarpMix[i].AShaderIndex = 1;
 		mWarpMix[i].ATextureIndex = 1;
@@ -360,7 +361,16 @@ namespace VideoDromm {
 
 
 	void VDMix::update() {
-		if (mVDRouter->hasReceivedShader()) setFragmentShaderString(0, mVDRouter->getReceivedShader());
+		if (mVDRouter->hasReceivedShader()) {
+			if (mWarpMix[0].ABCrossfade < 0.5) {
+				setFragmentShaderString(2, mVDRouter->getReceivedShader());
+				timeline().apply(&mWarpMix[0].ABCrossfade, 1.0f, 2.0f);
+			}
+			else {
+				setFragmentShaderString(1, mVDRouter->getReceivedShader());
+				timeline().apply(&mWarpMix[0].ABCrossfade, 0.0f, 2.0f);
+			}
+		}
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendMode);
 		mGlslMix->uniform("iGlobalTime", (float)getElapsedSeconds());
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
