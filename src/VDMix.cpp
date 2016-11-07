@@ -46,7 +46,8 @@ namespace VideoDromm {
 		gl::Texture::Format fmt;
 		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 		//fmt.setBorderColor(Color::black());
-		mLeftFboIndex = mRightFboIndex = 0;
+		mLeftFboIndex = 1;
+		mRightFboIndex = 2;
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
@@ -767,8 +768,8 @@ namespace VideoDromm {
 					}
 				}
 			}
-			if (mFboList.size() > 2) mLeftFboIndex = mFboList.size() - 2;
-			if (mFboList.size() > 1) mRightFboIndex = mFboList.size() - 1;
+			//if (mFboList.size() > 2) mLeftFboIndex = mFboList.size() - 2;
+			//if (mFboList.size() > 1) mRightFboIndex = mFboList.size() - 1;
 		}
 	}
 	int VDMix::loadFragmentShader(string aFilePath) {
@@ -789,9 +790,7 @@ namespace VideoDromm {
 		if (s->isValid()) {
 			mShaderList.push_back(s);
 			rtn = mShaderList.size() - 1;
-			//mFboList[aFboIndex]->setShaderIndex(rtn);
 			mFboList[aFboIndex]->setFragmentShader(rtn, s->getFragmentString(), s->getName());
-			//mGlslA = mFboList[aFboIndex]->getShader();
 		}
 		mVDSettings->mShaderToLoad = "";
 
