@@ -8,7 +8,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSe
 	mVDSession = aVDSessionRef;
 
 	CI_LOG_V("VDRouter constructor");
-	somethingToSend = colorChanged = jsonReady = shaderReceived = false;
+	shaderReceived = false;
 	receivedFragString = "";
 	// kinect
 	for (int i = 0; i < 20; i++) {
