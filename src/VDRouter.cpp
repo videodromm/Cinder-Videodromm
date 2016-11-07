@@ -898,15 +898,13 @@ void VDRouter::changeControlValue(int aControl, float aValue) {
 	// check if changed
 	if (mVDAnimation->changeFloatValue(aControl, aValue)) {
 		stringstream sParams;
-		sParams << "{\"params\" :[{\"name\" : 0,\"value\" : " << getElapsedFrames() << "}"; // TimeStamp
 
 		if (aControl > 0 && aControl < 4) {
 			mVDAnimation->vec3Values[1] = vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3));
 			colorWrite(); //lights4events
-			sParams << ",{\"name\" : " << aControl << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(aControl) << "}";
 
 		}
-		sParams << "]}";
+		sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(aControl) << "}]}";
 		string strParams = sParams.str();
 		sendJSON(strParams);
 	}
