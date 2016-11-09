@@ -92,14 +92,9 @@ namespace VideoDromm
 		void							setPosition(int x, int y);
 		void							setZoom(float aZoom);
 		// fbos
-		void							setLeftFboIndex(unsigned int aFboIndex);
-		void							setRightFboIndex(unsigned int aFboIndex);
-		unsigned int					getLeftFboIndex() { return mLeftFboIndex; };
-		unsigned int					getRightFboIndex() { return mRightFboIndex; };
-		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
+		/*
 		bool							isFboUsed() { return mUseFbo; };
-		void							toggleFboUsed() { mUseFbo = !mUseFbo; };
-		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aFboInputTextureIndex);
+		void							toggleFboUsed() { mUseFbo = !mUseFbo; };*/
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);
 		int								getInputTextureXLeft(unsigned int aTextureIndex);
 		void							setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft);
@@ -170,11 +165,16 @@ namespace VideoDromm
 		void							createWarp();
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
-		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
 		unsigned int					getWarpCount() { return mWarpMix.size(); };
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
-
+		unsigned int					getWarpATextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].ATextureIndex; };
+		unsigned int					getWarpBTextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].BTextureIndex; };
+		void							setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
+		void							setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
+		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
+		ci::gl::TextureRef				getWarpATexture(unsigned int aWarpIndex);
+		ci::gl::TextureRef				getWarpBTexture(unsigned int aWarpIndex);
 		ci::gl::TextureRef				getRenderTexture();
 	protected:
 		std::string						mName;
@@ -202,11 +202,11 @@ namespace VideoDromm
 
 		//! Fbo
 		bool							initFboList();
-		unsigned int					mRightFboIndex;
-		unsigned int					mLeftFboIndex;
-		bool							mUseLeftFbo;
-		bool							mUseRightFbo;
-		bool							mUseFbo;
+		//unsigned int					mRightFboIndex;
+		//unsigned int					mLeftFboIndex;
+		//bool							mUseLeftFbo;
+		//bool							mUseRightFbo;
+		//bool							mUseFbo;
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;

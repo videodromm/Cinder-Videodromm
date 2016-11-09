@@ -37,7 +37,7 @@ namespace VideoDromm {
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		// use fbo texture for live coding
-		mUseFbo = false;
+		//mUseFbo = false;
 		// mix shader index
 		mMixShaderIndex = 0;
 		// mix Ffbo to render
@@ -46,8 +46,8 @@ namespace VideoDromm {
 		gl::Texture::Format fmt;
 		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 		//fmt.setBorderColor(Color::black());
-		mLeftFboIndex = 1;
-		mRightFboIndex = 2;
+		//mLeftFboIndex = 1;
+		//mRightFboIndex = 2;
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
@@ -195,7 +195,14 @@ namespace VideoDromm {
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]->getHeight()));
 		return mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]->getColorTexture();
 	}
-
+	ci::gl::TextureRef VDMix::getWarpATexture(unsigned int aWarpIndex) {
+		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
+		return mMixFbos[mWarpMix[aWarpIndex].AFboIndex]->getColorTexture();
+	}
+	ci::gl::TextureRef VDMix::getWarpBTexture(unsigned int aWarpIndex) {
+		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
+		return mMixFbos[mWarpMix[aWarpIndex].BFboIndex]->getColorTexture();
+	}
 	void VDMix::renderBlend()
 	{
 		//mCurrentBlend++;
@@ -359,7 +366,16 @@ namespace VideoDromm {
 		mMixFbos[mWarpMix[warpMixToRender].BFboIndex]->getColorTexture()->bind(1);
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getHeight()));
 	}
-
+	void VDMix::setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex) {
+		if (aWarpIndex < mWarpMix.size() - 1) aWarpIndex = mWarpMix.size() - 1;
+		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
+		mWarpMix[aWarpIndex].ATextureIndex = aInputTextureIndex;
+	}
+	void VDMix::setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex) {
+		if (aWarpIndex < mWarpMix.size() - 1) aWarpIndex = mWarpMix.size() - 1;
+		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
+		mWarpMix[aWarpIndex].BTextureIndex = aInputTextureIndex;
+	}
 
 	void VDMix::update() {
 		if (mVDRouter->hasReceivedShader()) {
@@ -861,10 +877,10 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getTextureHeight();
 	}
-	unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
+	/*unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getInputTextureIndex();
-	}
+	}*/
 	ci::ivec2 VDMix::getSize() {
 		return mMixFbos[0]->getSize();
 	}
@@ -876,12 +892,6 @@ namespace VideoDromm {
 	}
 	std::string VDMix::getName(){
 		return mName;
-	}
-	void VDMix::setLeftFboIndex(unsigned int aFboIndex) {
-		if (aFboIndex < mFboList.size()) mLeftFboIndex = aFboIndex;
-	}
-	void VDMix::setRightFboIndex(unsigned int aFboIndex) {
-		if (aFboIndex < mFboList.size()) mRightFboIndex = aFboIndex;
 	}
 	int VDMix::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex) {
 		int rtn = -1;
@@ -988,12 +998,6 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getTexture();
 	}*/
-
-	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aFboInputTextureIndex) {
-		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-		if (aFboInputTextureIndex > mTextureList.size() - 1) aFboInputTextureIndex = mTextureList.size() - 1;
-		mFboList[aFboIndex]->setInputTexture(aFboInputTextureIndex);
-	}
 
 	void VDMix::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) {
 		CI_LOG_V("setFboFragmentShaderIndex, before, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));

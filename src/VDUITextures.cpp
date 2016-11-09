@@ -42,11 +42,11 @@ void VDUITextures::Run(const char* title) {
 			ui::PopStyleColor(3);
 			hue++;
 
-			for (unsigned int f = 0; f < mVDMix->getMixFboCount(); f++) {
+			/*for (unsigned int f = 0; f < mVDMix->getWarpCount(); f++) {
 				if (f > 0) ui::SameLine();
 				//int ti = mVDMix->getFboInputTextureIndex(f);
 				//CI_LOG_V("fbo" + toString(f) + " t" + toString(t) + " ti" + toString(ti));
-				if (mVDMix->getFboInputTextureIndex(f) == t) {
+				if (mVDMix->getWarpATextureIndex(f) == t) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 1.0f, 1.0f));
 				}
 				else {
@@ -56,17 +56,15 @@ void VDUITextures::Run(const char* title) {
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(t / 7.0f, 0.8f, 0.8f));
 				sprintf(buf, "%d##fboinputtex%d%d", f, t, f);
 				if (ui::Button(buf)) mVDMix->setFboInputTexture(f, t);
-				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture for fbo");
+				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture for warp");
 				ui::PopStyleColor(3);
 			}
 
-
-
-			/*sprintf(buf, "WS##s%d", i);
+			sprintf(buf, "WS##s%d", i);
 			if (ui::Button(buf))
 			{
 			sprintf(buf, "IMG=%d.jpg", i);
-			//mBatchass->wsWrite(buf);
+			//mVDRouter->wsWrite(buf);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Send texture file name via WebSockets");
 			*/

@@ -20,8 +20,8 @@ void VDUIFbos::Run(const char* title) {
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushID(f);
-			//ui::Image((void*)mVDMix->getFboTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			ui::Image((void*)mVDMix->getTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			/*
 			for (unsigned int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
 				if (t > 0) ui::SameLine();
 				if (mVDMix->getFboInputTextureIndex(f) == t) {
@@ -73,7 +73,7 @@ void VDUIFbos::Run(const char* title) {
 			//ui::Text("wh %dx%d", mVDMix->getFboTexture(f)->getWidth(), mVDMix->getFboTexture(f)->getHeight());
 			ui::Text("wh %dx%d", mVDMix->getTexture(f)->getWidth(), mVDMix->getTexture(f)->getHeight());
 
-
+            */
 			ui::PopID();
 		}
 		ui::End();
