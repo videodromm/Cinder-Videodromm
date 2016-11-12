@@ -62,18 +62,18 @@ void VDRouter::setupOSCReceiver() {
 	TODO use pattern matching
 	mOSCReceiver->setListener("/layer1/clip*", myFuncForLayerClips);*/
 	mOSCReceiver->setListener("/cc",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/cc";
 		mVDSettings->mOSCNewMsg = true;
 		mVDAnimation->controlValues[msg[0].int32()] = msg[1].flt();
 		updateParams(msg[0].int32(), msg[1].flt());
 	});
 	mOSCReceiver->setListener("/Freq1",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		float f1 = msg[0].flt();
 	});
 	mOSCReceiver->setListener("/backgroundcolor",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		// background red
 		mVDAnimation->controlValues[5] = msg[0].flt();
 		// background green
@@ -83,19 +83,19 @@ void VDRouter::setupOSCReceiver() {
 
 	});
 	mOSCReceiver->setListener("/live/beat",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
 		mVDSettings->iBeat = msg[0].int32();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	// artcraft
 	mOSCReceiver->setListener("/bar",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDSettings->iBeat = msg[0].int32();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	mOSCReceiver->setListener("/live/tempo",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
 		// Animation
 		mVDSession->setBpm(msg[0].flt());
@@ -103,25 +103,25 @@ void VDRouter::setupOSCReceiver() {
 	});
 	// artcraft
 	mOSCReceiver->setListener("/tempo",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		// Animation
 		mVDSession->setBpm(msg[0].flt());
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	mOSCReceiver->setListener("/live/track/meter",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
 		mVDSettings->liveMeter = msg[2].flt();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	// artcraft
 	mOSCReceiver->setListener("/Audio1",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDSettings->liveMeter = msg[0].flt()*100.0f;
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	mOSCReceiver->setListener("/live/name/trackblock",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
 		mVDSettings->mTrackName = msg[0].string();
 		for (int a = 0; a < MAX; a++)
@@ -130,7 +130,7 @@ void VDRouter::setupOSCReceiver() {
 		}
 	});
 	mOSCReceiver->setListener("/live/play",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/live/play";
 		mVDSettings->mOSCNewMsg = true;
 
@@ -147,7 +147,7 @@ void VDRouter::setupOSCReceiver() {
 	});
 	// kinect
 	mOSCReceiver->setListener("/sumMovement",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		float sumMovement = msg[0].flt();
 		//exposure
 		mVDAnimation->controlValues[14] = sumMovement;
@@ -163,7 +163,7 @@ void VDRouter::setupOSCReceiver() {
 	});
 	// kinect
 	mOSCReceiver->setListener("/handsHeadHeight",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		float handsHeadHeight = msg[0].flt();
 		if (handsHeadHeight > 0.3)
 		{
@@ -179,7 +179,7 @@ void VDRouter::setupOSCReceiver() {
 		mVDAnimation->controlValues[5] = handsHeadHeight*3.0;
 	});
 	mOSCReceiver->setListener("/centerXY",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		float x = msg[0].flt();
 		float y = msg[1].flt();
 		// background green
@@ -188,12 +188,12 @@ void VDRouter::setupOSCReceiver() {
 		mVDAnimation->controlValues[2] = x;
 	});
 	mOSCReceiver->setListener("/selectShader",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		//selectShader(msg[0].int32(), msg[1].int32());
 	});
 	// kinect
 	mOSCReceiver->setListener("/joint",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		int skeletonIndex = msg[0].int32();
 		int jointIndex = msg[1].int32();
 		if (jointIndex < 20)
@@ -203,7 +203,7 @@ void VDRouter::setupOSCReceiver() {
 	});
 	// json
 	mOSCReceiver->setListener("/json/params",
-		[&](const osc::Message &msg){
+		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/json/params:" + msg[0].string();
 		mVDSettings->mOSCNewMsg = true;
 
@@ -760,11 +760,11 @@ string VDRouter::getReceivedShader() {
 void VDRouter::wsDisconnect() {
 	/* done automatically already
 	if (mVDSettings->mIsWebSocketsServer) {
-	mServer.cancel();
+		mServer.cancel();
 	}
 	else {
-	mClient.disconnect();
-	} */
+		mClient.disconnect();
+	}*/
 }
 
 void VDRouter::wsConnect() {
