@@ -96,6 +96,15 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	CI_LOG_V("setFragmentString, live loading" + mName);
 	try
 	{
+		/*
+		TODO
+		std::regex pattern { "abc" }; 
+		std::string target { "abcdefabc" };
+		std::string replacement { "123" };
+		std::string result = std::regex_replace(target, pattern, replacement);
+		std::cout << result << std::endl;
+		
+		*/
 		// shadertoy imported shaders need to be edited
 		// change texture2D to texture for version > 150?
 		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)

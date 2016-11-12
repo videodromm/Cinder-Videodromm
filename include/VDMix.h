@@ -130,6 +130,7 @@ namespace VideoDromm
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getInputTexturesCount();
 		unsigned int					getMixFboCount() { return mMixFbos.size(); };
+		unsigned int					getFboListSize() { return mFboList.size(); };
 		string							getFboName(unsigned int aFboIndex);
 		string							getFboLabel(unsigned int aFboIndex);
 		string							getFboFragmentShaderText(unsigned int aFboIndex);

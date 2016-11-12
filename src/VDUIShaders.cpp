@@ -39,7 +39,7 @@ void VDUIShaders::Run(const char* title) {
 	xPos = mVDSettings->uiMargin;
 	yPos = mVDSettings->uiYPosRow3;
 	for (int s = 0; s < mVDMix->getShadersCount(); s++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		ui::SetNextWindowPos(ImVec2(xPos, yPos));
 		int hue = 0;
 		sprintf(buf, "%s##sh%d", mVDMix->getShaderName(s).c_str(), s);
@@ -76,37 +76,21 @@ void VDUIShaders::Run(const char* title) {
 				mVDMix->createShaderThumb(s);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Create thumb");
-			ui::SameLine();
-
-			// left
-			if (mVDMix->getFboFragmentShaderIndex(1) == s) {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 1.0f, 0.5f));
+			for (unsigned int f = 0; f < mVDMix->getFboListSize(); f++) {
+				if (f>0) ui::SameLine();
+				if (mVDMix->getFboFragmentShaderIndex(f) == s) {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 1.0f, 0.5f));
+				}
+				else {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+				}
+				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.0f, 0.7f, 0.7f));
+				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.0f, 0.8f, 0.8f));
+				sprintf(buf, "%d##sf%d", f, s);
+				if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(f, s);
+				if (ui::IsItemHovered()) ui::SetTooltip("Set shader to fbo");
+				ui::PopStyleColor(3);
 			}
-			else {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
-			}
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.0f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.0f, 0.8f, 0.8f));
-			sprintf(buf, "L##sl%d", s);
-			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(1, s);
-			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to left");
-			ui::PopStyleColor(3);
-
-			ui::SameLine();
-			// right
-			if (mVDMix->getFboFragmentShaderIndex(2) == s) {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.3f, 1.0f, 0.5f));
-			}
-			else {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
-			}
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.3f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.3f, 0.8f, 0.8f));
-			sprintf(buf, "R##sr%d", s);
-			if (ui::Button(buf)) mVDMix->setFboFragmentShaderIndex(2, s);
-			if (ui::IsItemHovered()) ui::SetTooltip("Set shader to right");
-			ui::PopStyleColor(3);
-
 			ui::PopID();
 			ui::PopItemWidth();
 		}

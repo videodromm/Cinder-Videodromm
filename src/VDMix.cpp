@@ -46,17 +46,15 @@ namespace VideoDromm {
 		gl::Texture::Format fmt;
 		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 		//fmt.setBorderColor(Color::black());
-		//mLeftFboIndex = 1;
-		//mRightFboIndex = 2;
 
 		gl::Fbo::Format fboFmt;
 		fboFmt.setColorTextureFormat(fmt);
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 0 = Mix
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 1 = Left
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 2 = Right
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 3 = warp mix
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 4 = warp left
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 5 = warp right
+		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 0 = warp mix
+		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 1 = warp A
+		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 2 = warp B
+		//mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 3 = warp mix
+		//mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 4 = warp left
+		//mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 5 = warp right
 		// render fbo
 		gl::Fbo::Format format;
 		//format.setSamples( 4 ); // uncomment this to enable 4x antialiasing
@@ -88,7 +86,6 @@ namespace VideoDromm {
 		//Warp::setSize(mWarps, ivec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));// create small new warps too
 		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
 		Warp::handleResize(mWarps);
-
 	}
 
 #pragma region warps
@@ -290,7 +287,6 @@ namespace VideoDromm {
 			}
 		}
 		else {
-
 			// pass this key event to the warp editor first
 			if (!Warp::handleKeyDown(mWarps, event)) {
 				// pass this event to Mix handler
@@ -302,15 +298,6 @@ namespace VideoDromm {
 						break;
 					case KeyEvent::KEY_n:
 						createWarp();
-						break;
-					case KeyEvent::KEY_0:
-						//mWarpMix = 0;
-						break;
-					case KeyEvent::KEY_1:
-						//mWarpMix = 1;
-						break;
-					case KeyEvent::KEY_2:
-						//mWarpMix = 2;
 						break;
 					default:
 						handled = false;
@@ -784,8 +771,9 @@ namespace VideoDromm {
 					}
 				}
 			}
-			//if (mFboList.size() > 2) mLeftFboIndex = mFboList.size() - 2;
-			//if (mFboList.size() > 1) mRightFboIndex = mFboList.size() - 1;
+			// init for received shaders from websockets for warp 0
+			setFboFragmentShaderIndex(1, 1);
+			setFboFragmentShaderIndex(2, 2);
 		}
 	}
 	int VDMix::loadFragmentShader(string aFilePath) {
