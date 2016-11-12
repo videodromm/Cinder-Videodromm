@@ -21,7 +21,6 @@ void VDUIFbos::Run(const char* title) {
 		{
 			ui::PushID(f);
 			ui::Image((void*)mVDMix->getTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-			/*
 			for (unsigned int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
 				if (t > 0) ui::SameLine();
 				if (mVDMix->getFboInputTextureIndex(f) == t) {
@@ -38,6 +37,7 @@ void VDUIFbos::Run(const char* title) {
 				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
 				ui::PopStyleColor(3);
 			}
+			/*
 			// left
 			if (mVDMix->getLeftFboIndex() == f) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 1.0f, 0.5f));
@@ -55,25 +55,10 @@ void VDUIFbos::Run(const char* title) {
 			ui::PopStyleColor(3);
 			//ui::NextColumn();
 			ui::SameLine();
-			// right
-			if (mVDMix->getRightFboIndex() == f) {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.3f, 1.0f, 0.5f));
-			}
-			else {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
-			}
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.3f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.3f, 0.8f, 0.8f));
-			sprintf(buf, "R##s%d", f);
-			if (ui::Button(buf)){
-				mVDMix->setRightFboIndex(f);
-			}
-			if (ui::IsItemHovered()) ui::SetTooltip("Set fbo to right");
-			ui::PopStyleColor(3);
-			//ui::Text("wh %dx%d", mVDMix->getFboTexture(f)->getWidth(), mVDMix->getFboTexture(f)->getHeight());
+			
+            */
 			ui::Text("wh %dx%d", mVDMix->getTexture(f)->getWidth(), mVDMix->getTexture(f)->getHeight());
 
-            */
 			ui::PopID();
 		}
 		ui::End();

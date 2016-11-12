@@ -64,7 +64,7 @@ namespace VideoDromm
 		void							setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName);
 		// textures
 		void							setInputTexture(unsigned int aTextureIndex);
-		unsigned int					getInputTextureIndex() { return inputTextureIndex; };
+		unsigned int					getInputTextureIndex() { return mInputTextureIndex; };
 		//ci::gl::Texture2dRef			getTexture();
 		gl::GlslProgRef					getShader();
 	protected:
@@ -97,7 +97,7 @@ namespace VideoDromm
 		gl::FboRef						mFbo;
 		//! Textures
 		VDTextureList					mTextureList;
-		unsigned int					inputTextureIndex;
+		unsigned int					mInputTextureIndex;
 		//! Shaders
 		string							mShaderName;
 		unsigned int					mShaderIndex;

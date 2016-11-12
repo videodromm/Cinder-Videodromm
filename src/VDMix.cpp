@@ -101,11 +101,11 @@ namespace VideoDromm {
 		mWarpMix[i].ABCrossfade = 1.0;
 		mWarpMix[i].AFboIndex = 1;
 		mWarpMix[i].AShaderIndex = 1;
-		mWarpMix[i].ATextureIndex = 1;
+		//mWarpMix[i].ATextureIndex = 1;
 		mWarpMix[i].AMode = 0;
 		mWarpMix[i].BFboIndex = 2;
 		mWarpMix[i].BShaderIndex = 2;
-		mWarpMix[i].BTextureIndex = 2;
+		//mWarpMix[i].BTextureIndex = 2;
 		mWarpMix[i].BMode = 0;
 		mWarpMix[i].MixFboIndex = 0;
 		mWarpMix[i].Name = mWarpMix[i].MixFboIndex;
@@ -353,7 +353,9 @@ namespace VideoDromm {
 		mMixFbos[mWarpMix[warpMixToRender].BFboIndex]->getColorTexture()->bind(1);
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getHeight()));
 	}
-	void VDMix::setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex) {
+
+
+	/*void VDMix::setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex) {
 		if (aWarpIndex < mWarpMix.size() - 1) aWarpIndex = mWarpMix.size() - 1;
 		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
 		mWarpMix[aWarpIndex].ATextureIndex = aInputTextureIndex;
@@ -362,7 +364,7 @@ namespace VideoDromm {
 		if (aWarpIndex < mWarpMix.size() - 1) aWarpIndex = mWarpMix.size() - 1;
 		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
 		mWarpMix[aWarpIndex].BTextureIndex = aInputTextureIndex;
-	}
+	}*/
 
 	void VDMix::update() {
 		if (mVDRouter->hasReceivedShader()) {
@@ -865,10 +867,15 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getTextureHeight();
 	}
-	/*unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
+	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
+		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
+		mFboList[aFboIndex]->setInputTexture(aInputTextureIndex);
+	}
+	unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getInputTextureIndex();
-	}*/
+	}
 	ci::ivec2 VDMix::getSize() {
 		return mMixFbos[0]->getSize();
 	}

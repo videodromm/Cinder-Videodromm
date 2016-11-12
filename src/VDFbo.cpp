@@ -16,7 +16,7 @@ namespace VideoDromm {
 		mVDAnimation = aVDAnimation;
 		mTextureList = aTextureList;
 		mType = UNKNOWN;
-		inputTextureIndex = 0;
+		mInputTextureIndex = 0;
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 
@@ -82,7 +82,7 @@ namespace VideoDromm {
 		xml.setAttribute("width", mVDSettings->mFboWidth);
 		xml.setAttribute("height", mVDSettings->mFboHeight);
 		xml.setAttribute("shadername", mShaderName);
-
+		xml.setAttribute("inputtextureindex", mInputTextureIndex);
 		return xml;
 	}
 
@@ -91,6 +91,7 @@ namespace VideoDromm {
 		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.glsl");
 		mWidth = xml.getAttributeValue<int>("width", mVDSettings->mFboWidth);
 		mHeight = xml.getAttributeValue<int>("height", mVDSettings->mFboHeight);
+		mInputTextureIndex = xml.getAttributeValue<int>("inputtextureindex", 0);
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
 		mShaderName = mGlslPath;
 		mFboTextureShader->setLabel(mShaderName);
@@ -147,7 +148,7 @@ namespace VideoDromm {
 	}
 	void VDFbo::setInputTexture(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-		inputTextureIndex = aTextureIndex;
+		mInputTextureIndex = aTextureIndex;
 	}
 	gl::GlslProgRef VDFbo::getShader() { 
 		auto &uniforms = mFboTextureShader->getActiveUniforms();
@@ -163,7 +164,7 @@ namespace VideoDromm {
 					break;
 				case 1:
 					// sampler2D
-					mFboTextureShader->uniform(uniform.getName(), inputTextureIndex);
+					mFboTextureShader->uniform(uniform.getName(), mInputTextureIndex);
 					break;
 				case 2:
 					// vec2

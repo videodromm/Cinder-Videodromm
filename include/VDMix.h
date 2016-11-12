@@ -38,11 +38,11 @@ namespace VideoDromm
 	{
 		unsigned int				AFboIndex;		// index of the fbo A
 		unsigned int				AShaderIndex;	// index of the shader used by the fbo A
-		unsigned int				ATextureIndex;	// index of the texture used by the shader A
+		//unsigned int				ATextureIndex;	// index of the texture used by the shader A
 		unsigned int				AMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
 		unsigned int				BFboIndex;		// index of the fbo B
 		unsigned int				BShaderIndex;	// index of the shader used by the fbo B
-		unsigned int				BTextureIndex;	// index of the texture used by the shader B
+		//unsigned int				BTextureIndex;	// index of the texture used by the shader B
 		unsigned int				BMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
 		Anim<float>					ABCrossfade;	// from 0 A to 1 B can be automated via timeline
 		unsigned int				MixFboIndex;	// index of the fbo mixing A and B
@@ -126,6 +126,8 @@ namespace VideoDromm
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition);
 		int								getMaxFrame(unsigned int aTextureIndex);
 
+		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
+		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getInputTexturesCount();
@@ -169,10 +171,10 @@ namespace VideoDromm
 		unsigned int					getWarpCount() { return mWarpMix.size(); };
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
-		unsigned int					getWarpATextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].ATextureIndex; };
+		/*unsigned int					getWarpATextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].ATextureIndex; };
 		unsigned int					getWarpBTextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].BTextureIndex; };
 		void							setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
-		void							setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
+		void							setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);*/
 		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
 		ci::gl::TextureRef				getWarpATexture(unsigned int aWarpIndex);
 		ci::gl::TextureRef				getWarpBTexture(unsigned int aWarpIndex);

@@ -108,7 +108,7 @@ void VDUIWarps::Run(const char* title) {
 			ui::Begin("tex a", NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-				ui::Image((void*)mVDMix->getInputTexture(mVDMix->getWarpATextureIndex(currentNode))->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::Image((void*)mVDMix->getInputTexture(mVDMix->getFboInputTextureIndex(mVDMix->getWarpAFboIndex(currentNode)))->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			ui::End();
@@ -143,7 +143,7 @@ void VDUIWarps::Run(const char* title) {
 			ui::Begin("tex b", NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-				ui::Image((void*)mVDMix->getInputTexture(mVDMix->getWarpBTextureIndex(currentNode))->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::Image((void*)mVDMix->getInputTexture(mVDMix->getFboInputTextureIndex(mVDMix->getWarpBFboIndex(currentNode)))->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			ui::End();
