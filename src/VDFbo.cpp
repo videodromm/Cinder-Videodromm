@@ -88,7 +88,7 @@ namespace VideoDromm {
 
 	bool VDFbo::fromXml(const XmlTree &xml) {
 		mId = xml.getAttributeValue<string>("id", "");
-		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.glsl");
+		string mGlslPath = xml.getAttributeValue<string>("shadername", "0.frag");
 		mWidth = xml.getAttributeValue<int>("width", mVDSettings->mFboWidth);
 		mHeight = xml.getAttributeValue<int>("height", mVDSettings->mFboHeight);
 		mInputTextureIndex = xml.getAttributeValue<int>("inputtextureindex", 0);
@@ -201,6 +201,8 @@ namespace VideoDromm {
 	}
 
 	ci::gl::Texture2dRef VDFbo::getFboTexture() {
+		// TODO move this:
+		getShader();
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mFbo);
 		gl::clear(Color::black());
@@ -256,8 +258,6 @@ namespace VideoDromm {
 			}
 		}
 		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
-		// lopocompris
-		//gl::drawSolidRect(Rectf(0, 0, 900, 700));
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 		return mFbo->getColorTexture();
 	}

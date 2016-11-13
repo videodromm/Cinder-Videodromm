@@ -490,13 +490,13 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		}
 		if (iarg0 == 61) {
 			// right arrow
-			mVDSettings->iBlendMode--;
-			if (mVDSettings->iBlendMode < 0) mVDSettings->iBlendMode = mVDAnimation->maxBlendMode;
+			mVDSettings->iBlendmode--;
+			if (mVDSettings->iBlendmode < 0) mVDSettings->iBlendmode = mVDAnimation->maxBlendMode;
 		}
 		if (iarg0 == 62) {
 			// left arrow
-			mVDSettings->iBlendMode++;
-			if (mVDSettings->iBlendMode > mVDAnimation->maxBlendMode) mVDSettings->iBlendMode = 0;
+			mVDSettings->iBlendmode++;
+			if (mVDSettings->iBlendmode > mVDAnimation->maxBlendMode) mVDSettings->iBlendmode = 0;
 		}
 	}
 	if (iarg0 > 0 && iarg0 < 9) {

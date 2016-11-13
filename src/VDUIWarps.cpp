@@ -13,7 +13,7 @@ VDUIWarps::~VDUIWarps() {
 }
 
 void VDUIWarps::Run(const char* title) {
-	static int currentNode = -1;
+	static int currentNode = 0;
 
 	for (int w = 0; w < mVDMix->getWarpCount(); w++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));

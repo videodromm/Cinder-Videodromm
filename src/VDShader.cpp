@@ -2,7 +2,7 @@
 
 using namespace VideoDromm;
 
-VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath = "", string aVextexShaderFilePath = "") {
+VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath) {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVertexShaderFilePath = aVextexShaderFilePath;
 	mValid = false;
@@ -52,7 +52,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 	CI_LOG_V("loadFragmentStringFromFile, loading " + aFileName);
 
 	if (aFileName.length() == 0) {
-		mFragFile = getAssetPath("") / "0.glsl";
+		mFragFile = getAssetPath("") / "mixfbo.frag";
 	}
 	else {
 		mFragFile = aFileName;
@@ -60,7 +60,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 	if (!fs::exists(mFragFile)) {
 		mError = mFragFile.string() + " does not exist";
 		CI_LOG_V(mError);
-		mFragFile = getAssetPath("") / "0.glsl";
+		mFragFile = getAssetPath("") / "0.frag";
 	}
 
 	string fileName = mFragFile.filename().string();
@@ -132,7 +132,6 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mFragmentShaderString = aFragmentShaderString;
 		CI_LOG_V(aName + " live edited, loaded and compiled");
 		mValid = true;
-		createThumb();
 		auto &uniforms = mShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
 			CI_LOG_V(mShader->getLabel() + ", uniform name:" + uniform.getName());
@@ -181,7 +180,9 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 				}
 			}
 			else {
-				mNotFoundUniformsString += "not found " + uniform.getName() + "\n";
+				if (uniform.getName() != "ciModelViewProjection") {
+					mNotFoundUniformsString += "not found " + uniform.getName() + "\n";
+				}
 			}
 		}
 		mNotFoundUniformsString += "*/\n";
@@ -192,6 +193,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
+		createThumb();
+
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
@@ -210,7 +213,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 void VDShader::fromXml(const XmlTree &xml) {
 	mId = xml.getAttributeValue<string>("id", "");
 	string mVertfile = xml.getAttributeValue<string>("vertfile", "passthru.vert");
-	mName = xml.getAttributeValue<string>("fragfile", "0.glsl");
+	mName = xml.getAttributeValue<string>("fragfile", "0.frag");
 	CI_LOG_V("shader id " + mId + " name " + mName);
 	mVertexFile = getAssetPath("") / mVDSettings->mAssetsPath / mVertfile;
 	loadVertexStringFromFile(mVertexShaderFilePath);

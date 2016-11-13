@@ -28,7 +28,7 @@ void VDUIBlend::Run(const char* title) {
 			ui::Image((void*)mVDMix->getFboThumb(s)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 
 			// select blend mode
-			if (mVDSettings->iBlendMode == s) {
+			if (mVDSettings->iBlendmode == s) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.3f, 1.0f, 0.5f));
 			}
 			else {
@@ -50,7 +50,7 @@ void VDUIBlend::Run(const char* title) {
 		ui::End();
 		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 		//if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW))
-		if (s % 8 == 7)
+		if (s % 10 == 9)
 		{
 			xPos = mVDSettings->uiMargin;
 			yPos += mVDSettings->uiPreviewH + mVDSettings->uiMargin;

@@ -117,7 +117,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// GridSize
 	createFloatUniform("iGridSize", 17, 0.0f);
 	// iCrossfade
-	createFloatUniform("iCrossFade", 18, 1.0f);
+	createFloatUniform("iCrossfade", 18, 1.0f);
 	// RotationSpeed
 	createFloatUniform("iRotationSpeed", 19, 0.0f);
 	// Steps
@@ -126,6 +126,20 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	createFloatUniform("iPreviewCrossfade", 21, 0.0f);
 	// zoom
 	createFloatUniform("iZoom", 22, 1.0f);
+	// bad tv  TODO
+	createFloatUniform("iBadTv", 23, 0.0f); 
+	// red multiplier 
+	createFloatUniform("iRedMultiplier", 24, 1.0f);
+	// green multiplier 
+	createFloatUniform("iGreenMultiplier", 25, 1.0f);
+	// blue multiplier 
+	createFloatUniform("iBlueMultiplier", 26, 1.0f);
+	// slitscan (or other) Param1 
+	createFloatUniform("iParam1", 27, 1.0f);
+	// slitscan (or other) Param2 
+	createFloatUniform("iParam2", 28, 1.0f);
+	// tempo time
+	createFloatUniform("iTempoTime", 29, 0.1f);
 	// glitch
 	createFloatUniform("iGlitch", 45, 0.0f);
 	// toggle
@@ -136,14 +150,25 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	createFloatUniform("iInvert", 48, 0.0f);
 	// global time in seconds
 	createFloatUniform("iGlobalTime", 49, 0.0f);
+
+	// int
+	// blend mode 
+	createIntUniform("iBlendmode", 0, 0);
+	// greyscale 
+	createIntUniform("iGreyScale", 1, 0);
+
 	// vec3
 	createVec3Uniform("iResolution", 0, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 	createVec3Uniform("iColor", 1, vec3(1.0, 0.5, 0.0));
 	createVec3Uniform("iBackgroundColor", 2);
 	createVec3Uniform("iChannelResolution[0]", 3, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+
 	// boolean
 	createBoolUniform("iFlipH", 0);
 	createBoolUniform("iFlipV", 1);
+	createBoolUniform("iXorY", 2);
+
+	// textures
 	for (size_t i = 0; i < 8; i++)
 	{
 		createSampler2DUniform("iChannel" + toString(i), i);

@@ -68,7 +68,7 @@ namespace VideoDromm
 		ci::ivec2						getSize();
 		ci::Area						getBounds();
 		GLuint							getId();
-		std::string						getName();
+		//std::string						getName();
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };
 		int								getTextureWidth();
@@ -173,7 +173,7 @@ namespace VideoDromm
 
 		ci::gl::TextureRef				getRenderTexture();
 	protected:
-		std::string						mName;
+		//std::string						mName;
 		bool							mFlipV;
 		bool							mFlipH;
 		std::string						mFbosPath;
@@ -197,7 +197,7 @@ namespace VideoDromm
 		VDRouterRef						mVDRouter;
 
 		//! Fbos
-		bool							initFboList();
+		//bool							initFboList();
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;
@@ -208,7 +208,7 @@ namespace VideoDromm
 		//! Shaders
 		VDShaderList					mShaderList;
 		bool							initShaderList();
-		unsigned int					mMixShaderIndex;
+		//unsigned int					mMixShaderIndex;
 		// Textures
 		VDTextureList					mTextureList;
 		fs::path						mTexturesFilepath;

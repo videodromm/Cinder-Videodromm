@@ -151,7 +151,7 @@ namespace VideoDromm {
 		bool						iRepeat;
 		bool						iLight;
 		bool						iLightAuto;
-		int							iBlendMode;
+		int							iBlendmode;
 		float						iRedMultiplier;
 		float						iGreenMultiplier;
 		float						iBlueMultiplier;
