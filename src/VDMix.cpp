@@ -495,13 +495,14 @@ namespace VideoDromm {
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDMix::init mShaderList");
 			// mix shader
-			VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, "", ""));
-			XmlTree			shaderXml;
+			fs::path mFragFile = getAssetPath("") / "mixfbo.frag";		
+			VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
+			/*XmlTree			shaderXml;
 			shaderXml.setTag("mix");
 			shaderXml.setAttribute("id", "0");
 			shaderXml.setAttribute("vertfile", "passthru.vert");
 			shaderXml.setAttribute("fragfile", "mixfbo.frag");
-			s->fromXml(shaderXml);
+			s->fromXml(shaderXml);*/
 			if (s->isValid()) {
 				mShaderList.push_back(s);
 				// create the mix fbo
@@ -521,13 +522,14 @@ namespace VideoDromm {
 				CI_LOG_V("VDMix::init mShaderList mixfbo failed");
 			}
 			// direct input texture channel 0
-			VDShaderRef t0(new VDShader(mVDSettings, mVDAnimation, "", ""));
-			XmlTree			t0Xml;
+			mFragFile = getAssetPath("") / "texture0.frag";
+			VDShaderRef t0(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
+			/*XmlTree			t0Xml;
 			t0Xml.setTag("texture0");
 			t0Xml.setAttribute("id", "1");
 			t0Xml.setAttribute("vertfile", "passthru.vert");
 			t0Xml.setAttribute("fragfile", "texture0.frag");
-			t0->fromXml(t0Xml);
+			t0->fromXml(t0Xml);*/
 			if (t0->isValid()) {
 				mShaderList.push_back(t0);
 				// each shader element has a fbo
@@ -546,13 +548,14 @@ namespace VideoDromm {
 				CI_LOG_V("VDMix::init mShaderList texture0 failed");
 			}
 			// direct input texture channel 1
-			VDShaderRef t1(new VDShader(mVDSettings, mVDAnimation, "", ""));
-			XmlTree			t1Xml;
+			mFragFile = getAssetPath("") / "texture1.frag";
+			VDShaderRef t1(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
+			/*XmlTree			t1Xml;
 			t1Xml.setTag("texture1");
 			t1Xml.setAttribute("id", "2");
 			t1Xml.setAttribute("vertfile", "passthru.vert");
 			t1Xml.setAttribute("fragfile", "texture1.frag");
-			t1->fromXml(t1Xml);
+			t1->fromXml(t1Xml);*/
 			if (t1->isValid()) {
 				mShaderList.push_back(t1);
 				// each shader element has a fbo

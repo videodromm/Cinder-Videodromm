@@ -210,7 +210,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	return mValid;
 }
 
-void VDShader::fromXml(const XmlTree &xml) {
+/*void VDShader::fromXml(const XmlTree &xml) {
 	mId = xml.getAttributeValue<string>("id", "");
 	string mVertfile = xml.getAttributeValue<string>("vertfile", "passthru.vert");
 	mName = xml.getAttributeValue<string>("fragfile", "0.frag");
@@ -220,7 +220,7 @@ void VDShader::fromXml(const XmlTree &xml) {
 
 	mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / mName;
 	loadFragmentStringFromFile(mFragFile.string());
-}
+}*/
 void VDShader::createThumb() {
 	// draw using the shader
 	mThumbFbo->bindFramebuffer();
@@ -277,7 +277,10 @@ ci::gl::Texture2dRef VDShader::getThumb() {
 
 gl::GlslProgRef VDShader::getShader() {
 	return mShader;
-};
+}
+string VDShader::getName() { 
+	return mName; 
+}
 
 VDShader::~VDShader() {
 	CI_LOG_V("VDShader destructor");

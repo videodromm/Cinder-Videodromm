@@ -119,7 +119,7 @@ namespace VideoDromm {
 	}
 
 	std::string VDFbo::getLabel() {
-		mFbo->setLabel(mFboTextureShader->getLabel() + " " + mId); // add mId to make it unique for imgui
+		mFbo->setLabel(mFboTextureShader->getLabel() + " " + mId + mShaderName); // add mId to make it unique for imgui
 		return mFbo->getLabel();
 	}
 
