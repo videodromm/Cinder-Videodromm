@@ -25,9 +25,10 @@ namespace VideoDromm {
 		// init fbo format
 		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 		//fmt.setBorderColor(Color::black());		
-		fboFmt.setColorTextureFormat(fmt);
+		// uncomment this to enable 4x antialiasing	
 		//fboFmt.setSamples( 4 ); 
-		// uncomment this to enable 4x antialiasing		fboFmt.setColorTextureFormat(fmt);
+		fboFmt.setColorTextureFormat(fmt);
+
 		// initialize the textures list with audio texture
 		mTexturesFilepath = getAssetPath("") / mVDSettings->mAssetsPath / "textures.xml";
 		initTextureList();
@@ -180,26 +181,10 @@ namespace VideoDromm {
 		return mMixFbos[aMixFboIndex]->getColorTexture();
 	}
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {
-		if (aFboIndex > mFbos.size() - 1) aFboIndex = 0;
-		return mFbos[aFboIndex]->getColorTexture();
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+		return mFboList[aFboIndex]->getFboTexture();
 	}
-	/*ci::gl::TextureRef VDMix::getWarpTexture(unsigned int aWarpIndex) {
-		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
-		gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]);
-		gl::clear(Color::black());
-		gl::ScopedGlslProg glslScope(mFboList[mWarpMix[aWarpIndex].AFboIndex]->getShader());
-		mTextureList[mFboList[mWarpMix[aWarpIndex].AFboIndex]->getInputTextureIndex()]->getTexture()->bind(0); // TO MIGRATE
-		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]->getHeight()));
-		return mMixFbos[mWarpMix[aWarpIndex].MixFboIndex]->getColorTexture();
-	}
-	ci::gl::TextureRef VDMix::getWarpATexture(unsigned int aWarpIndex) {
-		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
-		return mFbos[mWarpMix[aWarpIndex].AFboIndex]->getColorTexture();
-	}
-	ci::gl::TextureRef VDMix::getWarpBTexture(unsigned int aWarpIndex) {
-		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
-		return mFbos[mWarpMix[aWarpIndex].BFboIndex]->getColorTexture();
-	}*/
+
 	void VDMix::renderBlend()
 	{
 		//mCurrentBlend++;
@@ -208,8 +193,8 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 
 		gl::ScopedGlslProg glslScope(mGlslBlend);
-		gl::ScopedTextureBind tex0(mFbos[mWarpMix[warpMixToRender].AFboIndex]->getColorTexture(), 0);
-		gl::ScopedTextureBind tex1(mFbos[mWarpMix[warpMixToRender].BFboIndex]->getColorTexture(), 1);
+		gl::ScopedTextureBind tex0(mFboList[mWarpMix[warpMixToRender].AFboIndex]->getFboTexture(), 0);
+		gl::ScopedTextureBind tex1(mFboList[mWarpMix[warpMixToRender].BFboIndex]->getFboTexture(), 1);
 
 		//mFbos[1]->getColorTexture()->bind(0);
 		//mFbos[2]->getColorTexture()->bind(1);
@@ -329,7 +314,7 @@ namespace VideoDromm {
 	}
 #pragma endregion events
 	void VDMix::renderScene(unsigned int aFboIndex) {
-		if (aFboIndex < mFbos.size()) {
+		/*if (aFboIndex < mFbos.size()) {
 			gl::ScopedFramebuffer scopedFbo(mFbos[aFboIndex]);
 			gl::clear(Color::black());
 			//gl::ScopedGlslProg glslScope(mFboList[mFboIndex[aMixFboIndex]]->getShader());
@@ -339,7 +324,7 @@ namespace VideoDromm {
 		}
 		else {
 			CI_LOG_V("VDMix::renderScene error");
-		}
+		}*/
 	}
 
 	void VDMix::renderMix() {
@@ -354,8 +339,8 @@ namespace VideoDromm {
 
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mWarpMix[warpMixToRender].ABCrossfade);
-		gl::ScopedTextureBind tex0(mFbos[mWarpMix[warpMixToRender].AFboIndex]->getColorTexture(), 0);
-		gl::ScopedTextureBind tex1(mFbos[mWarpMix[warpMixToRender].BFboIndex]->getColorTexture(), 1);
+		gl::ScopedTextureBind tex0(mFboList[mWarpMix[warpMixToRender].AFboIndex]->getFboTexture(), 0);
+		gl::ScopedTextureBind tex1(mFboList[mWarpMix[warpMixToRender].BFboIndex]->getFboTexture(), 1);
 		//mFbos[mWarpMix[warpMixToRender].AFboIndex]->getColorTexture()->bind(0);
 		//mFbos[mWarpMix[warpMixToRender].BFboIndex]->getColorTexture()->bind(1);
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getHeight()));
@@ -560,7 +545,7 @@ namespace VideoDromm {
 			if (t0->isValid()) {
 				mShaderList.push_back(t0);
 				// each shader element has a fbo
-				mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
+				//mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 				VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 				// create fbo xml
 				XmlTree			fboXml;
@@ -586,7 +571,7 @@ namespace VideoDromm {
 			if (t1->isValid()) {
 				mShaderList.push_back(t1);
 				// each shader element has a fbo
-				mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
+				//mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 				VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 				// create fbo xml
 				XmlTree			fboXml;
@@ -786,7 +771,7 @@ namespace VideoDromm {
 			CI_LOG_V("VDMix got fbo childs");
 			for (XmlTree::ConstIter fboChild = xml.begin("fbo"); fboChild != xml.end(); ++fboChild) {
 				CI_LOG_V("VDMix create fbo ");
-				mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
+				//mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 				VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 				f->fromXml(*fboChild);
 				mFboList.push_back(f);

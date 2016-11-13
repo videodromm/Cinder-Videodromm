@@ -21,8 +21,8 @@ namespace VideoDromm {
 		mZoom = 1.0f;
 
 		// init the fbo whatever happens next
-		gl::Fbo::Format format;
-		mFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, format.depthTexture());
+		fboFmt.setColorTextureFormat(fmt);
+		mFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mError = "";
 		// init with passthru shader
 		mShaderName = "fbotexture";
@@ -200,7 +200,7 @@ namespace VideoDromm {
 		return mFboTextureShader; 
 	}
 
-	/*ci::gl::Texture2dRef VDFbo::getTexture() {
+	ci::gl::Texture2dRef VDFbo::getFboTexture() {
 		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mFbo);
 		gl::clear(Color::black());
@@ -222,7 +222,7 @@ namespace VideoDromm {
 					break;
 				case 1:
 					// sampler2D
-					mFboTextureShader->uniform(uniform.getName(), inputTextureIndex);
+					mFboTextureShader->uniform(uniform.getName(), mInputTextureIndex);
 					break;
 				case 2:
 					// vec2
@@ -255,11 +255,11 @@ namespace VideoDromm {
 				}
 			}
 		}
-		gl::ScopedTextureBind tex(mTextureList[inputTextureIndex]->getTexture());
+		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
 		// lopocompris
 		//gl::drawSolidRect(Rectf(0, 0, 900, 700));
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 		return mFbo->getColorTexture();
-	}*/
+	}
 } // namespace VideoDromm
 

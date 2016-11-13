@@ -170,13 +170,7 @@ namespace VideoDromm
 		unsigned int					getWarpCount() { return mWarpMix.size(); };
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
-		/*unsigned int					getWarpATextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].ATextureIndex; };
-		unsigned int					getWarpBTextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].BTextureIndex; };
-		void							setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
-		void							setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
-		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
-		ci::gl::TextureRef				getWarpATexture(unsigned int aWarpIndex);
-		ci::gl::TextureRef				getWarpBTexture(unsigned int aWarpIndex);*/
+
 		ci::gl::TextureRef				getRenderTexture();
 	protected:
 		std::string						mName;
@@ -207,7 +201,7 @@ namespace VideoDromm
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;
-		vector<ci::gl::FboRef>			mFbos;
+		//vector<ci::gl::FboRef>			mFbos;
 		vector<ci::gl::FboRef>			mMixFbos;
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;

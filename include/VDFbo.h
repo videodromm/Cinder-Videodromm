@@ -65,7 +65,7 @@ namespace VideoDromm
 		// textures
 		void							setInputTexture(unsigned int aTextureIndex);
 		unsigned int					getInputTextureIndex() { return mInputTextureIndex; };
-		//ci::gl::Texture2dRef			getTexture();
+		ci::gl::Texture2dRef			getFboTexture();
 		gl::GlslProgRef					getShader();
 	protected:
 		std::string						mFboName;
@@ -95,6 +95,8 @@ namespace VideoDromm
 
 		//! Fbo
 		gl::FboRef						mFbo;
+		gl::Texture::Format				fmt;
+		gl::Fbo::Format					fboFmt;
 		//! Textures
 		VDTextureList					mTextureList;
 		unsigned int					mInputTextureIndex;
