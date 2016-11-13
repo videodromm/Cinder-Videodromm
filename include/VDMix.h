@@ -38,11 +38,11 @@ namespace VideoDromm
 	{
 		unsigned int				AFboIndex;		// index of the fbo A
 		unsigned int				AShaderIndex;	// index of the shader used by the fbo A
-		//unsigned int				ATextureIndex;	// index of the texture used by the shader A
+		// stored in fbo unsigned int				ATextureIndex;	// index of the texture used by the shader A
 		unsigned int				AMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
 		unsigned int				BFboIndex;		// index of the fbo B
 		unsigned int				BShaderIndex;	// index of the shader used by the fbo B
-		//unsigned int				BTextureIndex;	// index of the texture used by the shader B
+		// stored in fbo unsigned int				BTextureIndex;	// index of the texture used by the shader B
 		unsigned int				BMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
 		Anim<float>					ABCrossfade;	// from 0 A to 1 B can be automated via timeline
 		unsigned int				MixFboIndex;	// index of the fbo mixing A and B
@@ -92,9 +92,6 @@ namespace VideoDromm
 		void							setPosition(int x, int y);
 		void							setZoom(float aZoom);
 		// fbos
-		/*
-		bool							isFboUsed() { return mUseFbo; };
-		void							toggleFboUsed() { mUseFbo = !mUseFbo; };*/
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);
 		int								getInputTextureXLeft(unsigned int aTextureIndex);
 		void							setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft);
@@ -133,7 +130,7 @@ namespace VideoDromm
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getInputTexturesCount();
-		unsigned int					getMixFboCount() { return mMixFbos.size(); };
+		unsigned int					getMixFbosCount() { return mMixFbos.size(); };
 		unsigned int					getFboListSize() { return mFboList.size(); };
 		string							getFboName(unsigned int aFboIndex);
 		string							getFboLabel(unsigned int aFboIndex);
@@ -159,8 +156,8 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex);
 		void							useBlendmode(unsigned int aBlendIndex);
 		const unsigned int				MAXBLENDMODES = 27;
-		ci::gl::Texture2dRef			getTexture(unsigned int aMixFboIndex = 0);
-		unsigned int					getMixFbosCount() { return mMixFbos.size(); };
+		ci::gl::Texture2dRef			getMixTexture(unsigned int aMixFboIndex = 0);
+		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex = 0);
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// warps
@@ -176,10 +173,10 @@ namespace VideoDromm
 		/*unsigned int					getWarpATextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].ATextureIndex; };
 		unsigned int					getWarpBTextureIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].BTextureIndex; };
 		void							setWarpAInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
-		void							setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);*/
+		void							setWarpBInputTexture(unsigned int aWarpIndex, unsigned int aInputTextureIndex);
 		ci::gl::TextureRef				getWarpTexture(unsigned int aWarpIndex);
 		ci::gl::TextureRef				getWarpATexture(unsigned int aWarpIndex);
-		ci::gl::TextureRef				getWarpBTexture(unsigned int aWarpIndex);
+		ci::gl::TextureRef				getWarpBTexture(unsigned int aWarpIndex);*/
 		ci::gl::TextureRef				getRenderTexture();
 	protected:
 		std::string						mName;
@@ -205,16 +202,15 @@ namespace VideoDromm
 		// Router
 		VDRouterRef						mVDRouter;
 
-		//! Fbo
+		//! Fbos
 		bool							initFboList();
-		//unsigned int					mRightFboIndex;
-		//unsigned int					mLeftFboIndex;
-		//bool							mUseLeftFbo;
-		//bool							mUseRightFbo;
-		//bool							mUseFbo;
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;
+		vector<ci::gl::FboRef>			mFbos;
+		vector<ci::gl::FboRef>			mMixFbos;
+		gl::Texture::Format				fmt;
+		gl::Fbo::Format					fboFmt;
 		//! Shaders
 		VDShaderList					mShaderList;
 		bool							initShaderList();
@@ -226,10 +222,9 @@ namespace VideoDromm
 		// blendmodes fbos
 		vector<ci::gl::FboRef>			mBlendFbos;
 		int								mCurrentBlend;
-		vector<ci::gl::FboRef>			mMixFbos;
-		gl::GlslProgRef					mGlslMix, mGlslBlend; 
+		gl::GlslProgRef					mGlslMix, mGlslBlend;
 		// render
-		void							renderScene(unsigned int aMixFboIndex);
+		void							renderScene(unsigned int aFboIndex);
 		void							renderMix();
 		void							renderBlend();
 		bool							mBlendRender;
