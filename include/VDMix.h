@@ -104,8 +104,10 @@ namespace VideoDromm
 		void							setInputTextureXRight(unsigned int aTextureIndex, int aXRight);
 		int								getInputTextureYBottom(unsigned int aTextureIndex);
 		void							setInputTextureYBottom(unsigned int aTextureIndex, int aYBottom);
-		bool							getInputTextureTopDown(unsigned int aTextureIndex);
-		void							toggleInputTextureTopDown(unsigned int aTextureIndex);
+		bool							isFlipVInputTexture(unsigned int aTextureIndex);
+		bool							isFlipHInputTexture(unsigned int aTextureIndex);
+		void							inputTextureFlipV(unsigned int aTextureIndex);
+		void							inputTextureFlipH(unsigned int aTextureIndex);
 
 		bool							getInputTextureLockBounds(unsigned int aTextureIndex);
 		void							toggleInputTextureLockBounds(unsigned int aTextureIndex);

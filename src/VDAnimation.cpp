@@ -5,6 +5,9 @@ using namespace VideoDromm;
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
+	// mix fbo flip
+	mFlipH = true;
+	mFlipV = true;
 	//audio
 	mUseLineIn = true;
 	maxVolume = 0.0f;

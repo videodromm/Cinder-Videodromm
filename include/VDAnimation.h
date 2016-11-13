@@ -159,6 +159,11 @@ namespace VideoDromm
 		vec4						getVec4UniformValue(string aName);
 		int							getIntUniformValue(string aName);
 		bool						getBoolUniformValue(string aName);
+		// mix fbo
+		bool						isFlipH() { return mFlipH; };
+		bool						isFlipV() { return mFlipV; };
+		void						flipH() { mFlipH = !mFlipH; };
+		void						flipV() { mFlipV = !mFlipV; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -195,5 +200,7 @@ namespace VideoDromm
 		void						saveAnimation();
 
 		std::unordered_map<int, float>	mBadTV;
+		bool						mFlipH;
+		bool						mFlipV;
 	};
 }

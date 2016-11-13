@@ -153,6 +153,28 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Mouse", &currentWindowRow1, 5); ui::SameLine();
 		ui::RadioButton("Osc", &currentWindowRow1, 6);  ui::SameLine();
 		ui::RadioButton("WS", &currentWindowRow1, 7);  ui::SameLine();
+		// flip vertically
+		int hue = 0;
+		mVDAnimation->isFlipV() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
+		if (ui::Button("FlipV")) {
+			mVDAnimation->flipV();
+		}
+		ui::PopStyleColor(3);
+		hue++;
+		ui::SameLine();
+		// flip horizontally
+		mVDAnimation->isFlipH() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
+		if (ui::Button("FlipH")) {
+			mVDAnimation->flipH();
+		}
+		ui::PopStyleColor(3);
+		hue++;
+		ui::SameLine();
+
 		// crossfade
 		if (ui::DragFloat("Xfade", &mVDAnimation->controlValues[18], 0.01f, 0.001f, 1.0f))
 		{

@@ -72,8 +72,6 @@ namespace VideoDromm
 		//! returns the type
 		TextureType						getType() { return mType; };
 		std::string						getName();
-		bool							isFlipH() { return mFlipH; };
-		bool							isFlipV() { return mFlipV; };
 		unsigned int					getTextureWidth();
 		unsigned int					getTextureHeight();
 		unsigned int					getOriginalWidth();
@@ -98,8 +96,10 @@ namespace VideoDromm
 		int								getYTop() { return mYTop; };
 		int								getXRight() { return mXRight; };
 		int								getYBottom() { return mYBottom; };
-		bool							isTopDown();
-		void							toggleTopDown();
+		bool							isFlipH() { return mFlipH; };
+		bool							isFlipV() { return mFlipV; };
+		void							flipV();
+		void							flipH();
 		bool							getLockBounds();
 		void							toggleLockBounds();
 		// sequence and movie
@@ -122,7 +122,6 @@ namespace VideoDromm
 		TextureType						mType;
 		std::string						mPath;
 		std::string						mFolder;
-		bool							mTopDown;
 		unsigned int 					mWidth;
 		unsigned int					mHeight;
 		unsigned int 					mAreaWidth;

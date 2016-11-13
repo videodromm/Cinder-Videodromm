@@ -48,7 +48,7 @@ namespace VideoDromm {
 		//fmt.setBorderColor(Color::black());
 
 		gl::Fbo::Format fboFmt;
-		fboFmt.setColorTextureFormat(fmt);
+		fboFmt.setColorTextureFormat(fmt); 
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 0 = warp mix
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 1 = warp A
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 2 = warp B
@@ -349,6 +349,7 @@ namespace VideoDromm {
 
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mWarpMix[warpMixToRender].ABCrossfade);
+
 		mMixFbos[mWarpMix[warpMixToRender].AFboIndex]->getColorTexture()->bind(0);
 		mMixFbos[mWarpMix[warpMixToRender].BFboIndex]->getColorTexture()->bind(1);
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getHeight()));
@@ -367,6 +368,8 @@ namespace VideoDromm {
 	}*/
 
 	void VDMix::update() {
+		// update audio texture
+		mTextureList[0]->getTexture();
 		if (mVDRouter->hasReceivedShader()) {
 			if (mWarpMix[0].ABCrossfade < 0.5) {
 				setFragmentShaderString(2, mVDRouter->getReceivedShader());
@@ -426,8 +429,8 @@ namespace VideoDromm {
 		mGlslMix->uniform("iRedMultiplier", mVDSettings->iRedMultiplier);
 		mGlslMix->uniform("iGreenMultiplier", mVDSettings->iGreenMultiplier);
 		mGlslMix->uniform("iBlueMultiplier", mVDSettings->iBlueMultiplier);
-		mGlslMix->uniform("iFlipH", 0);
-		mGlslMix->uniform("iFlipV", 0);
+		mGlslMix->uniform("iFlipV", mVDAnimation->isFlipV());
+		mGlslMix->uniform("iFlipH", mVDAnimation->isFlipH());
 		mGlslMix->uniform("iParam1", mVDSettings->iParam1);
 		mGlslMix->uniform("iParam2", mVDSettings->iParam2);
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
@@ -1041,14 +1044,23 @@ namespace VideoDromm {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mTextureList[aTextureIndex]->setYBottom(aYBottom);
 	}
-	bool VDMix::getInputTextureTopDown(unsigned int aTextureIndex) {
+	bool VDMix::isFlipVInputTexture(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-		return mTextureList[aTextureIndex]->isTopDown();
+		return mTextureList[aTextureIndex]->isFlipV();
 	}
-	void VDMix::toggleInputTextureTopDown(unsigned int aTextureIndex) {
+	void VDMix::inputTextureFlipV(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-		mTextureList[aTextureIndex]->toggleTopDown();
+		mTextureList[aTextureIndex]->flipV();
 	}
+	bool VDMix::isFlipHInputTexture(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->isFlipH();
+	}
+	void VDMix::inputTextureFlipH(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->flipH();
+	}
+
 	bool VDMix::getInputTextureLockBounds(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		return mTextureList[aTextureIndex]->getLockBounds();

@@ -31,13 +31,24 @@ void VDUITextures::Run(const char* title) {
 			ui::PushID(t);
 			ui::Image((void*)mVDMix->getInputTexture(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth * 0.7);
-
-			(mVDMix->getInputTextureTopDown(t)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			// flip vertically
+			mVDMix->isFlipVInputTexture(t) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			sprintf(buf, "TopDown##td%d", t);
+			sprintf(buf, "FlipV##vd%d", t);
 			if (ui::Button(buf)) {
-				mVDMix->toggleInputTextureTopDown(t);
+				mVDMix->inputTextureFlipV(t);
+			}
+			ui::PopStyleColor(3);
+			hue++;
+			ui::SameLine();
+			// flip horizontally
+			mVDMix->isFlipHInputTexture(t) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
+			sprintf(buf, "FlipH##hd%d", t);
+			if (ui::Button(buf)) {
+				mVDMix->inputTextureFlipH(t);
 			}
 			ui::PopStyleColor(3);
 			hue++;

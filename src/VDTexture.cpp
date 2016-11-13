@@ -10,7 +10,6 @@ namespace VideoDromm {
 	VDTexture::VDTexture(TextureType aType)
 		: mPath("")
 		, mName("")
-		, mTopDown(false)
 		, mFlipV(false)
 		, mFlipH(true)
 		, mWidth(640)
@@ -31,11 +30,11 @@ namespace VideoDromm {
 		}
 		// init the texture whatever happens next
 		if (mPath.length() > 0) {
-			mTexture = ci::gl::Texture::create(ci::loadImage(mPath), ci::gl::Texture::Format().loadTopDown(mTopDown));
+			mTexture = ci::gl::Texture::create(ci::loadImage(mPath), ci::gl::Texture::Format().loadTopDown(mFlipV));
 			mInputSurface = Surface(loadImage(mPath));
 		}
 		else {
-			mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+			mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 			mInputSurface = Surface(mWidth, mHeight, true);
 		}
 	}
@@ -230,7 +229,7 @@ namespace VideoDromm {
 	}
 	bool VDTexture::loadFromFullPath(string aPath) {
 		// initialize texture
-		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 		return true;
 	}
 	void VDTexture::lockBounds(bool lock, unsigned int aWidth, unsigned int aHeight) {
@@ -262,11 +261,11 @@ namespace VideoDromm {
 			mYTop = mYBottom - mAreaHeight;
 		}
 	}
-	bool VDTexture::isTopDown() {
-		return mTopDown;
+	void VDTexture::flipV() {
+		mFlipV = !mFlipV;
 	}
-	void VDTexture::toggleTopDown() {
-		mTopDown = !mTopDown;
+	void VDTexture::flipH() {
+		mFlipH = !mFlipH;
 	}
 	bool VDTexture::getLockBounds() {
 		return mBoundsLocked;
@@ -320,7 +319,8 @@ namespace VideoDromm {
 
 		// add attributes specific to this type of texture
 		xml.setAttribute("path", mPath);
-		xml.setAttribute("topdown", mTopDown);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
 		return xml;
 	}
 
@@ -328,7 +328,8 @@ namespace VideoDromm {
 	{
 		VDTexture::fromXml(xml);
 		// retrieve attributes specific to this type of texture
-		mTopDown = xml.getAttributeValue<bool>("topdown", "true"); // default true
+		mFlipV = xml.getAttributeValue<bool>("flipv", "true"); // default true
+		mFlipH = xml.getAttributeValue<bool>("fliph", "true"); // default true
 		mPath = xml.getAttributeValue<string>("path", "");
 		mFolder = xml.getAttributeValue<string>("folder", "");
 		mName = mPath;
@@ -357,7 +358,7 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef TextureImage::getTexture() {
 		Area area(mXLeft, mYTop, mXRight, mYBottom);
 		mProcessedSurface = mInputSurface.clone(area);
-		mTexture = gl::Texture2d::create(mProcessedSurface, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		mTexture = gl::Texture2d::create(mProcessedSurface, ci::gl::Texture::Format().loadTopDown(mFlipV));
 		return mTexture;
 	}
 
@@ -458,8 +459,8 @@ namespace VideoDromm {
 			if (!validFile) {
 				// might want to remove default file as we are now using a boolean to notify the caller
 				if (anyImagefileName.length() > 0) {
-					mTexture = ci::gl::Texture::create(loadImage(loadAsset(anyImagefileName)), ci::gl::Texture::Format().loadTopDown(mTopDown));
-					mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(loadAsset(anyImagefileName)), gl::Texture::Format().loadTopDown(mTopDown)));
+					mTexture = ci::gl::Texture::create(loadImage(loadAsset(anyImagefileName)), ci::gl::Texture::Format().loadTopDown(mFlipV));
+					mSequenceTextures.push_back(ci::gl::Texture::create(loadImage(loadAsset(anyImagefileName)), gl::Texture::Format().loadTopDown(mFlipV)));
 					mLoadingFilesComplete = true;
 					mFramesLoaded = 1;
 				}
@@ -471,11 +472,12 @@ namespace VideoDromm {
 	{
 		bool rtn = false;
 		// init		
-		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 		// retrieve attributes specific to this type of texture
 		mPath = xml.getAttributeValue<string>("path", "");
 		mName = mPath;
-		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
+		mFlipV = xml.getAttributeValue<bool>("flipv", "false");
+		mFlipH = xml.getAttributeValue<bool>("fliph", "false");
 		if (mPath.length() > 0) {
 			if (fs::exists(mPath)) {
 				rtn = loadFromFullPath(mPath);
@@ -492,7 +494,8 @@ namespace VideoDromm {
 
 		// add attributes specific to this type of texture
 		xml.setAttribute("path", mPath);
-		xml.setAttribute("topdown", mTopDown);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
 		return xml;
 	}
 	void TextureImageSequence::loadNextImageFromDisk() {
@@ -641,9 +644,10 @@ namespace VideoDromm {
 	{
 		bool rtn = false;
 		// init		
-		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 		// retrieve attributes specific to this type of texture
-		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
+		mFlipV = xml.getAttributeValue<bool>("flipv", "false");
+		mFlipH = xml.getAttributeValue<bool>("fliph", "false");
 		mPath = xml.getAttributeValue<string>("path", "");
 		if (mPath.length() > 0) {
 			fs::path fullPath = getAssetPath("") / mPath;// TODO / mVDSettings->mAssetsPath
@@ -659,7 +663,8 @@ namespace VideoDromm {
 
 		// add attributes specific to this type of texture
 		xml.setAttribute("path", mPath);
-		xml.setAttribute("topdown", mTopDown);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
 		return xml;
 	}
 #endif
@@ -682,7 +687,7 @@ namespace VideoDromm {
 			mMovie->play();
 			mWidth = mMovie->getWidth();
 			mHeight = mMovie->getHeight();
-			mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+			mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 			rtn = true;
 		}
 		catch (ci::Exception &e)
@@ -705,7 +710,7 @@ namespace VideoDromm {
 			mTexture = mMovie->getTexture();
 			// if codec is not recognized the texture is empty, return an initialized texture
 			if (!mTexture) {
-				mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+				mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 			}
 		}
 		return mTexture;
@@ -732,7 +737,7 @@ namespace VideoDromm {
 	}
 	bool TextureCamera::fromXml(const XmlTree &xml) {
 		// init		
-		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 		// retrieve attributes specific to this type of texture
 		mPath = xml.getAttributeValue<string>("path", "");
 		mName = "camera";
@@ -743,7 +748,8 @@ namespace VideoDromm {
 
 		// add attributes specific to this type of texture
 		xml.setAttribute("camera", mFirstCameraDeviceName);
-		xml.setAttribute("topdown", mTopDown);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
 		xml.setAttribute("path", mPath);
 		return xml;
 	}
@@ -795,9 +801,10 @@ namespace VideoDromm {
 	bool TextureShared::fromXml(const XmlTree &xml)
 	{
 		// init		
-		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mTopDown));
+		mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 		// retrieve attributes specific to this type of texture
-		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
+		mFlipV = xml.getAttributeValue<bool>("flipv", "false");
+		mFlipH = xml.getAttributeValue<bool>("fliph", "false");
 		mPath = xml.getAttributeValue<string>("path", "");
 		mName = "shared";
 		return true;
@@ -807,7 +814,8 @@ namespace VideoDromm {
 
 		// add attributes specific to this type of texture
 		xml.setAttribute("path", mPath);
-		xml.setAttribute("topdown", mTopDown);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
 		return xml;
 	}
 
@@ -915,7 +923,8 @@ namespace VideoDromm {
 
 		// add attributes specific to this type of texture
 		xml.setAttribute("path", mPath);
-		xml.setAttribute("topdown", mTopDown);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
 		xml.setAttribute("uselinein", mVDAnimation->mUseLineIn);
 
 		return xml;
@@ -925,7 +934,8 @@ namespace VideoDromm {
 	{
 		VDTexture::fromXml(xml);
 		// retrieve attributes specific to this type of texture
-		mTopDown = xml.getAttributeValue<bool>("topdown", "false");
+		mFlipV = xml.getAttributeValue<bool>("flipv", "false");
+		mFlipH = xml.getAttributeValue<bool>("fliph", "false");
 		mVDAnimation->mUseLineIn = xml.getAttributeValue<bool>("uselinein", "true");
 		mName = (mVDAnimation->mUseLineIn) ? "line in" : "wave";
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
