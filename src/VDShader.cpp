@@ -96,19 +96,21 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	CI_LOG_V("setFragmentString, live loading" + mName);
 	try
 	{
-		/*
-		TODO
-		std::regex pattern { "abc" }; 
-		std::string target { "abcdefabc" };
-		std::string replacement { "123" };
-		std::string result = std::regex_replace(target, pattern, replacement);
-		std::cout << result << std::endl;
-		
-		*/
+		CI_LOG_V(mOriginalFragmentString);
+
+		std::regex pattern { "mainImage( out vec4 fragColor, in vec2 fragCoord )" }; 
+		//std::string target { "abcdefabc" };
+		std::string replacement { "main(void)" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		//std::cout << result << std::endl;
+		pattern = { "u_r" };
+		replacement = { "iR" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		CI_LOG_V(mOriginalFragmentString);
 		// shadertoy imported shaders need to be edited
 		// change texture2D to texture for version > 150?
 		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
-		std::size_t mainImage = mOriginalFragmentString.find("mainImage");
+		/*std::size_t mainImage = mOriginalFragmentString.find("mainImage");
 		if (mainImage != std::string::npos) {
 			string begin = mOriginalFragmentString.substr(0, mainImage + 4) + "()";
 			string remaining = mOriginalFragmentString.substr(mainImage + 9);
@@ -117,7 +119,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 				string end = remaining.substr(mainParams+1);
 				mOriginalFragmentString = begin + end;
 			}
-		}
+		}*/
 		// change fragCoord to gl_FragCoord
 		// change gl_FragColor to fragColor
 		// check if uniforms were declared in the file

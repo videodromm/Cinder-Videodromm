@@ -15,6 +15,8 @@
 #include "VDAnimation.h"
 // Watchdog
 #include "Watchdog.h"
+// std regex
+#include <regex>
 
 #pragma warning(push)
 #pragma warning(disable: 4996) // _CRT_SECURE_NO_WARNINGS
