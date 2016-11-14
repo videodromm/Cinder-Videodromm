@@ -48,7 +48,7 @@ void VDUIFbos::Run(const char* title) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.2));
 		ui::SetNextWindowPos(ImVec2((m * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3 + mVDSettings->uiPreviewH*1.3));
 		// TODO ui::Begin(mVDMix->getFboLabel(m).c_str(), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
-		sprintf(buf, "%s##mixfbolbl%d", mVDMix->getFboLabel(m).c_str(), m);
+		sprintf(buf, "%s##mixfbolbl%d", mVDMix->getMixFboLabel(m).c_str(), m);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushID(m);

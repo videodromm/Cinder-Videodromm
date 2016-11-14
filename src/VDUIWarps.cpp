@@ -99,7 +99,7 @@ void VDUIWarps::Run(const char* title) {
 			mVDSettings->mMsg = "Warp " + toString(currentNode) + " name " + mVDMix->getWarpName(currentNode);
 			ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW * 3, mVDSettings->uiLargeH), ImGuiSetCond_FirstUseEver);
-			// left
+			// A (left)
 			int t = 0;
 			int fboIndex = mVDMix->getWarpAFboIndex(currentNode);
 
@@ -122,8 +122,8 @@ void VDUIWarps::Run(const char* title) {
 				ui::PopItemWidth();
 			}
 			ui::End();
-		
-			//right
+
+			// B (right)
 			t = 0;
 			fboIndex = mVDMix->getWarpBFboIndex(currentNode);
 
@@ -141,11 +141,25 @@ void VDUIWarps::Run(const char* title) {
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2 + mVDSettings->uiPreviewH + mVDSettings->uiMargin));
 			ui::Begin(mVDMix->getFboLabel(fboIndex).c_str(), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
-			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-			ui::Image((void*)mVDMix->getFboTexture(fboIndex)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-			ui::PopItemWidth();
+				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+				ui::Image((void*)mVDMix->getFboTexture(fboIndex)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::PopItemWidth();
 			}
 			ui::End();
+			
+			// mix
+			t = 0;
+			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
+			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2 + 2*(mVDSettings->uiPreviewH + mVDSettings->uiMargin)));
+			ui::Begin(mVDMix->getWarpName(currentNode).c_str(), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+			{
+				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+				ui::Image((void*)mVDMix->getMixTexture(currentNode)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::PopItemWidth();
+			}
+			ui::End();
+
+			
 		}
 #pragma endregion Nodes
 
