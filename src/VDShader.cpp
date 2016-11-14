@@ -98,35 +98,48 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	{
 		CI_LOG_V(mOriginalFragmentString);
 
+		// shadertoy: 
+		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
 		std::regex pattern { "mainImage( out vec4 fragColor, in vec2 fragCoord )" }; 
-		//std::string target { "abcdefabc" };
 		std::string replacement { "main(void)" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		//std::cout << result << std::endl;
+		// html glslEditor:
+		// change vec2 u_resolution to vec3 iResolution
+		pattern = { "2 u_r" };
+		replacement = { "3 iR" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { "u_r" };
 		replacement = { "iR" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "u_tex" };
+		replacement = { "iChannel" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "2 u_mouse" };
+		replacement = { "4 iMouse" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "u_m" };
+		replacement = { "iM" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "u_time" };
+		replacement = { "iGlobalTime" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "u_" };
+		replacement = { "i" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		CI_LOG_V(mOriginalFragmentString);
-		// shadertoy imported shaders need to be edited
+
 		// change texture2D to texture for version > 150?
-		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
-		/*std::size_t mainImage = mOriginalFragmentString.find("mainImage");
-		if (mainImage != std::string::npos) {
-			string begin = mOriginalFragmentString.substr(0, mainImage + 4) + "()";
-			string remaining = mOriginalFragmentString.substr(mainImage + 9);
-			std::size_t mainParams = remaining.find(")");
-			if (mainParams != std::string::npos) {
-				string end = remaining.substr(mainParams+1);
-				mOriginalFragmentString = begin + end;
-			}
-		}*/
 		// change fragCoord to gl_FragCoord
 		// change gl_FragColor to fragColor
+	
 		// check if uniforms were declared in the file
 		std::size_t foundUniform = mOriginalFragmentString.find("uniform ");
 		if (foundUniform == std::string::npos) {
 			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
 			aFragmentShaderString = "/*" + aName + "*/\n" + shaderInclude + mOriginalFragmentString;
+		}
+		else {
+			aFragmentShaderString = "/*" + aName + "*/\n" + mOriginalFragmentString;
 		}
 		// try to compile
 		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
