@@ -98,10 +98,10 @@ namespace VideoDromm {
 		Warp::handleResize(mWarps);
 		int i = mWarps.size() - 1; // must have at least 1 warp!
 		mWarpMix[i].ABCrossfade = 0.5;
-		mWarpMix[i].AFboIndex = 3;
+		mWarpMix[i].AFboIndex = 1;
 		mWarpMix[i].AShaderIndex = 4;
 		mWarpMix[i].AMode = 0;
-		mWarpMix[i].BFboIndex = 4;
+		mWarpMix[i].BFboIndex = 2;
 		mWarpMix[i].BShaderIndex = 5;
 		mWarpMix[i].BMode = 0;
 		mWarpMix[i].MixFboIndex = mWarps.size()-1;

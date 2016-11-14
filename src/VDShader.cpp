@@ -86,7 +86,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mCurrentUniformsString = "";
 	string mNotFoundUniformsString = "/*\n";
 	// we would like a name
-	if (aName.length() == 0) aName = toString( getElapsedSeconds() );
+	if (aName.length() == 0) aName = toString( (int)getElapsedSeconds() );
 	// name of the shader
 	mName = aName;
 	// filename to save
