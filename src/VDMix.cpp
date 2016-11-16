@@ -57,7 +57,7 @@ namespace VideoDromm {
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 4 = warp left
 		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt)); // index 5 = warp right */
 		// render fbo
-		
+
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 
 		mCurrentBlend = 0;
@@ -104,7 +104,7 @@ namespace VideoDromm {
 		mWarpMix[i].BFboIndex = 2;
 		mWarpMix[i].BShaderIndex = 5;
 		mWarpMix[i].BMode = 0;
-		mWarpMix[i].MixFboIndex = mWarps.size()-1;
+		mWarpMix[i].MixFboIndex = mWarps.size() - 1;
 		mWarpMix[i].Name = mWarpMix[i].MixFboIndex;
 	}
 	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
@@ -113,7 +113,7 @@ namespace VideoDromm {
 		}
 	}
 	float VDMix::getWarpCrossfade(unsigned int aWarpIndex) {
-		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;		
+		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
 		return mWarpMix[aWarpIndex].ABCrossfade;
 	}
 	void VDMix::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
@@ -130,7 +130,7 @@ namespace VideoDromm {
 	}
 	void VDMix::updateWarpName(unsigned int aWarpIndex) {
 		if (aWarpIndex < mWarpMix.size()) {
-			mWarpMix[aWarpIndex].Name = toString(mWarpMix[aWarpIndex].MixFboIndex) + getFboName(mWarpMix[aWarpIndex].AFboIndex).substr(0,5) + "/" + getFboName(mWarpMix[aWarpIndex].BFboIndex).substr(0,5);
+			mWarpMix[aWarpIndex].Name = toString(mWarpMix[aWarpIndex].MixFboIndex) + getFboName(mWarpMix[aWarpIndex].AFboIndex).substr(0, 5) + "/" + getFboName(mWarpMix[aWarpIndex].BFboIndex).substr(0, 5);
 		}
 	}
 	void VDMix::resize() {
@@ -183,6 +183,10 @@ namespace VideoDromm {
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 		return mFboList[aFboIndex]->getFboTexture();
+	}
+	ci::gl::TextureRef VDMix::getFboRenderedTexture(unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+		return mFboList[aFboIndex]->getRenderedTexture();
 	}
 
 	void VDMix::renderBlend()
@@ -491,9 +495,9 @@ namespace VideoDromm {
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDMix::init mShaderList");
 			// mix shader
-			/*fs::path mFragFile = getAssetPath("") / "mixfbo.frag";		
+			/*fs::path mFragFile = getAssetPath("") / "mixfbo.frag";
 			VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
-			
+
 			if (s->isValid()) {
 				mShaderList.push_back(s);
 				// create the mix fbo
@@ -798,11 +802,9 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 		int rtn = -1;
 		CI_LOG_V("fbo" + toString(aFboIndex) + ": loadPixelFragmentShader " + aFilePath);
-		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aFilePath, ""));
-		if (s->isValid()) {
-			mShaderList.push_back(s);
-			rtn = mShaderList.size() - 1;
-			mFboList[aFboIndex]->setFragmentShader(rtn, s->getFragmentString(), s->getName());
+		rtn = loadFragmentShader(aFilePath);
+		if (rtn > -1) {
+			mFboList[aFboIndex]->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 		}
 		mVDSettings->mShaderToLoad = "";
 
@@ -915,9 +917,8 @@ namespace VideoDromm {
 			if (aIndex > 3) aIndex = 3;
 			loadImageFile(aAbsolutePath, aIndex, true);
 		}
-		else if (ext == "glsl") {
-			//if (aIndex > getFboCount() - 1) aIndex = getFboCount() - 1;
-			rtn = loadFragmentShader(aAbsolutePath);
+		else if (ext == "glsl" || ext == "frag") {
+			rtn = loadFboFragmentShader(aAbsolutePath, aIndex);
 		}
 		else if (ext == "xml") {
 		}

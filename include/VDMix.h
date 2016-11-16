@@ -159,6 +159,7 @@ namespace VideoDromm
 		const unsigned int				MAXBLENDMODES = 27;
 		ci::gl::Texture2dRef			getMixTexture(unsigned int aMixFboIndex = 0);
 		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex = 0);
+		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex);
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// warps

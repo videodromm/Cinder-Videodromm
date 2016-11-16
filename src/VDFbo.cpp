@@ -19,6 +19,7 @@ namespace VideoDromm {
 		mInputTextureIndex = 0;
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
+		isReady = false;
 
 		// init the fbo whatever happens next
 		fboFmt.setColorTextureFormat(fmt);
@@ -199,7 +200,14 @@ namespace VideoDromm {
 		}
 		return mFboTextureShader; 
 	}
-
+	ci::gl::Texture2dRef VDFbo::getRenderedTexture() { 
+		if (!isReady) {
+			getFboTexture();
+			isReady = true;
+		}
+		return mRenderedTexture; 
+	}
+	
 	ci::gl::Texture2dRef VDFbo::getFboTexture() {
 		// TODO move this:
 		getShader();

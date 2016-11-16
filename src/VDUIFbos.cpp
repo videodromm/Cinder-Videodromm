@@ -19,7 +19,8 @@ void VDUIFbos::Run(const char* title) {
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushID(f);
-			ui::Image((void*)mVDMix->getFboTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDMix->getFboRenderedTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			if (ui::IsItemHovered()) mVDMix->getFboTexture(f);
 			for (unsigned int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
 				if (t > 0) ui::SameLine();
 				if (mVDMix->getFboInputTextureIndex(f) == t) {
@@ -36,8 +37,10 @@ void VDUIFbos::Run(const char* title) {
 				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
 				ui::PopStyleColor(3);
 			}
-
-			ui::Text("wh %dx%d", mVDMix->getFboTexture(f)->getWidth(), mVDMix->getFboTexture(f)->getHeight());
+			sprintf(buf, "U##fboupd%d", f);
+			if (ui::Button(buf)) mVDMix->getFboTexture(f);
+			ui::SameLine();
+			ui::Text("wh %dx%d", mVDMix->getFboRenderedTexture(f)->getWidth(), mVDMix->getFboRenderedTexture(f)->getHeight());
 
 			ui::PopID();
 		}
