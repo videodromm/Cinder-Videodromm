@@ -48,10 +48,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	maxRatio = 20.0;
 	tRatio = autoRatio = false;
 	// z position
-	defaultZPos = -0.7;
+	/*defaultZPos = -0.7;
 	minZPos = -1.0;
 	maxZPos = 1.0;
-	tZPos = autoZPos = false;
+	tZPos = autoZPos = false;*/
 	// RotationSpeed
 	defaultRotationSpeed = 0.0;
 	minRotationSpeed = -2.0;
@@ -600,14 +600,14 @@ void VDAnimation::update() {
 			controlValues[19] = autoRotationSpeed ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minRotationSpeed, maxRotationSpeed) : controlValues[19];
 		}
 		// ZPos
-		if (tZPos)
+		/*if (tZPos)
 		{
 			controlValues[9] = (modulo < 0.1) ? maxZPos : minZPos;
 		}
 		else
 		{
 			controlValues[9] = autoZPos ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minZPos, maxZPos) : controlValues[9];
-		}
+		}*/
 
 		// Front Red
 		if (tFR)
@@ -716,7 +716,7 @@ void VDAnimation::resetZoom()
 	tZoom = false;
 	controlValues[22] = defaultZoom;
 }
-
+/*
 void VDAnimation::tempoZPos()
 {
 	tZPos = !tZPos;
@@ -727,7 +727,7 @@ void VDAnimation::resetZPos()
 	autoZPos = false;
 	tZPos = false;
 	controlValues[9] = defaultZPos;
-}
+}*/
 void VDAnimation::tempoRotationSpeed()
 {
 	tRotationSpeed = !tRotationSpeed;

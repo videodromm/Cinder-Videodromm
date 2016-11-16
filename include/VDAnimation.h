@@ -84,11 +84,11 @@ namespace VideoDromm
 		bool						tRatio;
 		bool						autoRatio;
 		// z position
-		float						defaultZPos;
+		/*float						defaultZPos;
 		float						minZPos;
 		float						maxZPos;
 		bool						tZPos;
-		bool						autoZPos;
+		bool						autoZPos;*/
 		// Rotation Speed
 		float						defaultRotationSpeed;
 		float						minRotationSpeed;
@@ -112,9 +112,9 @@ namespace VideoDromm
 		void						resetZoom();
 		void						tempoZoom();
 		void						lockZoom() { autoZoom = !autoZoom; };
-		void						resetZPos();
+		/*void						resetZPos();
 		void						tempoZPos();
-		void						lockZPos() { autoZPos = !autoZPos; };
+		void						lockZPos() { autoZPos = !autoZPos; };*/
 		void						resetRotationSpeed();
 		void						tempoRotationSpeed();
 		void						lockRotationSpeed() { autoRotationSpeed = !autoRotationSpeed; };

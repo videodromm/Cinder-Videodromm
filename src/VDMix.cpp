@@ -918,7 +918,14 @@ namespace VideoDromm {
 			loadImageFile(aAbsolutePath, aIndex, true);
 		}
 		else if (ext == "glsl" || ext == "frag") {
-			rtn = loadFboFragmentShader(aAbsolutePath, aIndex);
+			
+			// don't reuse fbo, create corresponding fbo
+			if (aIndex == 0) {
+				rtn = loadFragmentShader(aAbsolutePath);
+			}
+			else {
+				rtn = loadFboFragmentShader(aAbsolutePath, aIndex);
+			}
 		}
 		else if (ext == "xml") {
 		}

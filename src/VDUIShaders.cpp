@@ -48,6 +48,7 @@ void VDUIShaders::Run(const char* title) {
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(s);
 			ui::Image((void*)mVDMix->getShaderThumb(s)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			if (ui::IsItemHovered()) mVDMix->createShaderThumb(s);
 			// edit
 			if (shaderToEdit == s) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.8f, 1.0f, 0.5f));
@@ -97,10 +98,10 @@ void VDUIShaders::Run(const char* title) {
 		ui::End();
 		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 		//if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW))
-		if (s % 8 == 7)
+		if (s % 10 == 9)
 		{
 			xPos = mVDSettings->uiMargin;
-			yPos += mVDSettings->uiPreviewH + mVDSettings->uiMargin;
+			yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;
 		}
 		// editor
 #pragma region Editor
