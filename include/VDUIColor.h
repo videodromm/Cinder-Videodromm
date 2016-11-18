@@ -6,12 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
-// Animation
-#include "VDAnimation.h"
-// Message router
-#include "VDRouter.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -25,22 +21,18 @@ namespace VideoDromm
 	class VDUIColor
 	{
 	public:
-		VDUIColor(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation);
-		static VDUIColorRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation)
+		VDUIColor(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIColorRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIColor>(new VDUIColor(aVDSettings, aVDMix, aVDRouter, aVDAnimation));
+			return shared_ptr<VDUIColor>(new VDUIColor(aVDSettings, aVDSession));
 		}
 		~VDUIColor();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Animation
-		VDAnimationRef				mVDAnimation;
-		// Message router
-		VDRouterRef					mVDRouter;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

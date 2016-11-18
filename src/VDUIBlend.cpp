@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIBlend::VDUIBlend(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation) {
+VDUIBlend::VDUIBlend(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDAnimation = aVDAnimation;
+	mVDSession = aVDSession;
 }
 VDUIBlend::~VDUIBlend() {
 

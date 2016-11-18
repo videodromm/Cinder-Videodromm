@@ -5,8 +5,6 @@
 
 // Settings
 #include "VDSettings.h"
-// Session
-#include "VDSession.h"
 // Animation
 #include "VDAnimation.h"
 
@@ -60,10 +58,10 @@ namespace VideoDromm
 
 	class VDRouter {
 	public:
-		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSessionRef);
-		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSessionRef)
+		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef);
+		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef)
 		{
-			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aAnimationRef, aVDSessionRef));
+			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aAnimationRef));
 		}
 		void						update();
 		void						shutdown();
@@ -100,9 +98,8 @@ namespace VideoDromm
 		void						wsWrite(std::string msg);
 		void						wsWriteBinary(const void *data, int size);
 		void						wsConnect();
-		void						wsDisconnect();
 		void						wsPing();
-		bool						isWsClientConnected() { return clientConnected; };
+		//bool						isWsClientConnected() { return clientConnected; };
 		// change a control value and update network clients
 		void						changeControlValue(unsigned int aControl, float aValue);
 		// received shaders
@@ -113,14 +110,8 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Animation
 		VDAnimationRef				mVDAnimation;
-		// Session
-		VDSessionRef				mVDSession;
 		// lights4events
 		void						colorWrite();
-		// only send if a control value has changed
-		/*bool						somethingToSend;
-		bool						colorChanged;
-		bool						jsonReady;*/
 		// MIDI
 #if defined( CINDER_MSW )
 		vector<midiInput>			mMidiInputs;
@@ -168,12 +159,7 @@ namespace VideoDromm
 		ReceiverRef					mOSCReceiver;
 
 		SenderRef					mOSCSender;
-
-		// now using broadcast osc::SenderUdp				mOSCSender2;
 		static const int			MAX = 16;
-		//int							iargs[MAX];
-		//float						fargs[MAX];
-		//string						sargs[MAX];
 		// ableton liveOSC
 		string						tracks[MAX];
 		// received shaders

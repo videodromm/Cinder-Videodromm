@@ -2,9 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIAudio::VDUIAudio(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation) {
+VDUIAudio::VDUIAudio(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDAnimation = aVDAnimation;
+	mVDSession = aVDSession;
 }
 VDUIAudio::~VDUIAudio() {
 

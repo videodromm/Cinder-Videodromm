@@ -2,11 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation) {
+VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
-	mVDAnimation = aVDAnimation;
+	mVDSession = aVDSession;
 	// zoom
 	minZoom = -3.0f;
 	maxZoom = 3.0f;

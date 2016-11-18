@@ -6,8 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Animation
-#include "VDAnimation.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -21,18 +21,18 @@ namespace VideoDromm
 	class VDUIAudio
 	{
 	public:
-		VDUIAudio(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation);
-		static VDUIAudioRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation)
+		VDUIAudio(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIAudioRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIAudio>(new VDUIAudio(aVDSettings, aVDAnimation));
+			return shared_ptr<VDUIAudio>(new VDUIAudio(aVDSettings, aVDSession));
 		}
 		~VDUIAudio();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Animation
-		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

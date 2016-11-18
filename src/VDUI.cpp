@@ -2,40 +2,37 @@
 
 using namespace VideoDromm;
 
-VDUI::VDUI(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation, VDSessionRef aVDSession) {
+VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
-	mVDAnimation = aVDAnimation;
 	mVDSession = aVDSession;
 	// Console
-	mUIConsole = VDConsole::create(mVDSettings, mVDMix, mVDRouter);
+	mUIConsole = VDConsole::create(mVDSettings, mVDSession);
 	// UITextures
-	mUITextures = VDUITextures::create(mVDSettings, mVDMix);
+	mUITextures = VDUITextures::create(mVDSettings, mVDSession);
 	// UIFbos
-	mUIFbos = VDUIFbos::create(mVDSettings, mVDMix);
+	mUIFbos = VDUIFbos::create(mVDSettings, mVDSession);
 	// UIAnimation
-	mUIAnimation = VDUIAnimation::create(mVDSettings, mVDMix, mVDRouter, mVDAnimation);
+	mUIAnimation = VDUIAnimation::create(mVDSettings, mVDSession);
 	// UIMidi
-	mUIMidi = VDUIMidi::create(mVDSettings, mVDRouter);
+	mUIMidi = VDUIMidi::create(mVDSettings, mVDSession);
 	// UIAudio
-	mUIAudio = VDUIAudio::create(mVDSettings, mVDAnimation);
+	mUIAudio = VDUIAudio::create(mVDSettings, mVDSession);
 	// UIColor
-	mUIColor = VDUIColor::create(mVDSettings, mVDMix, mVDRouter, mVDAnimation);
+	mUIColor = VDUIColor::create(mVDSettings, mVDSession);
 	// UITempo
-	mUITempo = VDUITempo::create(mVDSettings, mVDMix, mVDAnimation, mVDSession);
+	mUITempo = VDUITempo::create(mVDSettings, mVDSession);
 	// UIBlend
-	mUIBlend = VDUIBlend::create(mVDSettings, mVDMix, mVDAnimation);
+	mUIBlend = VDUIBlend::create(mVDSettings, mVDSession);
 	// UIOsc
-	mUIOsc = VDUIOsc::create(mVDSettings, mVDMix, mVDRouter);
+	mUIOsc = VDUIOsc::create(mVDSettings, mVDSession);
 	// UIWebsockets
-	mUIWebsockets = VDUIWebsockets::create(mVDSettings, mVDMix, mVDRouter);
+	mUIWebsockets = VDUIWebsockets::create(mVDSettings, mVDSession);
 	// UIMouse
-	mUIMouse = VDUIMouse::create(mVDSettings, mVDMix, mVDAnimation);		
+	mUIMouse = VDUIMouse::create(mVDSettings, mVDSessionn);
 	// UIShaders
-	mUIShaders = VDUIShaders::create(mVDSettings, mVDMix, mVDRouter);
+	mUIShaders = VDUIShaders::create(mVDSettings, mVDSession);
 	// UIWarps
-	mUIWarps = VDUIWarps::create(mVDSettings, mVDMix, mVDRouter);
+	mUIWarps = VDUIWarps::create(mVDSettings, mVDSession);
 	// imgui
 	margin = 3;
 	inBetween = 3;

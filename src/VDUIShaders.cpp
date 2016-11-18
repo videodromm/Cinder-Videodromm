@@ -2,10 +2,10 @@
 
 using namespace VideoDromm;
 
-VDUIShaders::VDUIShaders(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter) {
+VDUIShaders::VDUIShaders(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
+	mVDSettings = aVDSettings;
+	mVDSession = aVDSession;
 	try
 	{
 		fs::path vertexFile = getAssetPath("") / "passthru.vert";

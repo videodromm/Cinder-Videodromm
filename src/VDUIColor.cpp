@@ -2,11 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIColor::VDUIColor(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation) {
+VDUIColor::VDUIColor(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
-	mVDAnimation = aVDAnimation;
+	mVDSession = aVDSession;
 }
 VDUIColor::~VDUIColor() {
 	

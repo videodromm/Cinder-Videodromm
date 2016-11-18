@@ -2,12 +2,12 @@
 
 using namespace VideoDromm;
 
-VDAnimation::VDAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
+VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
-	mVDSession = aVDSession;
 	// mix fbo flip
 	mFlipH = true;
 	mFlipV = true;
+	mBlendRender = false;
 	//audio
 	mUseLineIn = true;
 	maxVolume = 0.0f;

@@ -2,9 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIFbos::VDUIFbos(VDSettingsRef aVDSettings, VDMixRef aVDMix) {
+VDUIFbos::VDUIFbos(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
+	mVDSession = aVDSession;
 }
 VDUIFbos::~VDUIFbos() {
 

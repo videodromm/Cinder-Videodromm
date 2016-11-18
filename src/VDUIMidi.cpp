@@ -2,9 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIMidi::VDUIMidi(VDSettingsRef aVDSettings, VDRouterRef aVDRouter) {
+VDUIMidi::VDUIMidi(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDRouter = aVDRouter;
+	mVDSession = aVDSession;
 }
 VDUIMidi::~VDUIMidi() {
 

@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUITextures::VDUITextures(VDSettingsRef aVDSettings, VDMixRef aVDMix) {
+VDUITextures::VDUITextures(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-
+	mVDSession = aVDSession;
 }
 VDUITextures::~VDUITextures() {
 
@@ -20,11 +19,11 @@ void VDUITextures::Run(const char* title) {
 	static bool rnd[64];
 	static bool anim[64];
 
-	for (int t = 0; t < mVDMix->getInputTexturesCount(); t++) {
+	for (int t = 0; t < mVDSession->getInputTexturesCount(); t++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		int hue = 0;
-		sprintf(buf, "%s##s%d", mVDMix->getInputTextureName(t).c_str(), t);
+		sprintf(buf, "%s##s%d", mVDSession->getInputTextureName(t).c_str(), t);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);

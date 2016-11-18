@@ -6,10 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
-// Animation
-#include "VDAnimation.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -23,20 +21,18 @@ namespace VideoDromm
 	class VDUIMouse
 	{
 	public:
-		VDUIMouse(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation);
-		static VDUIMouseRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation)
+		VDUIMouse(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIMouseRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIMouse>(new VDUIMouse(aVDSettings, aVDMix, aVDAnimation));
+			return shared_ptr<VDUIMouse>(new VDUIMouse(aVDSettings, aVDSession));
 		}
 		~VDUIMouse();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Animation
-		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

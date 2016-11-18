@@ -7,6 +7,7 @@ using namespace ci;
 using namespace ci::app;
 
 namespace VideoDromm {
+
 	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter)
 		: mFbosPath("fbos.xml")
 		, mFlipV(false)
@@ -30,25 +31,21 @@ namespace VideoDromm {
 
 		// initialize the textures list with audio texture
 		mTexturesFilepath = getAssetPath("") / mVDSettings->mAssetsPath / "textures.xml";
+		mMixesFilepath = getAssetPath("") / "mixes.xml";
+		if (fs::exists(mMixesFilepath)) {
+			// load textures from file if one exists
+			readSettings(mVDSettings, mVDAnimation, mVDRouter, loadFile(mMixesFilepath));
+		}
 		initTextureList();
 
-		// initialize the fbo list
-		/*initFboList();
-		if (mName.length() == 0) {
-			mName = mFbosPath;
-		}*/
 		// initialize the shaders list 
 		initShaderList();
 
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
-		// mix Ffbo to render
-		warpMixToRender = 0;
-		// render fbo
-		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 
 		mCurrentBlend = 0;
-		for (size_t i = 0; i < MAXBLENDMODES; i++)
+		for (size_t i = 0; i < mVDAnimation->getBlendModesCount(); i++)
 		{
 			mBlendFbos.push_back(gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, fboFmt));
 		}
@@ -57,101 +54,9 @@ namespace VideoDromm {
 		mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
 		mGlslBlend->setLabel("blend mixfbo");
-		mBlendRender = false;
-		// warping
-		gl::enableDepthRead();
-		gl::enableDepthWrite();
-		// initialize warps
-		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
-		//if (fs::exists(mWarpSettings)) {
-			// load warp settings from file if one exists
-			//mWarps = Warp::readSettings(loadFile(mWarpSettings)); // TODO load from json file
-		//}
-		//else {
-			// otherwise create a warp from scratch
-		createWarp();
 
-		//Warp::setSize(mWarps, ivec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));// create small new warps too
-		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
-		Warp::handleResize(mWarps);
 	}
 
-#pragma region warps
-
-	void VDMix::createWarp() {
-		mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
-
-		mWarps.push_back(WarpPerspectiveBilinear::create());
-		Warp::handleResize(mWarps);
-		int i = mWarps.size() - 1; // must have at least 1 warp!
-		mWarpMix[i].ABCrossfade = 0.5;
-		mWarpMix[i].AFboIndex = 1;
-		mWarpMix[i].AShaderIndex = 4;
-		mWarpMix[i].AMode = 0;
-		mWarpMix[i].BFboIndex = 2;
-		mWarpMix[i].BShaderIndex = 5;
-		mWarpMix[i].BMode = 0;
-		mWarpMix[i].MixFboIndex = mWarps.size() - 1;
-		mWarpMix[i].Name = mWarpMix[i].MixFboIndex;
-	}
-	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
-		if (aWarpIndex < mWarpMix.size()) {
-			mWarpMix[aWarpIndex].ABCrossfade = aCrossfade;
-		}
-	}
-	float VDMix::getWarpCrossfade(unsigned int aWarpIndex) {
-		if (aWarpIndex > mWarpMix.size() - 1) aWarpIndex = 0;
-		return mWarpMix[aWarpIndex].ABCrossfade;
-	}
-	void VDMix::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
-		if (aWarpIndex < mWarpMix.size() && aWarpFboIndex < mFboList.size()) {
-			mWarpMix[aWarpIndex].AFboIndex = aWarpFboIndex;
-			updateWarpName(aWarpIndex);
-			mVDRouter->changeControlValue(200 + aWarpIndex, aWarpFboIndex);
-		}
-	}
-	void VDMix::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
-		if (aWarpIndex < mWarpMix.size() && aWarpFboIndex < mFboList.size()) {
-			mWarpMix[aWarpIndex].BFboIndex = aWarpFboIndex;
-			updateWarpName(aWarpIndex);
-			mVDRouter->changeControlValue(300 + aWarpIndex, aWarpFboIndex);
-		}
-	}
-	void VDMix::updateWarpName(unsigned int aWarpIndex) {
-		if (aWarpIndex < mWarpMix.size()) {
-			mWarpMix[aWarpIndex].Name = toString(mWarpMix[aWarpIndex].MixFboIndex) + getFboName(mWarpMix[aWarpIndex].AFboIndex).substr(0, 5) + "/" + getFboName(mWarpMix[aWarpIndex].BFboIndex).substr(0, 5);
-		}
-	}
-	void VDMix::resize() {
-		// tell the warps our window has been resized, so they properly scale up or down
-		Warp::handleResize(mWarps);
-	}
-	void VDMix::save() {
-		// save warp settings
-		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
-	}
-	// Render the scene into the FBO
-
-	ci::gl::TextureRef VDMix::getRenderTexture()
-	{
-		// this will restore the old framebuffer binding when we leave this function
-		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
-		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
-		gl::ScopedFramebuffer fbScp(mRenderFbo);
-		gl::clear(Color::black());
-		// setup the viewport to match the dimensions of the FBO
-		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
-		// iterate over the warps and draw their content
-		int i = 0;
-		for (auto &warp : mWarps) {
-			//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
-			//warp->draw(mMixes[0]->getFboTexture(mWarpMix), mMixes[0]->getFboTexture(mWarpMix)->getBounds());
-			warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
-			i++;
-		}
-		return mRenderFbo->getColorTexture();
-	}
-#pragma endregion warps
 #pragma region blendmodes
 	unsigned int VDMix::getFboBlendCount() {
 		return mBlendFbos.size();
@@ -192,141 +97,10 @@ namespace VideoDromm {
 		gl::drawSolidRect(Rectf(0, 0, mBlendFbos[mCurrentBlend]->getWidth(), mBlendFbos[mCurrentBlend]->getHeight()));
 	}
 #pragma endregion blendmodes
-#pragma region events
-	bool VDMix::handleMouseMove(MouseEvent &event)
-	{
-		bool handled = true;
-		// pass this mouse event to the warp editor first
-		if (!Warp::handleMouseMove(mWarps, event)) {
-			// let your application perform its mouseMove handling here
-			handled = false;
-		}
-		event.setHandled(handled);
-		return event.isHandled();
-	}
 
-	bool VDMix::handleMouseDown(MouseEvent &event)
-	{
-		bool handled = true;
-		// pass this mouse event to the warp editor first
-		if (!Warp::handleMouseDown(mWarps, event)) {
-			// let your application perform its mouseDown handling here
-			mVDAnimation->controlValues[21] = event.getX() / getWindowWidth();
-			handled = false;
-		}
-		event.setHandled(handled);
-		return event.isHandled();
-	}
-
-	bool VDMix::handleMouseDrag(MouseEvent &event)
-	{
-		bool handled = true;
-		// pass this mouse event to the warp editor first
-		if (!Warp::handleMouseDrag(mWarps, event)) {
-			// let your application perform its mouseDrag handling here
-			handled = false;
-		}
-		event.setHandled(handled);
-		return event.isHandled();
-	}
-
-	bool VDMix::handleMouseUp(MouseEvent &event)
-	{
-		bool handled = true;
-		// pass this mouse event to the warp editor first
-		if (!Warp::handleMouseUp(mWarps, event)) {
-			// let your application perform its mouseUp handling here
-			handled = false;
-		}
-		event.setHandled(handled);
-		return event.isHandled();
-	}
-
-	bool VDMix::handleKeyDown(KeyEvent &event)
-	{
-		bool handled = true;
-
-#if defined( CINDER_COCOA )
-		bool isModDown = event.isMetaDown();
-#else // windows
-		bool isModDown = event.isControlDown();
-#endif
-
-		if (isModDown) {
-			switch (event.getCode()) {
-			case KeyEvent::KEY_s:
-				fileWarpsName = "warps" + toString(getElapsedFrames()) + ".xml";
-				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / fileWarpsName;
-				Warp::writeSettings(mWarps, writeFile(mWarpSettings));
-				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
-				break;
-			default:
-				handled = false;
-				break;
-			}
-		}
-		else {
-			// pass this key event to the warp editor first
-			if (!Warp::handleKeyDown(mWarps, event)) {
-				// pass this event to Mix handler
-				if (!mVDAnimation->handleKeyDown(event)) {
-					switch (event.getCode()) {
-					case KeyEvent::KEY_w:
-						// toggle warp edit mode
-						Warp::enableEditMode(!Warp::isEditModeEnabled());
-						break;
-					case KeyEvent::KEY_n:
-						createWarp();
-						// TODO? Warp::handleResize(mWarps);
-						break;
-					case KeyEvent::KEY_LEFT:
-						//mVDTextures->rewindMovie();				
-						break;
-					case KeyEvent::KEY_RIGHT:
-						//mVDTextures->fastforwardMovie();				
-						break;
-					case KeyEvent::KEY_SPACE:
-						//mVDTextures->playMovie();
-						//mVDAnimation->currentScene++;
-						//if (mMovie) { if (mMovie->isPlaying()) mMovie->stop(); else mMovie->play(); }
-						break;
-					case KeyEvent::KEY_0:					
-						break;
-					case KeyEvent::KEY_l:
-						mVDAnimation->load();
-						//mLoopVideo = !mLoopVideo;
-						//if (mMovie) mMovie->setLoop(mLoopVideo);
-						break;
-
-					default:
-						handled = false;
-						break;
-					}
-				}
-			}
-		}
-		event.setHandled(handled);
-		return event.isHandled();
-	}
-
-	bool VDMix::handleKeyUp(KeyEvent &event)
-	{
-		bool handled = true;
-
-		// pass this key event to the warp editor first
-		if (!Warp::handleKeyUp(mWarps, event)) {
-			if (!mVDAnimation->handleKeyUp(event)) {
-				// Animation did not handle the key, so handle it here
-				handled = false;
-			}
-		}
-		event.setHandled(handled);
-		return event.isHandled();
-	}
-#pragma endregion events
 
 	void VDMix::renderMix() {
-		
+
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]);
 		gl::clear(Color::black());
 
@@ -394,8 +168,8 @@ namespace VideoDromm {
 
 		renderMix();
 		// blendmodes preview
-		if (mBlendRender) {
-			mCurrentBlend = getElapsedFrames() % MAXBLENDMODES;
+		if (mVDAnimation->mBlendRender) {
+			mCurrentBlend = getElapsedFrames() % mVDAnimation->getBlendModesCount();
 			mGlslBlend->uniform("iBlendmode", mCurrentBlend);
 			mGlslBlend->uniform("iGlobalTime", (float)getElapsedSeconds());
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
@@ -604,12 +378,8 @@ namespace VideoDromm {
 		}
 		return isFirstLaunch;
 	}
-	VDMix::~VDMix(void) {
-
-	}
-	VDMixList VDMix::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const DataSourceRef &source) {
+	void VDMix::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const DataSourceRef &source) {
 		XmlTree			doc;
-		VDMixList	VDMixlist;
 
 		CI_LOG_V("VDMix readSettings");
 		// try to load the specified xml file
@@ -617,67 +387,22 @@ namespace VideoDromm {
 			doc = XmlTree(source);
 			CI_LOG_V("VDMix xml doc ok");
 		}
-		catch (...) { return VDMixlist; }
+		catch (...) {
+			CI_LOG_V("VDMix xml doc error");
+		}
 
 		// check if this is a valid file 
-		bool isOK = doc.hasChild("mixes");
-		if (!isOK) return VDMixlist;
+		bool isOK = doc.hasChild("fbos");
+		if (!isOK) return;
 
 		//
 		if (isOK) {
-
-			XmlTree mixXml = doc.getChild("mixes");
-
-			// iterate fbos
-			for (XmlTree::ConstIter child = mixXml.begin("mix"); child != mixXml.end(); ++child) {
-				// add the mix to the list
-				CI_LOG_V("Add Mix " + child->getValue());
-				VDMixRef t(new VDMix(aVDSettings, aVDAnimation, aVDRouter));
-				t->fromXml(*child);
-				VDMixlist.push_back(t);
-			}
+			XmlTree mixXml = doc.getChild("fbos");
+			fromXml(mixXml);
 		}
-
-		return VDMixlist;
 	}
-
-	void VDMix::writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target) {
-
-		// create config document and root <textures>
-		/* TODO XmlTree			doc;
-		doc.setTag("mixes");
-		doc.setAttribute("version", "1.0");
-
-		//
-		for (unsigned int i = 0; i < VDMixlist.size(); ++i) {
-		// create <texture>
-		XmlTree			mix;
-		mix.setTag("fbo");
-		mix.setAttribute("id", i + 1);
-		// details specific to texture type
-		mix.push_back(VDMixlist[i]->toXml());
-
-		// add fbo to doc
-		doc.push_back(mix);
-		}
-
-		// write file
-		doc.write(target);*/
-	}
-	XmlTree	VDMix::toXml() const {
-		XmlTree		xml;
-		xml.setTag("details");
-		// TODO rewrite xml.setAttribute("fbopath", mFbosPath);
-		xml.setAttribute("width", mWidth);
-		xml.setAttribute("height", mHeight);
-		return xml;
-	}
-
 	void VDMix::fromXml(const XmlTree &xml) {
-		// initialize the textures list with audio texture
-		initTextureList();
-		// initialize the shaders list 
-		initShaderList();
+
 		// find fbo childs in xml
 		if (xml.hasChild("fbo")) {
 			CI_LOG_V("VDMix got fbo childs");
@@ -714,6 +439,38 @@ namespace VideoDromm {
 			setFboFragmentShaderIndex(2, 2);
 		}
 	}
+
+	/* void VDMix::writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target) {
+
+	// create config document and root <textures>
+	TODO XmlTree			doc;
+	doc.setTag("mixes");
+	doc.setAttribute("version", "1.0");
+
+	//
+	for (unsigned int i = 0; i < VDMixlist.size(); ++i) {
+	// create <texture>
+	XmlTree			mix;
+	mix.setTag("fbo");
+	mix.setAttribute("id", i + 1);
+	// details specific to texture type
+	mix.push_back(VDMixlist[i]->toXml());
+
+	// add fbo to doc
+	doc.push_back(mix);
+	}
+
+	// write file
+	doc.write(target);
+	}
+	XmlTree	VDMix::toXml() const {
+	XmlTree		xml;
+	xml.setTag("details");
+	// TODO rewrite xml.setAttribute("fbopath", mFbosPath);
+	xml.setAttribute("width", mWidth);
+	xml.setAttribute("height", mHeight);
+	return xml;
+	}*/
 	int VDMix::loadFragmentShader(string aFilePath) {
 		int rtn = -1;
 		CI_LOG_V("loadFragmentShader " + aFilePath);
@@ -841,7 +598,7 @@ namespace VideoDromm {
 			loadImageFile(aAbsolutePath, aIndex, true);
 		}
 		else if (ext == "glsl" || ext == "frag") {
-			
+
 			// don't reuse fbo, create corresponding fbo
 			if (aIndex == 0) {
 				rtn = loadFragmentShader(aAbsolutePath);

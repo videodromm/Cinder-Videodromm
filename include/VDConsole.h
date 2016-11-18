@@ -10,6 +10,8 @@
 #include "VDMix.h"
 // Message router
 #include "VDRouter.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -34,10 +36,10 @@ namespace VideoDromm
 	class VDConsole
 	{
 	public:
-		VDConsole(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter);
-		static VDConsoleRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter)
+		VDConsole(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDConsoleRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDConsole>(new VDConsole(aVDSettings, aVDMix, aVDRouter));
+			return shared_ptr<VDConsole>(new VDConsole(aVDSettings, aVDSession));
 		}
 		~VDConsole();
 		void    ClearLog();
@@ -47,10 +49,8 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef			mVDSettings;
-		// Mix
-		VDMixRef				mVDMix;
-		// Message router
-		VDRouterRef				mVDRouter;
+		// Session
+		VDSessionRef				mVDSession;
 
 		char                  InputBuf[256];
 		ImVector<char*>       Items;

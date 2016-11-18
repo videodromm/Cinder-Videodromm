@@ -2,11 +2,10 @@
 
 using namespace VideoDromm;
 
-VDConsole::VDConsole(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter)
+VDConsole::VDConsole(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
+	mVDSession = aVDSession;
 
 	ClearLog();
 	HistoryPos = -1;

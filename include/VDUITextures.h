@@ -7,8 +7,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -22,18 +22,18 @@ namespace VideoDromm
 	class VDUITextures
 	{
 	public:
-		VDUITextures(VDSettingsRef aVDSettings, VDMixRef aVDMix);
-		static VDUITexturesRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix)
+		VDUITextures(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUITexturesRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUITextures>(new VDUITextures(aVDSettings, aVDMix));
+			return shared_ptr<VDUITextures>(new VDUITextures(aVDSettings, aVDSession));
 		}
 		~VDUITextures();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		char						buf[64];
 		int							xStep = 1;

@@ -19,14 +19,12 @@
 
 // Fbos
 #include "VDFbo.h"
-// Warping
-#include "Warp.h"
+
 #include <atomic>
 #include <vector>
 
 using namespace ci;
 using namespace ci::app;
-using namespace ph::warping;
 using namespace std;
 using namespace VideoDromm;
 
@@ -34,31 +32,20 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDMix instance
 	typedef std::shared_ptr<class VDMix> 	VDMixRef;
-	typedef std::vector<VDMixRef>			VDMixList;
 
-	class VDMix : public std::enable_shared_from_this < VDMix > {
+	class VDMix{
 	public:
 		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter);
-		~VDMix(void);
-		static VDMixRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter) { return std::make_shared<VDMix>(aVDSettings, aVDAnimation, aVDRouter); }
+		static VDMixRef					create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter)
+		{
+			return shared_ptr<VDMix>(new VDMix(aVDSettings, aVDAnimation, aVDRouter));
+		}
 		void							update();
-		void							resize();
 		void							save();
-		bool							handleMouseMove(MouseEvent &event);
-		bool							handleMouseDown(MouseEvent &event);
-		bool							handleMouseDrag(MouseEvent &event);
-		bool							handleMouseUp(MouseEvent &event);
 
-		bool							handleKeyDown(KeyEvent &event);
-		bool							handleKeyUp(KeyEvent &event);
-
-
-		//! returns a shared pointer to this fbo
-		VDMixRef						getPtr() { return shared_from_this(); }
 		ci::ivec2						getSize();
 		ci::Area						getBounds();
 		GLuint							getId();
-		//std::string						getName();
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };
 		int								getTextureWidth();
@@ -73,11 +60,11 @@ namespace VideoDromm
 		//!
 		void							fromXml(const ci::XmlTree &xml);
 		//!
-		XmlTree							toXml() const;
+		//XmlTree							toXml() const;
 		//! read a xml file and pass back a vector of VDMixs
-		static VDMixList				readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const ci::DataSourceRef &source);
+		void							readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const ci::DataSourceRef &source);
 		//! write a xml file
-		static void						writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target);
+		//static void						writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target);
 		// move, rotate, zoom methods
 		void							setPosition(int x, int y);
 		void							setZoom(float aZoom);
@@ -146,24 +133,12 @@ namespace VideoDromm
 		unsigned int					getFboBlendCount();
 		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex);
 		void							useBlendmode(unsigned int aBlendIndex);
-		const unsigned int				MAXBLENDMODES = 27;
+		//const unsigned int				MAXBLENDMODES = 27;
 		ci::gl::Texture2dRef			getMixTexture(unsigned int aMixFboIndex = 0);
 		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex = 0);
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex);
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
-		void							blendRenderEnable(bool render) { mBlendRender = render; };
-		// warps
-		string							getWarpName(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].Name; };
-		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].AFboIndex; };
-		unsigned int					getWarpBFboIndex(unsigned int aWarpIndex) { return mWarpMix[aWarpIndex].BFboIndex; };
-		void							createWarp();
-		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
-		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
-		unsigned int					getWarpCount() { return mWarpMix.size(); };
-		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
-		float							getWarpCrossfade(unsigned int aWarpIndex);
 
-		ci::gl::TextureRef				getRenderTexture();
 	protected:
 		bool							mFlipV;
 		bool							mFlipH;
@@ -186,6 +161,7 @@ namespace VideoDromm
 		// Router
 		VDRouterRef						mVDRouter;
 
+		fs::path						mMixesFilepath;
 		//! Fbos
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
@@ -207,17 +183,5 @@ namespace VideoDromm
 		// render
 		void							renderMix();
 		void							renderBlend();
-		bool							mBlendRender;
-
-		// warping
-		gl::TextureRef					mImage;
-		WarpList						mWarps;
-		string							fileWarpsName;
-		fs::path						mWarpSettings;
-		gl::FboRef						mRenderFbo;
-		int								warpMixToRender;
-		map<int, WarpMix>				mWarpMix;
-		void							updateWarpName(unsigned int aWarpIndex);
-
 	};
 }

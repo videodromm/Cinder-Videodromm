@@ -6,8 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Message router
-#include "VDRouter.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -21,18 +21,18 @@ namespace VideoDromm
 	class VDUIMidi
 	{
 	public:
-		VDUIMidi(VDSettingsRef aVDSettings, VDRouterRef aVDRouter);
-		static VDUIMidiRef	create(VDSettingsRef aVDSettings, VDRouterRef aVDRouter)
+		VDUIMidi(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIMidiRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIMidi>(new VDUIMidi(aVDSettings, aVDRouter));
+			return shared_ptr<VDUIMidi>(new VDUIMidi(aVDSettings, aVDSession));
 		}
 		~VDUIMidi();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Message router
-		VDRouterRef					mVDRouter;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

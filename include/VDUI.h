@@ -6,12 +6,6 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
-// Message router
-#include "VDRouter.h"
-// Animation
-#include "VDAnimation.h"
 // Session
 #include "VDSession.h"
 
@@ -56,10 +50,10 @@ namespace VideoDromm
 	class VDUI
 	{
 	public:
-		VDUI(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation, VDSessionRef aVDSession);
-		static VDUIRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation, VDSessionRef aVDSession)
+		VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUI>(new VDUI(aVDSettings, aVDMix, aVDRouter, aVDAnimation, aVDSession));
+			return shared_ptr<VDUI>(new VDUI(aVDSettings, aVDSession));
 		}
 		~VDUI();
 		void    Run(const char* title, unsigned int fps);
@@ -68,12 +62,6 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Message router
-		VDRouterRef					mVDRouter;
-		// Animation
-		VDAnimationRef				mVDAnimation;
 		// Session
 		VDSessionRef				mVDSession;
 		// Console

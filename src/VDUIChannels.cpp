@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIChannels::VDUIChannels(VDSettingsRef aVDSettings, VDMixRef aVDMix) {
+VDUIChannels::VDUIChannels(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-
+	mVDSession = aVDSession;
 }
 VDUIChannels::~VDUIChannels() {
 	

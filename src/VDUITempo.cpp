@@ -2,10 +2,8 @@
 
 using namespace VideoDromm;
 
-VDUITempo::VDUITempo(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation, VDSessionRef aVDSession) {
+VDUITempo::VDUITempo(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDAnimation = aVDAnimation;
 	mVDSession = aVDSession;
 }
 VDUITempo::~VDUITempo() {

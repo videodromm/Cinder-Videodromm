@@ -6,12 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
 // Session
 #include "VDSession.h"
-// Animation
-#include "VDAnimation.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -25,10 +21,10 @@ namespace VideoDromm
 	class VDUITempo
 	{
 	public:
-		VDUITempo(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation, VDSessionRef aVDSession);
-		static VDUITempoRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation, VDSessionRef aVDSession)
+		VDUITempo(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUITempoRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUITempo>(new VDUITempo(aVDSettings, aVDMix, aVDAnimation, aVDSession));
+			return shared_ptr<VDUITempo>(new VDUITempo(aVDSettings, aVDSession));
 		}
 		~VDUITempo();
 		void    Run(const char* title);
@@ -37,10 +33,6 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Session
 		VDSessionRef				mVDSession;
-		// Animation
-		VDAnimationRef				mVDAnimation;
-		// Mix
-		VDMixRef					mVDMix;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

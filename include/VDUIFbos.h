@@ -6,8 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -21,18 +21,18 @@ namespace VideoDromm
 	class VDUIFbos
 	{
 	public:
-		VDUIFbos(VDSettingsRef aVDSettings, VDMixRef aVDMix);
-		static VDUIFbosRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix)
+		VDUIFbos(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIFbosRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIFbos>(new VDUIFbos(aVDSettings, aVDMix));
+			return shared_ptr<VDUIFbos>(new VDUIFbos(aVDSettings, aVDSession));
 		}
 		~VDUIFbos();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		char						buf[64];
 	};

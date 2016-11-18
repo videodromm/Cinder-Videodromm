@@ -8,10 +8,8 @@
 #include "VDSettings.h"
 // Mix
 #include "VDMix.h"
-// Message router
-#include "VDRouter.h"
-// Animation
-#include "VDAnimation.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -25,22 +23,18 @@ namespace VideoDromm
 	class VDUIAnimation
 	{
 	public:
-		VDUIAnimation(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation);
-		static VDUIAnimationRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter, VDAnimationRef aVDAnimation)
+		VDUIAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIAnimationRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIAnimation>(new VDUIAnimation(aVDSettings, aVDMix, aVDRouter, aVDAnimation));
+			return shared_ptr<VDUIAnimation>(new VDUIAnimation(aVDSettings, aVDSession));
 		}
 		~VDUIAnimation();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Message router
-		VDRouterRef					mVDRouter;
-		// Animation
-		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

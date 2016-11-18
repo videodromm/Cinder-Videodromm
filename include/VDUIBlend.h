@@ -6,10 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
-// Animation
-#include "VDAnimation.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -23,22 +21,19 @@ namespace VideoDromm
 	class VDUIBlend
 	{
 	public:
-		VDUIBlend(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation);
-		static VDUIBlendRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation)
+		VDUIBlend(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIBlendRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIBlend>(new VDUIBlend(aVDSettings, aVDMix, aVDAnimation));
+			return shared_ptr<VDUIBlend>(new VDUIBlend(aVDSettings, aVDSession));
 		}
 		~VDUIBlend();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Animation
-		VDAnimationRef				mVDAnimation;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
-		//float						f = 0.0f;
 		char						buf[64];
 		int							xPos, yPos;
 

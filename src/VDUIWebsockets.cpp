@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIWebsockets::VDUIWebsockets(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter) {
+VDUIWebsockets::VDUIWebsockets(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
+	mVDSession = aVDSession;
 }
 VDUIWebsockets::~VDUIWebsockets() {
 
@@ -24,7 +23,7 @@ void VDUIWebsockets::Run(const char* title) {
 			if (ui::Button("srv->clt"))
 			{
 				mVDSettings->mIsWebSocketsServer = false;
-				mVDRouter->wsConnect();
+				mVDSession->wsConnect();
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Change to a WS client");
 		}
@@ -34,7 +33,7 @@ void VDUIWebsockets::Run(const char* title) {
 			if (ui::Button("clt->srv"))
 			{
 				mVDSettings->mIsWebSocketsServer = true;
-				mVDRouter->wsConnect();
+				mVDSession->wsConnect();
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Change to a WS server");
 		}
@@ -49,13 +48,13 @@ void VDUIWebsockets::Run(const char* title) {
 			else {
 				mVDSettings->mWebSocketsProtocol = "ws://";
 			}
-			mVDRouter->wsConnect();
+			mVDSession->wsConnect();
 		}
 		if (ui::IsItemHovered()) ui::SetTooltip("Change WS protocol");
 		ui::SameLine();
-		if (ui::Button("Connect")) { mVDRouter->wsConnect(); }
+		if (ui::Button("Connect")) { mVDSession->wsConnect(); }
 		ui::SameLine();
-		if (ui::Button("Ping")) { mVDRouter->wsPing(); }
+		if (ui::Button("Ping")) { mVDSession->wsPing(); }
 		static char host[128] = "127.0.0.1";
 		std::copy(mVDSettings->mWebSocketsHost.begin(), (mVDSettings->mWebSocketsHost.size() >= 128 ? mVDSettings->mWebSocketsHost.begin() + 128 : mVDSettings->mWebSocketsHost.end()), host);
 

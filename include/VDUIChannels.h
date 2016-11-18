@@ -4,10 +4,8 @@
 
 // UserInterface
 #include "CinderImGui.h"
-// Settings
-#include "VDSettings.h"
-// Mix
-#include "VDMix.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -31,8 +29,8 @@ namespace VideoDromm
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

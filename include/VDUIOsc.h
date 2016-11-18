@@ -6,10 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
-// Router
-#include "VDRouter.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -24,20 +22,18 @@ namespace VideoDromm
 	class VDUIOsc
 	{
 	public:
-		VDUIOsc(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter);
-		static VDUIOscRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter)
+		VDUIOsc(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIOscRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIOsc>(new VDUIOsc(aVDSettings, aVDMix, aVDRouter));
+			return shared_ptr<VDUIOsc>(new VDUIOsc(aVDSettings, aVDSession));
 		}
 		~VDUIOsc();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Router
-		VDRouterRef					mVDRouter;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];

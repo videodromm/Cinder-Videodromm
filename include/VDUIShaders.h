@@ -6,10 +6,8 @@
 #include "CinderImGui.h"
 // Settings
 #include "VDSettings.h"
-// Mix
-#include "VDMix.h"
-// Router
-#include "VDRouter.h"
+// Session
+#include "VDSession.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -24,20 +22,18 @@ namespace VideoDromm
 	class VDUIShaders
 	{
 	public:
-		VDUIShaders(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter);
-		static VDUIShadersRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter)
+		VDUIShaders(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIShadersRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIShaders>(new VDUIShaders(aVDSettings, aVDMix, aVDRouter));
+			return shared_ptr<VDUIShaders>(new VDUIShaders(aVDSettings, aVDSession));
 		}
 		~VDUIShaders();
 		void    Run(const char* title);
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
-		// Mix
-		VDMixRef					mVDMix;
-		// Router
-		VDRouterRef					mVDRouter;
+		// Session
+		VDSessionRef				mVDSession;
 		// imgui
 		char						buf[64];
 		//! default fragment shader

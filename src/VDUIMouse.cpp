@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIMouse::VDUIMouse(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDAnimationRef aVDAnimation) {
+VDUIMouse::VDUIMouse(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDAnimation = aVDAnimation;
+	mVDSession = aVDSession;
 }
 VDUIMouse::~VDUIMouse() {
 	

@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef, VDSessionRef aVDSessionRef) {
+VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef) {
 	mVDSettings = aVDSettings;
 	mVDAnimation = aAnimationRef;
-	mVDSession = aVDSessionRef;
 
 	CI_LOG_V("VDRouter constructor");
 	shaderReceived = false;
@@ -491,12 +490,12 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		if (iarg0 == 61) {
 			// right arrow
 			mVDSettings->iBlendmode--;
-			if (mVDSettings->iBlendmode < 0) mVDSettings->iBlendmode = mVDAnimation->maxBlendMode;
+			if (mVDSettings->iBlendmode < 0) mVDSettings->iBlendmode = mVDAnimation->getBlendModesCount() - 1;
 		}
 		if (iarg0 == 62) {
 			// left arrow
 			mVDSettings->iBlendmode++;
-			if (mVDSettings->iBlendmode > mVDAnimation->maxBlendMode) mVDSettings->iBlendmode = 0;
+			if (mVDSettings->iBlendmode > mVDAnimation->getBlendModesCount() - 1) mVDSettings->iBlendmode = 0;
 		}
 	}
 	if (iarg0 > 0 && iarg0 < 9) {
@@ -757,16 +756,6 @@ string VDRouter::getReceivedShader() {
 	shaderReceived = false;
 	return receivedFragString;
 }
-void VDRouter::wsDisconnect() {
-	/* done automatically already
-	if (mVDSettings->mIsWebSocketsServer) {
-		mServer.cancel();
-	}
-	else {
-		mClient.disconnect();
-	}*/
-}
-
 void VDRouter::wsConnect() {
 #if defined( CINDER_MSW )
 	// either a client or a server

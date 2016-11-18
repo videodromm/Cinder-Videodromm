@@ -2,10 +2,9 @@
 
 using namespace VideoDromm;
 
-VDUIOsc::VDUIOsc(VDSettingsRef aVDSettings, VDMixRef aVDMix, VDRouterRef aVDRouter) {
+VDUIOsc::VDUIOsc(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
-	mVDMix = aVDMix;
-	mVDRouter = aVDRouter;
+	mVDSession = aVDSession;
 }
 VDUIOsc::~VDUIOsc() {
 
