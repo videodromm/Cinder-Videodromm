@@ -7,6 +7,8 @@
 #include "cinder/Json.h"
 // Settings
 #include "VDSettings.h"
+// Utils
+#include "VDUtils.h"
 // Logger
 #include "VDLog.h"
 
@@ -53,10 +55,15 @@ namespace VideoDromm {
 		bool						hasShaderRight() { return mShaderRight.length() > 0; };
 		string						getShaderLeft() { return mShaderLeft; };
 		string						getShaderRight() { return mShaderRight; };
+		// utils
+		int							getWindowsResolution();
 
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
+		// Utils
+		VDUtilsRef					mVDUtils;
+
 		const string				sessionFileName = "session.json";
 		fs::path					sessionPath;
 		// fbo 

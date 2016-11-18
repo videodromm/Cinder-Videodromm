@@ -9,6 +9,8 @@ using namespace VideoDromm;
 VDSession::VDSession(VDSettingsRef aVDSettings)
 {
 	mVDSettings = aVDSettings;
+	// Utils
+	mVDUtils = VDUtils::create(mVDSettings);
 
 	// reset no matter what, so we don't miss anything
 	reset();
@@ -131,4 +133,7 @@ void VDSession::reset()
 	mShaderRight = "";
 
 	resetSomeParams();
+}
+int VDSession::getWindowsResolution() {
+	return mVDUtils->getWindowsResolution();
 }

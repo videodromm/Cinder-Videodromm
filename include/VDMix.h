@@ -16,6 +16,7 @@
 #include "VDAnimation.h"
 // Message router
 #include "VDRouter.h"
+
 // Fbos
 #include "VDFbo.h"
 // Warping
@@ -50,6 +51,8 @@ namespace VideoDromm
 
 		bool							handleKeyDown(KeyEvent &event);
 		bool							handleKeyUp(KeyEvent &event);
+
+
 		//! returns a shared pointer to this fbo
 		VDMixRef						getPtr() { return shared_from_this(); }
 		ci::ivec2						getSize();
