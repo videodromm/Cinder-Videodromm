@@ -162,11 +162,9 @@ namespace VideoDromm
 
 		ci::gl::TextureRef				getRenderTexture();
 	protected:
-		//std::string						mName;
 		bool							mFlipV;
 		bool							mFlipH;
 		std::string						mFbosPath;
-		//bool							mTopDown;
 		int								mWidth;
 		int								mHeight;
 		float							mPosX;
@@ -186,18 +184,15 @@ namespace VideoDromm
 		VDRouterRef						mVDRouter;
 
 		//! Fbos
-		//bool							initFboList();
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;
-		//vector<ci::gl::FboRef>			mFbos;
 		vector<ci::gl::FboRef>			mMixFbos;
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;
 		//! Shaders
 		VDShaderList					mShaderList;
 		bool							initShaderList();
-		//unsigned int					mMixShaderIndex;
 		// Textures
 		VDTextureList					mTextureList;
 		fs::path						mTexturesFilepath;
@@ -207,7 +202,6 @@ namespace VideoDromm
 		int								mCurrentBlend;
 		gl::GlslProgRef					mGlslMix, mGlslBlend;
 		// render
-		void							renderScene(unsigned int aFboIndex);
 		void							renderMix();
 		void							renderBlend();
 		bool							mBlendRender;
