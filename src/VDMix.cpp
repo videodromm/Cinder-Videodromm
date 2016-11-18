@@ -120,12 +120,14 @@ namespace VideoDromm {
 		if (aWarpIndex < mWarpMix.size() && aWarpFboIndex < mFboList.size()) {
 			mWarpMix[aWarpIndex].AFboIndex = aWarpFboIndex;
 			updateWarpName(aWarpIndex);
+			mVDRouter->changeControlValue(200 + aWarpIndex, aWarpFboIndex);
 		}
 	}
 	void VDMix::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 		if (aWarpIndex < mWarpMix.size() && aWarpFboIndex < mFboList.size()) {
 			mWarpMix[aWarpIndex].BFboIndex = aWarpFboIndex;
 			updateWarpName(aWarpIndex);
+			mVDRouter->changeControlValue(300 + aWarpIndex, aWarpFboIndex);
 		}
 	}
 	void VDMix::updateWarpName(unsigned int aWarpIndex) {
@@ -295,7 +297,27 @@ namespace VideoDromm {
 						break;
 					case KeyEvent::KEY_n:
 						createWarp();
+						// TODO? Warp::handleResize(mWarps);
 						break;
+					case KeyEvent::KEY_LEFT:
+						//mVDTextures->rewindMovie();				
+						break;
+					case KeyEvent::KEY_RIGHT:
+						//mVDTextures->fastforwardMovie();				
+						break;
+					case KeyEvent::KEY_SPACE:
+						//mVDTextures->playMovie();
+						//mVDAnimation->currentScene++;
+						//if (mMovie) { if (mMovie->isPlaying()) mMovie->stop(); else mMovie->play(); }
+						break;
+					case KeyEvent::KEY_0:					
+						break;
+					case KeyEvent::KEY_l:
+						mVDAnimation->load();
+						//mLoopVideo = !mLoopVideo;
+						//if (mMovie) mMovie->setLoop(mLoopVideo);
+						break;
+
 					default:
 						handled = false;
 						break;
@@ -941,6 +963,8 @@ namespace VideoDromm {
 				loadShaderFolder(aAbsolutePath);
 			}
 		}
+		// load success, reset zoom
+		mVDAnimation->controlValues[22] = 1.0f;
 		return rtn;
 	}
 	bool VDMix::loadShaderFolder(string aFolder) {

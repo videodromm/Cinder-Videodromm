@@ -232,9 +232,9 @@ string VDAnimation::getUniformNameForIndex(int aIndex) {
 	}
 	return (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != controlValues[aIndex]);
 }*/
-bool VDAnimation::changeFloatValue(int aIndex, float aValue) {
+bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
-	if (aIndex < controlValues.size() - 1 && aIndex > 0) {
+	if (aIndex > 0) {
 		if (aIndex == 1) {
 			CI_LOG_V("changeFloatValue, getUniformNameForIndex(aIndex):" + toString( getUniformNameForIndex(aIndex)));
 			CI_LOG_V("changeFloatValue, shaderUniforms[getUniformNameForIndex(aIndex)].floatValue:" + toString( shaderUniforms[getUniformNameForIndex(aIndex)].floatValue));

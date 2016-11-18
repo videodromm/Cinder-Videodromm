@@ -104,7 +104,7 @@ namespace VideoDromm
 		void						wsPing();
 		bool						isWsClientConnected() { return clientConnected; };
 		// change a control value and update network clients
-		void						changeControlValue(int aControl, float aValue);
+		void						changeControlValue(unsigned int aControl, float aValue);
 		// received shaders
 		bool						hasReceivedShader() { return shaderReceived; };
 		string						getReceivedShader();

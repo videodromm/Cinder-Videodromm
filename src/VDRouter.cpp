@@ -894,7 +894,7 @@ void VDRouter::sendJSON(string params) {
 		}
 	}
 }
-void VDRouter::changeControlValue(int aControl, float aValue) {
+void VDRouter::changeControlValue(unsigned int aControl, float aValue) {
 	// check if changed
 	if (mVDAnimation->changeFloatValue(aControl, aValue)) {
 		stringstream sParams;
