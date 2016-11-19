@@ -28,6 +28,7 @@ namespace VideoDromm
 		int								index;
 		float							defaultValue;
 		float							floatValue;
+		bool							boolValue;
 		float							minValue;
 		float							maxValue;
 		bool							autotime;
@@ -81,7 +82,7 @@ namespace VideoDromm
 		void							setBpm(float aBpm) { mBpm = aBpm; };
 
 		// exposure
-		float							defaultExposure;
+		/*float							defaultExposure;
 		float							minExposure;
 		bool							tExposure;
 		bool							autoExposure;
@@ -105,23 +106,23 @@ namespace VideoDromm
 		bool							tRatio;
 		bool							autoRatio;
 		// z position
-		/*float							defaultZPos;
+		float							defaultZPos;
 		float							minZPos;
 		float							maxZPos;
 		bool							tZPos;
-		bool							autoZPos;*/
+		bool							autoZPos;
 		// Rotation Speed
 		float							defaultRotationSpeed;
 		float							minRotationSpeed;
 		float							maxRotationSpeed;
 		bool							tRotationSpeed;
-		bool							autoRotationSpeed;
+		bool							autoRotationSpeed;*/
 		// colors
 		bool							tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
 		bool							autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
 
 		// animation functions
-		void							resetChromatic();
+		/*void							resetChromatic();
 		void							tempoChromatic();
 		void							lockChromatic() { autoChromatic = !autoChromatic; };
 		void							resetRatio();
@@ -133,15 +134,15 @@ namespace VideoDromm
 		void							resetZoom();
 		void							tempoZoom();
 		void							lockZoom() { autoZoom = !autoZoom; };
-		/*void							resetZPos();
+		void							resetZPos();
 		void							tempoZPos();
-		void							lockZPos() { autoZPos = !autoZPos; };*/
+		void							lockZPos() { autoZPos = !autoZPos; };
 		void							resetRotationSpeed();
 		void							tempoRotationSpeed();
 		void							lockRotationSpeed() { autoRotationSpeed = !autoRotationSpeed; };
 		void							resetRed();
 		void							tempoRed();
-		void							lockRed() { autoFR = !autoFR; };
+		void							lockRed() { autoFR = !autoFR; };*/
 		// tempo
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
@@ -165,15 +166,17 @@ namespace VideoDromm
 		map<int, vec3>					vec3Values;
 		map<int, vec4>					vec4Values;
 		map<int, int>					intValues;
-		map<int, bool>					boolValues;
+		//map<int, bool>					boolValues;
 		//int								getValuesSize() { return controlValues.size(); };
 		// shaders
 		bool							isExistingUniform(string aName);
 		int								getUniformType(string aName);
 		string							getUniformNameForIndex(int aIndex);
-
+		bool							toggleAutoControlValue(unsigned int aIndex);
 		bool							changeFloatValue(unsigned int aIndex, float aValue);
-		float							getFloatUniformValueByIndex(int aIndex);
+		bool							changeBoolValue(unsigned int aIndex, bool aValue);
+		float							getFloatUniformValueByIndex(unsigned int aIndex);
+		bool							getBoolUniformValueByIndex(unsigned int aIndex);
 		float							getFloatUniformValueByName(string aName);
 		int								getSampler2DUniformValue(string aName);
 		vec2							getVec2UniformValue(string aName);
@@ -181,6 +184,8 @@ namespace VideoDromm
 		vec4							getVec4UniformValue(string aName);
 		int								getIntUniformValue(string aName);
 		bool							getBoolUniformValue(string aName);
+		float							getMinUniformValueByIndex(unsigned int aIndex);
+		float							getMaxUniformValueByIndex(unsigned int aIndex);
 		// mix fbo
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };

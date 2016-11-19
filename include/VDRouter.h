@@ -95,13 +95,16 @@ namespace VideoDromm
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
 		// WebSockets
-		void						wsWriteBinary(const void *data, int size);
+		//void						wsWriteBinary(const void *data, int size);
 		void						wsWrite(std::string msg);
 		void						wsConnect();
 		void						wsPing();
 		//bool						isWsClientConnected() { return clientConnected; };
 		// change a control value and update network clients
-		void						changeControlValue(unsigned int aControl, float aValue);
+		void						changeFloatValue(unsigned int aControl, float aValue);
+		void						changeBoolValue(unsigned int aControl, bool aValue);
+		bool						toggleAutoControlValue(unsigned int aIndex);
+
 		// received shaders
 		bool						hasReceivedShader() { return shaderReceived; };
 		string						getReceivedShader();

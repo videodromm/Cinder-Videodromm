@@ -64,7 +64,7 @@ void VDRouter::setupOSCReceiver() {
 		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/cc";
 		mVDSettings->mOSCNewMsg = true;
-		mVDAnimation->controlValues[msg[0].int32()] = msg[1].flt();
+		mVDAnimation->changeFloatValue(msg[0].int32(), msg[1].flt());
 		updateParams(msg[0].int32(), msg[1].flt());
 	});
 	mOSCReceiver->setListener("/Freq1",
@@ -74,12 +74,11 @@ void VDRouter::setupOSCReceiver() {
 	mOSCReceiver->setListener("/backgroundcolor",
 		[&](const osc::Message &msg) {
 		// background red
-		mVDAnimation->controlValues[5] = msg[0].flt();
+		mVDAnimation->changeFloatValue(5, msg[0].flt());
 		// background green
-		mVDAnimation->controlValues[6] = msg[1].flt();
+		mVDAnimation->changeFloatValue(6, msg[1].flt());
 		// background blue
-		mVDAnimation->controlValues[7] = msg[2].flt();
-
+		mVDAnimation->changeFloatValue(7, msg[2].flt());
 	});
 	mOSCReceiver->setListener("/live/beat",
 		[&](const osc::Message &msg) {
@@ -149,7 +148,7 @@ void VDRouter::setupOSCReceiver() {
 		[&](const osc::Message &msg) {
 		float sumMovement = msg[0].flt();
 		//exposure
-		mVDAnimation->controlValues[14] = sumMovement;
+		mVDAnimation->changeFloatValue(14, sumMovement);
 		//greyScale
 		if (sumMovement < 0.1)
 		{
@@ -167,24 +166,24 @@ void VDRouter::setupOSCReceiver() {
 		if (handsHeadHeight > 0.3)
 		{
 			// glitch
-			mVDAnimation->controlValues[45] = 1.0f;
+			mVDAnimation->changeFloatValue(45, 1.0f);
 		}
 		else
 		{
 			// glitch
-			mVDAnimation->controlValues[45] = 0.0f;
+			mVDAnimation->changeFloatValue(45, 0.0f);
 		}
 		// background red
-		mVDAnimation->controlValues[5] = handsHeadHeight*3.0;
+		mVDAnimation->changeFloatValue(5, handsHeadHeight*3.0);
 	});
 	mOSCReceiver->setListener("/centerXY",
 		[&](const osc::Message &msg) {
 		float x = msg[0].flt();
 		float y = msg[1].flt();
 		// background green
-		mVDAnimation->controlValues[6] = y;
+		mVDAnimation->changeFloatValue(6, y);
 		// green
-		mVDAnimation->controlValues[2] = x;
+		mVDAnimation->changeFloatValue(2, x);
 	});
 	mOSCReceiver->setListener("/selectShader",
 		[&](const osc::Message &msg) {
@@ -440,7 +439,8 @@ void VDRouter::midiListener(midi::MidiMessage msg) {
 		midiPitch = msg.Pitch;
 		midiVelocity = msg.Velocity;
 		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
-		mVDAnimation->controlValues[14] = 1.0f + midiNormalizedValue; // quick hack!
+		// quick hack!
+		mVDAnimation->changeFloatValue(14, 1.0f + midiNormalizedValue);
 		break;
 	case MIDI_NOTE_OFF:
 		midiControlType = "/off";
@@ -500,17 +500,17 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	}
 	if (iarg0 > 0 && iarg0 < 9) {
 		// sliders 
-		mVDAnimation->controlValues[iarg0] = farg1;
+		mVDAnimation->changeFloatValue(iarg0, farg1);
 	}
 	if (iarg0 > 10 && iarg0 < 19) {
 		// rotary 
-		mVDAnimation->controlValues[iarg0] = farg1;
+		mVDAnimation->changeFloatValue(iarg0, farg1);
 		// audio multfactor
-		if (iarg0 == 13) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * 10;
+		if (iarg0 == 13) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == 14) mVDAnimation->controlValues[iarg0] = (farg1 + 0.01) * mVDAnimation->maxExposure;
+		if (iarg0 == 14) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
 
-		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->controlValues[iarg0]) + "}]}");
+		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 
 	}
 	// buttons
@@ -527,7 +527,7 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	}*/
 	if (iarg0 > 40 && iarg0 < 49) {
 		// low row 
-		mVDAnimation->controlValues[iarg0] = farg1;
+		mVDAnimation->changeFloatValue(iarg0, farg1);
 	}
 }
 void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {
@@ -580,8 +580,6 @@ void VDRouter::wsPing() {
 }
 
 void VDRouter::parseMessage(string msg) {
-	int left;
-	int index;
 	mVDSettings->mWebSocketsMsg = "WS onRead";
 	mVDSettings->mWebSocketsNewMsg = true;
 	if (!msg.empty()) {
@@ -597,22 +595,8 @@ void VDRouter::parseMessage(string msg) {
 					for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
 						int name = jsonElement->getChild("name").getValue<int>();
 						float value = jsonElement->getChild("value").getValue<float>();
-						if (name > mVDAnimation->controlValues.size()) {
-							switch (name) {
-							case 300:
-								//selectShader
-								left = jsonElement->getChild("left").getValue<int>();
-								index = jsonElement->getChild("index").getValue<int>();
-								//selectShader(left, index);
-								break;
-							default:
-								break;
-							}
-						}
-						else {
-							// basic name value 
-							mVDAnimation->controlValues[name] = value;
-						}
+						// basic name value 
+						mVDAnimation->changeFloatValue(name, value);
 					}
 				}
 				if (json.hasChild("event")) {
@@ -883,7 +867,26 @@ void VDRouter::sendJSON(string params) {
 		}
 	}
 }
-void VDRouter::changeControlValue(unsigned int aControl, float aValue) {
+bool VDRouter::toggleAutoControlValue(unsigned int aIndex) {
+	// toggle
+	mVDAnimation->toggleAutoControlValue(aIndex);
+	stringstream sParams;
+	// TODO check boolean value:
+	sParams << "{\"params\" :[{\"name\" : " << aIndex << ",\"value\" : " << (int)mVDAnimation->getBoolUniformValueByIndex(aIndex) << "}]}";
+	string strParams = sParams.str();
+	sendJSON(strParams);
+}
+void VDRouter::changeBoolValue(unsigned int aControl, bool aValue) {
+	// check if changed
+	mVDAnimation->changeBoolValue(aControl, aValue);
+	stringstream sParams;
+	// TODO check boolean value:
+	sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << (int)aValue << "}]}";
+	string strParams = sParams.str();
+	sendJSON(strParams);
+}
+
+void VDRouter::changeFloatValue(unsigned int aControl, float aValue) {
 	// check if changed
 	if (mVDAnimation->changeFloatValue(aControl, aValue)) {
 		stringstream sParams;
@@ -901,17 +904,17 @@ void VDRouter::changeControlValue(unsigned int aControl, float aValue) {
 void VDRouter::colorWrite()
 {
 	if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
-		sendOSCColorMessage("/fr", mVDAnimation->controlValues[1]);
-		sendOSCColorMessage("/fg", mVDAnimation->controlValues[2]);
-		sendOSCColorMessage("/fb", mVDAnimation->controlValues[3]);
-		sendOSCColorMessage("/fa", mVDAnimation->controlValues[4]);
+		sendOSCColorMessage("/fr", mVDAnimation->getFloatUniformValueByIndex(1));
+		sendOSCColorMessage("/fg", mVDAnimation->getFloatUniformValueByIndex(2));
+		sendOSCColorMessage("/fb", mVDAnimation->getFloatUniformValueByIndex(3));
+		sendOSCColorMessage("/fa", mVDAnimation->getFloatUniformValueByIndex(4));
 	}
 #if defined( CINDER_MSW )
 	// lights4events
 	char col[8];
-	int r = mVDAnimation->controlValues[1] * 255;
-	int g = mVDAnimation->controlValues[2] * 255;
-	int b = mVDAnimation->controlValues[3] * 255;
+	int r = mVDAnimation->getFloatUniformValueByIndex(1) * 255;
+	int g = mVDAnimation->getFloatUniformValueByIndex(2) * 255;
+	int b = mVDAnimation->getFloatUniformValueByIndex(3) * 255;
 	sprintf(col, "#%02X%02X%02X", r, g, b);
 	wsWrite(col);
 #endif

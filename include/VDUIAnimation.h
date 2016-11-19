@@ -41,7 +41,7 @@ namespace VideoDromm
 		void							setValue(unsigned int aCtrl, float aValue);
 		void							setAuto(unsigned int aCtrl);
 		unsigned int					ctrl;
-		map<int, float>					controlValues;
+		map<int, float>					localValues;
 		float							f = 0.0f;
 		char							buf[64];
 		// zoom

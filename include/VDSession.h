@@ -71,7 +71,7 @@ namespace VideoDromm {
 		// control values
 		float							getControlValue(unsigned int aCtrl);
 		void							setControlValue(unsigned int aCtrl, float aValue);
-		void							setAutoControlValue(unsigned int aCtrl);
+		void							toggleAutoControlValue(unsigned int aCtrl);
 		// uniforms
 		void							setCrossfade(float aCrossfade);
 		// shaders

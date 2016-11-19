@@ -28,35 +28,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mAutoBeatAnimation = true;
 	JsonBag::add(&mAutoBeatAnimation, "autobeatanimation");
 	currentScene = 0;
-	// zoom
-	defaultZoom = 1.0f;
-	minZoom = -3.1f;
-	maxZoom = 3.0f;
-	tZoom = autoZoom = false;
-	// exposure
-	defaultExposure = 1.0;
-	minExposure = 0.0001;
-	tExposure = autoExposure = false;
-	// Chromatic
-	defaultChromatic = 0.0;
-	minChromatic = 0.000000001;
-	maxChromatic = 1.0;
-	tChromatic = autoChromatic = false;
-	// ratio
-	defaultRatio = 20.0;
-	minRatio = 0.00000000001;
-	maxRatio = 20.0;
-	tRatio = autoRatio = false;
-	// z position
-	/*defaultZPos = -0.7;
-	minZPos = -1.0;
-	maxZPos = 1.0;
-	tZPos = autoZPos = false;*/
-	// RotationSpeed
-	defaultRotationSpeed = 0.0;
-	minRotationSpeed = -2.0;
-	maxRotationSpeed = 2.0;
-	tRotationSpeed = autoRotationSpeed = false;
+
 	//colors
 	autoFR = autoFG = autoFB = autoFA = autoBR = autoBG = autoBB = autoBA = false;
 	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
@@ -101,15 +73,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// pointsphere zPosition
 	createFloatUniform("iZPos", 9, -0.7f);
 	// iChromatic
-	createFloatUniform("iChromatic", 10, 0.0f);
+	createFloatUniform("iChromatic", 10, 0.0f, 0.0f, 0.000000001f);
 	// ratio
-	createFloatUniform("iRatio", 11, 20.0f);
+	createFloatUniform("iRatio", 11, 20.0f, 20.0f, 0.00000000001f, 20.0f);
 	// Speed 
-	createFloatUniform("iSpeed", 12, 12.0f);
+	createFloatUniform("iSpeed", 12, 12.0f, 12.0f, 0.01f, 12.0f);
 	// Audio multfactor 
 	createFloatUniform("iAudioMult", 13, 1.0f);
 	// exposure
-	createFloatUniform("iExposure", 14, 1.0f);
+	createFloatUniform("iExposure", 14, 1.0f, 1.0f, 0.00001f);
 	// Pixelate
 	createFloatUniform("iPixelate", 15, 1.0f);
 	// Trixels
@@ -119,13 +91,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// iCrossfade
 	createFloatUniform("iCrossfade", 18, 1.0f);
 	// RotationSpeed
-	createFloatUniform("iRotationSpeed", 19, 0.0f);
+	createFloatUniform("iRotationSpeed", 19, 0.0f, 0.0f, -2.0f, 2.0f);
 	// Steps
 	createFloatUniform("iSteps", 20, 16.0f);
 	// iPreviewCrossfade
 	createFloatUniform("iPreviewCrossfade", 21, 0.0f);
 	// zoom
-	createFloatUniform("iZoom", 22, 1.0f);
+	createFloatUniform("iZoom", 22, 1.0f, 1.0, -3.1f, 3.0f);
 	// bad tv  TODO
 	createFloatUniform("iBadTv", 23, 0.0f); 
 	// red multiplier 
@@ -140,14 +112,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iParam2", 28, 1.0f);
 	// tempo time
 	createFloatUniform("iTempoTime", 29, 0.1f);
-	// glitch
-	createFloatUniform("iGlitch", 45, 0.0f);
-	// toggle
-	createFloatUniform("iToggle", 46, 0.0f);
-	// vignette
-	createFloatUniform("iVignette", 47, 0.0f);
-	// invert
-	createFloatUniform("iInvert", 48, 0.0f);
 	// global time in seconds
 	createFloatUniform("iGlobalTime", 49, 0.0f);
 
@@ -164,9 +128,17 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createVec3Uniform("iChannelResolution[0]", 3, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 
 	// boolean
-	createBoolUniform("iFlipH", 0);
-	createBoolUniform("iFlipV", 1);
-	createBoolUniform("iXorY", 2);
+	// glitch
+	createBoolUniform("iGlitch", 45);
+	// toggle
+	createBoolUniform("iToggle", 46);
+	// vignette
+	createBoolUniform("iVignette", 47);
+	// invert
+	createBoolUniform("iInvert", 48);
+	createBoolUniform("iFlipH", 50);
+	createBoolUniform("iFlipV", 51);
+	createBoolUniform("iXorY", 52);
 
 	// textures
 	for (size_t i = 0; i < 8; i++)
@@ -191,6 +163,7 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].minValue = aMin;
 	shaderUniforms[aName].maxValue = aMax;
 	shaderUniforms[aName].defaultValue = aDefault;
+	shaderUniforms[aName].boolValue = false;	
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
 	shaderUniforms[aName].index = aCtrlIndex;
@@ -223,8 +196,15 @@ void VDAnimation::createIntUniform(string aName, int aCtrlIndex, int aValue) {
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
-	boolValues[aCtrlIndex] = aValue;
+	controlIndexes[aCtrlIndex] = aName;
+	shaderUniforms[aName].minValue = 0;
+	shaderUniforms[aName].maxValue = 1;
+	shaderUniforms[aName].defaultValue = aValue;
+	shaderUniforms[aName].boolValue = aValue;
+	shaderUniforms[aName].autotime = false;
+	shaderUniforms[aName].automatic = false;
 	shaderUniforms[aName].index = aCtrlIndex;
+	shaderUniforms[aName].floatValue = aValue;
 	shaderUniforms[aName].uniformType = 6;
 	shaderUniforms[aName].isValid = true;
 }
@@ -241,6 +221,12 @@ string VDAnimation::getUniformNameForIndex(int aIndex) {
 	}
 	return (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != controlValues[aIndex]);
 }*/
+bool VDAnimation::toggleAutoControlValue(unsigned int aIndex) {
+	getBoolUniformValueByIndex(aIndex);
+	shaderUniforms[getUniformNameForIndex(aIndex)].automatic = !shaderUniforms[getUniformNameForIndex(aIndex)].automatic;
+	return shaderUniforms[getUniformNameForIndex(aIndex)].automatic;
+}
+
 bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
 	if (aIndex > 0) {
@@ -250,21 +236,27 @@ bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 			CI_LOG_V("changeFloatValue, aValue:" + toString( aValue));
 		}
 		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
-			controlValues[aIndex] = shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
-			rtn = true;
+			if (aValue>=shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue<=shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
+				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
+				rtn = true;
+			}
 		}
 	}
 	return rtn;
 }
-float VDAnimation::getFloatUniformValueByIndex(int aIndex) {
-	if (aIndex > controlValues.size() - 1) aIndex = 0;
-	return controlValues[aIndex];
+bool VDAnimation::changeBoolValue(unsigned int aIndex, bool aValue) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].boolValue = aValue;
+	return aValue;
+}
+
+float VDAnimation::getFloatUniformValueByIndex(unsigned int aIndex) {
+	return shaderUniforms[getUniformNameForIndex(aIndex)].floatValue;
 }
 int VDAnimation::getSampler2DUniformValue(string aName) {
 	return shaderUniforms[aName].textureIndex;
 }
 float VDAnimation::getFloatUniformValueByName(string aName) {
-	return controlValues[shaderUniforms[aName].index];
+	return shaderUniforms[aName].floatValue;
 }
 vec2 VDAnimation::getVec2UniformValue(string aName) {
 	return vec2Values[shaderUniforms[aName].index];
@@ -278,8 +270,17 @@ vec4 VDAnimation::getVec4UniformValue(string aName) {
 int VDAnimation::getIntUniformValue(string aName) {
 	return intValues[shaderUniforms[aName].index];
 }
+bool VDAnimation::getBoolUniformValueByIndex(unsigned int aIndex) {
+	return shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
+}
+float VDAnimation::getMinUniformValueByIndex(unsigned int aIndex) {
+	return shaderUniforms[getUniformNameForIndex(aIndex)].minValue;
+}
+float VDAnimation::getMaxUniformValueByIndex(unsigned int aIndex) {
+	return shaderUniforms[getUniformNameForIndex(aIndex)].maxValue;
+}
 bool VDAnimation::getBoolUniformValue(string aName) {
-	return boolValues[shaderUniforms[aName].index];
+	return shaderUniforms[aName].boolValue;
 }
 bool VDAnimation::isExistingUniform(string aName) {
 	return shaderUniforms[aName].isValid;
@@ -354,8 +355,6 @@ void VDAnimation::setExposure(float aExposure) {
 void VDAnimation::setAutoBeatAnimation(bool aAutoBeatAnimation) {
 	mAutoBeatAnimation = aAutoBeatAnimation;
 }
-
-
 bool VDAnimation::handleKeyDown(KeyEvent &event)
 {
 	float newValue;
@@ -376,82 +375,12 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// save end keyframe
 		setEndFrame(getElapsedFrames() - 10);
 		break;
-	case KeyEvent::KEY_x:
-		// trixels
-		controlValues[16] = controlValues[16] + 0.05f;
-		break;
-	case KeyEvent::KEY_r:
-		newValue = controlValues[1] + 0.1f;
-		if (newValue > 1.0f) newValue = 0.0f;
-		changeFloatValue(1, newValue);
-		break;
-	case KeyEvent::KEY_g:
-		newValue = controlValues[2] + 0.1f;
-		if (newValue > 1.0f) newValue = 0.0f;
-		changeFloatValue(2, newValue);
-		break;
-	case KeyEvent::KEY_b:
-		newValue = controlValues[3] + 0.1f;
-		if (newValue > 1.0f) newValue = 0.0f;
-		changeFloatValue(3, newValue);
-		break;
-	case KeyEvent::KEY_e:
-		newValue = controlValues[1] - 0.1f;
-		if (newValue < 0.0f) newValue = 1.0;
-		changeFloatValue(1, newValue);
-		break;
-	case KeyEvent::KEY_f:
-		newValue = controlValues[2] - 0.1f;
-		if (newValue < 0.0f) newValue = 1.0;
-		changeFloatValue(2, newValue);
-		break;
-	case KeyEvent::KEY_v:
-		newValue = controlValues[3] - 0.1f;
-		if (newValue < 0.0f) newValue = 1.0;
-		changeFloatValue(3, newValue);
-		break;
-	case KeyEvent::KEY_t:
-		// glitch
-		controlValues[45] = 1.0f;
-		break;
-	case KeyEvent::KEY_i:
-		// invert
-		controlValues[48] = 1.0f;
-		break;
-	case KeyEvent::KEY_LEFT:
-		if (controlValues[21] > 0.1) controlValues[21] -= 0.1;
-		break;
-	case KeyEvent::KEY_RIGHT:
-		if (controlValues[21] < 1.0) controlValues[21] += 0.1;
-		break;
-	case KeyEvent::KEY_PAGEDOWN:
-		// crossfade right
-		if (controlValues[18] < 1.0) controlValues[18] += 0.1;
-		break;
-	case KeyEvent::KEY_PAGEUP:
-		// crossfade left
-		if (controlValues[18] > 0.0) controlValues[18] -= 0.1;
-		break;
+
 		//case KeyEvent::KEY_x:
 	case KeyEvent::KEY_y:
 		mVDSettings->iXorY = !mVDSettings->iXorY;
 		break;
-	case KeyEvent::KEY_c:
-		// chromatic
-		controlValues[10] = controlValues[10] + 0.05f;
-		break;
-	case KeyEvent::KEY_p:
-		// pixelate
-		controlValues[15] = controlValues[15] + 0.05f;
-		break;
-	case KeyEvent::KEY_o:
-		// toggle
-		controlValues[46] = !controlValues[46];
-		break;
-	case KeyEvent::KEY_z:
-		// zoom
-		controlValues[22] = controlValues[22] - 0.05f;
-		break;
+
 	default:
 		handled = false;
 	}
@@ -467,34 +396,7 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 		// save badtv keyframe
 		mBadTV[getElapsedFrames()] = 0.001f;
 		break;
-	case KeyEvent::KEY_g:
-		// glitch
-		controlValues[45] = 0.0f;
-		break;
-	case KeyEvent::KEY_t:
-		// trixels
-		controlValues[16] = 0.0f;
-		break;
-	case KeyEvent::KEY_i:
-		// invert
-		controlValues[48] = 0.0f;
-		break;
-	case KeyEvent::KEY_c:
-		// chromatic
-		controlValues[10] = 0.0f;
-		break;
-	case KeyEvent::KEY_p:
-		// pixelate
-		controlValues[15] = 1.0f;
-		break;
-	case KeyEvent::KEY_o:
-		// toggle
-		controlValues[46] = 0.0f;
-		break;
-	case KeyEvent::KEY_z:
-		// zoom
-		controlValues[22] = 1.0f;
-		break;
+
 	default:
 		handled = false;
 	}
@@ -509,12 +411,7 @@ void VDAnimation::update() {
 		// duration = 0.2
 		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
 	}
-	if (controlValues[12] == 0.0)controlValues[12] = 0.01;
-	if (mVDSettings->iGreyScale)
-	{
-		controlValues[1] = controlValues[2] = controlValues[3];
-		controlValues[5] = controlValues[6] = controlValues[7];
-	}
+
 	mVDSettings->iChannelTime[0] = getElapsedSeconds();
 	mVDSettings->iChannelTime[1] = getElapsedSeconds() - 1;
 	mVDSettings->iChannelTime[2] = getElapsedSeconds() - 2;
@@ -529,7 +426,7 @@ void VDAnimation::update() {
 		mVDSettings->iGlobalTime = getElapsedSeconds();
 	}
 	mVDSettings->iGlobalTime *= mVDSettings->iSpeedMultiplier;
-	controlValues[49] = mVDSettings->iGlobalTime;
+	// seems useless controlValues[49] = mVDSettings->iGlobalTime;
 #pragma region animation
 
 	currentTime = timer.getSeconds();
@@ -561,140 +458,26 @@ void VDAnimation::update() {
 		}
 		previousTime = iTempoTime;
 
-		//(modulo < 0.1) ? tempoMvg->setNameColor(ColorA::white()) : tempoMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
-		// exposure
-		if (tExposure)
+		// TODO (modulo < 0.1) ? tempoMvg->setNameColor(ColorA::white()) : tempoMvg->setNameColor(UIController::DEFAULT_NAME_COLOR);
+		for (unsigned int anim = 1; anim < 29; anim++)
 		{
-			controlValues[14] = (modulo < 0.1) ? maxExposure : minExposure;
+			if (shaderUniforms[getUniformNameForIndex(anim)].autotime)
+			{
+				changeFloatValue(anim, (modulo < 0.1) ? shaderUniforms[getUniformNameForIndex(anim)].maxValue : shaderUniforms[getUniformNameForIndex(anim)].minValue);
+			}
+			else
+			{
+				changeFloatValue(anim, shaderUniforms[getUniformNameForIndex(anim)].automatic ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, shaderUniforms[getUniformNameForIndex(anim)].minValue, shaderUniforms[getUniformNameForIndex(anim)].maxValue) : shaderUniforms[getUniformNameForIndex(anim)].floatValue);
+				//controlValues[14] = autoExposure ? (sin(getElapsedFrames() / (controlValues[12] + 1.0))) : controlValues[14];
+			}
 		}
-		else
-		{
-			controlValues[14] = autoExposure ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minExposure, maxExposure) : controlValues[14];
-			//controlValues[14] = autoExposure ? (sin(getElapsedFrames() / (controlValues[12] + 1.0))) : controlValues[14];
-		}
-		// zoom
-		if (tZoom)
-		{
-			controlValues[22] = (modulo < 0.1) ? maxZoom : minZoom;
-		}
-		else
-		{
-			controlValues[22] = autoZoom ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minZoom, maxZoom) : controlValues[22];
-		}
-		// ratio
-		if (tRatio)
-		{
-			controlValues[11] = (modulo < 0.1) ? maxRatio : minRatio;
-		}
-		else
-		{
-			controlValues[11] = autoRatio ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minRatio, maxRatio) : controlValues[11];
-		}
-		// Chromatic
-		if (tChromatic)
-		{
-			controlValues[10] = (modulo < 0.1) ? maxChromatic : minChromatic;
-		}
-		else
-		{
-			controlValues[10] = autoChromatic ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minChromatic, maxChromatic) : controlValues[10];
-		}
-		// RotationSpeed
-		if (tRotationSpeed)
-		{
-			controlValues[19] = (modulo < 0.1) ? maxRotationSpeed : minRotationSpeed;
-		}
-		else
-		{
-			controlValues[19] = autoRotationSpeed ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minRotationSpeed, maxRotationSpeed) : controlValues[19];
-		}
-		// ZPos
-		/*if (tZPos)
-		{
-			controlValues[9] = (modulo < 0.1) ? maxZPos : minZPos;
-		}
-		else
-		{
-			controlValues[9] = autoZPos ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, minZPos, maxZPos) : controlValues[9];
-		}*/
 
-		// Front Red
-		if (tFR)
-		{
-			controlValues[1] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[1] = autoFR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[1];
-		}
-		// Front Green
-		if (tFG)
-		{
-			controlValues[2] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[2] = autoFG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[2];
-		}
-		// front blue
-		if (tFB)
-		{
-			controlValues[3] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[3] = autoFB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[3];
-		}
 		// foreground color vec3 update
-		vec3Values[1] = vec3(controlValues[1], controlValues[2], controlValues[3]);
+		vec3Values[1] = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue), shaderUniforms[getUniformNameForIndex(2)].floatValue), shaderUniforms[getUniformNameForIndex(3)].floatValue));
 
-		// front alpha
-		if (tFA)
-		{
-			controlValues[4] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[4] = autoFA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[4];
-		}
-		// 
-		if (tBR)
-		{
-			controlValues[5] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[5] = autoBR ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[5];
-		}
-		// 
-		if (tBG)
-		{
-			controlValues[6] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[6] = autoBG ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[6];
-		}
-		// 
-		if (tBB)
-		{
-			controlValues[7] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[7] = autoBB ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[7];
-		}
 		// background color vec3 update
-		vec3Values[2] = vec3(controlValues[5], controlValues[6], controlValues[7]);
-		// 
-		if (tBA)
-		{
-			controlValues[8] = (modulo < 0.1) ? 1.0 : 0.0;
-		}
-		else
-		{
-			controlValues[8] = autoBA ? lmap<float>(iTempoTime, 0.00001, iDeltaTime, 0.0, 1.0) : controlValues[8];
-		}
+		vec3Values[2] = vec3(shaderUniforms[getUniformNameForIndex(5)].floatValue), shaderUniforms[getUniformNameForIndex(6)].floatValue), shaderUniforms[getUniformNameForIndex(7)].floatValue));
+
 		if (mVDSettings->autoInvert)
 		{
 			controlValues[48] = (modulo < 0.1) ? 1.0 : 0.0;

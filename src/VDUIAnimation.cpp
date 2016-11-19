@@ -10,7 +10,7 @@ VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 	maxZoom = 3.0f;
 	for (int c = 0; c < 128; c++)
 	{
-		controlValues[c] = 0.01f;
+		localValues[c] = 0.01f;
 	}
 }
 VDUIAnimation::~VDUIAnimation() {

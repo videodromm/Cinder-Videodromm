@@ -135,12 +135,12 @@ float VDSession::getControlValue(unsigned int aCtrl) {
 	return mVDAnimation->getFloatUniformValueByIndex(aCtrl);
 }
 void VDSession::setControlValue(unsigned int aCtrl, float aValue) {
-	mVDAnimation-> controlValues[aCtrl].value = aValue;
-	mVDRouter->changeControlValue(aCtrl, aValue);
+	// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
+	mVDRouter->changeFloatValue(aCtrl, aValue);
 }
-void VDSession::setAutoControlValue(unsigned int aCtrl) {
-	mVDAnimation[aCtrl].value = aValue;
-	mVDRouter->changeControlValue(aCtrl, aValue);
+void VDSession::toggleAutoControlValue(unsigned int aCtrl) {
+	// done in router mVDAnimation->toggleAutoControlValue(aCtrl);
+	mVDRouter->toggleAutoControlValue(aCtrl);
 }
 /* void VDSession::writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target) {
 
@@ -342,7 +342,13 @@ void VDSession::update() {
 			mVDMix->crossfadeWarp(0, 0.0f);
 		}
 	}
-
+	if (mVDSettings->iGreyScale)
+	{
+		mVDRouter->changeFloatValue(1, mVDAnimation->getFloatUniformValueByIndex(3));
+		mVDRouter->changeFloatValue(2, mVDAnimation->getFloatUniformValueByIndex(3));
+		mVDRouter->changeFloatValue(5, mVDAnimation->getFloatUniformValueByIndex(7));
+		mVDRouter->changeFloatValue(6, mVDAnimation->getFloatUniformValueByIndex(7));
+	}
 	mVDAnimation->update();
 	mVDRouter->update();
 	mVDMix->update();
@@ -452,7 +458,7 @@ int VDSession::getWindowsResolution() {
 	return mVDUtils->getWindowsResolution();
 }
 void VDSession::setCrossfade(float aCrossfade) {
-	mVDAnimation->controlValues[21] = aCrossfade;
+	mVDRouter->changeFloatValue(21, aCrossfade);
 }
 void VDSession::blendRenderEnable(bool render) { 
 	mVDAnimation->blendRenderEnable(render);
@@ -500,7 +506,7 @@ int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex) {
 		}
 	}
 	// load success, reset zoom
-	mVDAnimation->controlValues[22] = 1.0f;
+	mVDRouter->changeFloatValue(22, 1.0f);
 	return rtn;
 }
 #pragma region events
@@ -522,7 +528,7 @@ bool VDSession::handleMouseDown(MouseEvent &event)
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseDown(event)) {
 		// let your application perform its mouseDown handling here
-		mVDAnimation->controlValues[21] = event.getX() / getWindowWidth();
+		mVDRouter->changeFloatValue(21, event.getX() / getWindowWidth());
 		handled = false;
 	}
 	event.setHandled(handled);
@@ -556,6 +562,7 @@ bool VDSession::handleMouseUp(MouseEvent &event)
 bool VDSession::handleKeyDown(KeyEvent &event)
 {
 	bool handled = true;
+	float newValue;
 
 	// pass this key event to the warp editor first
 	if (!mVDMix->handleKeyDown(event)) {
@@ -570,12 +577,6 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				createWarp();
 				// TODO? Warp::handleResize(mWarps);
 				break;
-			case KeyEvent::KEY_LEFT:
-				//mVDTextures->rewindMovie();				
-				break;
-			case KeyEvent::KEY_RIGHT:
-				//mVDTextures->fastforwardMovie();				
-				break;
 			case KeyEvent::KEY_SPACE:
 				//mVDTextures->playMovie();
 				//mVDAnimation->currentScene++;
@@ -588,13 +589,86 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				//mLoopVideo = !mLoopVideo;
 				//if (mMovie) mMovie->setLoop(mLoopVideo);
 				break;
-
+			case KeyEvent::KEY_x:
+				// trixels
+				mVDRouter->changeFloatValue(16, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
+				break;
+			case KeyEvent::KEY_r:
+				newValue = mVDAnimation->getFloatUniformValueByIndex(1) + 0.1f;
+				if (newValue > 1.0f) newValue = 0.0f;
+				mVDRouter->changeFloatValue(1, newValue);
+				break;
+			case KeyEvent::KEY_g:
+				newValue = mVDAnimation->getFloatUniformValueByIndex(2) + 0.1f;
+				if (newValue > 1.0f) newValue = 0.0f;
+				mVDRouter->changeFloatValue(2, newValue);
+				break;
+			case KeyEvent::KEY_b:
+				newValue = mVDAnimation->getFloatUniformValueByIndex(3) + 0.1f;
+				if (newValue > 1.0f) newValue = 0.0f;
+				mVDRouter->changeFloatValue(3, newValue);
+				break;
+			case KeyEvent::KEY_e:
+				newValue = mVDAnimation->getFloatUniformValueByIndex(1) - 0.1f;
+				if (newValue < 0.0f) newValue = 1.0;
+				mVDRouter->changeFloatValue(1, newValue);
+				break;
+			case KeyEvent::KEY_f:
+				newValue = mVDAnimation->getFloatUniformValueByIndex(2) - 0.1f;
+				if (newValue < 0.0f) newValue = 1.0;
+				mVDRouter->changeFloatValue(2, newValue);
+				break;
+			case KeyEvent::KEY_v:
+				newValue = mVDAnimation->getFloatUniformValueByIndex(3) - 0.1f;
+				if (newValue < 0.0f) newValue = 1.0;
+				mVDRouter->changeFloatValue(3, newValue);
+				break;
+			case KeyEvent::KEY_c:
+				// chromatic
+				mVDRouter->changeFloatValue(10, mVDAnimation->getFloatUniformValueByIndex(10) + 0.05f);
+				break;
+			case KeyEvent::KEY_p:
+				// pixelate
+				mVDRouter->changeFloatValue(15, mVDAnimation->getFloatUniformValueByIndex(15) + 0.05f);
+				break;
+			case KeyEvent::KEY_t:
+				// glitch
+				mVDRouter->changeBoolValue(45, true);
+				break;
+			case KeyEvent::KEY_i:
+				// invert
+				mVDRouter->changeBoolValue(48, true);
+				break;
+			case KeyEvent::KEY_o:
+				// toggle
+				mVDRouter->toggleAutoControlValue(46);
+				break;
+			case KeyEvent::KEY_z:
+				// zoom
+				mVDRouter->changeFloatValue(22, mVDAnimation->getFloatUniformValueByIndex(22) - 0.05f);
+				break;
+			case KeyEvent::KEY_LEFT:
+				//mVDTextures->rewindMovie();				
+				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1) mVDRouter->changeFloatValue(21,mVDAnimation->getFloatUniformValueByIndex(21) - 0.1);
+				break;
+			case KeyEvent::KEY_RIGHT:
+				//mVDTextures->fastforwardMovie();
+				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0) mVDRouter->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1);
+				break;
+			case KeyEvent::KEY_PAGEDOWN:
+				// crossfade right
+				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0) mVDRouter->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1);
+				break;
+			case KeyEvent::KEY_PAGEUP:
+				// crossfade left
+				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0) mVDRouter->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) - 0.1);
+				break;
+				
 			default:
 				handled = false;
 				break;
 			}
 		}
-
 		event.setHandled(handled);
 		return event.isHandled();
 	}
@@ -607,7 +681,38 @@ bool VDSession::handleKeyUp(KeyEvent &event)
 	if (!mVDMix->handleKeyUp(event)) {
 		if (!mVDAnimation->handleKeyUp(event)) {
 			// Animation did not handle the key, so handle it here
-			handled = false;
+			switch (event.getCode()) {
+				case KeyEvent::KEY_g:
+					// glitch
+					mVDRouter->changeBoolValue(45, false);
+					break;
+				case KeyEvent::KEY_t:
+					// trixels
+					mVDRouter->changeFloatValue(16, 0.0f);
+					break;
+				case KeyEvent::KEY_i:
+					// invert
+					mVDRouter->changeBoolValue(48, false);
+					break;
+				case KeyEvent::KEY_c:
+					// chromatic
+					mVDRouter->changeFloatValue(10, 0.0f);
+					break;
+				case KeyEvent::KEY_p:
+					// pixelate
+					mVDRouter->changeFloatValue(15, 1.0f);
+					break;
+				case KeyEvent::KEY_o:
+					// toggle
+					mVDRouter->changeBoolValue(46, false);
+					break;
+				case KeyEvent::KEY_z:
+					// zoom
+					mVDRouter->changeFloatValue(22, 1.0f);
+					break;
+				default:
+					handled = false;
+					break;
 		}
 	}
 	event.setHandled(handled);
