@@ -43,7 +43,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
 	// otherwise create a warp from scratch
-	createWarp();
+	createWarpMix();
 
 
 	// reset no matter what, so we don't miss anything
@@ -138,10 +138,28 @@ void VDSession::setControlValue(unsigned int aCtrl, float aValue) {
 	// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
 	mVDRouter->changeFloatValue(aCtrl, aValue);
 }
-void VDSession::toggleAutoControlValue(unsigned int aCtrl) {
-	// done in router mVDAnimation->toggleAutoControlValue(aCtrl);
-	mVDRouter->toggleAutoControlValue(aCtrl);
+bool VDSession::getBoolValue(unsigned int aCtrl) {
+	return mVDAnimation->getBoolUniformValueByIndex(aCtrl);
 }
+void VDSession::toggleValue(unsigned int aCtrl) {
+	mVDRouter->toggleValue(aCtrl);
+}
+void VDSession::toggleAuto(unsigned int aCtrl) {
+	mVDRouter->toggleAuto(aCtrl);
+}
+void VDSession::toggleTempo(unsigned int aCtrl) {
+	mVDRouter->toggleTempo(aCtrl);
+}
+void VDSession::resetAutoAnimation(unsigned int aIndex) {
+	mVDRouter->resetAutoAnimation(aIndex);
+}
+float VDSession::getMinUniformValueByIndex(unsigned int aIndex) {
+	return mVDAnimation->getMinUniformValueByIndex(aIndex);
+}
+float VDSession::getMaxUniformValueByIndex(unsigned int aIndex) {
+	return mVDAnimation->getMaxUniformValueByIndex(aIndex);
+}
+
 /* void VDSession::writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target) {
 
 // create config document and root <textures>
@@ -574,7 +592,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				Warp::enableEditMode(!Warp::isEditModeEnabled());
 				break;
 			case KeyEvent::KEY_n:
-				createWarp();
+				createWarpMix();
 				// TODO? Warp::handleResize(mWarps);
 				break;
 			case KeyEvent::KEY_SPACE:
@@ -641,7 +659,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDRouter->toggleAutoControlValue(46);
+				mVDRouter->toggleValue(46);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
@@ -673,8 +691,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 		return event.isHandled();
 	}
 }
-bool VDSession::handleKeyUp(KeyEvent &event)
-{
+bool VDSession::handleKeyUp(KeyEvent &event) {
 	bool handled = true;
 
 	// pass this key event to the warp editor first
@@ -682,48 +699,48 @@ bool VDSession::handleKeyUp(KeyEvent &event)
 		if (!mVDAnimation->handleKeyUp(event)) {
 			// Animation did not handle the key, so handle it here
 			switch (event.getCode()) {
-				case KeyEvent::KEY_g:
-					// glitch
-					mVDRouter->changeBoolValue(45, false);
-					break;
-				case KeyEvent::KEY_t:
-					// trixels
-					mVDRouter->changeFloatValue(16, 0.0f);
-					break;
-				case KeyEvent::KEY_i:
-					// invert
-					mVDRouter->changeBoolValue(48, false);
-					break;
-				case KeyEvent::KEY_c:
-					// chromatic
-					mVDRouter->changeFloatValue(10, 0.0f);
-					break;
-				case KeyEvent::KEY_p:
-					// pixelate
-					mVDRouter->changeFloatValue(15, 1.0f);
-					break;
-				case KeyEvent::KEY_o:
-					// toggle
-					mVDRouter->changeBoolValue(46, false);
-					break;
-				case KeyEvent::KEY_z:
-					// zoom
-					mVDRouter->changeFloatValue(22, 1.0f);
-					break;
-				default:
-					handled = false;
-					break;
+			case KeyEvent::KEY_g:
+				// glitch
+				mVDRouter->changeBoolValue(45, false);
+				break;
+			case KeyEvent::KEY_t:
+				// trixels
+				mVDRouter->changeFloatValue(16, 0.0f);
+				break;
+			case KeyEvent::KEY_i:
+				// invert
+				mVDRouter->changeBoolValue(48, false);
+				break;
+			case KeyEvent::KEY_c:
+				// chromatic
+				mVDRouter->changeFloatValue(10, 0.0f);
+				break;
+			case KeyEvent::KEY_p:
+				// pixelate
+				mVDRouter->changeFloatValue(15, 1.0f);
+				break;
+			case KeyEvent::KEY_o:
+				// toggle
+				mVDRouter->changeBoolValue(46, false);
+				break;
+			case KeyEvent::KEY_z:
+				// zoom
+				mVDRouter->changeFloatValue(22, 1.0f);
+				break;
+			default:
+				handled = false;
+				break;
+			}
 		}
+		event.setHandled(handled);
+		return event.isHandled();
 	}
-	event.setHandled(handled);
-	return event.isHandled();
 }
 #pragma endregion events
 
 #pragma region warps
 
-void VDSession::createWarp() {
-
+void VDSession::createWarpMix() {
 	mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 	mVDMix->createWarp();
 }

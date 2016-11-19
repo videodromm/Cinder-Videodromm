@@ -81,68 +81,11 @@ namespace VideoDromm
 		float							getBpm() { return mBpm; };
 		void							setBpm(float aBpm) { mBpm = aBpm; };
 
-		// exposure
-		/*float							defaultExposure;
-		float							minExposure;
-		bool							tExposure;
-		bool							autoExposure;
-		const float						maxExposure = 3.0;
-		//zoom
-		float							defaultZoom;
-		float							minZoom;
-		float							maxZoom;
-		bool							tZoom;
-		bool							autoZoom;
-		//chromatic
-		float							defaultChromatic;
-		float							minChromatic;
-		float							maxChromatic;
-		bool							tChromatic;
-		bool							autoChromatic;
-		//ratio
-		float							defaultRatio;
-		float							minRatio;
-		float							maxRatio;
-		bool							tRatio;
-		bool							autoRatio;
-		// z position
-		float							defaultZPos;
-		float							minZPos;
-		float							maxZPos;
-		bool							tZPos;
-		bool							autoZPos;
-		// Rotation Speed
-		float							defaultRotationSpeed;
-		float							minRotationSpeed;
-		float							maxRotationSpeed;
-		bool							tRotationSpeed;
-		bool							autoRotationSpeed;*/
 		// colors
-		bool							tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
-		bool							autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
+		//bool							tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
+		//bool							autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
 
 		// animation functions
-		/*void							resetChromatic();
-		void							tempoChromatic();
-		void							lockChromatic() { autoChromatic = !autoChromatic; };
-		void							resetRatio();
-		void							tempoRatio();
-		void							lockRatio() { autoRatio = !autoRatio; };
-		void							resetExposure();
-		void							tempoExposure();
-		void							lockExposure() { autoExposure = !autoExposure; };
-		void							resetZoom();
-		void							tempoZoom();
-		void							lockZoom() { autoZoom = !autoZoom; };
-		void							resetZPos();
-		void							tempoZPos();
-		void							lockZPos() { autoZPos = !autoZPos; };
-		void							resetRotationSpeed();
-		void							tempoRotationSpeed();
-		void							lockRotationSpeed() { autoRotationSpeed = !autoRotationSpeed; };
-		void							resetRed();
-		void							tempoRed();
-		void							lockRed() { autoFR = !autoFR; };*/
 		// tempo
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
@@ -166,13 +109,15 @@ namespace VideoDromm
 		map<int, vec3>					vec3Values;
 		map<int, vec4>					vec4Values;
 		map<int, int>					intValues;
-		//map<int, bool>					boolValues;
 		//int								getValuesSize() { return controlValues.size(); };
 		// shaders
 		bool							isExistingUniform(string aName);
 		int								getUniformType(string aName);
 		string							getUniformNameForIndex(int aIndex);
-		bool							toggleAutoControlValue(unsigned int aIndex);
+		bool							toggleAuto(unsigned int aIndex);
+		bool							toggleValue(unsigned int aIndex);
+		bool							toggleTempo(unsigned int aIndex);
+		void							resetAutoAnimation(unsigned int aIndex);
 		bool							changeFloatValue(unsigned int aIndex, float aValue);
 		bool							changeBoolValue(unsigned int aIndex, bool aValue);
 		float							getFloatUniformValueByIndex(unsigned int aIndex);

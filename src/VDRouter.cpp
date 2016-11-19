@@ -867,15 +867,31 @@ void VDRouter::sendJSON(string params) {
 		}
 	}
 }
-bool VDRouter::toggleAutoControlValue(unsigned int aIndex) {
+bool VDRouter::toggleAuto(unsigned int aIndex) {
 	// toggle
-	mVDAnimation->toggleAutoControlValue(aIndex);
+	mVDAnimation->toggleAuto(aIndex);
+	// TODO send json	
+}
+bool VDRouter::toggleTempo(unsigned int aIndex) {
+	// toggle
+	mVDAnimation->toggleTempo(aIndex);
+	// TODO send json	
+}
+bool VDRouter::toggleValue(unsigned int aIndex) {
+	// toggle
+	mVDAnimation->toggleValue(aIndex);
 	stringstream sParams;
 	// TODO check boolean value:
 	sParams << "{\"params\" :[{\"name\" : " << aIndex << ",\"value\" : " << (int)mVDAnimation->getBoolUniformValueByIndex(aIndex) << "}]}";
 	string strParams = sParams.str();
 	sendJSON(strParams);
 }
+void VDRouter::resetAutoAnimation(unsigned int aIndex) {
+	// reset
+	mVDAnimation->resetAutoAnimation(aIndex);
+	// TODO send json	
+}
+
 void VDRouter::changeBoolValue(unsigned int aControl, bool aValue) {
 	// check if changed
 	mVDAnimation->changeBoolValue(aControl, aValue);

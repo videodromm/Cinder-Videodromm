@@ -221,10 +221,22 @@ string VDAnimation::getUniformNameForIndex(int aIndex) {
 	}
 	return (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != controlValues[aIndex]);
 }*/
-bool VDAnimation::toggleAutoControlValue(unsigned int aIndex) {
-	getBoolUniformValueByIndex(aIndex);
+bool VDAnimation::toggleValue(unsigned int aIndex) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].boolValue = !shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
+	return shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
+}
+bool VDAnimation::toggleAuto(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].automatic = !shaderUniforms[getUniformNameForIndex(aIndex)].automatic;
 	return shaderUniforms[getUniformNameForIndex(aIndex)].automatic;
+}
+bool VDAnimation::toggleTempo(unsigned int aIndex) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = !shaderUniforms[getUniformNameForIndex(aIndex)].autotime;
+	return shaderUniforms[getUniformNameForIndex(aIndex)].autotime;
+}
+void VDAnimation::resetAutoAnimation(unsigned int aIndex) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].automatic = false;
+	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = false;
+	shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
 }
 
 bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
@@ -473,14 +485,14 @@ void VDAnimation::update() {
 		}
 
 		// foreground color vec3 update
-		vec3Values[1] = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue), shaderUniforms[getUniformNameForIndex(2)].floatValue), shaderUniforms[getUniformNameForIndex(3)].floatValue));
+		vec3Values[1] = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue, shaderUniforms[getUniformNameForIndex(2)].floatValue, shaderUniforms[getUniformNameForIndex(3)].floatValue);
 
 		// background color vec3 update
-		vec3Values[2] = vec3(shaderUniforms[getUniformNameForIndex(5)].floatValue), shaderUniforms[getUniformNameForIndex(6)].floatValue), shaderUniforms[getUniformNameForIndex(7)].floatValue));
-
+		vec3Values[2] = vec3(shaderUniforms[getUniformNameForIndex(5)].floatValue, shaderUniforms[getUniformNameForIndex(6)].floatValue, shaderUniforms[getUniformNameForIndex(7)].floatValue);
+		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{
-			controlValues[48] = (modulo < 0.1) ? 1.0 : 0.0;
+			changeBoolValue(48, (modulo < 0.1) ? 1.0 : 0.0);
 		}
 
 		if (mVDSettings->tEyePointZ)
@@ -495,90 +507,6 @@ void VDAnimation::update() {
 	}
 #pragma endregion animation
 }
-
-#pragma region utility
-void VDAnimation::tempoZoom()
-{
-	tZoom = !tZoom;
-	if (!tZoom) resetZoom();
-}
-void VDAnimation::resetZoom()
-{
-	autoZoom = false;
-	tZoom = false;
-	controlValues[22] = defaultZoom;
-}
-/*
-void VDAnimation::tempoZPos()
-{
-	tZPos = !tZPos;
-	if (!tZPos) resetZPos();
-}
-void VDAnimation::resetZPos()
-{
-	autoZPos = false;
-	tZPos = false;
-	controlValues[9] = defaultZPos;
-}*/
-void VDAnimation::tempoRotationSpeed()
-{
-	tRotationSpeed = !tRotationSpeed;
-	if (!tRotationSpeed) resetRotationSpeed();
-}
-void VDAnimation::resetRotationSpeed()
-{
-	autoRotationSpeed = false;
-	tRotationSpeed = false;
-	controlValues[19] = defaultRotationSpeed;
-}
-
-void VDAnimation::tempoExposure()
-{
-	tExposure = !tExposure;
-	if (!tExposure) resetExposure();
-}
-void VDAnimation::resetExposure()
-{
-	autoExposure = false;
-	tExposure = false;
-	controlValues[14] = defaultExposure;
-}
-// chromatic
-void VDAnimation::tempoChromatic()
-{
-	tChromatic = !tChromatic;
-	if (!tChromatic) resetChromatic();
-}
-void VDAnimation::resetChromatic()
-{
-	autoChromatic = false;
-	tChromatic = false;
-	controlValues[10] = defaultChromatic;
-}
-// ratio
-void VDAnimation::tempoRatio()
-{
-	tRatio = !tRatio;
-	if (!tRatio) resetRatio();
-}
-void VDAnimation::resetRatio()
-{
-	autoRatio = false;
-	tRatio = false;
-	controlValues[11] = defaultRatio;
-}
-// red
-void VDAnimation::tempoRed()
-{
-	tFR = !tFR;
-	if (!tFR) resetRed();
-}
-void VDAnimation::resetRed()
-{
-	autoFR = false;
-	tFR = false;
-}
-#pragma endregion utility
 
 // tempo
 void VDAnimation::tapTempo()

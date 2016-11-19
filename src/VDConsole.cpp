@@ -160,7 +160,7 @@ void VDConsole::ExecCommand(const char* command_line)
 	}
 	else if (Stricmp(command_line, "WARPCREATE") == 0)
 	{
-		//mVDMix->createWarp();
+		mVDSession->createWarpMix();
 	}
 	else if (Strnicmp(command_line, "WARPF", 5) == 0)
 	{

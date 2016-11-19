@@ -71,9 +71,16 @@ namespace VideoDromm {
 		// control values
 		float							getControlValue(unsigned int aCtrl);
 		void							setControlValue(unsigned int aCtrl, float aValue);
-		void							toggleAutoControlValue(unsigned int aCtrl);
+		void							toggleValue(unsigned int aCtrl);
+		void							toggleAuto(unsigned int aCtrl);
+		void							toggleTempo(unsigned int aCtrl);
+		bool							getBoolValue(unsigned int aCtrl);
+		void							resetAutoAnimation(unsigned int aIndex);
+		float							getMinUniformValueByIndex(unsigned int aIndex);
+		float							getMaxUniformValueByIndex(unsigned int aIndex);
+
 		// uniforms
-		void							setCrossfade(float aCrossfade);
+		void							setCrossfade(float aCrossfade); // TODO use setControlValue
 		// shaders
 		bool							hasShaderLeft() { return mShaderLeft.length() > 0; };
 		bool							hasShaderRight() { return mShaderRight.length() > 0; };
@@ -105,7 +112,7 @@ namespace VideoDromm {
 		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpBFboIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpCount();
-		void							createWarp();
+		void							createWarpMix();
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);

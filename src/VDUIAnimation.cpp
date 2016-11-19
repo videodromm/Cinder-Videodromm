@@ -22,8 +22,26 @@ float VDUIAnimation::getValue(unsigned int aCtrl) {
 void VDUIAnimation::setValue(unsigned int aCtrl, float aValue) {
 	mVDSession->setControlValue(aCtrl, aValue);
 }
-void VDUIAnimation::setAuto(unsigned int aCtrl) {
-	mVDSession->setAutoControlValue(aCtrl);
+bool VDUIAnimation::getBoolValue(unsigned int aCtrl) {
+	mVDSession->getBoolValue(aCtrl);
+}
+void VDUIAnimation::toggleValue(unsigned int aCtrl) {
+	mVDSession->toggleValue(aCtrl);
+}
+void VDUIAnimation::toggleAuto(unsigned int aCtrl) {
+	mVDSession->toggleAuto(aCtrl);
+}
+void VDUIAnimation::toggleTempo(unsigned int aCtrl) {
+	mVDSession->toggleTempo(aCtrl);
+}
+void VDUIAnimation::resetAutoAnimation(unsigned int aCtrl) {
+	mVDSession->resetAutoAnimation(aCtrl);
+}
+float VDUIAnimation::getMinUniformValueByIndex(unsigned int aIndex) {
+	return mVDSession->getMinUniformValueByIndex(aIndex);
+}
+float VDUIAnimation::getMaxUniformValueByIndex(unsigned int aIndex) {
+	return mVDSession->getMaxUniformValueByIndex(aIndex);
 }
 void VDUIAnimation::Run(const char* title) {
 
@@ -45,43 +63,43 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();*/
 
 			ctrl = 45;
-			(getValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			(getBoolValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 			if (ui::Button("glitch")) {
-				setValue(ctrl, !getValue(ctrl));
+				toggleValue(ctrl);
 			}
 			ui::PopStyleColor(3);
 			hue++;
 			ui::SameLine();
 
 			ctrl = 46;
-			(getValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			(getBoolValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 			if (ui::Button("toggle")) {
-				setValue(ctrl, !getValue(ctrl));
+				toggleValue(ctrl);
 			}
 			ui::PopStyleColor(3);
 			hue++;
 			ui::SameLine();
 
 			ctrl = 47;
-			(getValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			(getBoolValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 			if (ui::Button("vignette")) {
-				setValue(ctrl, !getValue(ctrl));
+				toggleValue(ctrl);
 			}
 			ui::PopStyleColor(3);
 			hue++;
 
 			ctrl = 48;
-			(getValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			(getBoolValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 			if (ui::Button("invert")) {
-				setValue(ctrl, !getValue(ctrl));
+				toggleValue(ctrl);
 			}
 			ui::PopStyleColor(3);
 			hue++;
@@ -106,14 +124,6 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(7, 0.0);
 				setValue(8, 0.0);
 			}
-			/*(mVDMix->isFboUsed()) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			if (ui::Button("use fbo")) {
-				mVDMix->toggleFboUsed();
-			}
-			ui::PopStyleColor(3);
-			hue++;*/
 		}
 		if (ui::CollapsingHeader("Animation", NULL, true, true))
 		{
@@ -122,18 +132,18 @@ void VDUIAnimation::Run(const char* title) {
 			// iChromatic
 			ctrl = 10;
 			if (ui::Button("a##chromatic")) {
-				lockChromatic();
+				toggleAuto(ctrl);
 			}
 			ui::SameLine();
-			if (ui::Button("t##chromatic")) { tempoChromatic(); }
+			if (ui::Button("t##chromatic")) { toggleTempo(ctrl); }
 			ui::SameLine();
 			if (ui::Button("x##chromatic")) {
-				resetChromatic();
+				resetAutoAnimation(ctrl);
 			}
 			ui::SameLine();
-			if (ui::SliderFloat("chromatic/min/max", &controlValues[ctrl], minChromatic, maxChromatic))
+			if (ui::SliderFloat("chromatic/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
-				mVDRouter->changeControlValue(ctrl, controlValues[ctrl]);
+				mVDSession->setControlValue(ctrl, localValues[ctrl]);
 			}
 
 			// ratio
