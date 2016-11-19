@@ -19,10 +19,10 @@ namespace VideoDromm
 	class VDUIChannels
 	{
 	public:
-		VDUIChannels(VDSettingsRef aVDSettings, VDMixRef aVDMix);
-		static VDUIChannelsRef	create(VDSettingsRef aVDSettings, VDMixRef aVDMix)
+		VDUIChannels(VDSettingsRef aVDSettings, VDSessionRef aVDSession);
+		static VDUIChannelsRef	create(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 		{
-			return shared_ptr<VDUIChannels>(new VDUIChannels(aVDSettings, aVDMix));
+			return shared_ptr<VDUIChannels>(new VDUIChannels(aVDSettings, aVDSession));
 		}
 		~VDUIChannels();
 		void    Run(const char* title);

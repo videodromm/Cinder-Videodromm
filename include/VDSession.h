@@ -68,6 +68,10 @@ namespace VideoDromm {
 		int								getTextStart() { return mTextPlaybackDelay; };
 		int								getTextEnd() { return mTextPlaybackEnd; };
 		bool							hasText() { return mText.length() > 0; };
+		// control values
+		float							getControlValue(unsigned int aCtrl);
+		void							setControlValue(unsigned int aCtrl, float aValue);
+		void							setAutoControlValue(unsigned int aCtrl);
 		// uniforms
 		void							setCrossfade(float aCrossfade);
 		// shaders

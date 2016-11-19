@@ -32,15 +32,20 @@ namespace VideoDromm
 		void    Run(const char* title);
 	private:
 		// Settings
-		VDSettingsRef				mVDSettings;
+		VDSettingsRef					mVDSettings;
 		// Session
-		VDSessionRef				mVDSession;
+		VDSessionRef					mVDSession;
+
 		// imgui
-		float						f = 0.0f;
-		char						buf[64];
-		int							ctrl;
+		float							getValue(unsigned int aCtrl);
+		void							setValue(unsigned int aCtrl, float aValue);
+		void							setAuto(unsigned int aCtrl);
+		unsigned int					ctrl;
+		map<int, float>					controlValues;
+		float							f = 0.0f;
+		char							buf[64];
 		// zoom
-		float						minZoom;
-		float						maxZoom;
+		float							minZoom;
+		float							maxZoom;
 	};
 }

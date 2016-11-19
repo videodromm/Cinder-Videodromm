@@ -75,10 +75,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	iDeltaTime = 60 / mBpm;//mTempo;
 	//iBar = 0;
 	//iBadTvRunning = false;
-	for (int c = 0; c < 128; c++)
+	/*for (int c = 0; c < 128; c++)
 	{
 		controlValues[c] = 0.01f;
-	}
+	}*/
 	int ctrl;
 	// not used
 	createFloatUniform("iUseless", 0, 1.0f);
@@ -181,9 +181,18 @@ void VDAnimation::createSampler2DUniform(string aName, int aTextureIndex) {
 	shaderUniforms[aName].uniformType = 1;
 	shaderUniforms[aName].isValid = true;
 }
-void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue) {
-	controlValues[aCtrlIndex] = aValue;
+
+float VDAnimation::getShaderUniformValue(unsigned int aCtrlIndex) {
+	return shaderUniforms[controlIndexes[aCtrlIndex]].floatValue;
+}
+
+void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue, float aDefault, float aMin, float aMax) {
 	controlIndexes[aCtrlIndex] = aName;
+	shaderUniforms[aName].minValue = aMin;
+	shaderUniforms[aName].maxValue = aMax;
+	shaderUniforms[aName].defaultValue = aDefault;
+	shaderUniforms[aName].autotime = false;
+	shaderUniforms[aName].automatic = false;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].floatValue = aValue;
 	shaderUniforms[aName].uniformType = 0;

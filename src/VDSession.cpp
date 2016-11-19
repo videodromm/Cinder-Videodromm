@@ -130,7 +130,18 @@ void VDSession::fromXml(const XmlTree &xml) {
 		setFboFragmentShaderIndex(2, 2);
 	}
 }
-
+// control values
+float VDSession::getControlValue(unsigned int aCtrl) {
+	return mVDAnimation->getFloatUniformValueByIndex(aCtrl);
+}
+void VDSession::setControlValue(unsigned int aCtrl, float aValue) {
+	mVDAnimation-> controlValues[aCtrl].value = aValue;
+	mVDRouter->changeControlValue(aCtrl, aValue);
+}
+void VDSession::setAutoControlValue(unsigned int aCtrl) {
+	mVDAnimation[aCtrl].value = aValue;
+	mVDRouter->changeControlValue(aCtrl, aValue);
+}
 /* void VDSession::writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target) {
 
 // create config document and root <textures>

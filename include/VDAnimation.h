@@ -26,7 +26,12 @@ namespace VideoDromm
 	{
 		int								uniformType;
 		int								index;
+		float							defaultValue;
 		float							floatValue;
+		float							minValue;
+		float							maxValue;
+		bool							autotime;
+		bool							automatic;
 		int								textureIndex;
 		bool							isValid;
 	};
@@ -44,6 +49,7 @@ namespace VideoDromm
 		unsigned int					MixFboIndex;	// index of the fbo mixing A and B
 		string							Name;			// name of the warp
 	};
+
 	class VDAnimation {
 	public:		
 		VDAnimation(VDSettingsRef aVDSettings);
@@ -154,15 +160,13 @@ namespace VideoDromm
 		float							maxVolume;
 		bool							mUseLineIn;
 		float							iFreqs[7];
-		// OSC/MIDI/JSON controlled UI and params
-		map<int, string>				controlIndexes;
-		map<int, float>					controlValues;
+
 		map<int, vec2>					vec2Values;
 		map<int, vec3>					vec3Values;
 		map<int, vec4>					vec4Values;
 		map<int, int>					intValues;
 		map<int, bool>					boolValues;
-		int								getValuesSize() { return controlValues.size(); };
+		//int								getValuesSize() { return controlValues.size(); };
 		// shaders
 		bool							isExistingUniform(string aName);
 		int								getUniformType(string aName);
@@ -199,9 +203,11 @@ namespace VideoDromm
 		Parameter<string>				mText;
 		Parameter<bool>					mAutoBeatAnimation;
 		// shaders
+		map<int, string>				controlIndexes;
 		map<string, VDUniform>			shaderUniforms;
-		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f);
+		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f, float aDefault = 0.01f, float aMin = 0.0f, float aMax = 1.0f);
 		void							createSampler2DUniform(string aName, int aTextureIndex = 0);
+		float							getShaderUniformValue(unsigned int aCtrlIndex);
 		void							createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue = vec2(0.0));
 		void							createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
 		void							createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue = vec4(0.0));

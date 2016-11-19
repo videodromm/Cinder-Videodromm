@@ -15,7 +15,7 @@ void VDUIBlend::Run(const char* title) {
 
 	xPos = mVDSettings->uiMargin;
 	yPos = mVDSettings->uiYPosRow3;
-	for (int s = 0; s < mVDMix->getFboBlendCount(); s++) {
+	for (int s = 0; s < mVDSession->getFboBlendCount(); s++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 		ui::SetNextWindowPos(ImVec2(xPos, yPos));
 		int hue = 0;
@@ -24,7 +24,7 @@ void VDUIBlend::Run(const char* title) {
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(s);
-			ui::Image((void*)mVDMix->getFboThumb(s)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDSession->getFboThumb(s)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 
 			// select blend mode
 			if (mVDSettings->iBlendmode == s) {
@@ -38,7 +38,7 @@ void VDUIBlend::Run(const char* title) {
 
 			sprintf(buf, "B##s%d", s);
 			if (ui::Button(buf)){
-				mVDMix->useBlendmode(s);
+				mVDSession->useBlendmode(s);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Use this blend");
 			ui::PopStyleColor(3);
