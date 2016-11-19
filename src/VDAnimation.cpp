@@ -30,8 +30,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	currentScene = 0;
 
 	//colors
-	autoFR = autoFG = autoFB = autoFA = autoBR = autoBG = autoBB = autoBA = false;
-	tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
+	//autoFR = autoFG = autoFB = autoFA = autoBR = autoBG = autoBB = autoBA = false;
+	//tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
 
 	previousTime = 0.0f;
 	iBeatIndex = 1;

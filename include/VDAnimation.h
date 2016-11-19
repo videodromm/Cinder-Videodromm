@@ -80,13 +80,6 @@ namespace VideoDromm
 		float							iTempoTimeBeatPerBar;
 		float							getBpm() { return mBpm; };
 		void							setBpm(float aBpm) { mBpm = aBpm; };
-
-		// colors
-		//bool							tFR, tFG, tFB, tFA, tBR, tBG, tBB, tBA;
-		//bool							autoFR, autoFG, autoFB, autoFA, autoBR, autoBG, autoBB, autoBA;
-
-		// animation functions
-		// tempo
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
 		int								getEndFrame() { return mEndFrame; };

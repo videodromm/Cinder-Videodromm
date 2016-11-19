@@ -33,11 +33,21 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Session
 		VDSessionRef				mVDSession;
+		float							getValue(unsigned int aCtrl);
+		void							setValue(unsigned int aCtrl, float aValue);
+		void							toggleValue(unsigned int aCtrl);
+		void							toggleAuto(unsigned int aCtrl);
+		void							toggleTempo(unsigned int aCtrl);
+		bool							getBoolValue(unsigned int aCtrl);
+		void							resetAutoAnimation(unsigned int aCtrl);
+		float							getMinUniformValueByIndex(unsigned int aIndex);
+		float							getMaxUniformValueByIndex(unsigned int aIndex);
 		// imgui
+		int							ctrl;
+		map<int, float>				localValues;
 		float						f = 0.0f;
 		char						buf[64];
 		float						color[4];
 		float						backcolor[4];
-		int							ctrl;
 	};
 }

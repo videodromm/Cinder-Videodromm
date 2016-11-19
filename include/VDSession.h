@@ -78,9 +78,13 @@ namespace VideoDromm {
 		void							resetAutoAnimation(unsigned int aIndex);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
+		// tempo
+		float							getBpm() { return mVDAnimation->getBpm(); };
+		void							setBpm(float aBpm) { mVDAnimation->setBpm(aBpm); };
+		void							tapTempo() { mVDAnimation->tapTempo(); };
 
 		// uniforms
-		void							setCrossfade(float aCrossfade); // TODO use setControlValue
+		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 		// shaders
 		bool							hasShaderLeft() { return mShaderLeft.length() > 0; };
 		bool							hasShaderRight() { return mShaderRight.length() > 0; };
@@ -101,7 +105,6 @@ namespace VideoDromm {
 
 		// utils
 		int								getWindowsResolution();
-		void							setBpm(float aBpm);
 		float							getTargetFps() { return mTargetFps; };
 		void							blendRenderEnable(bool render);
 
@@ -122,7 +125,9 @@ namespace VideoDromm {
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		string							getFboLabel(unsigned int aFboIndex);
-		ci::gl::TextureRef				getFboTexture(unsigned int aFboIndex);
+		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex = 0) { return mVDMix->getFboTexture(aFboIndex); };
+		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex) { return mVDMix->getFboRenderedTexture(aFboIndex); };
+		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex) { return mVDMix->getFboThumb(aBlendIndex); };
 		string							getFboName(unsigned int aFboIndex);
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);
@@ -189,6 +194,21 @@ namespace VideoDromm {
 		void							wsWrite(std::string msg);
 
 #endif
+		// midi
+		void						midiSetup() { mVDRouter->midiSetup(); };
+#if defined( CINDER_MSW )
+		int							getMidiInPortsCount() { return mVDRouter->getMidiInPortsCount(); };
+		string						getMidiInPortName(int i) { return mVDRouter->getMidiInPortName(i); };
+		bool						isMidiInConnected(int i) { return mVDRouter->isMidiInConnected(i); };
+		int							getMidiOutPortsCount() { return mVDRouter->getMidiOutPortsCount(); };
+		string						getMidiOutPortName(int i) { return mVDRouter->getMidiOutPortName(i); };
+		bool						isMidiOutConnected(int i) { return mVDRouter->isMidiOutConnected(i); };
+#endif
+		void						openMidiInPort(int i) { mVDRouter->openMidiInPort(i); };
+		void						closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
+		void						openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
+		void						closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
+
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

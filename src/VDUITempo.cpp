@@ -22,7 +22,7 @@ void VDUITempo::Run(const char* title) {
 		if (ui::Button("x##spdx")) { mVDSettings->iSpeedMultiplier = 1.0; }
 		ui::SameLine();
 		ui::SliderFloat("speed x", &mVDSettings->iSpeedMultiplier, 0.01f, 5.0f, "%.1f");
-
+		/* TODO
 		ui::Text("Beat %d ", mVDSettings->iBeat);
 		ui::SameLine();
 		ui::Text("Beat Idx %d ", mVDAnimation->iBeatIndex);
@@ -31,7 +31,7 @@ void VDUITempo::Run(const char* title) {
 
 		if (ui::Button("x##bpbx")) { mVDSession->iBeatsPerBar = 1; }
 		ui::SameLine();
-		ui::SliderInt("beats/bar", &mVDSession->iBeatsPerBar, 1, 8);
+		ui::SliderInt("beats/bar", &mVDSession->iBeatsPerBar, 1, 8); */
 
 		ui::Text("Time %.2f", mVDSettings->iGlobalTime);
 		ui::SameLine();
@@ -39,11 +39,10 @@ void VDUITempo::Run(const char* title) {
 		//			ui::Checkbox("Playing", &mVDSettings->mIsPlaying);
 		ui::Text("Tempo %.2f ", mVDSession->getBpm());
 
-		if (ui::Button("Tap tempo")) { mVDAnimation->tapTempo(); }
-		if (ui::Button("Time tempo")) { mVDAnimation->mUseTimeWithTempo = !mVDAnimation->mUseTimeWithTempo; }
+		if (ui::Button("Tap tempo")) { mVDSession->tapTempo(); }
+		// TODO if (ui::Button("Time tempo")) { mVDAnimation->mUseTimeWithTempo = !mVDAnimation->mUseTimeWithTempo; }
 
-		//void Batchass::setTimeFactor(const int &aTimeFactor)
-		ui::SliderFloat("time x", &mVDAnimation->iTimeFactor, 0.0001f, 1.0f, "%.01f");
+		// TODO ui::SliderFloat("time x", &mVDAnimation->iTimeFactor, 0.0001f, 1.0f, "%.01f");
 		ui::SameLine();
 		ui::PopItemWidth();
 	}

@@ -148,71 +148,59 @@ void VDUIAnimation::Run(const char* title) {
 
 			// ratio
 			ctrl = 11;
-			if (ui::Button("a##ratio")) { lockRatio(); }
+			if (ui::Button("a##ratio")) { toggleAuto(ctrl); }
 			ui::SameLine();
-			if (ui::Button("t##ratio")) { tempoRatio(); }
+			if (ui::Button("t##ratio")) { toggleTempo(ctrl); }
 			ui::SameLine();
-			if (ui::Button("x##ratio")) { resetRatio(); }
+			if (ui::Button("x##ratio")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
-			if (ui::SliderFloat("ratio/min/max", &controlValues[ctrl], minRatio, maxRatio))
+			if (ui::SliderFloat("ratio/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
-				setValue(ctrl, controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
 			}
 			// exposure
 			ctrl = 14;
-			if (ui::Button("a##exposure")) { lockExposure(); }
+			if (ui::Button("a##exposure")) { toggleAuto(ctrl); }
 			ui::SameLine();
-			if (ui::Button("t##exposure")) { tempoExposure(); }
+			if (ui::Button("t##exposure")) { toggleTempo(ctrl); }
 			ui::SameLine();
-			if (ui::Button("x##exposure")) { resetExposure(); }
+			if (ui::Button("x##exposure")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
-			if (ui::DragFloat("exposure", &controlValues[ctrl], 0.1f, minExposure, maxExposure))
+			if (ui::DragFloat("exposure", &localValues[ctrl], 0.1f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
-				setValue(ctrl, controlValues[ctrl]);
-				setExposure(controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
+				//setExposure(localValues[ctrl]);
 			}
 			// zoom
 			ctrl = 22;
 			if (ui::Button("a##zoom"))
 			{
-				lockZoom();
+				toggleAuto(ctrl);
 			}
 			ui::SameLine();
-			if (ui::Button("t##zoom")) { tempoZoom(); }
+			if (ui::Button("t##zoom")) { toggleTempo(ctrl); }
 			ui::SameLine();
-			if (ui::Button("x##zoom")) { resetZoom(); }
+			if (ui::Button("x##zoom")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
-			if (ui::DragFloat("zoom", &controlValues[ctrl], 0.1f, minZoom, maxZoom))
+			if (ui::DragFloat("zoom", &localValues[ctrl], 0.1f, minZoom, maxZoom))
 			{
-				setValue(ctrl, controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
 			}
 			ui::DragFloat("minzm", &minZoom, 0.1f, minZoom, maxZoom);
 			ui::SameLine();
 			ui::DragFloat("maxzm", &maxZoom, 0.1f, minZoom, maxZoom);
-			// z position
-			/*ctrl = 9;
-			if (ui::Button("a##zpos")) { lockZPos(); }
-			ui::SameLine();
-			if (ui::Button("t##zpos")) { tempoZPos(); }
-			ui::SameLine();
-			if (ui::Button("x##zpos")) { resetZPos(); }
-			ui::SameLine();
-			if (ui::SliderFloat("zPosition", &controlValues[ctrl], minZPos, maxZPos))
-			{
-				mVDRouter->changeControlValue(ctrl, controlValues[ctrl]);
-			}*/
 
 			// rotation speed 
 			ctrl = 19;
-			if (ui::Button("a##rotationspeed")) { lockRotationSpeed(); }
+			if (ui::Button("a##rotationspeed")) { toggleAuto(ctrl); }
 			ui::SameLine();
-			if (ui::Button("t##rotationspeed")) { tempoRotationSpeed(); }
+			if (ui::Button("t##rotationspeed")) { toggleTempo(ctrl); }
 			ui::SameLine();
-			if (ui::Button("x##rotationspeed")) { resetRotationSpeed(); }
+			if (ui::Button("x##rotationspeed")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
-			if (ui::DragFloat("rotationSpeed", &controlValues[ctrl], 0.01f, minRotationSpeed, maxRotationSpeed))
+			if (ui::DragFloat("rotationSpeed", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
-				mVDRouter->changeControlValue(ctrl, controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
 			}
 			// badTv
 			/*if (ui::Button("x##badtv")) { mVDSettings->iBadTv = 0.0f; }
@@ -237,38 +225,38 @@ void VDUIAnimation::Run(const char* title) {
 
 			// steps
 			ctrl = 20;
-			if (ui::Button("x##steps")) { controlValues[ctrl] = 16.0f; }
+			if (ui::Button("x##steps")) { localValues[ctrl] = 16.0f; }
 			ui::SameLine();
-			if (ui::SliderFloat("steps", &controlValues[ctrl], 1.0f, 128.0f))
+			if (ui::SliderFloat("steps", &localValues[ctrl], 1.0f, 128.0f))
 			{
-				mVDRouter->changeControlValue(ctrl, controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
 			}
 			// pixelate
 			ctrl = 15;
-			if (ui::Button("x##pixelate")) { controlValues[ctrl] = 1.0f; }
+			if (ui::Button("x##pixelate")) { localValues[ctrl] = 1.0f; }
 			ui::SameLine();
-			if (ui::SliderFloat("pixelate", &controlValues[ctrl], 0.01f, 1.0f))
+			if (ui::SliderFloat("pixelate", &localValues[ctrl], 0.01f, 1.0f))
 			{
-				mVDRouter->changeControlValue(ctrl, controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
 			}
 			// trixels
 			ctrl = 16;
-			if (ui::Button("x##trixels")) { controlValues[ctrl] = 0.0f; }
+			if (ui::Button("x##trixels")) { localValues[ctrl] = 0.0f; }
 			ui::SameLine();
-			if (ui::SliderFloat("trixels", &controlValues[ctrl], 0.00f, 1.0f))
+			if (ui::SliderFloat("trixels", &localValues[ctrl], 0.00f, 1.0f))
 			{
-				mVDRouter->changeControlValue(ctrl, controlValues[ctrl]);
+				setValue(ctrl, localValues[ctrl]);
 			}
 			ui::SliderFloat("ABP Bend", &mVDSettings->mBend, -20.0f, 20.0f);
 		}
 		// grid
 		/*
 		ctrl = 17;
-		if (ui::Button("x##grid")) { controlValues[ctrl] = 0.0f; }
+		if (ui::Button("x##grid")) { localValues[ctrl] = 0.0f; }
 		ui::SameLine();
-		if (ui::SliderFloat("grid", &controlValues[ctrl], 0.00f, 60.0f))
+		if (ui::SliderFloat("grid", &localValues[ctrl], 0.00f, 60.0f))
 		{
-			aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << controlValues[ctrl] << "}";
+			aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << localValues[ctrl] << "}";
 		}
 
 	if (ui::CollapsingHeader("Camera", NULL, true, true))
