@@ -152,30 +152,30 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("WS", &currentWindowRow1, 7);  ui::SameLine();
 		// flip vertically
 		int hue = 0;
-		mVDAnimation->isFlipV() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		mVDSession->isFlipV() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 		if (ui::Button("FlipV")) {
-			mVDAnimation->flipV();
+			mVDSession->flipV();
 		}
 		ui::PopStyleColor(3);
 		hue++;
 		ui::SameLine();
 		// flip horizontally
-		mVDAnimation->isFlipH() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		mVDSession->isFlipH() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 		if (ui::Button("FlipH")) {
-			mVDAnimation->flipH();
+			mVDSession->flipH();
 		}
 		ui::PopStyleColor(3);
 		hue++;
 		ui::SameLine();
 
 		// crossfade
-		if (ui::DragFloat("Xfade", &mVDAnimation->controlValues[18], 0.01f, 0.001f, 1.0f))
+		/*if (ui::DragFloat("Xfade", &mVDAnimation->controlValues[18], 0.01f, 0.001f, 1.0f))
 		{
-		}
+		}*/
 
 		ui::RadioButton("Textures", &currentWindowRow2, 0); ui::SameLine();
 		ui::RadioButton("Fbos", &currentWindowRow2, 1); ui::SameLine();
@@ -185,7 +185,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Warps", &currentWindowRow2, 5); ui::SameLine();
 
 #pragma region Info
-		ui::Text("fp %dx%d f %dx%d r %dx%d t %d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, mVDAnimation->iTempoTime);
+		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 		ui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
 		ui::TextWrapped("WS Msg: %s", mVDSettings->mWebSocketsMsg.c_str());
 		ui::TextWrapped("OSC Msg: %s", mVDSettings->mOSCMsg.c_str());
@@ -273,6 +273,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		break;
 	}
 	
-	mVDMix->blendRenderEnable(currentWindowRow2 == 3);
+	mVDSession->blendRenderEnable(currentWindowRow2 == 3);
 
 }

@@ -92,6 +92,7 @@ namespace VideoDromm {
 		int								getWindowsResolution();
 		void							setBpm(float aBpm);
 		float							getTargetFps() { return mTargetFps; };
+		void							blendRenderEnable(bool render);
 
 		// file operations (filedrop, etc)
 		int								loadFileFromAbsolutePath(string aAbsolutePath, int aIndex = 0);
@@ -119,6 +120,11 @@ namespace VideoDromm {
 		string							getMixFboLabel(unsigned int aMixFboIndex);
 		ci::gl::Texture2dRef			getMixTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount();
+		bool							isFlipH();
+		bool							isFlipV();
+		void							flipH();
+		void							flipV();
+
 
 		// textures
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);

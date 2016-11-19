@@ -38,7 +38,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	mZoom = 1.0f;
 
 	// Mix
-	mVDMix = VDMix::create(mVDSettings, mVDAnimation, mVDRouter);
+	mVDMix = VDMix::create(mVDSettings, mVDAnimation, mVDRouter, mTextureList, mShaderList, mFboList);
 	// warping
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
@@ -443,6 +443,10 @@ int VDSession::getWindowsResolution() {
 void VDSession::setCrossfade(float aCrossfade) {
 	mVDAnimation->controlValues[21] = aCrossfade;
 }
+void VDSession::blendRenderEnable(bool render) { 
+	mVDAnimation->blendRenderEnable(render);
+}
+
 int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex) {
 	int rtn = -1;
 	string ext = "";
@@ -643,6 +647,19 @@ ci::gl::TextureRef VDSession::getRenderTexture()
 #pragma endregion warps
 
 #pragma region fbos
+bool VDSession::isFlipH() { 
+	return mVDAnimation->isFlipH();
+}
+bool VDSession::isFlipV() { 
+	return mVDAnimation->isFlipV();
+}
+void VDSession::flipH() { 
+	mVDAnimation->flipH();
+}
+void VDSession::flipV() { 
+	mVDAnimation->flipV();
+}
+
 ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 	return mVDMix->getMixTexture(aMixFboIndex);
 }
