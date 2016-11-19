@@ -72,7 +72,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	timer.start();
 	startTime = currentTime = timer.getSeconds();
 
-	iDeltaTime = 60 / mVDSession->getBpm();//mTempo;
+	iDeltaTime = 60 / mBpm;//mTempo;
 	//iBar = 0;
 	//iBadTvRunning = false;
 	for (int c = 0; c < 128; c++)
@@ -365,7 +365,7 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		break;
 	case KeyEvent::KEY_d:
 		// save end keyframe
-		mVDSession->setEndFrame(getElapsedFrames() - 10);
+		setEndFrame(getElapsedFrames() - 10);
 		break;
 	case KeyEvent::KEY_x:
 		// trixels
@@ -529,14 +529,14 @@ void VDAnimation::update() {
 
 	int time = (currentTime - startTime)*1000000.0;
 	int elapsed = iDeltaTime*1000000.0;
-	int elapsedBeatPerBar = iDeltaTime / mVDSession->iBeatsPerBar*1000000.0;
+	int elapsedBeatPerBar = iDeltaTime / iBeatsPerBar*1000000.0;
 	if (elapsedBeatPerBar > 0)
 	{
 		double moduloBeatPerBar = (time % elapsedBeatPerBar) / 1000000.0;
 		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
 		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
 		{
-			if (iBeatIndex > mVDSession->iBeatsPerBar) iBeatIndex = 1;
+			if (iBeatIndex > iBeatsPerBar) iBeatIndex = 1;
 			iBeatIndex++;
 		}
 		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
@@ -820,7 +820,7 @@ void VDAnimation::calculateTempo()
 	}
 	averageTime = (double)(tAverage / buffer.size());
 	iDeltaTime = averageTime;
-	mVDSession->setBpm(60 / averageTime);
+	setBpm(60 / averageTime);
 }
 void VDAnimation::setTimeFactor(const int &aTimeFactor)
 {

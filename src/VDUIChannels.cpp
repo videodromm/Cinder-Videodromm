@@ -37,7 +37,7 @@ void VDUIChannels::Run(const char* title) {
 			}
 			ui::NextColumn();
 			ui::PopStyleColor(3);
-			ui::Text("%s", mVDMix->getInputTextureName(mVDSettings->iChannels[i]).c_str());
+			ui::Text("%s", mVDSession->getInputTextureName(mVDSettings->iChannels[i]).c_str());
 			ui::NextColumn();
 		}
 		ui::Columns(1);

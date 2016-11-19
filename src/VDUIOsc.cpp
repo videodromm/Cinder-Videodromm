@@ -28,7 +28,7 @@ void VDUIOsc::Run(const char* title) {
 				ui::InputText("address", str0, IM_ARRAYSIZE(str0));
 				ui::InputInt("track", &i0);
 				ui::InputFloat("clip", &f0, 0.01f, 1.0f);
-				if (ui::Button("Send")) { mVDRouter->sendOSCIntMessage(str0, i0); }
+				if (ui::Button("Send")) { mVDSession->sendOSCIntMessage(str0, i0); }
 			}
 			else {
 				ui::Text(" Receiving on port %d", mVDSettings->mOSCReceiverPort);
@@ -64,10 +64,10 @@ void VDUIOsc::Run(const char* title) {
 			{
 				mVDSettings->mOSCEnabled = true;
 				if (mVDSettings->mIsOSCSender) {
-					mVDRouter->setupOSCSender();
+					mVDSession->setupOSCSender();
 				}
 				else {
-					mVDRouter->setupOSCReceiver();
+					mVDSession->setupOSCReceiver();
 				}
 			}
 		}

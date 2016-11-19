@@ -18,19 +18,19 @@ void VDUIMidi::Run(const char* title) {
 	ui::Begin("MIDI");
 	{
 		sprintf(buf, "Enable");
-		if (ui::Button(buf)) mVDRouter->midiSetup();
+		if (ui::Button(buf)) mVDSession->midiSetup();
 		if (ui::CollapsingHeader("MidiIn", "20", true, true))
 		{
 			ui::Columns(2, "datain", true);
 			ui::Text("Name"); ui::NextColumn();
 			ui::Text("Connect"); ui::NextColumn();
 			ui::Separator();
-			for (int i = 0; i < mVDRouter->getMidiInPortsCount(); i++)
+			for (int i = 0; i < mVDSession->getMidiInPortsCount(); i++)
 			{
-				if (mVDRouter->getMidiInPortName(i) != "Ableton Push 2 1") {
-					ui::Text(mVDRouter->getMidiInPortName(i).c_str()); ui::NextColumn();
+				if (mVDSession->getMidiInPortName(i) != "Ableton Push 2 1") {
+					ui::Text(mVDSession->getMidiInPortName(i).c_str()); ui::NextColumn();
 
-					if (mVDRouter->isMidiInConnected(i))
+					if (mVDSession->isMidiInConnected(i))
 					{
 						sprintf(buf, "Disconnect %d", i);
 					}
@@ -41,13 +41,13 @@ void VDUIMidi::Run(const char* title) {
 
 					if (ui::Button(buf))
 					{
-						if (mVDRouter->isMidiInConnected(i))
+						if (mVDSession->isMidiInConnected(i))
 						{
-							mVDRouter->closeMidiInPort(i);
+							mVDSession->closeMidiInPort(i);
 						}
 						else
 						{
-							mVDRouter->openMidiInPort(i);
+							mVDSession->openMidiInPort(i);
 						}
 					}
 					ui::NextColumn();
@@ -63,11 +63,11 @@ void VDUIMidi::Run(const char* title) {
 			ui::Text("Name"); ui::NextColumn();
 			ui::Text("Connect"); ui::NextColumn();
 			ui::Separator();
-			for (int i = 0; i < mVDRouter->getMidiOutPortsCount(); i++)
+			for (int i = 0; i < mVDSession->getMidiOutPortsCount(); i++)
 			{
-				ui::Text(mVDRouter->getMidiOutPortName(i).c_str()); ui::NextColumn();
+				ui::Text(mVDSession->getMidiOutPortName(i).c_str()); ui::NextColumn();
 
-				if (mVDRouter->isMidiOutConnected(i))
+				if (mVDSession->isMidiOutConnected(i))
 				{
 					sprintf(buf, "Disconnect  %d", i);
 				}
@@ -78,13 +78,13 @@ void VDUIMidi::Run(const char* title) {
 
 				if (ui::Button(buf))
 				{
-					if (mVDRouter->isMidiOutConnected(i))
+					if (mVDSession->isMidiOutConnected(i))
 					{
-						mVDRouter->closeMidiOutPort(i);
+						mVDSession->closeMidiOutPort(i);
 					}
 					else
 					{
-						mVDRouter->openMidiOutPort(i);
+						mVDSession->openMidiOutPort(i);
 					}
 				}
 				ui::NextColumn();

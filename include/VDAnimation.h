@@ -71,6 +71,9 @@ namespace VideoDromm
 		float							iTimeFactor;
 		bool							mUseTimeWithTempo;
 		float							iTempoTimeBeatPerBar;
+		float							getBpm() { return mBpm; };
+		void							setBpm(float aBpm) { mBpm = aBpm; };
+
 		// exposure
 		float							defaultExposure;
 		float							minExposure;
@@ -136,6 +139,9 @@ namespace VideoDromm
 		// tempo
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
+		int								getEndFrame() { return mEndFrame; };
+		void							setEndFrame(int frame) { mEndFrame = frame; };
+
 		//int							iBar;
 		int								iBeatIndex; //1 to beatsperbar
 		// animation
@@ -177,6 +183,12 @@ namespace VideoDromm
 		void							flipH() { mFlipH = !mFlipH; };
 		void							flipV() { mFlipV = !mFlipV; };
 		unsigned int					getBlendModesCount() { return mBlendModes; };
+		bool							renderBlend() { return mBlendRender; };
+
+		// timed animation
+		float							mBpm;
+		int								mEndFrame;
+		int								iBeatsPerBar;
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
@@ -196,7 +208,7 @@ namespace VideoDromm
 		void							createIntUniform(string aName, int aCtrlIndex, int aValue = 1);
 		void							createBoolUniform(string aName, int aCtrlIndex, bool aValue = false);
 
-		// timed animation
+		// time
 		ci::Timer						timer;
 		std::deque <double>				buffer;
 		void							calculateTempo();

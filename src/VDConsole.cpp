@@ -189,11 +189,11 @@ void VDConsole::ExecCommand(const char* command_line)
 #if (defined(  CINDER_MSW) )
 	else if (Stricmp(command_line, "WSCNX") == 0)
 	{
-		mVDRouter->wsConnect();
+		mVDSession->wsConnect();
 	}
 	else if (Stricmp(command_line, "WSPING") == 0)
 	{
-		mVDRouter->wsPing();
+		mVDSession->wsPing();
 	}
 	else if (Stricmp(command_line, "WSCNF") == 0)
 	{

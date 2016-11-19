@@ -128,7 +128,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::SliderFloat("ratio/min/max", &mVDAnimation->controlValues[ctrl], mVDAnimation->minRatio, mVDAnimation->maxRatio))
 			{
-				mVDRouter->changeControlValue(ctrl, mVDAnimation->controlValues[ctrl]);
+				mVDSession->changeControlValue(ctrl, mVDAnimation->controlValues[ctrl]);
 			}
 			// exposure
 			ctrl = 14;
@@ -140,7 +140,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::DragFloat("exposure", &mVDAnimation->controlValues[ctrl], 0.1f, mVDAnimation->minExposure, mVDAnimation->maxExposure))
 			{
-				mVDRouter->changeControlValue(ctrl, mVDAnimation->controlValues[ctrl]);
+				mVDSession->changeControlValue(ctrl, mVDAnimation->controlValues[ctrl]);
 				mVDAnimation->setExposure(mVDAnimation->controlValues[ctrl]);
 			}
 			// zoom
@@ -156,7 +156,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::DragFloat("zoom", &mVDAnimation->controlValues[ctrl], 0.1f, mVDAnimation->minZoom, mVDAnimation->maxZoom))
 			{
-				mVDRouter->changeControlValue(ctrl, mVDAnimation->controlValues[ctrl]);
+				mVDSession->changeControlValue(ctrl, mVDAnimation->controlValues[ctrl]);
 			}
 			ui::DragFloat("minzm", &mVDAnimation->minZoom, 0.1f, minZoom, maxZoom);
 			ui::SameLine();

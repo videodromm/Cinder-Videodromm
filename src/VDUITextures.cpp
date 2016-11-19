@@ -28,26 +28,26 @@ void VDUITextures::Run(const char* title) {
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(t);
-			ui::Image((void*)mVDMix->getInputTexture(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDSession->getInputTexture(t)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth * 0.7);
 			// flip vertically
-			mVDMix->isFlipVInputTexture(t) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			mVDSession->isFlipVInputTexture(t) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 			sprintf(buf, "FlipV##vd%d", t);
 			if (ui::Button(buf)) {
-				mVDMix->inputTextureFlipV(t);
+				mVDSession->inputTextureFlipV(t);
 			}
 			ui::PopStyleColor(3);
 			hue++;
 			ui::SameLine();
 			// flip horizontally
-			mVDMix->isFlipHInputTexture(t) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+			mVDSession->isFlipHInputTexture(t) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 			sprintf(buf, "FlipH##hd%d", t);
 			if (ui::Button(buf)) {
-				mVDMix->inputTextureFlipH(t);
+				mVDSession->inputTextureFlipH(t);
 			}
 			ui::PopStyleColor(3);
 			hue++;
@@ -79,20 +79,20 @@ void VDUITextures::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Send texture file name via WebSockets");
 			*/
 
-			if (mVDMix->isSequence(t) || mVDMix->isMovie(t)) {
+			if (mVDSession->isSequence(t) || mVDSession->isMovie(t)) {
 				sprintf(buf, "p##s%d", t);
 				if (ui::Button(buf))
 				{
-					mVDMix->togglePlayPause(t);
+					mVDSession->togglePlayPause(t);
 				}
 				if (ui::IsItemHovered()) ui::SetTooltip("Play/Pause");
 			}
-			if (mVDMix->isSequence(t)) {
+			if (mVDSession->isSequence(t)) {
 				ui::SameLine();
 				sprintf(buf, "b##s%d", t);
 				if (ui::Button(buf))
 				{
-					mVDMix->syncToBeat(t);
+					mVDSession->syncToBeat(t);
 				}
 				if (ui::IsItemHovered()) ui::SetTooltip("Sync to beat");
 
@@ -100,38 +100,38 @@ void VDUITextures::Run(const char* title) {
 				sprintf(buf, "r##s%d", t);
 				if (ui::Button(buf))
 				{
-					mVDMix->reverse(t);
+					mVDSession->reverse(t);
 				}
 				if (ui::IsItemHovered()) ui::SetTooltip("Reverse");
 
-				if (mVDMix->isLoadingFromDisk(t)) {
+				if (mVDSession->isLoadingFromDisk(t)) {
 					ui::SameLine();
 					sprintf(buf, "l##s%d", t);
 					if (ui::Button(buf))
 					{
-						mVDMix->toggleLoadingFromDisk(t);
+						mVDSession->toggleLoadingFromDisk(t);
 					}
 					if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
 				}
-				speeds[t] = mVDMix->getSpeed(t);
+				speeds[t] = mVDSession->getSpeed(t);
 				if (ui::SliderFloat("speed", &speeds[t], 0.0f, 1.0f))
 				{
-					mVDMix->setSpeed(t, speeds[t]);
+					mVDSession->setSpeed(t, speeds[t]);
 				}
 
-				playheadPositions[t] = mVDMix->getPlayheadPosition(t);
+				playheadPositions[t] = mVDSession->getPlayheadPosition(t);
 
-				if (ui::SliderInt("scrub", &playheadPositions[t], 0, mVDMix->getMaxFrame(t)))
+				if (ui::SliderInt("scrub", &playheadPositions[t], 0, mVDSession->getMaxFrame(t)))
 				{
-					mVDMix->setPlayheadPosition(t, playheadPositions[t]);
+					mVDSession->setPlayheadPosition(t, playheadPositions[t]);
 				}
 
 
 			}
 			else {
-				if (!mVDMix->isMovie(t)) {
+				if (!mVDSession->isMovie(t)) {
 					// not a sequence nor video, animate x y...
-					XLeft[t] = mVDMix->getInputTextureXLeft(t);
+					XLeft[t] = mVDSession->getInputTextureXLeft(t);
 					if (anim[t]) {
 						if (rnd[t]) {
 							XLeft[t] += xStep * Rand::randBool();
@@ -143,15 +143,15 @@ void VDUITextures::Run(const char* title) {
 						if (XLeft[t] < 1) {
 							xStep = -xStep;
 						}
-						if (XLeft[t] > mVDMix->getInputTextureOriginalWidth(t) - mVDSettings->mFboWidth - 1) {
+						if (XLeft[t] > mVDSession->getInputTextureOriginalWidth(t) - mVDSettings->mFboWidth - 1) {
 							xStep = -xStep;
 						}
 					}
 					sprintf(buf, "XL##xl%d", t);
-					ui::SliderInt(buf, &XLeft[t], 0, mVDMix->getInputTextureOriginalWidth(t));// CHECK - mVDSettings->mFboWidth
-					mVDMix->setInputTextureXLeft(t, XLeft[t]);
+					ui::SliderInt(buf, &XLeft[t], 0, mVDSession->getInputTextureOriginalWidth(t));// CHECK - mVDSettings->mFboWidth
+					mVDSession->setInputTextureXLeft(t, XLeft[t]);
 
-					YTop[t] = mVDMix->getInputTextureYTop(t);
+					YTop[t] = mVDSession->getInputTextureYTop(t);
 					if (anim[t]) {
 						if (rnd[t]) {
 							YTop[t] += yStep * Rand::randBool();
@@ -163,30 +163,30 @@ void VDUITextures::Run(const char* title) {
 						if (YTop[t] < 1) {
 							yStep = -yStep;
 						}
-						if (YTop[t] > mVDMix->getInputTextureOriginalHeight(t) - mVDSettings->mFboHeight - 1) {
+						if (YTop[t] > mVDSession->getInputTextureOriginalHeight(t) - mVDSettings->mFboHeight - 1) {
 							yStep = -yStep;
 						}
 					}
 					sprintf(buf, "YT##yt%d", t);
-					ui::SliderInt(buf, &YTop[t], 0, mVDMix->getInputTextureOriginalHeight(t));// - mVDSettings->mFboHeight
-					mVDMix->setInputTextureYTop(t, YTop[t]);
+					ui::SliderInt(buf, &YTop[t], 0, mVDSession->getInputTextureOriginalHeight(t));// - mVDSettings->mFboHeight
+					mVDSession->setInputTextureYTop(t, YTop[t]);
 
 
 					ui::SameLine();
-					(mVDMix->getInputTextureLockBounds(t)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+					(mVDSession->getInputTextureLockBounds(t)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 					ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 					ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
 					sprintf(buf, "8##lk%d", t);
 					if (ui::Button(buf)) {
-						mVDMix->toggleInputTextureLockBounds(t);
+						mVDSession->toggleInputTextureLockBounds(t);
 					}
 					ui::PopStyleColor(3);
 					hue++;
 
-					XRight[t] = mVDMix->getInputTextureXRight(t);
+					XRight[t] = mVDSession->getInputTextureXRight(t);
 					sprintf(buf, "XR##xr%d", t);
-					if (ui::SliderInt(buf, &XRight[t], 0, mVDMix->getInputTextureOriginalWidth(t))) {
-						mVDMix->setInputTextureXRight(t, XRight[t]);
+					if (ui::SliderInt(buf, &XRight[t], 0, mVDSession->getInputTextureOriginalWidth(t))) {
+						mVDSession->setInputTextureXRight(t, XRight[t]);
 					}
 					ui::SameLine();
 					(anim[t]) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
@@ -197,10 +197,10 @@ void VDUITextures::Run(const char* title) {
 					ui::PopStyleColor(3);
 					hue++;
 
-					YBottom[t] = mVDMix->getInputTextureYBottom(t);
+					YBottom[t] = mVDSession->getInputTextureYBottom(t);
 					sprintf(buf, "YB##yb%d", t);
-					if (ui::SliderInt(buf, &YBottom[t], 0, mVDMix->getInputTextureOriginalHeight(t))) {
-						mVDMix->setInputTextureYBottom(t, YBottom[t]);
+					if (ui::SliderInt(buf, &YBottom[t], 0, mVDSession->getInputTextureOriginalHeight(t))) {
+						mVDSession->setInputTextureYBottom(t, YBottom[t]);
 					}
 
 					ui::SameLine();

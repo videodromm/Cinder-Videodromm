@@ -95,8 +95,8 @@ namespace VideoDromm
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
 		// WebSockets
-		void						wsWrite(std::string msg);
 		void						wsWriteBinary(const void *data, int size);
+		void						wsWrite(std::string msg);
 		void						wsConnect();
 		void						wsPing();
 		//bool						isWsClientConnected() { return clientConnected; };
