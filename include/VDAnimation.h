@@ -95,8 +95,8 @@ namespace VideoDromm
 		bool							handleKeyUp(KeyEvent &event);
 		// audio
 		float							maxVolume;
-		bool							mUseLineIn;
 		float							iFreqs[7];
+		bool							mUseLineIn;
 
 		map<int, vec2>					vec2Values;
 		map<int, vec3>					vec3Values;

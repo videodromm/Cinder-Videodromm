@@ -907,7 +907,7 @@ namespace VideoDromm {
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
 		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
 
-		mVDAnimation->controlValues[13] = 1.0f; //audioMultFactor
+		//mVDAnimation->controlValues[13] = 1.0f; //audioMultFactor
 		/*mData = new float[1024];
 		for (int i = 0; i < 1024; i++)
 		{
@@ -1019,7 +1019,7 @@ namespace VideoDromm {
 				for (size_t i = 0; i < mDataSize; i++) {
 					float f = mMagSpectrum[i];
 					db = audio::linearToDecibel(f);
-					f = db *mVDAnimation->controlValues[13];// audioMultFactor;
+					f = db *mVDAnimation->getFloatUniformValueByIndex( 13);// audioMultFactor;
 					if (f > mVDAnimation->maxVolume)
 					{
 						mVDAnimation->maxVolume = f;

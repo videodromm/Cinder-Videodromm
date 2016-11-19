@@ -103,9 +103,9 @@ namespace VideoDromm
 		// change a control value and update network clients
 		void						changeFloatValue(unsigned int aControl, float aValue);
 		void						changeBoolValue(unsigned int aControl, bool aValue);
-		bool						toggleAuto(unsigned int aIndex);
-		bool						toggleValue(unsigned int aIndex);
-		bool						toggleTempo(unsigned int aIndex);
+		void						toggleAuto(unsigned int aIndex);
+		void						toggleValue(unsigned int aIndex);
+		void						toggleTempo(unsigned int aIndex);
 		void						resetAutoAnimation(unsigned int aIndex);
 
 		// received shaders

@@ -342,9 +342,6 @@ bool VDSession::initTextureList() {
 	}
 	return isFirstLaunch;
 }
-void VDSession::setBpm(float aBpm) {
-	mVDAnimation->setBpm(aBpm);
-}
 
 void VDSession::resize() {
 	mVDMix->resize();
@@ -475,9 +472,9 @@ void VDSession::reset()
 int VDSession::getWindowsResolution() {
 	return mVDUtils->getWindowsResolution();
 }
-void VDSession::setCrossfade(float aCrossfade) {
+/*void VDSession::setCrossfade(float aCrossfade) {
 	mVDRouter->changeFloatValue(21, aCrossfade);
-}
+}*/
 void VDSession::blendRenderEnable(bool render) { 
 	mVDAnimation->blendRenderEnable(render);
 }
@@ -963,7 +960,7 @@ void VDSession::loadImageFile(string aFile, unsigned int aTextureIndex, bool rig
 void VDSession::loadAudioFile(string aFile) {
 	mTextureList[0]->loadFromFullPath(aFile);
 }
-ci::gl::Texture2dRef VDSession::getInputTexture(unsigned int aTextureIndex) {
+/*ci::gl::Texture2dRef VDSession::getInputTexture(unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	return mTextureList[aTextureIndex]->getTexture();
 }
@@ -973,7 +970,7 @@ string VDSession::getInputTextureName(unsigned int aTextureIndex) {
 }
 unsigned int VDSession::getInputTexturesCount() {
 	return mTextureList.size();
-}
+}*/
 int VDSession::getInputTextureXLeft(unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	return mTextureList[aTextureIndex]->getXLeft();

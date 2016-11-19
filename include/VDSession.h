@@ -82,7 +82,9 @@ namespace VideoDromm {
 		float							getBpm() { return mVDAnimation->getBpm(); };
 		void							setBpm(float aBpm) { mVDAnimation->setBpm(aBpm); };
 		void							tapTempo() { mVDAnimation->tapTempo(); };
-
+		// audio
+		float							getMaxVolume() { return mVDAnimation->maxVolume; };
+		float							iFreqs[7];
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 		// shaders
@@ -140,7 +142,9 @@ namespace VideoDromm {
 		bool							isFlipV();
 		void							flipH();
 		void							flipV();
-
+		// blendmodes
+		unsigned int					getFboBlendCount() { return mVDMix->getFboBlendCount(); };
+		void							useBlendmode(unsigned int aBlendIndex) { return mVDMix->useBlendmode(aBlendIndex); };
 
 		// textures
 		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);

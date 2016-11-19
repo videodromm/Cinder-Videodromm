@@ -92,7 +92,7 @@ void VDRouter::setupOSCReceiver() {
 		mVDSettings->iBeat = msg[0].int32();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
-	mOSCReceiver->setListener("/live/tempo",
+	/*mOSCReceiver->setListener("/live/tempo",
 		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
 		// Animation
@@ -105,7 +105,7 @@ void VDRouter::setupOSCReceiver() {
 		// Animation
 		mVDSession->setBpm(msg[0].flt());
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-	});
+	});*/
 	mOSCReceiver->setListener("/live/track/meter",
 		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
@@ -867,17 +867,17 @@ void VDRouter::sendJSON(string params) {
 		}
 	}
 }
-bool VDRouter::toggleAuto(unsigned int aIndex) {
+void VDRouter::toggleAuto(unsigned int aIndex) {
 	// toggle
 	mVDAnimation->toggleAuto(aIndex);
 	// TODO send json	
 }
-bool VDRouter::toggleTempo(unsigned int aIndex) {
+void VDRouter::toggleTempo(unsigned int aIndex) {
 	// toggle
 	mVDAnimation->toggleTempo(aIndex);
 	// TODO send json	
 }
-bool VDRouter::toggleValue(unsigned int aIndex) {
+void VDRouter::toggleValue(unsigned int aIndex) {
 	// toggle
 	mVDAnimation->toggleValue(aIndex);
 	stringstream sParams;

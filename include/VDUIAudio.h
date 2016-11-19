@@ -36,5 +36,6 @@ namespace VideoDromm
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];
+		float						multx;
 	};
 }

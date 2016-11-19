@@ -28,7 +28,7 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// UIWebsockets
 	mUIWebsockets = VDUIWebsockets::create(mVDSettings, mVDSession);
 	// UIMouse
-	mUIMouse = VDUIMouse::create(mVDSettings, mVDSessionn);
+	mUIMouse = VDUIMouse::create(mVDSettings, mVDSession);
 	// UIShaders
 	mUIShaders = VDUIShaders::create(mVDSettings, mVDSession);
 	// UIWarps
