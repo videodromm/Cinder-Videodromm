@@ -25,11 +25,11 @@ void VDUIMouse::Run(const char* title) {
 		{
 			mVDSettings->mRenderPosXY.x = ui::GetIO().MousePos.x; ui::SameLine();
 			mVDSettings->mRenderPosXY.y = ui::GetIO().MousePos.y;
-			mVDSettings->iMouse.z = ui::GetIO().MouseDown[0];
+			//mVDSettings->iMouse.z = ui::GetIO().MouseDown[0];
 		}
 		else
 		{
-			mVDSettings->iMouse.z = ui::Button("mouse click");
+			//mVDSettings->iMouse.z = ui::Button("mouse click");
 		}
 		ui::SliderFloat("MouseX", &mVDSettings->mRenderPosXY.x, 0, mVDSettings->mFboWidth);
 		ui::SliderFloat("MouseY", &mVDSettings->mRenderPosXY.y, 0, mVDSettings->mFboHeight);

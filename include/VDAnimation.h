@@ -102,10 +102,10 @@ namespace VideoDromm
 		float							iFreqs[7];
 		bool							mUseLineIn;
 
-		map<int, vec2>					vec2Values;
+		/*map<int, vec2>					vec2Values;
 		map<int, vec3>					vec3Values;
 		map<int, vec4>					vec4Values;
-		map<int, int>					intValues;
+		map<int, int>					intValues;*/
 		//int								getValuesSize() { return controlValues.size(); };
 		// shaders
 		bool							isExistingUniform(string aName);
@@ -117,6 +117,10 @@ namespace VideoDromm
 		void							resetAutoAnimation(unsigned int aIndex);
 		bool							changeFloatValue(unsigned int aIndex, float aValue);
 		bool							changeBoolValue(unsigned int aIndex, bool aValue);
+		void							changeIntValue(unsigned int aIndex, int aValue);
+		void							changeVec2Value(unsigned int aIndex, vec2 aValue);
+		void							changeVec3Value(unsigned int aIndex, vec3 aValue);
+		void							changeVec4Value(unsigned int aIndex, vec4 aValue);
 		float							getFloatUniformValueByIndex(unsigned int aIndex);
 		bool							getBoolUniformValueByIndex(unsigned int aIndex);
 		float							getFloatUniformValueByName(string aName);

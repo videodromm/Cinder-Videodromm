@@ -511,7 +511,7 @@ void VDSettings::reset()
 	iFps = 60.0;
 	sFps = "60";
 	iShowFps = true;
-	iMouse = vec4(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
+	//iMouse = vec4(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
 
 	multFactor = 126.0;
 	currentSelectedIndex = 0;

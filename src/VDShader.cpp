@@ -96,17 +96,15 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	CI_LOG_V("setFragmentString, live loading" + mName);
 	try
 	{
-		CI_LOG_V(mOriginalFragmentString);
+		CI_LOG_V("before regex " + mOriginalFragmentString);
 		// shadertoy: 
 		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
 		std::regex pattern{ "mainImage" };
 		std::string replacement{ "main" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		CI_LOG_V("1 " + mOriginalFragmentString);
 		pattern = { " out vec4 fragColor," };
 		replacement = { "void" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		CI_LOG_V("2 " + mOriginalFragmentString);
 		//pattern = { "fragColor" };
 		//replacement = { "gl_FragColor" };
 		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
@@ -114,11 +112,9 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		pattern = { " in vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		CI_LOG_V("4 " + mOriginalFragmentString);
 		pattern = { " vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		CI_LOG_V("5 " + mOriginalFragmentString);
 		//pattern = { "fragCoord" };
 		//replacement = { "gl_FragCoord.xy" };
 		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
@@ -145,7 +141,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		pattern = { "u_" };
 		replacement = { "i" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		CI_LOG_V(mOriginalFragmentString);
+		CI_LOG_V("regexed " + mOriginalFragmentString);
 
 		// change texture2D to texture for version > 150?
 		// change fragCoord to gl_FragCoord
@@ -172,7 +168,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
-		CI_LOG_V(aName + " live edited, loaded and compiled");
+		mVDSettings->mMsg = aName + " live edited, loaded and compiled";
+		CI_LOG_V(mVDSettings->mMsg);
 		mValid = true;
 		auto &uniforms = mShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
@@ -274,7 +271,8 @@ void VDShader::createThumb() {
 	mShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
 	mShader->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+	mShader->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
+	mShader->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));
 	mShader->uniform("iChannel0", 0);
 	mShader->uniform("iChannel1", 1);
 	mShader->uniform("iChannel2", 2);

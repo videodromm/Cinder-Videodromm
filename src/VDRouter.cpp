@@ -908,7 +908,7 @@ void VDRouter::changeFloatValue(unsigned int aControl, float aValue) {
 		stringstream sParams;
 
 		if (aControl > 0 && aControl < 4) {
-			mVDAnimation->vec3Values[1] = vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3));
+			mVDAnimation->changeVec3Value(61, vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
 			colorWrite(); //lights4events
 
 		}

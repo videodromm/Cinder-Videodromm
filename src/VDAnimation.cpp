@@ -117,19 +117,19 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 
 	// int
 	// blend mode 
-	createIntUniform("iBlendmode", 0, 0);
+	createIntUniform("iBlendmode", 50, 0);
 	// greyscale 
-	createIntUniform("iGreyScale", 1, 0);
+	createIntUniform("iGreyScale", 51, 0);
 
 	// vec3
-	createVec3Uniform("iResolution", 0, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
-	createVec3Uniform("iColor", 1, vec3(1.0, 0.5, 0.0));
-	createVec3Uniform("iBackgroundColor", 2);
-	createVec3Uniform("iChannelResolution[0]", 3, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+	createVec3Uniform("iResolution", 60, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+	createVec3Uniform("iColor", 61, vec3(1.0, 0.5, 0.0));
+	createVec3Uniform("iBackgroundColor", 62);
+	createVec3Uniform("iChannelResolution[0]", 63, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 
 	// vec4
-	createVec4Uniform("iMouse", 0, vec4(320.0f, 240.0f, 0.0f, 0.0f));
-	createVec4Uniform("iDate", 1, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
+	createVec4Uniform("iMouse", 70, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("iDate", 71, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
 
 	// boolean
 	// glitch
@@ -176,29 +176,32 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue) {
-	vec2Values[aCtrlIndex] = aValue;
+	//vec2Values[aCtrlIndex] = aValue;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 2;
 	shaderUniforms[aName].isValid = true;
 	shaderUniforms[aName].vec2Value = aValue;
 }
 void VDAnimation::createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue) {
-	vec3Values[aCtrlIndex] = aValue;
+	//vec3Values[aCtrlIndex] = aValue;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 3;
 	shaderUniforms[aName].isValid = true;
+	shaderUniforms[aName].vec3Value = aValue;
 }
 void VDAnimation::createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue) {
-	vec4Values[aCtrlIndex] = aValue;
+	//vec4Values[aCtrlIndex] = aValue;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 4;
 	shaderUniforms[aName].isValid = true;
+	shaderUniforms[aName].vec4Value = aValue;
 }
 void VDAnimation::createIntUniform(string aName, int aCtrlIndex, int aValue) {
-	intValues[aCtrlIndex] = aValue;
+	//intValues[aCtrlIndex] = aValue;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 5;
 	shaderUniforms[aName].isValid = true;
+	shaderUniforms[aName].intValue = aValue;
 }
 void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
 	controlIndexes[aCtrlIndex] = aName;
@@ -243,7 +246,19 @@ void VDAnimation::resetAutoAnimation(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
 }
+void VDAnimation::changeIntValue(unsigned int aIndex, int aValue) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].intValue = aValue;
+}
 
+void VDAnimation::changeVec2Value(unsigned int aIndex, vec2 aValue) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].vec2Value = aValue;
+}
+void VDAnimation::changeVec3Value(unsigned int aIndex, vec3 aValue) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].vec3Value = aValue;
+}
+void VDAnimation::changeVec4Value(unsigned int aIndex, vec4 aValue) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].vec4Value = aValue;
+}
 bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
 	if (aIndex > 0) {
@@ -276,16 +291,16 @@ float VDAnimation::getFloatUniformValueByName(string aName) {
 	return shaderUniforms[aName].floatValue;
 }
 vec2 VDAnimation::getVec2UniformValue(string aName) {
-	return vec2Values[shaderUniforms[aName].index];
+	return shaderUniforms[aName].vec2Value;
 }
 vec3 VDAnimation::getVec3UniformValue(string aName) {
-	return vec3Values[shaderUniforms[aName].index];
+	return shaderUniforms[aName].vec3Value;
 }
 vec4 VDAnimation::getVec4UniformValue(string aName) {
-	return vec4Values[shaderUniforms[aName].index];
+	return shaderUniforms[aName].vec4Value;
 }
 int VDAnimation::getIntUniformValue(string aName) {
-	return intValues[shaderUniforms[aName].index];
+	return shaderUniforms[aName].intValue;
 }
 bool VDAnimation::getBoolUniformValueByIndex(unsigned int aIndex) {
 	return shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
@@ -444,7 +459,10 @@ void VDAnimation::update() {
 	}
 	shaderUniforms["iGlobalTime"].floatValue *= mVDSettings->iSpeedMultiplier;
 	// iDate
-	// iMouse
+	time_t now = time(0);
+	tm *   t = gmtime(&now);
+	shaderUniforms["iDate"].vec4Value = vec4(float(t->tm_year + 1900), float(t->tm_mon + 1), float(t->tm_mday), float(t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec));
+
 #pragma region animation
 
 	currentTime = mTimer.getSeconds();
@@ -491,10 +509,10 @@ void VDAnimation::update() {
 		}
 
 		// foreground color vec3 update
-		vec3Values[1] = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue, shaderUniforms[getUniformNameForIndex(2)].floatValue, shaderUniforms[getUniformNameForIndex(3)].floatValue);
+		shaderUniforms["iColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue, shaderUniforms[getUniformNameForIndex(2)].floatValue, shaderUniforms[getUniformNameForIndex(3)].floatValue);
 
 		// background color vec3 update
-		vec3Values[2] = vec3(shaderUniforms[getUniformNameForIndex(5)].floatValue, shaderUniforms[getUniformNameForIndex(6)].floatValue, shaderUniforms[getUniformNameForIndex(7)].floatValue);
+		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(5)].floatValue, shaderUniforms[getUniformNameForIndex(6)].floatValue, shaderUniforms[getUniformNameForIndex(7)].floatValue);
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{

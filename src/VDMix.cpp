@@ -218,7 +218,8 @@ namespace VideoDromm {
 		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-		mGlslMix->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+		mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
+		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));
 		mGlslMix->uniform("iChannel0", 0);
 		mGlslMix->uniform("iChannel1", 1);
 		mGlslMix->uniform("iRatio", mVDAnimation->getFloatUniformValueByIndex(11));//check if needed: +1;//mVDSettings->iRatio);
@@ -256,10 +257,11 @@ namespace VideoDromm {
 		if (mVDAnimation->renderBlend()) {
 			mCurrentBlend = getElapsedFrames() % mVDAnimation->getBlendModesCount();
 			mGlslBlend->uniform("iBlendmode", mCurrentBlend);
-			mGlslBlend->uniform("iGlobalTime", (float)getElapsedSeconds());
+			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-			mGlslBlend->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
+			mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
+			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));
 			mGlslBlend->uniform("iChannel0", 0);
 			mGlslBlend->uniform("iChannel1", 1);
 			mGlslBlend->uniform("iAudio0", 0);

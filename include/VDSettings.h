@@ -146,7 +146,7 @@ namespace VideoDromm {
 		float						iChannelTime[4];
 		vec3						iResolution;        // viewport resolution (in pixels)
 		vec3						iChannelResolution[MAX];	// channel resolution (in pixels)
-		vec4						iMouse;             // mouse pixel coords. xy: current (if MLB down), zw: click
+		//vec4						iMouse;             // mouse pixel coords. xy: current (if MLB down), zw: click
 		bool						iFade;
 		bool						iRepeat;
 		bool						iLight;
