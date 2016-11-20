@@ -29,6 +29,10 @@ namespace VideoDromm
 		float							defaultValue;
 		float							floatValue;
 		bool							boolValue;
+		int								intValue;
+		vec2							vec2Value;
+		vec3							vec3Value;
+		vec4							vec4Value;
 		float							minValue;
 		float							maxValue;
 		bool							autotime;

@@ -103,7 +103,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		std::string replacement{ "main" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		CI_LOG_V("1 " + mOriginalFragmentString);
-		pattern = { "out vec4 fragColor," };
+		pattern = { " out vec4 fragColor," };
 		replacement = { "void" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		CI_LOG_V("2 " + mOriginalFragmentString);
@@ -111,11 +111,11 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		//replacement = { "gl_FragColor" };
 		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		//CI_LOG_V("3 " + mOriginalFragmentString);
-		pattern = { "in vec2 fragCoord" };
+		pattern = { " in vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		CI_LOG_V("4 " + mOriginalFragmentString);
-		pattern = { "vec2 fragCoord" };
+		pattern = { " vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		CI_LOG_V("5 " + mOriginalFragmentString);

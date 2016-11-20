@@ -180,6 +180,7 @@ void VDAnimation::createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue) {
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 2;
 	shaderUniforms[aName].isValid = true;
+	shaderUniforms[aName].vec2Value = aValue;
 }
 void VDAnimation::createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue) {
 	vec3Values[aCtrlIndex] = aValue;
@@ -432,7 +433,7 @@ void VDAnimation::update() {
 	mVDSettings->iChannelTime[1] = getElapsedSeconds() - 1;
 	mVDSettings->iChannelTime[2] = getElapsedSeconds() - 2;
 	mVDSettings->iChannelTime[3] = getElapsedSeconds() - 3;
-	//
+	// iGlobalTime
 	if (mUseTimeWithTempo)
 	{
 		shaderUniforms["iGlobalTime"].floatValue = iTempoTime*iTimeFactor;
@@ -442,6 +443,8 @@ void VDAnimation::update() {
 		shaderUniforms["iGlobalTime"].floatValue = getElapsedSeconds();
 	}
 	shaderUniforms["iGlobalTime"].floatValue *= mVDSettings->iSpeedMultiplier;
+	// iDate
+	// iMouse
 #pragma region animation
 
 	currentTime = mTimer.getSeconds();
