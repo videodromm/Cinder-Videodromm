@@ -23,7 +23,7 @@ void VDUIAnimation::setValue(unsigned int aCtrl, float aValue) {
 	mVDSession->setControlValue(aCtrl, aValue);
 }
 bool VDUIAnimation::getBoolValue(unsigned int aCtrl) {
-	mVDSession->getBoolValue(aCtrl);
+	return mVDSession->getBoolValue(aCtrl);
 }
 void VDUIAnimation::toggleValue(unsigned int aCtrl) {
 	mVDSession->toggleValue(aCtrl);

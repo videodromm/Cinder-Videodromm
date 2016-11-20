@@ -745,7 +745,7 @@ void VDSession::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 	mVDMix->setWarpCrossfade(aWarpIndex, aCrossfade);
 }
 float VDSession::getWarpCrossfade(unsigned int aWarpIndex) {
-	mVDMix->getWarpCrossfade(aWarpIndex);
+	return mVDMix->getWarpCrossfade(aWarpIndex);
 }
 void VDSession::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 	mVDMix->setWarpAFboIndex(aWarpIndex, aWarpFboIndex);
