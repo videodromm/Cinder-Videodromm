@@ -141,7 +141,7 @@ namespace VideoDromm {
 		string						mImageFile;
 
 		// shader uniforms	
-		float						iGlobalTime;        // shader playback time (in seconds)
+		//float						iGlobalTime;        // shader playback time (in seconds)
 		float						iSpeedMultiplier;        // speed multiplier
 		float						iChannelTime[4];
 		vec3						iResolution;        // viewport resolution (in pixels)

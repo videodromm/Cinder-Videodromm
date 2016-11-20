@@ -72,8 +72,8 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 	}
 	else {
 		mName = fileName;
-	} 
-	
+	}
+
 	mFragmentShaderFilePath = mFragFile.string();
 	mFragmentShaderString = loadString(loadFile(mFragFile));
 	mValid = setFragmentString(mFragmentShaderString, mName);
@@ -86,7 +86,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mCurrentUniformsString = "";
 	string mNotFoundUniformsString = "/*\n";
 	// we would like a name
-	if (aName.length() == 0) aName = toString( (int)getElapsedSeconds() );
+	if (aName.length() == 0) aName = toString((int)getElapsedSeconds());
 	// name of the shader
 	mName = aName;
 	// filename to save
@@ -97,12 +97,31 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	try
 	{
 		CI_LOG_V(mOriginalFragmentString);
-
 		// shadertoy: 
 		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
-		std::regex pattern { "mainImage( out vec4 fragColor, in vec2 fragCoord )" }; 
-		std::string replacement { "main(void)" };
+		std::regex pattern{ "mainImage" };
+		std::string replacement{ "main" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		CI_LOG_V("1 " + mOriginalFragmentString);
+		pattern = { "out vec4 fragColor," };
+		replacement = { "void" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		CI_LOG_V("2 " + mOriginalFragmentString);
+		//pattern = { "fragColor" };
+		//replacement = { "gl_FragColor" };
+		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		//CI_LOG_V("3 " + mOriginalFragmentString);
+		pattern = { "in vec2 fragCoord" };
+		replacement = { "" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		CI_LOG_V("4 " + mOriginalFragmentString);
+		pattern = { "vec2 fragCoord" };
+		replacement = { "" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		CI_LOG_V("5 " + mOriginalFragmentString);
+		//pattern = { "fragCoord" };
+		//replacement = { "gl_FragCoord.xy" };
+		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		// html glslEditor:
 		// change vec2 u_resolution to vec3 iResolution
 		pattern = { "2 u_r" };
@@ -131,16 +150,24 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		// change texture2D to texture for version > 150?
 		// change fragCoord to gl_FragCoord
 		// change gl_FragColor to fragColor
-	
+
 		// check if uniforms were declared in the file
 		std::size_t foundUniform = mOriginalFragmentString.find("uniform ");
 		if (foundUniform == std::string::npos) {
 			CI_LOG_V("loadFragmentStringFromFile, no uniforms found, we add from shadertoy.inc");
-			aFragmentShaderString = "/*" + aName + "*/\n" + shaderInclude + mOriginalFragmentString;
+			aFragmentShaderString = "/* " + aName + " */\n" + shaderInclude + mOriginalFragmentString;
 		}
 		else {
-			aFragmentShaderString = "/*" + aName + "*/\n" + mOriginalFragmentString;
+			aFragmentShaderString = "/* " + aName + " */\n" + mOriginalFragmentString;
 		}
+
+		// before compilation save .frag file to inspect errors
+		fs::path receivedFile = getAssetPath("") / "glsl" / "received" / aName;
+		ofstream mFragReceived(receivedFile.string(), std::ofstream::binary);
+		mFragReceived << aFragmentShaderString;
+		mFragReceived.close();
+		CI_LOG_V("Received file saved:" + receivedFile.string());
+
 		// try to compile
 		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
 		// update only if success
@@ -293,8 +320,8 @@ ci::gl::Texture2dRef VDShader::getThumb() {
 gl::GlslProgRef VDShader::getShader() {
 	return mShader;
 }
-string VDShader::getName() { 
-	return mName; 
+string VDShader::getName() {
+	return mName;
 }
 
 VDShader::~VDShader() {

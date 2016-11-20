@@ -99,7 +99,7 @@ namespace VideoDromm {
 		int								loadFragmentShader(string aFilePath);
 		unsigned int					getShadersCount();
 		string							getShaderName(unsigned int aShaderIndex);
-		ci::gl::Texture2dRef			getShaderThumb(unsigned int aShaderIndex);
+		ci::gl::TextureRef			getShaderThumb(unsigned int aShaderIndex);
 		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "");
 		string							getVertexShaderString(unsigned int aShaderIndex);
 		string							getFragmentShaderString(unsigned int aShaderIndex);
@@ -127,16 +127,16 @@ namespace VideoDromm {
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		string							getFboLabel(unsigned int aFboIndex);
-		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex = 0) { return mVDMix->getFboTexture(aFboIndex); };
+		ci::gl::TextureRef			getFboTexture(unsigned int aFboIndex = 0) { return mVDMix->getFboTexture(aFboIndex); };
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex) { return mVDMix->getFboRenderedTexture(aFboIndex); };
-		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex) { return mVDMix->getFboThumb(aBlendIndex); };
+		ci::gl::TextureRef			getFboThumb(unsigned int aBlendIndex) { return mVDMix->getFboThumb(aBlendIndex); };
 		string							getFboName(unsigned int aFboIndex);
 		int								getFboTextureWidth(unsigned int aFboIndex);
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getFboListSize() { return mFboList.size(); };
 		string							getFboFragmentShaderText(unsigned int aFboIndex);
 		string							getMixFboLabel(unsigned int aMixFboIndex);
-		ci::gl::Texture2dRef			getMixTexture(unsigned int aMixFboIndex = 0);
+		ci::gl::TextureRef			getMixTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount();
 		bool							isFlipH();
 		bool							isFlipV();
@@ -147,7 +147,7 @@ namespace VideoDromm {
 		void							useBlendmode(unsigned int aBlendIndex) { return mVDMix->useBlendmode(aBlendIndex); };
 
 		// textures
-		ci::gl::Texture2dRef			getInputTexture(unsigned int aTextureIndex);
+		ci::gl::TextureRef			getInputTexture(unsigned int aTextureIndex);
 		ci::gl::TextureRef				getRenderTexture();
 		string							getInputTextureName(unsigned int aTextureIndex);
 		unsigned int					getInputTexturesCount();
@@ -224,6 +224,8 @@ namespace VideoDromm {
 		VDAnimationRef					mVDAnimation;
 		// Mix
 		VDMixRef						mVDMix;
+		// Log
+		VDLogRef						mVDLog;
 
 		const string					sessionFileName = "session.json";
 		fs::path						sessionPath;

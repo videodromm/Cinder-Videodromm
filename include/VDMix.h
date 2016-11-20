@@ -60,11 +60,11 @@ namespace VideoDromm
 		string							getMixFboLabel(unsigned int aMixFboIndex);
 		// blendmodes
 		unsigned int					getFboBlendCount();
-		ci::gl::Texture2dRef			getFboThumb(unsigned int aBlendIndex);
+		ci::gl::TextureRef			getFboThumb(unsigned int aBlendIndex);
 		void							useBlendmode(unsigned int aBlendIndex);
 
-		ci::gl::Texture2dRef			getMixTexture(unsigned int aMixFboIndex = 0);
-		ci::gl::Texture2dRef			getFboTexture(unsigned int aFboIndex = 0);
+		ci::gl::TextureRef			getMixTexture(unsigned int aMixFboIndex = 0);
+		ci::gl::TextureRef			getFboTexture(unsigned int aFboIndex = 0);
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex);
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		// warps

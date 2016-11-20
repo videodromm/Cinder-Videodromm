@@ -73,17 +73,17 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// pointsphere zPosition
 	createFloatUniform("iZPos", 9, -0.7f);
 	// iChromatic
-	createFloatUniform("iChromatic", 10, 0.0f, 0.0f, 0.000000001f);
+	createFloatUniform("iChromatic", 10, 0.0f, 0.000000001f);
 	// ratio
-	createFloatUniform("iRatio", 11, 20.0f, 20.0f, 0.00000000001f, 20.0f);
+	createFloatUniform("iRatio", 11, 20.0f, 0.00000000001f, 20.0f);
 	// Speed 
-	createFloatUniform("iSpeed", 12, 12.0f, 12.0f, 0.01f, 12.0f);
+	createFloatUniform("iSpeed", 12, 12.0f, 0.01f, 12.0f);
 	// Audio multfactor 
-	createFloatUniform("iAudioMult", 13, 1.0f);
+	createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 10.0f);
 	// exposure
-	createFloatUniform("iExposure", 14, 1.0f, 1.0f, 0.00001f);
+	createFloatUniform("iExposure", 14, 1.0f, 0.00001f, 3.0f);
 	// Pixelate
-	createFloatUniform("iPixelate", 15, 1.0f);
+	createFloatUniform("iPixelate", 15, 1.0f, 0.01f);
 	// Trixels
 	createFloatUniform("iTrixels", 16, 0.0f);
 	// GridSize
@@ -91,15 +91,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// iCrossfade
 	createFloatUniform("iCrossfade", 18, 1.0f);
 	// RotationSpeed
-	createFloatUniform("iRotationSpeed", 19, 0.0f, 0.0f, -2.0f, 2.0f);
+	createFloatUniform("iRotationSpeed", 19, 0.0f, -2.0f, 2.0f);
 	// Steps
-	createFloatUniform("iSteps", 20, 16.0f);
+	createFloatUniform("iSteps", 20, 16.0f, 1.0f, 128.0f);
 	// iPreviewCrossfade
 	createFloatUniform("iPreviewCrossfade", 21, 0.0f);
 	// zoom
-	createFloatUniform("iZoom", 22, 1.0f, 1.0, -3.1f, 3.0f);
+	createFloatUniform("iZoom", 22, 1.0f, -3.1f, 3.0f);
 	// bad tv  TODO
-	createFloatUniform("iBadTv", 23, 0.0f); 
+	createFloatUniform("iBadTv", 23, 0.0f, 0.0f, 5.0f);
 	// red multiplier 
 	createFloatUniform("iRedMultiplier", 24, 1.0f);
 	// green multiplier 
@@ -107,9 +107,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// blue multiplier 
 	createFloatUniform("iBlueMultiplier", 26, 1.0f);
 	// slitscan (or other) Param1 
-	createFloatUniform("iParam1", 27, 1.0f);
+	createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
 	// slitscan (or other) Param2 
-	createFloatUniform("iParam2", 28, 1.0f);
+	createFloatUniform("iParam2", 28, 1.0f, 0.01f, 100.0f);
 	// tempo time
 	createFloatUniform("iTempoTime", 29, 0.1f);
 	// global time in seconds
@@ -126,6 +126,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createVec3Uniform("iColor", 1, vec3(1.0, 0.5, 0.0));
 	createVec3Uniform("iBackgroundColor", 2);
 	createVec3Uniform("iChannelResolution[0]", 3, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+
+	// vec4
+	createVec4Uniform("iMouse", 0, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("iDate", 1, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
 
 	// boolean
 	// glitch
@@ -158,11 +162,11 @@ float VDAnimation::getShaderUniformValue(unsigned int aCtrlIndex) {
 	return shaderUniforms[controlIndexes[aCtrlIndex]].floatValue;
 }
 
-void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue, float aDefault, float aMin, float aMax) {
+void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue, float aMin, float aMax) {
 	controlIndexes[aCtrlIndex] = aName;
 	shaderUniforms[aName].minValue = aMin;
 	shaderUniforms[aName].maxValue = aMax;
-	shaderUniforms[aName].defaultValue = aDefault;
+	shaderUniforms[aName].defaultValue = aValue;
 	shaderUniforms[aName].boolValue = false;	
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
@@ -431,14 +435,13 @@ void VDAnimation::update() {
 	//
 	if (mUseTimeWithTempo)
 	{
-		mVDSettings->iGlobalTime = iTempoTime*iTimeFactor;
+		shaderUniforms["iGlobalTime"].floatValue = iTempoTime*iTimeFactor;
 	}
 	else
 	{
-		mVDSettings->iGlobalTime = getElapsedSeconds();
+		shaderUniforms["iGlobalTime"].floatValue = getElapsedSeconds();
 	}
-	mVDSettings->iGlobalTime *= mVDSettings->iSpeedMultiplier;
-	// seems useless controlValues[49] = mVDSettings->iGlobalTime;
+	shaderUniforms["iGlobalTime"].floatValue *= mVDSettings->iSpeedMultiplier;
 #pragma region animation
 
 	currentTime = mTimer.getSeconds();

@@ -148,7 +148,7 @@ namespace VideoDromm
 		// shaders
 		map<int, string>				controlIndexes;
 		map<string, VDUniform>			shaderUniforms;
-		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f, float aDefault = 0.01f, float aMin = 0.0f, float aMax = 1.0f);
+		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f, float aMin = 0.0f, float aMax = 1.0f);
 		void							createSampler2DUniform(string aName, int aTextureIndex = 0);
 		float							getShaderUniformValue(unsigned int aCtrlIndex);
 		void							createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue = vec2(0.0));

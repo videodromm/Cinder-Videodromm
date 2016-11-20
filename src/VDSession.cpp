@@ -16,6 +16,8 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	mVDAnimation->tapTempo();
 	// Message router
 	mVDRouter = VDRouter::create(mVDSettings, mVDAnimation);
+	// allow log to file
+	mVDLog = VDLog::create();
 	// init fbo format
 	//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 	//fmt.setBorderColor(Color::black());		
@@ -899,7 +901,7 @@ int VDSession::getTextureWidth() {
 int VDSession::getTextureHeight() {
 	return mHeight;
 };
-ci::gl::Texture2dRef VDSession::getInputTexture(unsigned int aTextureIndex) {
+ci::gl::TextureRef VDSession::getInputTexture(unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	return mTextureList[aTextureIndex]->getTexture();
 }
@@ -959,17 +961,6 @@ void VDSession::loadImageFile(string aFile, unsigned int aTextureIndex, bool rig
 void VDSession::loadAudioFile(string aFile) {
 	mTextureList[0]->loadFromFullPath(aFile);
 }
-/*ci::gl::Texture2dRef VDSession::getInputTexture(unsigned int aTextureIndex) {
-	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-	return mTextureList[aTextureIndex]->getTexture();
-}
-string VDSession::getInputTextureName(unsigned int aTextureIndex) {
-	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-	return mTextureList[aTextureIndex]->getName();
-}
-unsigned int VDSession::getInputTexturesCount() {
-	return mTextureList.size();
-}*/
 int VDSession::getInputTextureXLeft(unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	return mTextureList[aTextureIndex]->getXLeft();
@@ -1109,7 +1100,7 @@ string VDSession::getShaderName(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 	return mShaderList[aShaderIndex]->getName();
 }
-ci::gl::Texture2dRef VDSession::getShaderThumb(unsigned int aShaderIndex) {
+ci::gl::TextureRef VDSession::getShaderThumb(unsigned int aShaderIndex) {
 	return mShaderList[aShaderIndex]->getThumb();
 }
 void VDSession::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {

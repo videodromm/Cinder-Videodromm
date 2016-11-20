@@ -58,7 +58,7 @@ namespace VideoDromm {
 	unsigned int VDMix::getFboBlendCount() {
 		return mBlendFbos.size();
 	}
-	ci::gl::Texture2dRef VDMix::getFboThumb(unsigned int aBlendIndex) {
+	ci::gl::TextureRef VDMix::getFboThumb(unsigned int aBlendIndex) {
 		if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = mBlendFbos.size() - 1;
 		/*mCurrentBlend = aBlendIndex;
 		renderBlend();*/
@@ -215,7 +215,7 @@ namespace VideoDromm {
 		// update audio texture
 		mTextureList[0]->getTexture();
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendmode);
-		mGlslMix->uniform("iGlobalTime", (float)getElapsedSeconds());
+		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 		mGlslMix->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
