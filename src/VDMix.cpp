@@ -187,7 +187,10 @@ namespace VideoDromm {
 
 
 #pragma endregion warps
-
+	string VDMix::getMixFboLabel(unsigned int aMixFboIndex) {
+		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
+		return mMixFbos[aMixFboIndex]->getLabel();
+	}
 	void VDMix::renderMix() {
 
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]);

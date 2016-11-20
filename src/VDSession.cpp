@@ -22,17 +22,18 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	// uncomment this to enable 4x antialiasing	
 	//fboFmt.setSamples( 4 ); 
 	fboFmt.setColorTextureFormat(fmt);
+
 	// initialize the textures list with audio texture
 	mTexturesFilepath = getAssetPath("") / mVDSettings->mAssetsPath / "textures.xml";
+	initTextureList();
+
+	// initialize the shaders list 
+	initShaderList();
 	mMixesFilepath = getAssetPath("") / "mixes.xml";
 	if (fs::exists(mMixesFilepath)) {
 		// load textures from file if one exists
 		readSettings(mVDSettings, mVDAnimation, mVDRouter, loadFile(mMixesFilepath));
 	}
-	initTextureList();
-
-	// initialize the shaders list 
-	initShaderList();
 
 	mPosX = mPosY = 0.0f;
 	mZoom = 1.0f;
@@ -738,7 +739,6 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 #pragma region warps
 
 void VDSession::createWarpMix() {
-	mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 	mVDMix->createWarp();
 }
 void VDSession::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
@@ -847,8 +847,7 @@ string VDSession::getFboLabel(unsigned int aFboIndex) {
 	return mFboList[aFboIndex]->getLabel();
 }
 string VDSession::getMixFboLabel(unsigned int aMixFboIndex) {
-	if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
-	return mMixFbos[aMixFboIndex]->getLabel();
+	return mVDMix->getMixFboLabel(aMixFboIndex);
 }
 int VDSession::getFboTextureWidth(unsigned int aFboIndex) {
 	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;

@@ -41,8 +41,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// tempo
 	mUseTimeWithTempo = false;
 	// init timer
-	timer.start();
-	startTime = currentTime = timer.getSeconds();
+	mTimer.start();
+	startTime = currentTime = mTimer.getSeconds();
 
 	iDeltaTime = 60 / mBpm;//mTempo;
 	//iBar = 0;
@@ -441,7 +441,7 @@ void VDAnimation::update() {
 	// seems useless controlValues[49] = mVDSettings->iGlobalTime;
 #pragma region animation
 
-	currentTime = timer.getSeconds();
+	currentTime = mTimer.getSeconds();
 	// TODO check bounds
 	if (mAutoBeatAnimation) mVDSettings->liveMeter = maxVolume * 2;
 
@@ -511,10 +511,10 @@ void VDAnimation::update() {
 // tempo
 void VDAnimation::tapTempo()
 {
-	startTime = currentTime = timer.getSeconds();
+	startTime = currentTime = mTimer.getSeconds();
 
-	timer.stop();
-	timer.start();
+	mTimer.stop();
+	mTimer.start();
 
 	// check for out of time values - less than 50% or more than 150% of from last "TAP and whole time buffer is going to be discarded....
 	if (counter > 2 && (buffer.back() * 1.5 < currentTime || buffer.back() * 0.5 > currentTime))

@@ -249,7 +249,7 @@ namespace VideoDromm {
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;
-		vector<ci::gl::FboRef>			mMixFbos;
+		//vector<ci::gl::FboRef>			mMixFbos;
 		// fbo 
 		bool							mFlipV;
 		bool							mFlipH;

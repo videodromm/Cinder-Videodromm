@@ -170,7 +170,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		}
 		ui::PopStyleColor(3);
 		hue++;
-		ui::SameLine();
 
 		// crossfade
 		/*if (ui::DragFloat("Xfade", &mVDAnimation->controlValues[18], 0.01f, 0.001f, 1.0f))

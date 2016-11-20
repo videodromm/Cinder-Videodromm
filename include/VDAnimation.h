@@ -158,7 +158,7 @@ namespace VideoDromm
 		void							createBoolUniform(string aName, int aCtrlIndex, bool aValue = false);
 
 		// time
-		ci::Timer						timer;
+		ci::Timer						mTimer;
 		std::deque <double>				buffer;
 		void							calculateTempo();
 		int								counter;
