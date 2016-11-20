@@ -125,6 +125,7 @@ namespace VideoDromm {
 		fs::path						mMixesFilepath;
 		// fbos
 		void							fboFlipV(unsigned int aFboIndex);
+		bool							isFboFlipV(unsigned int aFboIndex);
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		string							getFboLabel(unsigned int aFboIndex);

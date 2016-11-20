@@ -12,11 +12,10 @@ VDUIFbos::~VDUIFbos() {
 
 void VDUIFbos::Run(const char* title) {
 	// fbos
-	int t = 0;
 
 	for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.5));
-		ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2));
+		ui::SetNextWindowPos(ImVec2((f * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2));
 		sprintf(buf, "%s##fbolbl%d", mVDSession->getFboLabel(f).c_str(), f);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
@@ -39,8 +38,17 @@ void VDUIFbos::Run(const char* title) {
 				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
 				ui::PopStyleColor(3);
 			}
+			if (mVDSession->isFboFlipV(f)) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(f / 7.0f, 1.0f, 1.0f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(f / 7.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(f / 7.0f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(f / 7.0f, 0.8f, 0.8f));
 			sprintf(buf, "FlipV##fboflipv%d", f);
 			if (ui::Button(buf)) mVDSession->fboFlipV(f);
+			ui::PopStyleColor(3);
 			ui::SameLine();
 			sprintf(buf, "U##fboupd%d", f);
 			if (ui::Button(buf)) mVDSession->getFboTexture(f);

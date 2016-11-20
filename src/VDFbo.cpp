@@ -20,6 +20,7 @@ namespace VideoDromm {
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		isReady = false;
+		mFlipV = mFlipH = false;
 
 		// init the fbo whatever happens next
 		fboFmt.setColorTextureFormat(fmt);
@@ -144,14 +145,14 @@ namespace VideoDromm {
 		return mFbo->getId();
 	}
 
-	std::string VDFbo::getName(){
+	std::string VDFbo::getName() {
 		return mFboName;
 	}
 	void VDFbo::setInputTexture(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mInputTextureIndex = aTextureIndex;
 	}
-	gl::GlslProgRef VDFbo::getShader() { 
+	gl::GlslProgRef VDFbo::getShader() {
 		auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
 			//CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
@@ -198,16 +199,16 @@ namespace VideoDromm {
 				}
 			}
 		}
-		return mFboTextureShader; 
+		return mFboTextureShader;
 	}
-	ci::gl::Texture2dRef VDFbo::getRenderedTexture() { 
+	ci::gl::Texture2dRef VDFbo::getRenderedTexture() {
 		if (!isReady) {
 			getFboTexture();
 			isReady = true;
 		}
-		return mRenderedTexture; 
+		return mRenderedTexture;
 	}
-	
+
 	ci::gl::Texture2dRef VDFbo::getFboTexture() {
 		// TODO move this:
 		getShader();
@@ -267,7 +268,8 @@ namespace VideoDromm {
 		}
 		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
 		if (mFlipV) {
-			gl::drawSolidRect(Rectf(0, mVDSettings->mRenderHeight, mVDSettings->mRenderWidth, 0));
+			gl::drawSolidRoundedRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), 150, 20);
+			// CHECK gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), vec2(1.0f, 1.0f), vec2(0.0f, 0.0f));
 		}
 		else {
 			gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
