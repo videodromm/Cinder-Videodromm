@@ -795,7 +795,10 @@ void VDSession::flipH() {
 void VDSession::flipV() { 
 	mVDAnimation->flipV();
 }
-
+void VDSession::fboFlipV(unsigned int aFboIndex) {
+	if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+	mFboList[aFboIndex]->flipV = !mFboList[aFboIndex]->flipV;
+}
 ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 	return mVDMix->getMixTexture(aMixFboIndex);
 }

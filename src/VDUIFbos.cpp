@@ -12,9 +12,11 @@ VDUIFbos::~VDUIFbos() {
 
 void VDUIFbos::Run(const char* title) {
 	// fbos
+	int t = 0;
+
 	for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.2));
-		ui::SetNextWindowPos(ImVec2((f * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.5));
+		ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2));
 		sprintf(buf, "%s##fbolbl%d", mVDSession->getFboLabel(f).c_str(), f);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
@@ -37,9 +39,11 @@ void VDUIFbos::Run(const char* title) {
 				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
 				ui::PopStyleColor(3);
 			}
+			sprintf(buf, "FlipV##fboflipv%d", f);
+			if (ui::Button(buf)) mVDSession->fboFlipV(f);
+			ui::SameLine();
 			sprintf(buf, "U##fboupd%d", f);
 			if (ui::Button(buf)) mVDSession->getFboTexture(f);
-			ui::SameLine();
 			ui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(f)->getWidth(), mVDSession->getFboRenderedTexture(f)->getHeight());
 
 			ui::PopID();
@@ -49,7 +53,8 @@ void VDUIFbos::Run(const char* title) {
 	// mix fbos
 	for (unsigned int m = 0; m < mVDSession->getMixFbosCount(); m++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.2));
-		ui::SetNextWindowPos(ImVec2((m * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3 + mVDSettings->uiPreviewH*1.3));
+		//ui::SetNextWindowPos(ImVec2((f * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
+		ui::SetNextWindowPos(ImVec2((m * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));// + mVDSettings->uiPreviewH*1.3));
 		// TODO ui::Begin(mVDMix->getFboLabel(m).c_str(), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		sprintf(buf, "%s##mixfbolbl%d", mVDSession->getMixFboLabel(m).c_str(), m);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);

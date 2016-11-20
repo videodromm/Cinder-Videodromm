@@ -49,8 +49,9 @@ namespace VideoDromm
 		std::string						getName();
 		std::string						getLabel();
 		void							setLabel(string aLabel) { mFboTextureShader->setLabel(aLabel); };
-		//bool							isFlipH() { return mFlipH; };
-		//bool							isFlipV() { return mFlipV; };
+		bool							isFlipH() { return mFlipH; };
+		bool							isFlipV() { return mFlipV; };
+		void							flipV() { mFlipV = !mFlipV; };
 		//!
 		bool							fromXml(const ci::XmlTree &xml);
 		//!
@@ -70,8 +71,8 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getRenderedTexture();
 	protected:
 		std::string						mFboName;
-		//bool							mFlipV;
-		//bool							mFlipH;
+		bool							mFlipV;
+		bool							mFlipH;
 		TextureType						mType;
 		std::string						mFilePathOrText;
 		//bool							mTopDown;

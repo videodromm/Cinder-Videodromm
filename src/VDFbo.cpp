@@ -266,7 +266,12 @@ namespace VideoDromm {
 			}
 		}
 		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
-		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+		if (mFlipV) {
+			gl::drawSolidRect(Rectf(0, mVDSettings->mRenderHeight, mVDSettings->mRenderWidth, 0));
+		}
+		else {
+			gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+		}
 		mRenderedTexture = mFbo->getColorTexture();
 		return mRenderedTexture;// mFbo->getColorTexture();
 	}
