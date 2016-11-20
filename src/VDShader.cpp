@@ -271,7 +271,7 @@ void VDShader::createThumb() {
 	gl::setMatricesWindow(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
 
 	mShader->bind();
-	mShader->uniform("iGlobalTime", mVDSettings->iGlobalTime);
+	mShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
 	mShader->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 	mShader->uniform("iMouse", vec4(mVDSettings->mRenderPosXY.x, mVDSettings->mRenderPosXY.y, mVDSettings->iMouse.z, mVDSettings->iMouse.z));//iMouse =  Vec3i( event.getX(), mRenderHeight - event.getY(), 1 );
