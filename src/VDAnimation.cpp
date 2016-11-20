@@ -176,28 +176,28 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].isValid = true;
 }
 void VDAnimation::createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue) {
-	//vec2Values[aCtrlIndex] = aValue;
+	controlIndexes[aCtrlIndex] = aName;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 2;
 	shaderUniforms[aName].isValid = true;
 	shaderUniforms[aName].vec2Value = aValue;
 }
 void VDAnimation::createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue) {
-	//vec3Values[aCtrlIndex] = aValue;
+	controlIndexes[aCtrlIndex] = aName;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 3;
 	shaderUniforms[aName].isValid = true;
 	shaderUniforms[aName].vec3Value = aValue;
 }
 void VDAnimation::createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue) {
-	//vec4Values[aCtrlIndex] = aValue;
+	controlIndexes[aCtrlIndex] = aName;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 4;
 	shaderUniforms[aName].isValid = true;
 	shaderUniforms[aName].vec4Value = aValue;
 }
 void VDAnimation::createIntUniform(string aName, int aCtrlIndex, int aValue) {
-	//intValues[aCtrlIndex] = aValue;
+	controlIndexes[aCtrlIndex] = aName;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 5;
 	shaderUniforms[aName].isValid = true;
@@ -217,7 +217,6 @@ void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
 	shaderUniforms[aName].isValid = true;
 }
 string VDAnimation::getUniformNameForIndex(int aIndex) {
-	if (aIndex > controlIndexes.size() - 1) aIndex = 0;
 	return controlIndexes[aIndex];
 }
 /*bool VDAnimation::hasFloatChanged(int aIndex) {
