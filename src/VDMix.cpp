@@ -31,7 +31,7 @@ namespace VideoDromm {
 
 		// mix fbo to render
 		warpMixToRender = 0;
-		//mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
 		//if (fs::exists(mWarpSettings)) {
 		// load warp settings from file if one exists
 		//mWarps = Warp::readSettings(loadFile(mWarpSettings)); // TODO load from json file
