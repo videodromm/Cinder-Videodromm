@@ -2,13 +2,11 @@
 
 using namespace VideoDromm;
 
-VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef) {
+VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWebsocketRef aVDWebsocket) {
 	mVDSettings = aVDSettings;
-	mVDAnimation = aAnimationRef;
-
+	mVDAnimation = aVDAnimation;
+	mVDWebsocket = aVDWebsocket;
 	CI_LOG_V("VDRouter constructor");
-	shaderReceived = false;
-	receivedFragString = "";
 	// kinect
 	for (int i = 0; i < 20; i++) {
 		skeleton[i] = ivec4(0);
@@ -24,11 +22,9 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef) {
 			setupOSCReceiver();
 		}
 	}
-	// WebSockets
-	clientConnected = false;
+
 #if defined( CINDER_MSW )
-	if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
-	mPingTime = getElapsedSeconds();
+	// midi
 	if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
 #endif
 }
@@ -98,14 +94,14 @@ void VDRouter::setupOSCReceiver() {
 		// Animation
 		mVDSession->setBpm(msg[0].flt());
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-	});
-	// artcraft
-	mOSCReceiver->setListener("/tempo",
+		});
+		// artcraft
+		mOSCReceiver->setListener("/tempo",
 		[&](const osc::Message &msg) {
 		// Animation
 		mVDSession->setBpm(msg[0].flt());
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-	});*/
+		});*/
 	mOSCReceiver->setListener("/live/track/meter",
 		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
@@ -200,14 +196,14 @@ void VDRouter::setupOSCReceiver() {
 		}
 	});
 	// json
-	mOSCReceiver->setListener("/json/params",
+	/*mOSCReceiver->setListener("/json/params",
 		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/json/params:" + msg[0].string();
 		mVDSettings->mOSCNewMsg = true;
 
 		parseMessage(msg[0].string());
 
-	});
+	});*/
 
 	mOSCReceiver->bind();
 	mOSCReceiver->listen([](asio::error_code error, protocol::endpoint endpoint) -> bool {
@@ -510,7 +506,7 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		// exposure
 		if (iarg0 == 14) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
 
-		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
+		mVDWebsocket->wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 
 	}
 	// buttons
@@ -569,293 +565,11 @@ void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float
 	updateParams(iarg0, farg1);
 	sendOSCFloatMessage(controlType, iarg0, farg1, farg2);
 }
-void VDRouter::wsPing() {
-#if defined( CINDER_MSW )
-	if (clientConnected) {
-		if (!mVDSettings->mIsWebSocketsServer) {
-			mClient.ping();
-		}
-	}
-#endif
-}
 
-void VDRouter::parseMessage(string msg) {
-	mVDSettings->mWebSocketsMsg = "WS onRead";
-	mVDSettings->mWebSocketsNewMsg = true;
-	if (!msg.empty()) {
-		mVDSettings->mWebSocketsMsg += ": " + msg;
-		string first = msg.substr(0, 1);
-		if (first == "{") {
-			// json
-			JsonTree json;
-			try {
-				json = JsonTree(msg);
-				if (json.hasChild("params")) {
-					JsonTree jsonParams = json.getChild("params");
-					for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
-						int name = jsonElement->getChild("name").getValue<int>();
-						float value = jsonElement->getChild("value").getValue<float>();
-						// basic name value 
-						mVDAnimation->changeFloatValue(name, value);
-					}
-				}
-				if (json.hasChild("event")) {
-					string evt = json.getChild("event").getValue<string>();
-					if (json.hasChild("message")) {
-						receivedFragString = json.getChild("message").getValue<string>();
-						shaderReceived = true;
-					}
-				}
-				/* NOT IMPLEMENTED and EXCEPTION JsonTree jsonSelectShader = json.getChild("selectShader");
-				for (JsonTree::ConstIter jsonElement = jsonSelectShader.begin(); jsonElement != jsonSelectShader.end(); ++jsonElement)
-				{
-				}*/
-			}
-			catch (cinder::JsonTree::Exception exception) {
-				mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
-				mVDSettings->mWebSocketsMsg += exception.what();
-				mVDSettings->mWebSocketsMsg += "  ";
-			}
-		}
-		else if (msg.substr(0, 2) == "/*") {
-			// shader with json info				
-			unsigned closingCommentPosition = msg.find("*/");
-			if (closingCommentPosition > 0) {
-				JsonTree json;
-				try {
-					// create folders if they don't exist
-					fs::path pathsToCheck = getAssetPath("") / "glsl";
-					if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
-					pathsToCheck = getAssetPath("") / "glsl" / "received";
-					if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
-					pathsToCheck = getAssetPath("") / "glsl" / "processed";
-					if (!fs::exists(pathsToCheck)) fs::create_directory(pathsToCheck);
-					// find commented header
-					string jsonHeader = msg.substr(2, closingCommentPosition - 2);
-					ci::JsonTree::ParseOptions parseOptions;
-					parseOptions.ignoreErrors(false);
-					json = JsonTree(jsonHeader, parseOptions);
-					string title = json.getChild("title").getValue<string>();
-					string fragFileName = title + ".frag"; // with uniforms
-					string glslFileName = title + ".glsl"; // without uniforms, need to include shadertoy.inc
-					string shader = msg.substr(closingCommentPosition + 2);
 
-					string processedContent = "/*" + jsonHeader + "*/";
-					// check uniforms presence
-					std::size_t foundUniform = msg.find("uniform");
-
-					if (foundUniform != std::string::npos) {
-						// found uniforms
-					}
-					else {
-						// save glsl file without uniforms as it was received
-						fs::path currentFile = getAssetPath("") / "glsl" / "received" / glslFileName;
-						ofstream mFrag(currentFile.string(), std::ofstream::binary);
-						mFrag << msg;
-						mFrag.close();
-						CI_LOG_V("received file saved:" + currentFile.string());
-						//mVDSettings->mShaderToLoad = currentFile.string(); 
-						// uniforms not found, add include
-						processedContent += "#include shadertoy.inc";
-					}
-					processedContent += shader;
-
-					//mShaders->loadLiveShader(processedContent); // need uniforms declared
-					// route it to websockets clients
-					if (mVDSettings->mIsRouter) {
-						wsWrite(msg);
-					}
-
-					// save processed file
-					fs::path processedFile = getAssetPath("") / "glsl" / "processed" / fragFileName;
-					ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-					mFragProcessed << processedContent;
-					mFragProcessed.close();
-					CI_LOG_V("processed file saved:" + processedFile.string());
-					mVDSettings->mShaderToLoad = processedFile.string();
-
-				}
-				catch (cinder::JsonTree::Exception exception) {
-					mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
-					mVDSettings->mWebSocketsMsg += exception.what();
-					mVDSettings->mWebSocketsMsg += "  ";
-				}
-
-			}
-		}
-		else if (msg.substr(0, 7) == "uniform") {
-			// fragment shader from live coding
-			//mShaders->loadLiveShader(msg);
-			mVDSettings->mShaderToLoad = msg;
-			// route it to websockets clients
-			if (mVDSettings->mIsRouter) {
-				wsWrite(msg);
-			}
-		}
-		else if (msg.substr(0, 7) == "#version") {
-			// fragment shader from live coding
-			//mShaders->loadLiveShader(msg);
-			// route it to websockets clients
-			if (mVDSettings->mIsRouter) {
-				wsWrite(msg);
-			}
-		}
-		else if (first == "/")
-		{
-			// osc from videodromm-nodejs-router
-			int f = msg.size();
-			const char c = msg[9];
-			int s = msg[12];
-			int t = msg[13];
-			int u = msg[14];
-			CI_LOG_V(msg);
-		}
-		else if (first == "I") {
-
-			if (msg == "ImInit") {
-				// send ImInit OK
-				/*if (!remoteClientActive) { remoteClientActive = true; ForceKeyFrame = true;
-				// Send confirmation mServer.write("ImInit"); // Send font texture unsigned char* pixels; int width, height;
-				ImGui::GetIO().Fonts->GetTexDataAsAlpha8(&pixels, &width, &height); PreparePacketTexFont(pixels, width, height);SendPacket();
-				}*/
-			}
-			else if (msg.substr(0, 11) == "ImMouseMove") {
-				/*string trail = msg.substr(12);
-				unsigned commaPosition = trail.find(",");
-				if (commaPosition > 0) { mouseX = atoi(trail.substr(0, commaPosition).c_str());
-				mouseY = atoi(trail.substr(commaPosition + 1).c_str()); ImGuiIO& io = ImGui::GetIO();
-				io.MousePos = toPixels(vec2(mouseX, mouseY)); }*/
-			}
-			else if (msg.substr(0, 12) == "ImMousePress") {
-				/*ImGuiIO& io = ImGui::GetIO(); // 1,0 left click 1,1 right click
-				io.MouseDown[0] = false; io.MouseDown[1] = false; int rightClick = atoi(msg.substr(15).c_str());
-				if (rightClick == 1) { io.MouseDown[0] = false; io.MouseDown[1] = true; }
-				else { io.MouseDown[0] = true; io.MouseDown[1] = false;
-				}*/
-			}
-		}
-	}
-}
-string VDRouter::getReceivedShader() {
-	shaderReceived = false;
-	return receivedFragString;
-}
-void VDRouter::wsConnect() {
-#if defined( CINDER_MSW )
-	// either a client or a server
-	if (mVDSettings->mIsWebSocketsServer) {
-		mServer.connectOpenEventHandler([&]() {
-			clientConnected = true;
-			mVDSettings->mWebSocketsMsg = "Connected";
-			mVDSettings->mWebSocketsNewMsg = true;
-		});
-		mServer.connectCloseEventHandler([&]() {
-			clientConnected = false;
-			mVDSettings->mWebSocketsMsg = "Disconnected";
-			mVDSettings->mWebSocketsNewMsg = true;
-		});
-		mServer.connectFailEventHandler([&](string err) {
-			mVDSettings->mWebSocketsMsg = "WS Error";
-			mVDSettings->mWebSocketsNewMsg = true;
-			if (!err.empty()) {
-				mVDSettings->mWebSocketsMsg += ": " + err;
-			}
-		});
-		mServer.connectInterruptEventHandler([&]() {
-			mVDSettings->mWebSocketsMsg = "WS Interrupted";
-			mVDSettings->mWebSocketsNewMsg = true;
-		});
-		mServer.connectPingEventHandler([&](string msg) {
-			mVDSettings->mWebSocketsMsg = "WS Pinged";
-			mVDSettings->mWebSocketsNewMsg = true;
-			if (!msg.empty())
-			{
-				mVDSettings->mWebSocketsMsg += ": " + msg;
-			}
-		});
-		mServer.connectMessageEventHandler([&](string msg) {
-			parseMessage(msg);
-		});
-		mServer.listen(mVDSettings->mWebSocketsPort);
-	}
-	else
-	{
-		mClient.connectOpenEventHandler([&]() {
-			clientConnected = true;
-			mVDSettings->mWebSocketsMsg = "Connected";
-			mVDSettings->mWebSocketsNewMsg = true;
-		});
-		mClient.connectCloseEventHandler([&]() {
-			clientConnected = false;
-			mVDSettings->mWebSocketsMsg = "Disconnected";
-			mVDSettings->mWebSocketsNewMsg = true;
-		});
-		mClient.connectFailEventHandler([&](string err) {
-			mVDSettings->mWebSocketsMsg = "WS Error";
-			mVDSettings->mWebSocketsNewMsg = true;
-			if (!err.empty()) {
-				mVDSettings->mWebSocketsMsg += ": " + err;
-			}
-		});
-		mClient.connectInterruptEventHandler([&]() {
-			mVDSettings->mWebSocketsMsg = "WS Interrupted";
-			mVDSettings->mWebSocketsNewMsg = true;
-		});
-		mClient.connectPingEventHandler([&](string msg) {
-			mVDSettings->mWebSocketsMsg = "WS Ponged";
-			mVDSettings->mWebSocketsNewMsg = true;
-			if (!msg.empty())
-			{
-				mVDSettings->mWebSocketsMsg += ": " + msg;
-			}
-		});
-		mClient.connectMessageEventHandler([&](string msg) {
-			parseMessage(msg);
-		});
-		wsClientConnect();
-	}
-	mVDSettings->mAreWebSocketsEnabledAtStartup = true;
-	clientConnected = true;
-#endif
-}
-void VDRouter::wsClientConnect()
-{
-#if defined( CINDER_MSW )
-	stringstream s;
-	s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
-	mClient.connect(s.str());
-#endif
-}
-void VDRouter::wsClientDisconnect()
-{
-#if defined( CINDER_MSW )	
-	if (clientConnected)
-	{
-		mClient.disconnect();
-	}
-#endif
-}
-void VDRouter::wsWrite(string msg)
-{
-#if defined( CINDER_MSW )
-	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
-	{
-		if (mVDSettings->mIsWebSocketsServer)
-		{
-			mServer.write(msg);
-		}
-		else
-		{
-			if (clientConnected) mClient.write(msg);
-		}
-	}
-#endif
-}
 
 void VDRouter::sendJSON(string params) {
-#if defined( CINDER_MSW )
-	wsWrite(params);
-#endif
+
 	if (mVDSettings->mOSCEnabled) {
 		// send OSC
 		if (mVDSettings->mIsOSCSender) {
@@ -867,56 +581,7 @@ void VDRouter::sendJSON(string params) {
 		}
 	}
 }
-void VDRouter::toggleAuto(unsigned int aIndex) {
-	// toggle
-	mVDAnimation->toggleAuto(aIndex);
-	// TODO send json	
-}
-void VDRouter::toggleTempo(unsigned int aIndex) {
-	// toggle
-	mVDAnimation->toggleTempo(aIndex);
-	// TODO send json	
-}
-void VDRouter::toggleValue(unsigned int aIndex) {
-	// toggle
-	mVDAnimation->toggleValue(aIndex);
-	stringstream sParams;
-	// TODO check boolean value:
-	sParams << "{\"params\" :[{\"name\" : " << aIndex << ",\"value\" : " << (int)mVDAnimation->getBoolUniformValueByIndex(aIndex) << "}]}";
-	string strParams = sParams.str();
-	sendJSON(strParams);
-}
-void VDRouter::resetAutoAnimation(unsigned int aIndex) {
-	// reset
-	mVDAnimation->resetAutoAnimation(aIndex);
-	// TODO send json	
-}
 
-void VDRouter::changeBoolValue(unsigned int aControl, bool aValue) {
-	// check if changed
-	mVDAnimation->changeBoolValue(aControl, aValue);
-	stringstream sParams;
-	// TODO check boolean value:
-	sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << (int)aValue << "}]}";
-	string strParams = sParams.str();
-	sendJSON(strParams);
-}
-
-void VDRouter::changeFloatValue(unsigned int aControl, float aValue) {
-	// check if changed
-	if (mVDAnimation->changeFloatValue(aControl, aValue)) {
-		stringstream sParams;
-
-		if (aControl > 0 && aControl < 4) {
-			mVDAnimation->changeVec3Value(61, vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
-			colorWrite(); //lights4events
-
-		}
-		sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(aControl) << "}]}";
-		string strParams = sParams.str();
-		sendJSON(strParams);
-	}
-}
 void VDRouter::colorWrite()
 {
 	if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
@@ -932,29 +597,12 @@ void VDRouter::colorWrite()
 	int g = mVDAnimation->getFloatUniformValueByIndex(2) * 255;
 	int b = mVDAnimation->getFloatUniformValueByIndex(3) * 255;
 	sprintf(col, "#%02X%02X%02X", r, g, b);
-	wsWrite(col);
+	mVDWebsocket->wsWrite(col);
 #endif
 }
 
 void VDRouter::update() {
 
-	// websockets
-#if defined( CINDER_MSW )
-	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
-	{
-		if (mVDSettings->mIsWebSocketsServer)
-		{
-			mServer.poll();
-		}
-		else
-		{
-			if (clientConnected)
-			{
-				mClient.poll();
-			}
-		}
-	}
-#endif
 	/*
 	// check for mouse moved message
 	if(m.getAddress() == "/mouse/position"){

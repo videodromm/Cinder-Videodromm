@@ -8,7 +8,7 @@ using namespace ci::app;
 
 namespace VideoDromm {
 
-	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList)
+	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList)
 		: mFlipV(false)
 		, mFlipH(false)
 	{
@@ -17,7 +17,6 @@ namespace VideoDromm {
 		// Animation
 		mVDAnimation = aVDAnimation;
 		// Router
-		mVDRouter = aVDRouter;
 		mTextureList = aTextureList;
 		mShaderList = aShaderList;
 		mFboList = aFboList;
@@ -129,14 +128,12 @@ namespace VideoDromm {
 		if (aWarpIndex < mWarpMix.size() && aWarpFboIndex < mFboList.size()) {
 			mWarpMix[aWarpIndex].AFboIndex = aWarpFboIndex;
 			updateWarpName(aWarpIndex);
-			mVDRouter->changeFloatValue(200 + aWarpIndex, aWarpFboIndex);
 		}
 	}
 	void VDMix::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 		if (aWarpIndex < mWarpMix.size() && aWarpFboIndex < mFboList.size()) {
 			mWarpMix[aWarpIndex].BFboIndex = aWarpFboIndex;
 			updateWarpName(aWarpIndex);
-			mVDRouter->changeFloatValue(300 + aWarpIndex, aWarpFboIndex);
 		}
 	}
 	void VDMix::updateWarpName(unsigned int aWarpIndex) {

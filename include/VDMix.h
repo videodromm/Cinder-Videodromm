@@ -14,8 +14,6 @@
 #include "VDSettings.h"
 // Animation
 #include "VDAnimation.h"
-// Message router
-#include "VDRouter.h"
 // Fbos
 #include "VDFbo.h"
 // Warping
@@ -37,10 +35,10 @@ namespace VideoDromm
 
 	class VDMix {
 	public:
-		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList);
-		static VDMixRef					create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList)
+		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList);
+		static VDMixRef					create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList)
 		{
-			return shared_ptr<VDMix>(new VDMix(aVDSettings, aVDAnimation, aVDRouter, aTextureList, aShaderList, aFboList));
+			return shared_ptr<VDMix>(new VDMix(aVDSettings, aVDAnimation, aTextureList, aShaderList, aFboList));
 		}
 		void							update();
 		void							resize();
@@ -60,11 +58,11 @@ namespace VideoDromm
 		string							getMixFboLabel(unsigned int aMixFboIndex);
 		// blendmodes
 		unsigned int					getFboBlendCount();
-		ci::gl::TextureRef			getFboThumb(unsigned int aBlendIndex);
+		ci::gl::TextureRef				getFboThumb(unsigned int aBlendIndex);
 		void							useBlendmode(unsigned int aBlendIndex);
 
-		ci::gl::TextureRef			getMixTexture(unsigned int aMixFboIndex = 0);
-		ci::gl::TextureRef			getFboTexture(unsigned int aFboIndex = 0);
+		ci::gl::TextureRef				getMixTexture(unsigned int aMixFboIndex = 0);
+		ci::gl::TextureRef				getFboTexture(unsigned int aFboIndex = 0);
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex);
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		// warps
@@ -97,8 +95,6 @@ namespace VideoDromm
 		VDAnimationRef					mVDAnimation;
 		// Settings
 		VDSettingsRef					mVDSettings;
-		// Router
-		VDRouterRef						mVDRouter;
 
 		//! Fbos
 		// maintain a list of fbos specific to this mix

@@ -14,8 +14,6 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	// Animation
 	mVDAnimation = VDAnimation::create(mVDSettings);
 	mVDAnimation->tapTempo();
-	// Message router
-	mVDRouter = VDRouter::create(mVDSettings, mVDAnimation);
 	// allow log to file
 	mVDLog = VDLog::create();
 	// init fbo format
@@ -34,20 +32,23 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	mMixesFilepath = getAssetPath("") / "mixes.xml";
 	if (fs::exists(mMixesFilepath)) {
 		// load textures from file if one exists
-		readSettings(mVDSettings, mVDAnimation, mVDRouter, loadFile(mMixesFilepath));
+		readSettings(mVDSettings, mVDAnimation, loadFile(mMixesFilepath));
 	}
 
 	mPosX = mPosY = 0.0f;
 	mZoom = 1.0f;
 
 	// Mix
-	mVDMix = VDMix::create(mVDSettings, mVDAnimation, mVDRouter, mTextureList, mShaderList, mFboList);
+	mVDMix = VDMix::create(mVDSettings, mVDAnimation, mTextureList, mShaderList, mFboList);
+	// Websocket
+	mVDWebsocket = VDWebsocket::create(mVDSettings, mVDAnimation, mVDMix);
+	// Message router
+	mVDRouter = VDRouter::create(mVDSettings, mVDAnimation, mVDWebsocket);
 	// warping
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
 	// otherwise create a warp from scratch
 	createWarpMix();
-
 
 	// reset no matter what, so we don't miss anything
 	reset();
@@ -72,7 +73,7 @@ VDSessionRef VDSession::create(VDSettingsRef aVDSettings)
 	return shared_ptr<VDSession>(new VDSession(aVDSettings));
 }
 
-void VDSession::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDRouterRef aVDRouter, const DataSourceRef &source) {
+void VDSession::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, const DataSourceRef &source) {
 	XmlTree			doc;
 
 	CI_LOG_V("VDMix readSettings");
@@ -139,22 +140,22 @@ float VDSession::getControlValue(unsigned int aCtrl) {
 }
 void VDSession::setControlValue(unsigned int aCtrl, float aValue) {
 	// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
-	mVDRouter->changeFloatValue(aCtrl, aValue);
+	mVDWebsocket->changeFloatValue(aCtrl, aValue);
 }
 bool VDSession::getBoolValue(unsigned int aCtrl) {
 	return mVDAnimation->getBoolUniformValueByIndex(aCtrl);
 }
 void VDSession::toggleValue(unsigned int aCtrl) {
-	mVDRouter->toggleValue(aCtrl);
+	mVDWebsocket->toggleValue(aCtrl);
 }
 void VDSession::toggleAuto(unsigned int aCtrl) {
-	mVDRouter->toggleAuto(aCtrl);
+	mVDWebsocket->toggleAuto(aCtrl);
 }
 void VDSession::toggleTempo(unsigned int aCtrl) {
-	mVDRouter->toggleTempo(aCtrl);
+	mVDWebsocket->toggleTempo(aCtrl);
 }
 void VDSession::resetAutoAnimation(unsigned int aIndex) {
-	mVDRouter->resetAutoAnimation(aIndex);
+	mVDWebsocket->resetAutoAnimation(aIndex);
 }
 float VDSession::getMinUniformValueByIndex(unsigned int aIndex) {
 	return mVDAnimation->getMinUniformValueByIndex(aIndex);
@@ -350,25 +351,26 @@ void VDSession::resize() {
 	mVDMix->resize();
 }
 void VDSession::update() {
-	if (mVDRouter->hasReceivedShader()) {
+	if (mVDWebsocket->hasReceivedShader()) {
 		if (mVDMix->getWarpCrossfade(0) < 0.5) {
-			setFragmentShaderString(2, mVDRouter->getReceivedShader());
+			setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
 			mVDMix->crossfadeWarp(0, 1.0f);
 		}
 		else {
-			setFragmentShaderString(1, mVDRouter->getReceivedShader());
+			setFragmentShaderString(1, mVDWebsocket->getReceivedShader());
 			mVDMix->crossfadeWarp(0, 0.0f);
 		}
 	}
 	if (mVDSettings->iGreyScale)
 	{
-		mVDRouter->changeFloatValue(1, mVDAnimation->getFloatUniformValueByIndex(3));
-		mVDRouter->changeFloatValue(2, mVDAnimation->getFloatUniformValueByIndex(3));
-		mVDRouter->changeFloatValue(5, mVDAnimation->getFloatUniformValueByIndex(7));
-		mVDRouter->changeFloatValue(6, mVDAnimation->getFloatUniformValueByIndex(7));
+		mVDWebsocket->changeFloatValue(1, mVDAnimation->getFloatUniformValueByIndex(3));
+		mVDWebsocket->changeFloatValue(2, mVDAnimation->getFloatUniformValueByIndex(3));
+		mVDWebsocket->changeFloatValue(5, mVDAnimation->getFloatUniformValueByIndex(7));
+		mVDWebsocket->changeFloatValue(6, mVDAnimation->getFloatUniformValueByIndex(7));
 	}
 	mVDAnimation->update();
 	mVDRouter->update();
+	mVDWebsocket->update();
 	mVDMix->update();
 }
 bool VDSession::save()
@@ -477,8 +479,8 @@ int VDSession::getWindowsResolution() {
 }
 /*void VDSession::setCrossfade(float aCrossfade) {
 	mVDRouter->changeFloatValue(21, aCrossfade);
-}*/
-void VDSession::blendRenderEnable(bool render) { 
+	}*/
+void VDSession::blendRenderEnable(bool render) {
 	mVDAnimation->blendRenderEnable(render);
 }
 
@@ -524,7 +526,7 @@ int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex) {
 		}
 	}
 	// load success, reset zoom
-	mVDRouter->changeFloatValue(22, 1.0f);
+	mVDWebsocket->changeFloatValue(22, 1.0f);
 	return rtn;
 }
 #pragma region events
@@ -548,7 +550,7 @@ bool VDSession::handleMouseDown(MouseEvent &event)
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseDown(event)) {
 		// let your application perform its mouseDown handling here
-		mVDRouter->changeFloatValue(21, event.getX() / getWindowWidth());
+		mVDWebsocket->changeFloatValue(21, event.getX() / getWindowWidth());
 		handled = false;
 	}
 	event.setHandled(handled);
@@ -613,79 +615,79 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_x:
 				// trixels
-				mVDRouter->changeFloatValue(16, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
+				mVDWebsocket->changeFloatValue(16, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
 				break;
 			case KeyEvent::KEY_r:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(1) + 0.1f;
 				if (newValue > 1.0f) newValue = 0.0f;
-				mVDRouter->changeFloatValue(1, newValue);
+				mVDWebsocket->changeFloatValue(1, newValue);
 				break;
 			case KeyEvent::KEY_g:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(2) + 0.1f;
 				if (newValue > 1.0f) newValue = 0.0f;
-				mVDRouter->changeFloatValue(2, newValue);
+				mVDWebsocket->changeFloatValue(2, newValue);
 				break;
 			case KeyEvent::KEY_b:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(3) + 0.1f;
 				if (newValue > 1.0f) newValue = 0.0f;
-				mVDRouter->changeFloatValue(3, newValue);
+				mVDWebsocket->changeFloatValue(3, newValue);
 				break;
 			case KeyEvent::KEY_e:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(1) - 0.1f;
 				if (newValue < 0.0f) newValue = 1.0;
-				mVDRouter->changeFloatValue(1, newValue);
+				mVDWebsocket->changeFloatValue(1, newValue);
 				break;
 			case KeyEvent::KEY_f:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(2) - 0.1f;
 				if (newValue < 0.0f) newValue = 1.0;
-				mVDRouter->changeFloatValue(2, newValue);
+				mVDWebsocket->changeFloatValue(2, newValue);
 				break;
 			case KeyEvent::KEY_v:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(3) - 0.1f;
 				if (newValue < 0.0f) newValue = 1.0;
-				mVDRouter->changeFloatValue(3, newValue);
+				mVDWebsocket->changeFloatValue(3, newValue);
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic
-				mVDRouter->changeFloatValue(10, mVDAnimation->getFloatUniformValueByIndex(10) + 0.05f);
+				mVDWebsocket->changeFloatValue(10, mVDAnimation->getFloatUniformValueByIndex(10) + 0.05f);
 				break;
 			case KeyEvent::KEY_p:
 				// pixelate
-				mVDRouter->changeFloatValue(15, mVDAnimation->getFloatUniformValueByIndex(15) + 0.05f);
+				mVDWebsocket->changeFloatValue(15, mVDAnimation->getFloatUniformValueByIndex(15) + 0.05f);
 				break;
 			case KeyEvent::KEY_t:
 				// glitch
-				mVDRouter->changeBoolValue(45, true);
+				mVDWebsocket->changeBoolValue(45, true);
 				break;
 			case KeyEvent::KEY_i:
 				// invert
-				mVDRouter->changeBoolValue(48, true);
+				mVDWebsocket->changeBoolValue(48, true);
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDRouter->toggleValue(46);
+				mVDWebsocket->toggleValue(46);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
-				mVDRouter->changeFloatValue(22, mVDAnimation->getFloatUniformValueByIndex(22) - 0.05f);
+				mVDWebsocket->changeFloatValue(22, mVDAnimation->getFloatUniformValueByIndex(22) - 0.05f);
 				break;
 			case KeyEvent::KEY_LEFT:
 				//mVDTextures->rewindMovie();				
-				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1) mVDRouter->changeFloatValue(21,mVDAnimation->getFloatUniformValueByIndex(21) - 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) - 0.1);
 				break;
 			case KeyEvent::KEY_RIGHT:
 				//mVDTextures->fastforwardMovie();
-				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0) mVDRouter->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1);
 				break;
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
-				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0) mVDRouter->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1);
 				break;
 			case KeyEvent::KEY_PAGEUP:
 				// crossfade left
-				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0) mVDRouter->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) - 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) - 0.1);
 				break;
-				
+
 			default:
 				handled = false;
 				break;
@@ -705,31 +707,31 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 			switch (event.getCode()) {
 			case KeyEvent::KEY_g:
 				// glitch
-				mVDRouter->changeBoolValue(45, false);
+				mVDWebsocket->changeBoolValue(45, false);
 				break;
 			case KeyEvent::KEY_t:
 				// trixels
-				mVDRouter->changeFloatValue(16, 0.0f);
+				mVDWebsocket->changeFloatValue(16, 0.0f);
 				break;
 			case KeyEvent::KEY_i:
 				// invert
-				mVDRouter->changeBoolValue(48, false);
+				mVDWebsocket->changeBoolValue(48, false);
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic
-				mVDRouter->changeFloatValue(10, 0.0f);
+				mVDWebsocket->changeFloatValue(10, 0.0f);
 				break;
 			case KeyEvent::KEY_p:
 				// pixelate
-				mVDRouter->changeFloatValue(15, 1.0f);
+				mVDWebsocket->changeFloatValue(15, 1.0f);
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDRouter->changeBoolValue(46, false);
+				mVDWebsocket->changeBoolValue(46, false);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
-				mVDRouter->changeFloatValue(22, 1.0f);
+				mVDWebsocket->changeFloatValue(22, 1.0f);
 				break;
 			default:
 				handled = false;
@@ -755,9 +757,11 @@ float VDSession::getWarpCrossfade(unsigned int aWarpIndex) {
 }
 void VDSession::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 	mVDMix->setWarpAFboIndex(aWarpIndex, aWarpFboIndex);
+	mVDWebsocket->changeWarpFboIndex(aWarpIndex, aWarpFboIndex, 0);
 }
 void VDSession::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 	mVDMix->setWarpBFboIndex(aWarpIndex, aWarpFboIndex);
+	mVDWebsocket->changeWarpFboIndex(aWarpIndex, aWarpFboIndex, 1);
 }
 void VDSession::updateWarpName(unsigned int aWarpIndex) {
 	mVDMix->updateWarpName(aWarpIndex);
@@ -783,16 +787,16 @@ ci::gl::TextureRef VDSession::getRenderTexture()
 #pragma endregion warps
 
 #pragma region fbos
-bool VDSession::isFlipH() { 
+bool VDSession::isFlipH() {
 	return mVDAnimation->isFlipH();
 }
-bool VDSession::isFlipV() { 
+bool VDSession::isFlipV() {
 	return mVDAnimation->isFlipV();
 }
-void VDSession::flipH() { 
+void VDSession::flipH() {
 	mVDAnimation->flipH();
 }
-void VDSession::flipV() { 
+void VDSession::flipV() {
 	mVDAnimation->flipV();
 }
 void VDSession::fboFlipV(unsigned int aFboIndex) {
@@ -1141,14 +1145,14 @@ void VDSession::createShaderThumb(unsigned int aShaderIndex) {
 #pragma region websockets
 #if defined( CINDER_MSW )
 void VDSession::wsConnect() {
-	mVDRouter->wsConnect();
+	mVDWebsocket->wsConnect();
 }
 void VDSession::wsWrite(string msg)
 {
-	mVDRouter->wsWrite(msg);
+	mVDWebsocket->wsWrite(msg);
 }
 void VDSession::wsPing() {
-	mVDRouter->wsPing();
+	mVDWebsocket->wsPing();
 }
 #endif
 #pragma endregion websockets

@@ -7,13 +7,13 @@
 #include "VDSettings.h"
 // Animation
 #include "VDAnimation.h"
+// Websocket
+#include "VDWebsocket.h"
 
-// MIDI (only on windows for now)
 #if defined( CINDER_MSW )
+// MIDI (only on windows for now)
 #include "CinderMidi.h"
-// WebSockets
-#include "WebSocketClient.h"
-#include "WebSocketServer.h"
+
 #endif
 // OSC
 #include "Osc.h"
@@ -24,7 +24,8 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 using namespace asio;
-using namespace asio::ip;
+using namespace asio::ip; 
+using namespace VideoDromm;
 #if USE_UDP
 using protocol = asio::ip::udp;
 #else
@@ -58,10 +59,10 @@ namespace VideoDromm
 
 	class VDRouter {
 	public:
-		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef);
-		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aAnimationRef)
+		VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWebsocketRef aVDWebsocket);
+		static VDRouterRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWebsocketRef aVDWebsocket)
 		{
-			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aAnimationRef));
+			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aVDAnimation, aVDWebsocket));
 		}
 		void						update();
 		void						shutdown();
@@ -94,28 +95,13 @@ namespace VideoDromm
 		void						sendOSCStringMessage(string controlType, int iarg0 = 0, string sarg1 = "", string sarg2 = "", string sarg3 = "", string sarg4 = "", string sarg5 = "");
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
-		// WebSockets
-		//void						wsWriteBinary(const void *data, int size);
-		void						wsWrite(std::string msg);
-		void						wsConnect();
-		void						wsPing();
-		//bool						isWsClientConnected() { return clientConnected; };
-		// change a control value and update network clients
-		void						changeFloatValue(unsigned int aControl, float aValue);
-		void						changeBoolValue(unsigned int aControl, bool aValue);
-		void						toggleAuto(unsigned int aIndex);
-		void						toggleValue(unsigned int aIndex);
-		void						toggleTempo(unsigned int aIndex);
-		void						resetAutoAnimation(unsigned int aIndex);
-
-		// received shaders
-		bool						hasReceivedShader() { return shaderReceived; };
-		string						getReceivedShader();
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
 		// Animation
 		VDAnimationRef				mVDAnimation;
+		// VDWebsocket
+		VDWebsocketRef				mVDWebsocket;
 		// lights4events
 		void						colorWrite();
 		// MIDI
@@ -141,26 +127,7 @@ namespace VideoDromm
 		float						midiNormalizedValue;
 		int							midiValue;
 		int							midiChannel;
-		// WebSockets
-		void						parseMessage(string msg);
-		// Web socket client
-		bool						clientConnected;
-		void						wsClientConnect();
-		void						wsClientDisconnect();
-#if defined( CINDER_MSW )
-		WebSocketClient				mClient;
-		void						onWsConnect();
-		void						onWsDisconnect();
-		void						onWsError(std::string err);
-		void						onWsInterrupt();
-		void						onWsPing(std::string msg);
-		void						onWsRead(std::string msg);
-		// Web socket  server
-		WebSocketServer				mServer;
-		void						serverConnect();
-		void						serverDisconnect();
-		double						mPingTime;
-#endif
+
 		// osc
 		ReceiverRef					mOSCReceiver;
 
@@ -168,9 +135,7 @@ namespace VideoDromm
 		static const int			MAX = 16;
 		// ableton liveOSC
 		string						tracks[MAX];
-		// received shaders
-		bool						shaderReceived;
-		string						receivedFragString;
+
 	};
 }
 
