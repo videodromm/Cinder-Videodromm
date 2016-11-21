@@ -431,7 +431,7 @@ void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue) {
 void VDWebsocket::changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex, unsigned int aSlot) {
 	//aSlot 0 = A, 1 = B,...
 	stringstream sParams;
-	sParams << "{\"cmd\" :[{\"type\" : 0,\"warp\" : " << aWarpIndex << "\"fbo\" : " << aWarpFboIndex << ",\"slot\" : " << aSlot << "}]}";
+	sParams << "{\"cmd\" :[{\"type\" : 0,\"warp\" : " << aWarpIndex << ",\"fbo\" : " << aWarpFboIndex << ",\"slot\" : " << aSlot << "}]}";
 	string strParams = sParams.str();
 	sendJSON(strParams);
 }

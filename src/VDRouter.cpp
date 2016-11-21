@@ -566,22 +566,6 @@ void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float
 	sendOSCFloatMessage(controlType, iarg0, farg1, farg2);
 }
 
-
-
-void VDRouter::sendJSON(string params) {
-
-	if (mVDSettings->mOSCEnabled) {
-		// send OSC
-		if (mVDSettings->mIsOSCSender) {
-
-			osc::Message msg("/json/params");
-			msg.append(params);
-
-			mOSCSender->send(msg);
-		}
-	}
-}
-
 void VDRouter::colorWrite()
 {
 	if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {

@@ -67,7 +67,6 @@ namespace VideoDromm
 		void						update();
 		void						shutdown();
 		// messages
-		void						sendJSON(string params);
 		void						updateParams(int iarg0, float farg1);
 		// MIDI
 		void						midiSetup();

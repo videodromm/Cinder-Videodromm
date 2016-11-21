@@ -891,10 +891,11 @@ void VDSession::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int a
 	CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
 	mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
 	// route message
+	/* OBSOLETE
 	stringstream aParams;
 	aParams << "{\"params\" :[{\"name\" : " << aFboIndex + 100 << ",\"value\" : " << aFboShaderIndex << "}]}"; // TODO update all to this way
 	string strAParams = aParams.str();
-	mVDRouter->sendJSON(strAParams);
+	mVDRouter->sendJSON(strAParams);*/
 }
 unsigned int VDSession::getFboFragmentShaderIndex(unsigned int aFboIndex) {
 	unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();
