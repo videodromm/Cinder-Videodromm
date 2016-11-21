@@ -47,8 +47,9 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	// warping
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
-	// otherwise create a warp from scratch
+	// initialize one warp
 	createWarpMix();
+    // TODO create other warps from warps.xml and json saved warpmixes
 
 	// reset no matter what, so we don't miss anything
 	reset();
@@ -884,6 +885,10 @@ unsigned int VDSession::getFboInputTextureIndex(unsigned int aFboIndex) {
 	return mFboList[aFboIndex]->getInputTextureIndex();
 }
 
+void VDSession::sendFragmentShader(unsigned int aShaderIndex) {
+	mVDWebsocket->changeFragmentShader(mShaderList[aShaderIndex]->getFragmentString());
+}
+
 void VDSession::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) {
 	CI_LOG_V("setFboFragmentShaderIndex, before, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
 	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
@@ -891,11 +896,7 @@ void VDSession::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int a
 	CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
 	mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
 	// route message
-	/* OBSOLETE
-	stringstream aParams;
-	aParams << "{\"params\" :[{\"name\" : " << aFboIndex + 100 << ",\"value\" : " << aFboShaderIndex << "}]}"; // TODO update all to this way
-	string strAParams = aParams.str();
-	mVDRouter->sendJSON(strAParams);*/
+	mVDWebsocket->changeFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString());
 }
 unsigned int VDSession::getFboFragmentShaderIndex(unsigned int aFboIndex) {
 	unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();

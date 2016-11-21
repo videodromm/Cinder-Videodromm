@@ -200,7 +200,7 @@ namespace VideoDromm {
 		void							wsConnect();
 		void							wsPing();
 		void							wsWrite(std::string msg);
-
+		void							sendFragmentShader(unsigned int aShaderIndex);
 #endif
 		// midi
 		void						midiSetup() { mVDRouter->midiSetup(); };
@@ -257,7 +257,6 @@ namespace VideoDromm {
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mFbosFilepath;
-		//vector<ci::gl::FboRef>			mMixFbos;
 		// fbo 
 		bool							mFlipV;
 		bool							mFlipH;

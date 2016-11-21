@@ -31,13 +31,13 @@ namespace VideoDromm {
 
 		// mix fbo to render
 		warpMixToRender = 0;
-		// initialize warps
-		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+		//mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
 		//if (fs::exists(mWarpSettings)) {
 		// load warp settings from file if one exists
 		//mWarps = Warp::readSettings(loadFile(mWarpSettings)); // TODO load from json file
 		//}
 		//else {
+		// otherwise create a warp from scratch
 
 
 		mCurrentBlend = 0;
@@ -50,7 +50,6 @@ namespace VideoDromm {
 		mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
 		mGlslBlend->setLabel("blend mixfbo");
-
 	}
 
 #pragma region blendmodes
@@ -203,6 +202,10 @@ namespace VideoDromm {
 		mGlslMix->uniform("iCrossfade", mWarpMix[warpMixToRender].ABCrossfade);
 
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getWidth(), mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getHeight()));
+		warpMixToRender++;
+		if (warpMixToRender >= mWarpMix.size()) {
+			warpMixToRender = 0;
+		}
 	}
 	void VDMix::resize() {
 		// tell the warps our window has been resized, so they properly scale up or down

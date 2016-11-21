@@ -114,7 +114,6 @@ namespace VideoDromm
 		void							renderMix();
 		void							renderBlend();
 		// warping
-		//gl::TextureRef					mImage;
 		string							fileWarpsName;
 		fs::path						mWarpSettings;
 		WarpList						mWarps;

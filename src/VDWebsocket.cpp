@@ -109,7 +109,7 @@ void VDWebsocket::parseMessage(string msg) {
 						switch (receivedType)
 						{
 						case 0:
-							// changeWarpFboIndex
+							// from changeWarpFboIndex
 							receivedWarpIndex = jsonElement->getChild("warp").getValue<float>();
 							receivedFboIndex = jsonElement->getChild("fbo").getValue<float>();
 							receivedSlot = jsonElement->getChild("slot").getValue<float>();
@@ -127,10 +127,6 @@ void VDWebsocket::parseMessage(string msg) {
 					}
 
 				}
-				/* NOT IMPLEMENTED and EXCEPTION JsonTree jsonSelectShader = json.getChild("selectShader");
-				for (JsonTree::ConstIter jsonElement = jsonSelectShader.begin(); jsonElement != jsonSelectShader.end(); ++jsonElement)
-				{
-				}*/
 			}
 			catch (cinder::JsonTree::Exception exception) {
 				mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
@@ -432,6 +428,13 @@ void VDWebsocket::changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarp
 	//aSlot 0 = A, 1 = B,...
 	stringstream sParams;
 	sParams << "{\"cmd\" :[{\"type\" : 0,\"warp\" : " << aWarpIndex << ",\"fbo\" : " << aWarpFboIndex << ",\"slot\" : " << aSlot << "}]}";
+	string strParams = sParams.str();
+	sendJSON(strParams);
+}
+void VDWebsocket::changeFragmentShader(string aFragmentShaderText) {
+
+	stringstream sParams;
+	sParams << "{\"event\" : \"frag\",\"message\" : " << aFragmentShaderText << "}";
 	string strParams = sParams.str();
 	sendJSON(strParams);
 }

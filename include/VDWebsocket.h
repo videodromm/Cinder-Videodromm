@@ -51,6 +51,7 @@ namespace VideoDromm
 		void						toggleTempo(unsigned int aIndex);
 		void						resetAutoAnimation(unsigned int aIndex);
 		void						changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex, unsigned int aSlot); //aSlot 0 = A, 1 = B,...
+		void                        changeFragmentShader(string aFragmentShaderText);
 		// received shaders
 		bool						hasReceivedShader() { return shaderReceived; }; // TODO remove
 		string						getReceivedShader();

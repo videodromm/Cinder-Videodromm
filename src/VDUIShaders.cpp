@@ -71,6 +71,11 @@ void VDUIShaders::Run(const char* title) {
 			ui::PopStyleColor(3);
 			if (ui::IsItemHovered()) ui::SetTooltip("Edit shader");
 			ui::SameLine();
+
+            //send with websocket
+			sprintf(buf, "WS##ws%d", s);
+			if (ui::Button(buf)) mVDSession->sendFragmentShader(s);
+
 			// thumb
 			sprintf(buf, "T##st%d", s);
 			if (ui::Button(buf)){
