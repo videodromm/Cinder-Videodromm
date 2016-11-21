@@ -75,6 +75,8 @@ void VDUIShaders::Run(const char* title) {
             //send with websocket
 			sprintf(buf, "WS##ws%d", s);
 			if (ui::Button(buf)) mVDSession->sendFragmentShader(s);
+			ui::SameLine();
+
 
 			// thumb
 			sprintf(buf, "T##st%d", s);

@@ -67,6 +67,9 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		oStream.close();
 		save();
 	}
+	// init for received shaders from websockets for warp 0
+	setFboFragmentShaderIndex(1, 1);
+	setFboFragmentShaderIndex(2, 2);
 }
 
 VDSessionRef VDSession::create(VDSettingsRef aVDSettings)
@@ -130,9 +133,6 @@ void VDSession::fromXml(const XmlTree &xml) {
 				}
 			}
 		}
-		// init for received shaders from websockets for warp 0
-		setFboFragmentShaderIndex(1, 1);
-		setFboFragmentShaderIndex(2, 2);
 	}
 }
 // control values
