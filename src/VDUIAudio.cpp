@@ -32,7 +32,7 @@ void VDUIAudio::Run(const char* title) {
 			mVDSession->setControlValue(13, multx);
 		}
 
-		// TODO ui::PlotHistogram("Histogram", mVDAnimation->iFreqs, 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
+		ui::PlotHistogram("Histogram", mVDSession->getFreqs(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
 
 		if (mVDSession->getMaxVolume() > 240.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 		ui::PlotLines("Volume", &timeValues.front(), (int)timeValues.size(), timeValues_offset, toString(int(mVDSession->getMaxVolume())).c_str(), 0.0f, 255.0f, ImVec2(0, 30));

@@ -142,6 +142,23 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	ui::Begin(buf);
 	{
 		ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+		// fps
+		static ImVector<float> values; if (values.empty()) { values.resize(100); memset(&values.front(), 0, values.size() * sizeof(float)); }
+		static int values_offset = 0;
+		static float refresh_time = -1.0f;
+		if (ui::GetTime() > refresh_time + 1.0f / 6.0f)
+		{
+			refresh_time = ui::GetTime();
+			values[values_offset] = mVDSettings->iFps;
+			values_offset = (values_offset + 1) % values.size();
+		}
+		if (mVDSettings->iFps < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+		ui::PlotLines("FPS", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
+		if (mVDSettings->iFps < 12.0) ui::PopStyleColor();
+		ui::SameLine();
+		ui::Text("Target FPS %.2f ", mVDSession->getTargetFps());
+		ui::SameLine();
+		ui::Text(" fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 
 		ui::RadioButton("Audio", &currentWindowRow1, 0); ui::SameLine();
 		ui::RadioButton("Midi", &currentWindowRow1, 1); ui::SameLine();
@@ -172,11 +189,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::PopStyleColor(3);
 		hue++;
 
-		// crossfade
-		/*if (ui::DragFloat("Xfade", &mVDAnimation->controlValues[18], 0.01f, 0.001f, 1.0f))
-		{
-		}*/
-
 		ui::RadioButton("Textures", &currentWindowRow2, 0); ui::SameLine();
 		ui::RadioButton("Fbos", &currentWindowRow2, 1); ui::SameLine();
 		ui::RadioButton("Shaders", &currentWindowRow2, 2); ui::SameLine();
@@ -185,27 +197,10 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Warps", &currentWindowRow2, 5); ui::SameLine();
 
 #pragma region Info
-		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 		ui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
 		ui::TextWrapped("WS Msg: %s", mVDSettings->mWebSocketsMsg.c_str());
 		ui::TextWrapped("OSC Msg: %s", mVDSettings->mOSCMsg.c_str());
-		
-		ui::Text("Target FPS %.2f ", mVDSession->getTargetFps());
-		ui::SameLine();
 
-		// fps
-		static ImVector<float> values; if (values.empty()) { values.resize(100); memset(&values.front(), 0, values.size()*sizeof(float)); }
-		static int values_offset = 0;
-		static float refresh_time = -1.0f;
-		if (ui::GetTime() > refresh_time + 1.0f / 6.0f)
-		{
-			refresh_time = ui::GetTime();
-			values[values_offset] = mVDSettings->iFps;
-			values_offset = (values_offset + 1) % values.size();
-		}
-		if (mVDSettings->iFps < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-		ui::PlotLines("FPS", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
-		if (mVDSettings->iFps < 12.0) ui::PopStyleColor();
 #pragma endregion Info	
 		ui::PopItemWidth();
 	}

@@ -86,7 +86,7 @@ namespace VideoDromm {
 		void							tapTempo() { mVDAnimation->tapTempo(); };
 		// audio
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
-		float							iFreqs[7];
+		float *							getFreqs() { return mVDAnimation->iFreqs; };
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 		// shaders
