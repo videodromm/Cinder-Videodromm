@@ -190,14 +190,12 @@ void VDWebsocket::parseMessage(string msg) {
 					mFragProcessed.close();
 					CI_LOG_V("processed file saved:" + processedFile.string());
 					mVDSettings->mShaderToLoad = processedFile.string();
-
 				}
 				catch (cinder::JsonTree::Exception exception) {
 					mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
 					mVDSettings->mWebSocketsMsg += exception.what();
 					mVDSettings->mWebSocketsMsg += "  ";
 				}
-
 			}
 		}
 		else if (msg.substr(0, 7) == "uniform") {

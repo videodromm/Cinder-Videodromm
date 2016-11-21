@@ -72,11 +72,13 @@ void VDUIShaders::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Edit shader");
 			ui::SameLine();
 
-            //send with websocket
-			sprintf(buf, "WS##ws%d", s);
-			if (ui::Button(buf)) mVDSession->sendFragmentShader(s);
-			ui::SameLine();
-
+			if (s > 4)
+			{
+				ui::SameLine();
+				sprintf_s(buf, "X##del%d", s);
+				if (ui::Button(buf)) mVDSession->removeShader(s);
+				if (ui::IsItemHovered()) ui::SetTooltip("Remove shader");
+			}
 
 			// thumb
 			sprintf(buf, "T##st%d", s);
@@ -84,6 +86,12 @@ void VDUIShaders::Run(const char* title) {
 				mVDSession->createShaderThumb(s);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Create thumb");
+			ui::SameLine();
+
+            // send with websocket
+			sprintf(buf, "WS##ws%d", s);
+			if (ui::Button(buf)) mVDSession->sendFragmentShader(s);
+
 			for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
 				if (f>0) ui::SameLine();
 				if (mVDSession->getFboFragmentShaderIndex(f) == s) {

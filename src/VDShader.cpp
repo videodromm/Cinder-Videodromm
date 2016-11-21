@@ -322,8 +322,9 @@ string VDShader::getName() {
 	return mName;
 }
 
-VDShader::~VDShader() {
-	CI_LOG_V("VDShader destructor");
+void VDShader::removeShader() {
+	CI_LOG_V("remove shader");
+	mValid = false;
 }
 
 #pragma warning(pop) // _CRT_SECURE_NO_WARNINGS

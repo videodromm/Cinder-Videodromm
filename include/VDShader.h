@@ -35,7 +35,6 @@ namespace VideoDromm
 	class VDShader {
 	public:
 		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath);
-		virtual					~VDShader();
 		//void update();
 		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath)
 		{
@@ -53,6 +52,7 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getThumb();
 		void							createThumb();
         bool							isValid() { return mValid; };
+		void							removeShader();
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

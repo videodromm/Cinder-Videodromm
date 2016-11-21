@@ -106,7 +106,7 @@ namespace VideoDromm {
 		string							getVertexShaderString(unsigned int aShaderIndex);
 		string							getFragmentShaderString(unsigned int aShaderIndex);
 		void							createShaderThumb(unsigned int aShaderIndex);
-
+		void							removeShader(unsigned int aShaderIndex);
 		// utils
 		int								getWindowsResolution();
 		float							getTargetFps() { return mTargetFps; };

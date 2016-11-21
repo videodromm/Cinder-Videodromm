@@ -49,7 +49,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	gl::enableDepthWrite();
 	// initialize one warp
 	createWarpMix();
-    // TODO create other warps from warps.xml and json saved warpmixes
+	// TODO create other warps from warps.xml and json saved warpmixes
 
 	// reset no matter what, so we don't miss anything
 	reset();
@@ -486,7 +486,6 @@ void VDSession::blendRenderEnable(bool render) {
 }
 // was int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex)
 void VDSession::fileDrop(FileDropEvent event) {
-	int rtn = -1;
 	string ext = "";
 
 	unsigned int index = (int)(event.getX() / (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin));
@@ -509,12 +508,25 @@ void VDSession::fileDrop(FileDropEvent event) {
 		loadImageFile(absolutePath, index, true);
 	}
 	else if (ext == "glsl" || ext == "frag") {
-		// don't reuse fbo, create corresponding fbo
+		// if we don't reuse fbo, create corresponding fbo	
 		if (index == 0) {
-			rtn = loadFragmentShader(absolutePath);
+			// find a removed shader
+			bool notFound = true;
+			for (unsigned int s = 0; s < mShaderList.size(); ++s) {
+				if (!mShaderList[s]->isValid() && notFound) {
+					notFound = false;
+					loadFboFragmentShader(absolutePath, s);
+				}
+			}
+			if (notFound) loadFragmentShader(absolutePath);
 		}
 		else {
-			rtn = loadFboFragmentShader(absolutePath, index);
+			if (index > mFboList.size() - 1) {
+				loadFragmentShader(absolutePath);
+			}
+			else {
+				loadFboFragmentShader(absolutePath, index);
+			}
 		}
 	}
 	else if (ext == "xml") {
@@ -823,6 +835,19 @@ int VDSession::loadFragmentShader(string aFilePath) {
 	if (s->isValid()) {
 		mShaderList.push_back(s);
 		rtn = mShaderList.size() - 1;
+		// create a new fbo
+		VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+		// create fbo xml
+		XmlTree			fboXml;
+		fboXml.setTag(mShaderList[rtn]->getName());
+		fboXml.setAttribute("id", toString(rtn));
+		fboXml.setAttribute("width", "640");
+		fboXml.setAttribute("height", "480");
+		fboXml.setAttribute("shadername", mShaderList[rtn]->getName());
+		fboXml.setAttribute("inputtextureindex", "0");
+		f->fromXml(fboXml);
+		f->setShaderIndex(rtn);
+		mFboList.push_back(f);
 	}
 	return rtn;
 }
@@ -1145,6 +1170,10 @@ string VDSession::getVertexShaderString(unsigned int aShaderIndex) {
 void VDSession::createShaderThumb(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 	return mShaderList[aShaderIndex]->createThumb();
+}
+void VDSession::removeShader(unsigned int aShaderIndex) {
+	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+	return mShaderList[aShaderIndex]->removeShader();
 }
 #pragma endregion shaders
 

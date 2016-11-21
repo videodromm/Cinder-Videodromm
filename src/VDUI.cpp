@@ -83,7 +83,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		style.ItemSpacing = ImVec2(3, 3);
 		style.ItemInnerSpacing = ImVec2(3, 3);
 		style.WindowMinSize = ImVec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		style.Alpha = 0.6f;
+		style.Alpha = 0.85f;
 		style.Colors[ImGuiCol_Text] = ImVec4(0.89f, 0.92f, 0.94f, 1.00f);
 		style.Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05f, 0.05f, 1.00f);
 		style.Colors[ImGuiCol_Border] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
@@ -153,12 +153,12 @@ void VDUI::Run(const char* title, unsigned int fps) {
 			values_offset = (values_offset + 1) % values.size();
 		}
 		if (mVDSettings->iFps < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-		ui::PlotLines("FPS", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
+		ui::PlotLines("FPS ", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
 		if (mVDSettings->iFps < 12.0) ui::PopStyleColor();
 		ui::SameLine();
-		ui::Text("Target FPS %.2f ", mVDSession->getTargetFps());
+		ui::Text("(Target FPS %.2f) ", mVDSession->getTargetFps());
 		ui::SameLine();
-		ui::Text(" fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
+		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 
 		ui::RadioButton("Audio", &currentWindowRow1, 0); ui::SameLine();
 		ui::RadioButton("Midi", &currentWindowRow1, 1); ui::SameLine();
@@ -194,7 +194,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Shaders", &currentWindowRow2, 2); ui::SameLine();
 		ui::RadioButton("Blend", &currentWindowRow2, 3); ui::SameLine();
 		ui::RadioButton("Console", &currentWindowRow2, 4); ui::SameLine();
-		ui::RadioButton("Warps", &currentWindowRow2, 5); ui::SameLine();
+		ui::RadioButton("Warps", &currentWindowRow2, 5);
 
 #pragma region Info
 		ui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
