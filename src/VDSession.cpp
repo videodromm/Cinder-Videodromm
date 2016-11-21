@@ -896,7 +896,7 @@ void VDSession::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int a
 	CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
 	mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
 	// route message
-	mVDWebsocket->changeFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString());
+	// LOOP! mVDWebsocket->changeFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString());
 }
 unsigned int VDSession::getFboFragmentShaderIndex(unsigned int aFboIndex) {
 	unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();

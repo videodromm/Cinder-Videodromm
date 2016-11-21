@@ -50,7 +50,7 @@ void VDConsole::AddLog(const char* fmt, ...) IM_PRINTFARGS(2)
 void VDConsole::Run(const char* title)
 {
 
-	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiLargePreviewH));
+	ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth / 2, mVDSettings->uiLargePreviewH*2));
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 
 	if (!ImGui::Begin(title))
