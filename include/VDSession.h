@@ -113,7 +113,8 @@ namespace VideoDromm {
 		void							blendRenderEnable(bool render);
 
 		// file operations (filedrop, etc)
-		int								loadFileFromAbsolutePath(string aAbsolutePath, int aIndex = 0);
+		//int								loadFileFromAbsolutePath(string aAbsolutePath, int aIndex = 0);
+		void							fileDrop(FileDropEvent event);
 		// warps
 		string							getWarpName(unsigned int aWarpIndex);
 		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex);

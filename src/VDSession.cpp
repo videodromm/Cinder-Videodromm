@@ -484,51 +484,56 @@ int VDSession::getWindowsResolution() {
 void VDSession::blendRenderEnable(bool render) {
 	mVDAnimation->blendRenderEnable(render);
 }
-
-int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex) {
+// was int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex)
+void VDSession::fileDrop(FileDropEvent event) {
 	int rtn = -1;
 	string ext = "";
-	// use the last of the dropped files
-	int dotIndex = aAbsolutePath.find_last_of(".");
-	int slashIndex = aAbsolutePath.find_last_of("\\");
 
-	if (dotIndex != std::string::npos && dotIndex > slashIndex) ext = aAbsolutePath.substr(aAbsolutePath.find_last_of(".") + 1);
+	unsigned int index = (int)(event.getX() / (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin));
+	int y = (int)(event.getY());
+	if (index < 2 || y < mVDSettings->uiYPosRow3 || y > mVDSettings->uiYPosRow3 + mVDSettings->uiPreviewH) index = 0;
+	ci::fs::path mPath = event.getFile(event.getNumFiles() - 1);
+	string absolutePath = mPath.string();
+	// use the last of the dropped files
+	int dotIndex = absolutePath.find_last_of(".");
+	int slashIndex = absolutePath.find_last_of("\\");
+
+	if (dotIndex != std::string::npos && dotIndex > slashIndex) ext = absolutePath.substr(absolutePath.find_last_of(".") + 1);
 
 	if (ext == "wav" || ext == "mp3") {
-		loadAudioFile(aAbsolutePath);
+		loadAudioFile(absolutePath);
 	}
 	else if (ext == "png" || ext == "jpg") {
-		if (aIndex < 1) aIndex = 1;
-		if (aIndex > 3) aIndex = 3;
-		loadImageFile(aAbsolutePath, aIndex, true);
+		if (index < 1) index = 1;
+		if (index > 3) index = 3;
+		loadImageFile(absolutePath, index, true);
 	}
 	else if (ext == "glsl" || ext == "frag") {
-
 		// don't reuse fbo, create corresponding fbo
-		if (aIndex == 0) {
-			rtn = loadFragmentShader(aAbsolutePath);
+		if (index == 0) {
+			rtn = loadFragmentShader(absolutePath);
 		}
 		else {
-			rtn = loadFboFragmentShader(aAbsolutePath, aIndex);
+			rtn = loadFboFragmentShader(absolutePath, index);
 		}
 	}
 	else if (ext == "xml") {
 	}
 	else if (ext == "mov") {
-		loadMovie(aAbsolutePath, aIndex);
+		loadMovie(absolutePath, index);
 	}
 	else if (ext == "txt") {
 	}
 	else if (ext == "") {
 		// try loading image sequence from dir
-		if (!loadImageSequence(aAbsolutePath, aIndex)) {
+		if (!loadImageSequence(absolutePath, index)) {
 			// try to load a folder of shaders
-			loadShaderFolder(aAbsolutePath);
+			loadShaderFolder(absolutePath);
 		}
 	}
 	// load success, reset zoom
-	mVDWebsocket->changeFloatValue(22, 1.0f);
-	return rtn;
+	// useless mVDWebsocket->changeFloatValue(22, 1.0f);
+	//return rtn;
 }
 #pragma region events
 bool VDSession::handleMouseMove(MouseEvent &event)
