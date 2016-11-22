@@ -65,7 +65,7 @@ int VDUtils::getWindowsResolution()
 	{
 		mVDSettings->mMainWindowWidth = w;
 		mVDSettings->mMainWindowHeight = h;
-		mVDSettings->mRenderX = mVDSettings->mMainWindowWidth+1;
+		mVDSettings->mRenderX = mVDSettings->mMainWindowWidth;
 		// for MODE_MIX and triplehead(or doublehead), we only want 1/3 of the screen centered	
 		for (auto display : Display::getDisplays())
 		{

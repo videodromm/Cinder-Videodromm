@@ -352,6 +352,9 @@ void VDSession::resize() {
 	mVDMix->resize();
 }
 void VDSession::update() {
+	// fps calculated in main app
+	mVDSettings->sFps = toString(floor(getControlValue(30)));
+
 	if (mVDWebsocket->hasReceivedShader()) {
 		if (mVDMix->getWarpCrossfade(0) < 0.5) {
 			setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
@@ -859,7 +862,7 @@ int VDSession::loadFboFragmentShader(string aFilePath, unsigned int aFboIndex) {
 	if (rtn > -1) {
 		mFboList[aFboIndex]->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 	}
-	mVDSettings->mShaderToLoad = "";
+	//mVDSettings->mShaderToLoad = "";
 
 	return rtn;
 }

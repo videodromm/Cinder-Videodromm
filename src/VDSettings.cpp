@@ -508,15 +508,13 @@ void VDSettings::reset()
 #else
 	iDebug = false;
 #endif  // _DEBUG
-	iFps = 60.0;
 	sFps = "60";
 	iShowFps = true;
-	//iMouse = vec4(mRenderWidth / 2, mRenderHeight / 2, 1.0, 1.0);
 
 	multFactor = 126.0;
 	currentSelectedIndex = 0;
 	selectedWarp = 0;
-	//iChannels[0] = 0;
+
 	for (int a = 0; a < MAX; a++)
 	{
 		iChannels[a] = a;
@@ -553,7 +551,6 @@ void VDSettings::reset()
 	ColorPurple = ColorA(0.5f, 0.0f, 1.0f, 1.0f);
 	isUIDirty = true;
 	mLiveCode = false;
-	mShaderToLoad = "";
 
 	mStateTransition = 1.0;
 

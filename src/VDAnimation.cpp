@@ -112,6 +112,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iParam2", 28, 1.0f, 0.01f, 100.0f);
 	// tempo time
 	createFloatUniform("iTempoTime", 29, 0.1f);
+	// fps
+	createFloatUniform("iFps", 30, 60.0f, 0.0f, 500.0f);
 	// global time in seconds
 	createFloatUniform("iGlobalTime", 49, 0.0f);
 
