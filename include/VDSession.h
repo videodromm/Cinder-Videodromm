@@ -217,6 +217,7 @@ namespace VideoDromm {
 		void						closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
 		void						openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
 		void						closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
+		ci::gl::Texture2dRef			getRenderedTexture()  { return mVDMix->getRenderedTexture(); };
 
 	private:
 		// Settings

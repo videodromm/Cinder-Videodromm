@@ -79,6 +79,8 @@ namespace VideoDromm
 		ci::gl::TextureRef				getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
 		void							save();
+		ci::gl::Texture2dRef			getRenderedTexture();
+
 	private:
 		bool							mFlipV;
 		bool							mFlipH;
@@ -121,5 +123,7 @@ namespace VideoDromm
 
 		int								warpMixToRender;
 		map<int, WarpMix>				mWarpMix;
+		// temp
+		ci::gl::Texture2dRef			mRenderedTexture;
 	};
 }

@@ -206,6 +206,16 @@ namespace VideoDromm {
 		if (warpMixToRender >= mWarpMix.size()) {
 			warpMixToRender = 0;
 		}
+		if (warpMixToRender == 1) {
+			mRenderedTexture = mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getColorTexture();
+		}
+	}
+	ci::gl::Texture2dRef VDMix::getRenderedTexture() {
+		//if (!isReady) {
+		renderMix();
+			//isReady = true;
+		//}
+		return mRenderedTexture;
 	}
 	void VDMix::resize() {
 		// tell the warps our window has been resized, so they properly scale up or down

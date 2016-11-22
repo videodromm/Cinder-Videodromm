@@ -464,7 +464,7 @@ void VDSession::reset()
 	mMovieFileName = "";
 	mImageSequencePath = "";
 	mMoviePlaybackDelay = 10;
-	mFadeInDelay = 1;
+	mFadeInDelay = 5;
 	mFadeOutDelay = 1;
 	mVDAnimation->mEndFrame = 20000000;
 	mText = "";
