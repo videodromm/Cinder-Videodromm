@@ -120,6 +120,18 @@ void VDWebsocket::parseMessage(string msg) {
 								mVDMix->setWarpBFboIndex(receivedWarpIndex, receivedFboIndex);
 							}
 							break;
+						case 1:
+							// from changeWarpShaderIndex
+							receivedWarpIndex = jsonElement->getChild("warp").getValue<float>();
+							receivedShaderIndex = jsonElement->getChild("shader").getValue<float>();
+							receivedSlot = jsonElement->getChild("slot").getValue<float>();
+							if (receivedSlot == 0) {
+								mVDMix->setWarpAShaderIndex(receivedWarpIndex, receivedShaderIndex);
+							}
+							else {
+								mVDMix->setWarpBShaderIndex(receivedWarpIndex, receivedShaderIndex);
+							}
+							break;
 						default:
 							break;
 						}
@@ -421,6 +433,13 @@ void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue) {
 		string strParams = sParams.str();
 		sendJSON(strParams);
 	}
+}
+void VDWebsocket::changeShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex, unsigned int aSlot) {
+	//aSlot 0 = A, 1 = B,...
+	stringstream sParams;
+	sParams << "{\"cmd\" :[{\"type\" : 1,\"warp\" : " << aWarpIndex << ",\"shader\" : " << aWarpShaderIndex << ",\"slot\" : " << aSlot << "}]}";
+	string strParams = sParams.str();
+	sendJSON(strParams);
 }
 void VDWebsocket::changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex, unsigned int aSlot) {
 	//aSlot 0 = A, 1 = B,...

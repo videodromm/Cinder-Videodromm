@@ -69,12 +69,16 @@ namespace VideoDromm
 		string							getWarpName(unsigned int aWarpIndex);
 		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpBFboIndex(unsigned int aWarpIndex);
+		unsigned int					getWarpAShaderIndex(unsigned int aWarpIndex);
+		unsigned int					getWarpBShaderIndex(unsigned int aWarpIndex);
+		float							getWarpCrossfade(unsigned int aWarpIndex);
 		unsigned int					getWarpCount();
-		void							createWarp();
+		void							createWarp(string wName = "warp", unsigned int aFboIndex = 1, unsigned int aShaderIndex = 4, unsigned int bFboIndex = 2, unsigned int bShaderIndex = 5, float xFade = 1.0f);
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
+		void							setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
+		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
-		float							getWarpCrossfade(unsigned int aWarpIndex);
 		void							updateWarpName(unsigned int aWarpIndex);
 		ci::gl::TextureRef				getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);

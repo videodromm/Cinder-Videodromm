@@ -50,6 +50,7 @@ namespace VideoDromm
 		void						toggleValue(unsigned int aIndex);
 		void						toggleTempo(unsigned int aIndex);
 		void						resetAutoAnimation(unsigned int aIndex);
+		void						changeShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex, unsigned int aSlot);
 		void						changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex, unsigned int aSlot); //aSlot 0 = A, 1 = B,...
 		void                        changeFragmentShader(string aFragmentShaderText);
 		// received shaders
@@ -74,6 +75,7 @@ namespace VideoDromm
 		int							receivedType;
 		int							receivedWarpIndex;
 		int							receivedFboIndex;
+		int							receivedShaderIndex;
 		int							receivedSlot;
 #if defined( CINDER_MSW )
 		WebSocketClient				mClient;

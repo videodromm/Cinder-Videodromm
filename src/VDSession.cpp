@@ -390,7 +390,7 @@ bool VDSession::save()
 	settings.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
 	settings.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
 	settings.addChild(ci::JsonTree("endframe", mVDAnimation->mEndFrame));
-	doc.pushBack(settings);
+	doc.pushBack(settings); 
 
 	JsonTree assets = JsonTree::makeArray("assets");
 	if (mWaveFileName.length() > 0) assets.addChild(ci::JsonTree("wavefile", mWaveFileName));
@@ -403,9 +403,23 @@ bool VDSession::save()
 		assets.addChild(ci::JsonTree("textplaybackdelay", mTextPlaybackDelay));
 		assets.addChild(ci::JsonTree("textplaybackend", mTextPlaybackEnd));
 	}
-	if (mShaderLeft.length() > 0) assets.addChild(ci::JsonTree("ShaderLeft", mShaderLeft));
-	if (mShaderRight.length() > 0) assets.addChild(ci::JsonTree("ShaderRight", mShaderRight));
+	//if (mShaderLeft.length() > 0) assets.addChild(ci::JsonTree("ShaderLeft", mShaderLeft));
+	//if (mShaderRight.length() > 0) assets.addChild(ci::JsonTree("ShaderRight", mShaderRight));
 	doc.pushBack(assets);
+	// warps
+	JsonTree warps = JsonTree::makeArray("warps");
+	warps.addChild(ci::JsonTree("size", mVDMix->getWarpCount()));
+	doc.pushBack(warps);
+	for (unsigned int w = 0; w < mVDMix->getWarpCount(); w++) {
+		JsonTree jsonWarp = JsonTree::makeArray("warp" + toString(w));
+		jsonWarp.addChild(ci::JsonTree("name", mVDMix->getWarpName(w)));
+		jsonWarp.addChild(ci::JsonTree("afboindex", mVDMix->getWarpAFboIndex(w)));
+		jsonWarp.addChild(ci::JsonTree("bfboindex", mVDMix->getWarpBFboIndex(w)));
+		jsonWarp.addChild(ci::JsonTree("ashaderindex", mVDMix->getWarpAShaderIndex(w)));
+		jsonWarp.addChild(ci::JsonTree("bshaderindex", mVDMix->getWarpBShaderIndex(w)));
+		jsonWarp.addChild(ci::JsonTree("xfade", mVDMix->getWarpCrossfade(w)));
+		doc.pushBack(jsonWarp);
+	}
 
 	doc.write(writeFile(sessionPath), JsonTree::WriteOptions());
 
@@ -440,8 +454,24 @@ void VDSession::restore()
 		if (assets.hasChild("text")) mText = assets.getValueForKey<string>("text");
 		if (assets.hasChild("textplaybackdelay")) mTextPlaybackDelay = assets.getValueForKey<int>("textplaybackdelay");
 		if (assets.hasChild("textplaybackend")) mTextPlaybackEnd = assets.getValueForKey<int>("textplaybackend");
-		if (assets.hasChild("ShaderLeft")) mShaderLeft = assets.getValueForKey<string>("ShaderLeft");
-		if (assets.hasChild("ShaderRight")) mShaderRight = assets.getValueForKey<string>("ShaderRight");
+		//if (assets.hasChild("ShaderLeft")) mShaderLeft = assets.getValueForKey<string>("ShaderLeft");
+		//if (assets.hasChild("ShaderRight")) mShaderRight = assets.getValueForKey<string>("ShaderRight");
+
+		// warps
+		unsigned int warpsize = 0;
+		JsonTree warps(doc.getChild("warps"));
+		if (assets.hasChild("size")) warpsize = warps.getValueForKey<int>("size");
+		for (unsigned int w = 0; w < warpsize; w++) {
+			JsonTree jsonWarp(doc.getChild("warp" + toString(w)));
+			string wName = (jsonWarp.hasChild("name")) ? jsonWarp.getValueForKey<string>("name") : "no name";
+			unsigned int afboindex = (jsonWarp.hasChild("afboindex")) ? jsonWarp.getValueForKey<int>("afboindex") : 1;
+			unsigned int bfboindex = (jsonWarp.hasChild("bfboindex")) ? jsonWarp.getValueForKey<int>("bfboindex") : 1;
+			unsigned int aShaderIndex = (jsonWarp.hasChild("ashaderindex")) ? jsonWarp.getValueForKey<int>("ashaderindex") : 1;
+			unsigned int bShaderIndex = (jsonWarp.hasChild("bshaderindex")) ? jsonWarp.getValueForKey<int>("bshaderindex") : 1;
+			float xfade = (jsonWarp.hasChild("xfade")) ? jsonWarp.getValueForKey<float>("xfade") : 1.0f;
+			mVDMix->createWarp(wName, afboindex, aShaderIndex, bfboindex, bShaderIndex, xfade);
+		}
+
 	}
 	catch (const JsonTree::ExcJsonParserError& exc) {
 		CI_LOG_W(exc.what());
@@ -473,8 +503,8 @@ void VDSession::reset()
 	mText = "";
 	mTextPlaybackDelay = 10;
 	mTextPlaybackEnd = 2020000;
-	mShaderLeft = "";
-	mShaderRight = "";
+	//mShaderLeft = "";
+	//mShaderRight = "";
 
 	resetSomeParams();
 }
@@ -775,6 +805,20 @@ void VDSession::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 }
 float VDSession::getWarpCrossfade(unsigned int aWarpIndex) {
 	return mVDMix->getWarpCrossfade(aWarpIndex);
+}
+unsigned int VDSession::getWarpAShaderIndex(unsigned int aWarpIndex) {
+	return mVDMix->getWarpAShaderIndex(aWarpIndex);
+}
+unsigned int VDSession::getWarpBShaderIndex(unsigned int aWarpIndex) {
+	return mVDMix->getWarpBShaderIndex(aWarpIndex);
+}
+void VDSession::setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex) {
+	mVDMix->setWarpAShaderIndex(aWarpIndex, aWarpShaderIndex);
+	mVDWebsocket->changeShaderIndex(aWarpIndex, aWarpShaderIndex, 0);
+}
+void VDSession::setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex) {
+	mVDMix->setWarpBShaderIndex(aWarpIndex, aWarpShaderIndex);
+	mVDWebsocket->changeShaderIndex(aWarpIndex, aWarpShaderIndex, 1);
 }
 void VDSession::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 	mVDMix->setWarpAFboIndex(aWarpIndex, aWarpFboIndex);
