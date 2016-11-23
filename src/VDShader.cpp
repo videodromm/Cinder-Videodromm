@@ -290,6 +290,7 @@ void VDShader::createThumb() {
 	mShader->uniform("iRenderXY", mVDSettings->mRenderXY);
 	mShader->uniform("iZoom", 1.0f);
 	mShader->uniform("iAlpha", 1.0f);
+	//mShader->uniform("iFps", mVDSession->getControlValue(30));
 
 	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 	// stop drawing into the FBO

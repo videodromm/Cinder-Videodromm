@@ -16,26 +16,6 @@ namespace VideoDromm {
 	typedef std::shared_ptr<class VDSettings> VDSettingsRef;
 	//! struct for textures 
 	/* obsolete
-	struct Texta
-	{
-	char						name[32];
-	int							sequenceIndex;
-	bool						isSequence;
-	};
-	//! struct for thumbs fbos only
-	struct FrameBuffa
-	{
-	string						name;
-	gl::FboRef					fbo;
-	bool						isFlipV;
-	bool						isFlipH;
-	};
-	struct ShadaFbo
-	{
-	ci::gl::Fbo					fbo;
-	int							shadaIndex;
-	bool						active;
-	};
 	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures 
 	struct Sender
 	{
@@ -44,31 +24,7 @@ namespace VideoDromm {
 		ci::gl::TextureRef			texture;
 		bool						active;
 	};
-	struct Shada
-	{
-		gl::GlslProgRef				shader;
-		string						name;
-		string						text;
-		bool						active;
-		int							microseconds;
-	};*/
-	/*struct WarpInput
-	{
-	int							leftIndex;
-	int							leftMode;		// 0 for input texture, 1 for shader
-	int							rightIndex;
-	int							rightMode;		// 0 for input texture, 1 for shader
-	float						controlValues[18];		// from 0 left to 1 right
-	bool						hasTexture;		// has already a texture? if not the first one is put on left and right
-	bool						active;
-	};
-	struct WarpFbo
-	{
-	ci::gl::FboRef				fbo;
-	int							textureIndex;
-	int							textureMode;	// 0 for input texture, 1 for shader
-	bool						active;
-	};*/
+	*/
 
 	class VDSettings
 	{
@@ -146,7 +102,6 @@ namespace VideoDromm {
 		float						iChannelTime[4];
 		vec3						iResolution;        // viewport resolution (in pixels)
 		vec3						iChannelResolution[MAX];	// channel resolution (in pixels)
-		//vec4						iMouse;             // mouse pixel coords. xy: current (if MLB down), zw: click
 		bool						iFade;
 		bool						iRepeat;
 		bool						iLight;
@@ -164,7 +119,6 @@ namespace VideoDromm {
 		string						mAssetsPath;
 		bool						iShowFps;
 		bool						iDebug;
-		float						iFps;
 		string						sFps;
 		bool						iGreyScale;
 		unsigned int				shaderEditIndex;
@@ -226,8 +180,6 @@ namespace VideoDromm {
 		// 
 		bool						mSendToOutput;
 		bool						autoInvert;
-		// shader
-		string						mShaderToLoad;
 
 		// spout
 		int							mFboResolution;
@@ -236,14 +188,6 @@ namespace VideoDromm {
 		// indexes for textures
 		map<int, int>				iChannels;
 		int							selectedChannel;
-		// fbo indexes for warping
-		//map<int, int>				iWarpFboChannels;
-		//! warp fbos
-		//! warpInputs: vector of warp input textures/shader fbo texture
-		//vector<WarpInput>			warpInputs;
-		//void						setCrossfade(int value) { warpInputs[mVDSettings->selectedWarp].controlValues[18] = value; };
-
-		//vector<WarpFbo>				mWarpFbos;
 		int							selectedWarp;
 		int							mWarpCount;
 		bool						mOptimizeUI;
@@ -262,7 +206,6 @@ namespace VideoDromm {
 		int							mVertexSphereTextureIndex;
 		// camera
 		CameraPersp					mCamera;
-		// Cam						mCam;
 		vec2						mCamEyePointXY;
 		float						mCamEyePointZ;
 		// web sockets

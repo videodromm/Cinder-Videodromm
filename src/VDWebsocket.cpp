@@ -189,7 +189,7 @@ void VDWebsocket::parseMessage(string msg) {
 					mFragProcessed << processedContent;
 					mFragProcessed.close();
 					CI_LOG_V("processed file saved:" + processedFile.string());
-					mVDSettings->mShaderToLoad = processedFile.string();
+					// USELESS? mVDSettings->mShaderToLoad = processedFile.string();
 				}
 				catch (cinder::JsonTree::Exception exception) {
 					mVDSettings->mWebSocketsMsg += " error jsonparser exception: ";
@@ -198,15 +198,15 @@ void VDWebsocket::parseMessage(string msg) {
 				}
 			}
 		}
+		/* OBSOLETE
 		else if (msg.substr(0, 7) == "uniform") {
 			// fragment shader from live coding
-			//mShaders->loadLiveShader(msg);
 			mVDSettings->mShaderToLoad = msg;
 			// route it to websockets clients
 			if (mVDSettings->mIsRouter) {
 				wsWrite(msg);
 			}
-		}
+		}*/
 		else if (msg.substr(0, 7) == "#version") {
 			// fragment shader from live coding
 			//mShaders->loadLiveShader(msg);
