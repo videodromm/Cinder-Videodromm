@@ -76,7 +76,7 @@ namespace VideoDromm
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
 		void							updateWarpName(unsigned int aWarpIndex);
-		ci::gl::TextureRef				getRenderTexture();
+		ci::gl::Texture2dRef				getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
 		void							save();
 		ci::gl::Texture2dRef			getRenderedTexture();

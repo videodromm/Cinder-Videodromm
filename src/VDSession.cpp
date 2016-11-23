@@ -798,7 +798,7 @@ unsigned int VDSession::getWarpCount() {
 }
 
 // Render the scene into the FBO
-ci::gl::TextureRef VDSession::getRenderTexture()
+ci::gl::Texture2dRef VDSession::getRenderTexture()
 {
 	return mVDMix->getRenderTexture();
 }

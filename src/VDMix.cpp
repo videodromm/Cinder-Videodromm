@@ -161,7 +161,7 @@ namespace VideoDromm {
 		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
 	}
 	// Render the scene into the FBO
-	ci::gl::TextureRef VDMix::getRenderTexture()
+	ci::gl::Texture2dRef VDMix::getRenderTexture()
 	{
 		// this will restore the old framebuffer binding when we leave this function
 		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
