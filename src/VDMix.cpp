@@ -12,6 +12,7 @@ namespace VideoDromm {
 		: mFlipV(false)
 		, mFlipH(false)
 	{
+		CI_LOG_V("VDMix readSettings");
 		// Settings
 		mVDSettings = aVDSettings;
 		// Animation
@@ -32,13 +33,13 @@ namespace VideoDromm {
 		// mix fbo to render
 		warpMixToRender = 0;
 		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+		mWarpJson = getAssetPath("") / mVDSettings->mAssetsPath / "warps.json";
 		//if (fs::exists(mWarpSettings)) {
 		// load warp settings from file if one exists
 		//mWarps = Warp::readSettings(loadFile(mWarpSettings)); // TODO load from json file
 		//}
 		//else {
 		// otherwise create a warp from scratch
-
 
 		mCurrentBlend = 0;
 		for (size_t i = 0; i < mVDAnimation->getBlendModesCount(); i++)
@@ -179,8 +180,18 @@ namespace VideoDromm {
 	}
 	void VDMix::save()
 	{
+		CI_LOG_V("VDMix save");
+
 		// save warp settings
 		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
+		Warp::save(mWarps, writeFile(mWarpJson));
+	}
+	void VDMix::load()
+	{
+		CI_LOG_V("VDMix load");
+
+		// load warp settings
+		if (fs::exists(mWarpJson)) Warp::load(loadFile(mWarpJson));
 	}
 	// Render the scene into the FBO
 	ci::gl::Texture2dRef VDMix::getRenderTexture()

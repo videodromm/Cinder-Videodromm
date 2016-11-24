@@ -83,6 +83,7 @@ namespace VideoDromm
 		ci::gl::Texture2dRef				getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
 		void							save();
+		void							load();
 		ci::gl::Texture2dRef			getRenderedTexture();
 
 	private:
@@ -122,6 +123,7 @@ namespace VideoDromm
 		// warping
 		string							fileWarpsName;
 		fs::path						mWarpSettings;
+		fs::path						mWarpJson;
 		WarpList						mWarps;
 		gl::FboRef						mRenderFbo;
 

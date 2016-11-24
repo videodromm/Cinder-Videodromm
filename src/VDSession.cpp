@@ -8,6 +8,7 @@ using namespace VideoDromm;
 
 VDSession::VDSession(VDSettingsRef aVDSettings)
 {
+	CI_LOG_V("VDSession ctor");
 	mVDSettings = aVDSettings;
 	// Utils
 	mVDUtils = VDUtils::create(mVDSettings);
@@ -48,7 +49,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	gl::enableDepthRead();
 	gl::enableDepthWrite();
 	// initialize one warp
-	createWarpMix();
+	//createWarpMix();
 	// TODO create other warps from warps.xml and json saved warpmixes
 
 	// reset no matter what, so we don't miss anything
@@ -67,9 +68,12 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		oStream.close();
 		save();
 	}
-	// init for received shaders from websockets for warp 0
-	setFboFragmentShaderIndex(1, 1);
-	setFboFragmentShaderIndex(2, 2);
+	// check if something went wrong, if so create a default warp
+	if (mVDMix->getWarpCount() == 0) {
+		// init for received shaders from websockets for warp 0
+		mVDMix->createWarp("default", 1, 1, 2, 2, 1.0f);
+	}
+
 }
 
 VDSessionRef VDSession::create(VDSettingsRef aVDSettings)
@@ -80,14 +84,14 @@ VDSessionRef VDSession::create(VDSettingsRef aVDSettings)
 void VDSession::readSettings(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, const DataSourceRef &source) {
 	XmlTree			doc;
 
-	CI_LOG_V("VDMix readSettings");
+	CI_LOG_V("VDSession readSettings");
 	// try to load the specified xml file
 	try {
 		doc = XmlTree(source);
-		CI_LOG_V("VDMix xml doc ok");
+		CI_LOG_V("VDSession xml doc ok");
 	}
 	catch (...) {
-		CI_LOG_V("VDMix xml doc error");
+		CI_LOG_V("VDSession xml doc error");
 	}
 
 	// check if this is a valid file 
@@ -104,9 +108,9 @@ void VDSession::fromXml(const XmlTree &xml) {
 
 	// find fbo childs in xml
 	if (xml.hasChild("fbo")) {
-		CI_LOG_V("VDMix got fbo childs");
+		CI_LOG_V("VDSession got fbo childs");
 		for (XmlTree::ConstIter fboChild = xml.begin("fbo"); fboChild != xml.end(); ++fboChild) {
-			CI_LOG_V("VDMix create fbo ");
+			CI_LOG_V("VDSession create fbo ");
 			//mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
 			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 			f->fromXml(*fboChild);
@@ -202,7 +206,7 @@ bool VDSession::initShaderList() {
 	bool isFirstLaunch = false;
 
 	if (mShaderList.size() == 0) {
-		CI_LOG_V("VDMix::init mShaderList");
+		CI_LOG_V("VDSession::init mShaderList");
 		// direct input texture channel 0
 		fs::path mFragFile = getAssetPath("") / "texture0.frag";
 		VDShaderRef t0(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
@@ -223,7 +227,7 @@ bool VDSession::initShaderList() {
 			isFirstLaunch = true;
 		}
 		else {
-			CI_LOG_V("VDMix::init mShaderList texture0 failed");
+			CI_LOG_V("VDSession::init mShaderList texture0 failed");
 		}
 		// direct input texture channel 1
 		mFragFile = getAssetPath("") / "texture1.frag";
@@ -245,7 +249,7 @@ bool VDSession::initShaderList() {
 			isFirstLaunch = true;
 		}
 		else {
-			CI_LOG_V("VDMix::init mShaderList texture1 failed");
+			CI_LOG_V("VDSession::init mShaderList texture1 failed");
 		}
 	}
 	return isFirstLaunch;
@@ -253,7 +257,7 @@ bool VDSession::initShaderList() {
 bool VDSession::initTextureList() {
 	bool isFirstLaunch = false;
 	if (mTextureList.size() == 0) {
-		CI_LOG_V("VDMix::init mTextureList");
+		CI_LOG_V("VDSession::init mTextureList");
 		isFirstLaunch = true;
 		// add an audio texture as first texture
 		TextureAudioRef t(new TextureAudio(mVDAnimation));
@@ -390,7 +394,7 @@ bool VDSession::save()
 	settings.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
 	settings.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
 	settings.addChild(ci::JsonTree("endframe", mVDAnimation->mEndFrame));
-	doc.pushBack(settings); 
+	doc.pushBack(settings);
 
 	JsonTree assets = JsonTree::makeArray("assets");
 	if (mWaveFileName.length() > 0) assets.addChild(ci::JsonTree("wavefile", mWaveFileName));
@@ -403,8 +407,6 @@ bool VDSession::save()
 		assets.addChild(ci::JsonTree("textplaybackdelay", mTextPlaybackDelay));
 		assets.addChild(ci::JsonTree("textplaybackend", mTextPlaybackEnd));
 	}
-	//if (mShaderLeft.length() > 0) assets.addChild(ci::JsonTree("ShaderLeft", mShaderLeft));
-	//if (mShaderRight.length() > 0) assets.addChild(ci::JsonTree("ShaderRight", mShaderRight));
 	doc.pushBack(assets);
 	// warps
 	JsonTree warps = JsonTree::makeArray("warps");
@@ -428,6 +430,9 @@ bool VDSession::save()
 
 void VDSession::restore()
 {
+	// save load settings
+	mVDMix->load();
+
 	// check to see if json file exists
 	if (!fs::exists(sessionPath)) {
 		return;
@@ -435,43 +440,46 @@ void VDSession::restore()
 
 	try {
 		JsonTree doc(loadFile(sessionPath));
-
-		JsonTree settings(doc.getChild("settings"));
-		if (settings.hasChild("bpm")) mVDAnimation->mBpm = mOriginalBpm = settings.getValueForKey<float>("bpm");
-		if (settings.hasChild("beatsperbar")) mVDAnimation->iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
-		if (mVDAnimation->iBeatsPerBar < 1) mVDAnimation->iBeatsPerBar = 1;
-		if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
-		if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
-		if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");
-		mTargetFps = mVDAnimation->mBpm / 60.0f * mFpb;
-
-		JsonTree assets(doc.getChild("assets"));
-		if (assets.hasChild("wavefile")) mWaveFileName = assets.getValueForKey<string>("wavefile");
-		if (assets.hasChild("waveplaybackdelay")) mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
-		if (assets.hasChild("moviefile")) mMovieFileName = assets.getValueForKey<string>("moviefile");
-		if (assets.hasChild("movieplaybackdelay")) mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
-		if (assets.hasChild("imagesequencepath")) mImageSequencePath = assets.getValueForKey<string>("imagesequencepath");
-		if (assets.hasChild("text")) mText = assets.getValueForKey<string>("text");
-		if (assets.hasChild("textplaybackdelay")) mTextPlaybackDelay = assets.getValueForKey<int>("textplaybackdelay");
-		if (assets.hasChild("textplaybackend")) mTextPlaybackEnd = assets.getValueForKey<int>("textplaybackend");
-		//if (assets.hasChild("ShaderLeft")) mShaderLeft = assets.getValueForKey<string>("ShaderLeft");
-		//if (assets.hasChild("ShaderRight")) mShaderRight = assets.getValueForKey<string>("ShaderRight");
-
-		// warps
-		unsigned int warpsize = 0;
-		JsonTree warps(doc.getChild("warps"));
-		if (assets.hasChild("size")) warpsize = warps.getValueForKey<int>("size");
-		for (unsigned int w = 0; w < warpsize; w++) {
-			JsonTree jsonWarp(doc.getChild("warp" + toString(w)));
-			string wName = (jsonWarp.hasChild("name")) ? jsonWarp.getValueForKey<string>("name") : "no name";
-			unsigned int afboindex = (jsonWarp.hasChild("afboindex")) ? jsonWarp.getValueForKey<int>("afboindex") : 1;
-			unsigned int bfboindex = (jsonWarp.hasChild("bfboindex")) ? jsonWarp.getValueForKey<int>("bfboindex") : 1;
-			unsigned int aShaderIndex = (jsonWarp.hasChild("ashaderindex")) ? jsonWarp.getValueForKey<int>("ashaderindex") : 1;
-			unsigned int bShaderIndex = (jsonWarp.hasChild("bshaderindex")) ? jsonWarp.getValueForKey<int>("bshaderindex") : 1;
-			float xfade = (jsonWarp.hasChild("xfade")) ? jsonWarp.getValueForKey<float>("xfade") : 1.0f;
-			mVDMix->createWarp(wName, afboindex, aShaderIndex, bfboindex, bShaderIndex, xfade);
+		if (doc.hasChild("settings")) {
+			JsonTree settings(doc.getChild("settings"));
+			if (settings.hasChild("bpm")) mVDAnimation->mBpm = mOriginalBpm = settings.getValueForKey<float>("bpm");
+			if (settings.hasChild("beatsperbar")) mVDAnimation->iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
+			if (mVDAnimation->iBeatsPerBar < 1) mVDAnimation->iBeatsPerBar = 1;
+			if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
+			if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
+			if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");
+			mTargetFps = mVDAnimation->mBpm / 60.0f * mFpb;
 		}
 
+		if (doc.hasChild("assets")) {
+			JsonTree assets(doc.getChild("assets"));
+			if (assets.hasChild("wavefile")) mWaveFileName = assets.getValueForKey<string>("wavefile");
+			if (assets.hasChild("waveplaybackdelay")) mWavePlaybackDelay = assets.getValueForKey<int>("waveplaybackdelay");
+			if (assets.hasChild("moviefile")) mMovieFileName = assets.getValueForKey<string>("moviefile");
+			if (assets.hasChild("movieplaybackdelay")) mMoviePlaybackDelay = assets.getValueForKey<int>("movieplaybackdelay");
+			if (assets.hasChild("imagesequencepath")) mImageSequencePath = assets.getValueForKey<string>("imagesequencepath");
+			if (assets.hasChild("text")) mText = assets.getValueForKey<string>("text");
+			if (assets.hasChild("textplaybackdelay")) mTextPlaybackDelay = assets.getValueForKey<int>("textplaybackdelay");
+			if (assets.hasChild("textplaybackend")) mTextPlaybackEnd = assets.getValueForKey<int>("textplaybackend");
+		}
+
+		// warps
+		if (doc.hasChild("warps")) {
+			unsigned int warpsize = 0;
+			JsonTree warps(doc.getChild("warps"));
+			if (warps.hasChild("size")) warpsize = warps.getValueForKey<int>("size");
+			for (unsigned int w = 0; w < warpsize; w++) {
+				JsonTree jsonWarp(doc.getChild("warp" + toString(w)));
+				string wName = (jsonWarp.hasChild("name")) ? jsonWarp.getValueForKey<string>("name") : "no name";
+				unsigned int afboindex = (jsonWarp.hasChild("afboindex")) ? jsonWarp.getValueForKey<int>("afboindex") : 1;
+				unsigned int bfboindex = (jsonWarp.hasChild("bfboindex")) ? jsonWarp.getValueForKey<int>("bfboindex") : 1;
+				unsigned int aShaderIndex = (jsonWarp.hasChild("ashaderindex")) ? jsonWarp.getValueForKey<int>("ashaderindex") : 1;
+				unsigned int bShaderIndex = (jsonWarp.hasChild("bshaderindex")) ? jsonWarp.getValueForKey<int>("bshaderindex") : 1;
+				float xfade = (jsonWarp.hasChild("xfade")) ? jsonWarp.getValueForKey<float>("xfade") : 1.0f;
+				mVDMix->createWarp(wName, afboindex, aShaderIndex, bfboindex, bShaderIndex, xfade);
+			}
+
+		}
 	}
 	catch (const JsonTree::ExcJsonParserError& exc) {
 		CI_LOG_W(exc.what());
@@ -503,8 +511,6 @@ void VDSession::reset()
 	mText = "";
 	mTextPlaybackDelay = 10;
 	mTextPlaybackEnd = 2020000;
-	//mShaderLeft = "";
-	//mShaderRight = "";
 
 	resetSomeParams();
 }
@@ -517,7 +523,7 @@ int VDSession::getWindowsResolution() {
 void VDSession::blendRenderEnable(bool render) {
 	mVDAnimation->blendRenderEnable(render);
 }
-// was int VDSession::loadFileFromAbsolutePath(string aAbsolutePath, int aIndex)
+
 void VDSession::fileDrop(FileDropEvent event) {
 	string ext = "";
 
