@@ -128,7 +128,7 @@ namespace VideoDromm
 		gl::FboRef						mRenderFbo;
 
 		int								warpMixToRender;
-		map<int, WarpMix>				mWarpMix;
+		//map<int, WarpMix>				mWarpMix;
 		// temp
 		ci::gl::Texture2dRef			mRenderedTexture;
 	};

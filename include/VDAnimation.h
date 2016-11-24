@@ -40,7 +40,7 @@ namespace VideoDromm
 		int								textureIndex;
 		bool							isValid;
 	};
-	struct WarpMix
+	/*struct WarpMix
 	{
 		unsigned int					AFboIndex;		// index of the fbo A
 		unsigned int					AShaderIndex;	// index of the shader used by the fbo A
@@ -53,7 +53,7 @@ namespace VideoDromm
 		Anim<float>						ABCrossfade;	// from 0 A to 1 B can be automated via timeline
 		unsigned int					MixFboIndex;	// index of the fbo mixing A and B
 		string							Name;			// name of the warp
-	};
+	};*/
 
 	class VDAnimation {
 	public:		

@@ -68,7 +68,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		oStream.close();
 		save();
 	}
-	// check if something went wrong, if so create a default warp
+	// check if something went wrong, if so, create a default warp
 	if (mVDMix->getWarpCount() == 0) {
 		// init for received shaders from websockets for warp 0
 		mVDMix->createWarp("default", 1, 1, 2, 2, 1.0f);
@@ -463,8 +463,8 @@ void VDSession::restore()
 			if (assets.hasChild("textplaybackend")) mTextPlaybackEnd = assets.getValueForKey<int>("textplaybackend");
 		}
 
-		// warps
-		if (doc.hasChild("warps")) {
+		// warps TODO in warp.cpp
+	/*	if (doc.hasChild("warps")) {
 			unsigned int warpsize = 0;
 			JsonTree warps(doc.getChild("warps"));
 			if (warps.hasChild("size")) warpsize = warps.getValueForKey<int>("size");
@@ -479,7 +479,7 @@ void VDSession::restore()
 				mVDMix->createWarp(wName, afboindex, aShaderIndex, bfboindex, bShaderIndex, xfade);
 			}
 
-		}
+		}*/
 	}
 	catch (const JsonTree::ExcJsonParserError& exc) {
 		CI_LOG_W(exc.what());
