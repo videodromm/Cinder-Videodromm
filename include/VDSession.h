@@ -90,10 +90,10 @@ namespace VideoDromm {
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 		// shaders
-		bool							hasShaderLeft() { return mShaderLeft.length() > 0; };
+		/*bool							hasShaderLeft() { return mShaderLeft.length() > 0; };
 		bool							hasShaderRight() { return mShaderRight.length() > 0; };
 		string							getShaderLeft() { return mShaderLeft; };
-		string							getShaderRight() { return mShaderRight; };
+		string							getShaderRight() { return mShaderRight; };*/
 		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
@@ -119,10 +119,14 @@ namespace VideoDromm {
 		string							getWarpName(unsigned int aWarpIndex);
 		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpBFboIndex(unsigned int aWarpIndex);
+		unsigned int					getWarpAShaderIndex(unsigned int aWarpIndex);
+		unsigned int					getWarpBShaderIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpCount();
 		void							createWarpMix();
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
+		void							setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
+		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
 		fs::path						mMixesFilepath;
