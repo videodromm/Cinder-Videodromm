@@ -96,10 +96,24 @@ void VDWebsocket::parseMessage(string msg) {
 					}
 				}
 				if (json.hasChild("event")) {
-					//string evt = json.getChild("event").getValue<string>();
+					JsonTree jsonEvent = json.getChild("event");
+					string val = jsonEvent.getValue();
+					// check if message exists
 					if (json.hasChild("message")) {
-						receivedFragString = json.getChild("message").getValue<string>();
-						shaderReceived = true;
+						if (val == "canvas") {
+							// we received a jpeg base64
+							string jpeg = json.getChild("message").getValue<string>();
+							// texture
+							//ci::gl::Texture2dRef mTexture = ci::gl::Texture::create(jpeg);
+							//Surface	mInputSurface = Surface(jpeg);
+
+						}
+						else {
+							// we received a fragment shader string
+							receivedFragString = json.getChild("message").getValue<string>();
+							shaderReceived = true;
+						}
+						//string evt = json.getChild("event").getValue<string>();
 					}
 				}
 				if (json.hasChild("cmd")) {
@@ -487,7 +501,7 @@ void VDWebsocket::update() {
 		}
 	}
 #endif
-	/* OLD KINECT AND TOUCHOSC 
+	/* OLD KINECT AND TOUCHOSC
 	// check for mouse moved message
 	if(m.getAddress() == "/mouse/position"){
 	// both the arguments are int32's
