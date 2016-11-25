@@ -106,16 +106,14 @@ namespace VideoDromm {
 		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
 		Warp::handleResize(mWarps);
 
-		/*int i = mWarps.size() - 1; // must have at least 1 warp!
-		mWarpMix[i].ABCrossfade = xFade;
-		mWarpMix[i].AFboIndex = aFboIndex;
-		mWarpMix[i].AShaderIndex = aShaderIndex;
-		mWarpMix[i].AMode = 0;
-		mWarpMix[i].BFboIndex = bFboIndex;
-		mWarpMix[i].BShaderIndex = bShaderIndex;
-		mWarpMix[i].BMode = 0;
-		mWarpMix[i].MixFboIndex = mWarps.size() - 1;
-		mWarpMix[i].Name = toString(mWarpMix[i].MixFboIndex) + wName;*/
+		int i = mWarps.size() - 1; // must have at least 1 warp!
+		mWarps[i]->ABCrossfade = xFade;
+		mWarps[i]->setAFboIndex(aFboIndex);
+		mWarps[i]->setAShaderIndex(aShaderIndex);
+		mWarps[i]->setBFboIndex(bFboIndex);
+		mWarps[i]->setBShaderIndex(bShaderIndex);
+		mWarps[i]->setMixFboIndex(i);
+		mWarps[i]->setName(toString(mWarps[i]->getMixFboIndex()) + wName);
 	}
 	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 		if (aWarpIndex < mWarps.size()) {
@@ -134,7 +132,7 @@ namespace VideoDromm {
 	}
 	void VDMix::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 		if (aWarpIndex < mWarps.size() && aWarpFboIndex < mFboList.size()) {
-			mWarps[aWarpIndex]->setBFboIndex( aWarpFboIndex);
+			mWarps[aWarpIndex]->setBFboIndex(aWarpFboIndex);
 			updateWarpName(aWarpIndex);
 		}
 	}
