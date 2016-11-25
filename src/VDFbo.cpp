@@ -266,6 +266,7 @@ namespace VideoDromm {
 				}
 			}
 		}
+		// TODO check mTextureList size for bounds
 		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
 		if (mFlipV) {
 			gl::drawSolidRoundedRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), 150, 20);
