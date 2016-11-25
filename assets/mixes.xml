@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mixes version="1.0">
-	<mix id="1" mixtype="mix">
-		<fbo id="1" width="640" height="480" shadername="DataTransfer.glsl"/>	
-		<fbo id="2" width="640" height="480" shadername="13.glsl"/>
-	</mix>
-</mixes>
+<fbos version="1.0">
+	<fbo id="1" width="640" height="480" inputtextureindex="1" shadername="Test.glsl"/>	
+	<fbo id="2" width="640" height="480" inputtextureindex="1" shadername="TransparentCubeField.glsl"/>	
+</fbos>
+
+

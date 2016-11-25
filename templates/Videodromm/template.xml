@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<template name="Videodromm: Basic" parent="org.libcinder.apptemplates.basicopengl">
+	<requires>com.videodromm.Videodromm</requires>
+	<requires>nl.cowlumbus.warping</requires>
+	<requires>ocornut.imgui</requires>
+	<requires>org.libcinder.osc</requires>
+	<requires>com.wk.websocketpp</requires>
+	<platform os="msw">
+		<requires>org.libcinder.hap2</requires>
+		<requires>fr.batchass.spout</requires>
+		<requires>mb.cinder.midi2</requires>
+	</platform>
+	<platform os="macosx">
+		<requires>org.libcinder.quicktime</requires>
+		<requires>info.v002.syphon</requires>
+	</platform>
+	<source replaceContents="true" replaceName="true">src/_TBOX_PREFIX_App.cpp</source>
+	<asset>assets/0.jpg</asset>
+	<asset>assets/passthru.vert</asset>
+	<asset>assets/passthru.frag</asset>
+	<asset>assets/defaulttextures.xml</asset>
+	<asset>assets/defaulttexturesquicktime.xml</asset>
+	<asset>assets/pupilles640x480.hap.mov</asset>
+	<asset>assets/fingers.mov</asset>
+	<asset>assets/mandalas/p0001.jpg</asset>
+	<asset>assets/mandalas/p0002.jpg</asset>
+	<asset>assets/mandalas/p0003.jpg</asset>
+	<asset>assets/mandalas/p0004.jpg</asset>
+	<asset>assets/mandalas/p0005.jpg</asset>
+	<asset>assets/mandalas/p0006.jpg</asset>
+	<asset>assets/mandalas/p0007.jpg</asset>
+</template>
+</cinder>

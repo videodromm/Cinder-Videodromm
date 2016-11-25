@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<textures version="1.0">
+	<texture id="1" texturetype="image">
+		<details path="0.jpg" width="640" height="480" topdown="1"/>
+	</texture>
+	<texture id="2" texturetype="imagesequence">
+		<details path="mandalas" width="640" height="480" topdown="0"/>
+	</texture>
+	<texture id="3" texturetype="movie">
+		<details path="pupilles640x480.hap.mov" width="640" height="480" topdown="1"/>
+	</texture>
+	<texture id="4" texturetype="shared">
+		<details path="0.jpg" width="640" height="480" topdown="1"/>
+	</texture>
+	<texture id="5" texturetype="audio">
+		<details path="" width="640" height="480" uselinein="1" topdown="1"/>
+	</texture>
+</textures>
+

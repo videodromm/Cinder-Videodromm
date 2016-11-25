@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fbos version="1.0">
+	<fbo id="1" width="640" height="480" inputtextureindex="1" shadername="Test.glsl"/>	
+	<fbo id="2" width="640" height="480" inputtextureindex="1" shadername="TransparentCubeField.glsl"/>	
+</fbos>
+
+

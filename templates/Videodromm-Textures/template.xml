@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <cinder>
-<template name="Videodromm: Basic" parent="org.libcinder.apptemplates.basicopengl">
+<template name="Videodromm: Textures" parent="org.libcinder.apptemplates.basicopengl">
 	<requires>com.videodromm.Videodromm</requires>
 	<requires>nl.cowlumbus.warping</requires>
 	<requires>ocornut.imgui</requires>

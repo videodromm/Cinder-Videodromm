@@ -32,5 +32,5 @@
 		<requires>info.v002.syphon</requires>
 	</platform>
 </block>
-<template>templates/Videodromm-Textures/template.xml</template>
+<template>templates/Videodromm/template.xml</template>
 </cinder>
