@@ -590,11 +590,11 @@ void VDSettings::reset()
 	mIsOSCSender = false;
 	// web sockets
 	mIsRouter = false;
-	mAreWebSocketsEnabledAtStartup = false;
+	mAreWebSocketsEnabledAtStartup = true;
 	mIsWebSocketsServer = false;
 	mWebSocketsProtocol = "ws://";
 	mWebSocketsHost = "localhost";
-	mWebSocketsPort = 9002;
+	mWebSocketsPort = 8088;
 	// Blendmode 
 	iBlendmode = 0;
 	// abp
