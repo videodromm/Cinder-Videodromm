@@ -119,12 +119,12 @@ namespace VideoDromm {
 	}
 	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 		if (aWarpIndex < mWarps.size()) {
-			mWarps[aWarpIndex]->setABCrossfade(aCrossfade);
+			mWarps[aWarpIndex]->ABCrossfade;
 		}
 	}
 	float VDMix::getWarpCrossfade(unsigned int aWarpIndex) {
 		if (aWarpIndex > mWarps.size() - 1) aWarpIndex = 0;
-		return mWarps[aWarpIndex]->getABCrossfade();
+		return mWarps[aWarpIndex]->ABCrossfade;
 	}
 	void VDMix::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 		if (aWarpIndex < mWarps.size() && aWarpFboIndex < mFboList.size()) {
@@ -177,11 +177,11 @@ namespace VideoDromm {
 		return mWarps.size();
 	}
 	void VDMix::crossfadeWarp(unsigned int aWarpIndex, float aValue) {
-		timeline().apply(&mWarps[aWarpIndex]-> ABCrossfade, aValue, 2.0f);
+		timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f);
 	}
 	void VDMix::save()
 	{
-		CI_LOG_V("VDMix save");
+		CI_LOG_V("VDMix save: " + mWarpJson.string());
 
 		// save warp settings
 		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
@@ -189,10 +189,15 @@ namespace VideoDromm {
 	}
 	void VDMix::load()
 	{
-		CI_LOG_V("VDMix load");
+		CI_LOG_V("VDMix load: " + mWarpJson.string());
 
 		// load warp settings
-		if (fs::exists(mWarpJson)) Warp::load(loadFile(mWarpJson));
+		if (fs::exists(mWarpJson)) mWarps = Warp::load(loadFile(mWarpJson));
+		// create corresponding mMixFbos
+		while (mMixFbos.size() < mWarps.size())
+		{
+			mMixFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
+		}
 	}
 	// Render the scene into the FBO
 	ci::gl::Texture2dRef VDMix::getRenderTexture()
