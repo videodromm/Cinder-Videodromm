@@ -113,7 +113,7 @@ void _TBOX_PREFIX_App::fileDrop(FileDropEvent event)
 void _TBOX_PREFIX_App::update()
 {
 	mVDSession->setControlValue(30, getAverageFps());
-	mVDSession->update()
+	mVDSession->update();
 }
 void _TBOX_PREFIX_App::cleanup()
 {
