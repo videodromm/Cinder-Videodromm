@@ -102,7 +102,7 @@ void VDWebsocket::parseMessage(string msg) {
 					if (json.hasChild("message")) {
 						if (val == "canvas") {
 							// we received a jpeg base64
-							string jpeg = json.getChild("message").getValue<string>();
+							mBase64String = json.getChild("message").getValue<string>();
 							// texture
 							//ci::gl::Texture2dRef mTexture = ci::gl::Texture::create(jpeg);
 							//Surface	mInputSurface = Surface(jpeg);

@@ -56,6 +56,8 @@ namespace VideoDromm
 		// received shaders
 		bool						hasReceivedShader() { return shaderReceived; }; // TODO remove
 		string						getReceivedShader();
+		string						getBase64Image() { return mBase64String; };
+
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -94,6 +96,7 @@ namespace VideoDromm
 		// received shaders
 		bool						shaderReceived; // TODO remove
 		string						receivedFragString; // TODO remove
+		string						mBase64String;
 	};
 }
 

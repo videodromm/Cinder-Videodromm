@@ -1020,6 +1020,22 @@ unsigned int VDSession::getInputTextureOriginalHeight(unsigned int aTextureIndex
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	return mTextureList[aTextureIndex]->getOriginalHeight();
 }
+ci::gl::TextureRef VDSession::getStreamedTexture() {
+
+	string data = mVDWebsocket->getBase64Image();
+	size_t len = data.size();
+	mStreamedTexture = gl::Texture2d::create();
+	auto buf = make_shared<Buffer>(fromBase64(&data, len));
+	//Buffer buf = fromBase64(mVDWebsocket->getBase64Image());
+	try {
+		shared_ptr<Surface8u> result(new Surface8u(ci::loadImage(DataSourceBuffer::create(buf), ImageSource::Options(), "jpeg")));
+		mStreamedTexture =  gl::Texture2d::create(&result);
+	}
+	catch (std::exception &exc) {
+		CI_LOG_W("failed to parse data image, what: " << exc.what());
+	}
+	return mStreamedTexture;
+}
 
 bool VDSession::loadImageSequence(string aFolder, unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;

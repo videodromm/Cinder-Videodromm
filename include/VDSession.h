@@ -20,6 +20,8 @@
 #include "VDMix.h"
 // Logger
 #include "VDLog.h"
+// base64
+#include "cinder/Base64.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -89,11 +91,7 @@ namespace VideoDromm {
 		float *							getFreqs() { return mVDAnimation->iFreqs; };
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
-		// shaders
-		/*bool							hasShaderLeft() { return mShaderLeft.length() > 0; };
-		bool							hasShaderRight() { return mShaderRight.length() > 0; };
-		string							getShaderLeft() { return mShaderLeft; };
-		string							getShaderRight() { return mShaderRight; };*/
+
 		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
@@ -166,6 +164,7 @@ namespace VideoDromm {
 		void							loadAudioFile(string aFile);
 		void							loadMovie(string aFile, unsigned int aTextureIndex);
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex);
+		ci::gl::TextureRef				getStreamedTexture();
 
 		// move, rotate, zoom methods
 		void							setPosition(int x, int y);
@@ -221,7 +220,7 @@ namespace VideoDromm {
 		void						closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
 		void						openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
 		void						closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
-		ci::gl::Texture2dRef			getRenderedTexture()  { return mVDMix->getRenderedTexture(); };
+		ci::gl::Texture2dRef		getRenderedTexture()  { return mVDMix->getRenderedTexture(); };
 
 	private:
 		// Settings
@@ -284,6 +283,7 @@ namespace VideoDromm {
 		float							mPosY;
 		float							mZoom;
 		void							updateWarpName(unsigned int aWarpIndex);
+		ci::gl::Texture2dRef			mStreamedTexture;
 	};
 
 }
