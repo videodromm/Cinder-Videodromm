@@ -283,7 +283,7 @@ namespace VideoDromm {
 		float							mPosY;
 		float							mZoom;
 		void							updateWarpName(unsigned int aWarpIndex);
-		ci::gl::Texture2dRef			mStreamedTexture;
+		ci::gl::TextureRef			mStreamedTexture;
 	};
 
 }
