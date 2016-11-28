@@ -120,10 +120,10 @@ namespace VideoDromm {
 		mShaderIndex = aShaderIndex;
 	}
 
-	std::string VDFbo::getLabel() {
+	/*std::string VDFbo::getLabel() {
 		mFbo->setLabel(mFboTextureShader->getLabel() + " " + mId + mShaderName); // add mId to make it unique for imgui
 		return mFbo->getLabel();
-	}
+	}*/
 
 	void VDFbo::setPosition(int x, int y) {
 		mPosX = ((float)x / (float)mVDSettings->mFboWidth) - 0.5;
@@ -146,7 +146,10 @@ namespace VideoDromm {
 	}
 
 	std::string VDFbo::getName() {
-		return mFboName;
+		return mId + " " + mTextureList[mInputTextureIndex]->getName() + " " + mShaderName;
+	}
+	std::string VDFbo::getShaderName() {
+		return mShaderName;
 	}
 	void VDFbo::setInputTexture(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;

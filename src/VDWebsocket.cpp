@@ -75,9 +75,9 @@ void VDWebsocket::wsPing() {
 	}
 #endif
 }
-string VDWebsocket::getBase64Image() { 
+string * VDWebsocket::getBase64Image() { 
 	streamReceived = false; 
-	return mBase64String; 
+	return &mBase64String; 
 }
 
 void VDWebsocket::parseMessage(string msg) {

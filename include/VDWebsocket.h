@@ -57,7 +57,7 @@ namespace VideoDromm
 		bool						hasReceivedShader() { return shaderReceived; };
 		string						getReceivedShader();
 		// received stream
-		string						getBase64Image();
+		string *					getBase64Image();
 		bool						hasReceivedStream() { return streamReceived; };
 	private:
 		// Settings

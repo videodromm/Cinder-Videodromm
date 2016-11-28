@@ -220,8 +220,9 @@ bool VDSession::initShaderList() {
 			fboXml.setAttribute("width", "640");
 			fboXml.setAttribute("height", "480");
 			fboXml.setAttribute("shadername", "texture0.frag");
-			fboXml.setAttribute("inputtextureindex", "3");
+			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size()/2)); // whatever value...
 			f->fromXml(fboXml);
+			f->setShaderIndex(math<int>::max(1, mShaderList.size() - 1));
 			mFboList.push_back(f);
 			isFirstLaunch = true;
 		}
@@ -242,8 +243,9 @@ bool VDSession::initShaderList() {
 			fboXml.setAttribute("width", "640");
 			fboXml.setAttribute("height", "480");;
 			fboXml.setAttribute("shadername", "texture1.frag");
-			fboXml.setAttribute("inputtextureindex", "4");
+			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size() / 3)); // whatever value...
 			f->fromXml(fboXml);
+			f->setShaderIndex(math<int>::max(2, mShaderList.size() - 1));
 			mFboList.push_back(f);
 			isFirstLaunch = true;
 		}
@@ -944,15 +946,10 @@ void VDSession::setZoom(float aZoom) {
 
 string VDSession::getFboName(unsigned int aFboIndex) {
 	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	//CI_LOG_V("VDMix::getFboName:" + mFboList[aFboIndex]->getName());
 	return mFboList[aFboIndex]->getName();
 }
-string VDSession::getFboLabel(unsigned int aFboIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	return mFboList[aFboIndex]->getLabel();
-}
-string VDSession::getMixFboLabel(unsigned int aMixFboIndex) {
-	return mVDMix->getMixFboLabel(aMixFboIndex);
+string VDSession::getMixFboName(unsigned int aMixFboIndex) {
+	return mVDMix->getMixFboName(aMixFboIndex);
 }
 int VDSession::getFboTextureWidth(unsigned int aFboIndex) {
 	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
@@ -1082,8 +1079,9 @@ void VDSession::updateStream() {
 		mTextureList.push_back(t);
 		found = mTextureList.size() - 1;
 	}
-	string stream = mVDWebsocket->getBase64Image();
-	mTextureList[found]->loadFromFullPath(stream);
+	//string stream = mVDWebsocket->getBase64Image();
+	//mTextureList[found]->loadFromFullPath(stream);
+	mTextureList[found]->loadFromFullPath(*mVDWebsocket->getBase64Image());
 }
 int VDSession::getInputTextureXLeft(unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;

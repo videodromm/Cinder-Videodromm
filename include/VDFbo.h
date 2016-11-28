@@ -47,7 +47,8 @@ namespace VideoDromm
 		//! returns the type
 		TextureType						getType() { return mType; };
 		std::string						getName();
-		std::string						getLabel();
+		std::string						getShaderName();
+		//std::string						getLabel();
 		void							setLabel(string aLabel) { mFboTextureShader->setLabel(aLabel); };
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };

@@ -131,7 +131,6 @@ namespace VideoDromm {
 		bool							isFboFlipV(unsigned int aFboIndex);
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
-		string							getFboLabel(unsigned int aFboIndex);
 		ci::gl::TextureRef				getFboTexture(unsigned int aFboIndex = 0) { return mVDMix->getFboTexture(aFboIndex); };
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex) { return mVDMix->getFboRenderedTexture(aFboIndex); };
 		ci::gl::TextureRef				getFboThumb(unsigned int aBlendIndex) { return mVDMix->getFboThumb(aBlendIndex); };
@@ -140,7 +139,7 @@ namespace VideoDromm {
 		int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getFboListSize() { return mFboList.size(); };
 		string							getFboFragmentShaderText(unsigned int aFboIndex);
-		string							getMixFboLabel(unsigned int aMixFboIndex);
+		string							getMixFboName(unsigned int aMixFboIndex);
 		ci::gl::TextureRef				getMixTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount();
 		bool							isFlipH();

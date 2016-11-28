@@ -117,7 +117,7 @@ namespace VideoDromm {
 	}
 	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 		if (aWarpIndex < mWarps.size()) {
-			mWarps[aWarpIndex]->ABCrossfade;
+			mWarps[aWarpIndex]->ABCrossfade = aCrossfade;
 		}
 	}
 	float VDMix::getWarpCrossfade(unsigned int aWarpIndex) {
@@ -222,8 +222,9 @@ namespace VideoDromm {
 
 
 #pragma endregion warps
-	string VDMix::getMixFboLabel(unsigned int aMixFboIndex) {
+	string VDMix::getMixFboName(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
+		mMixFbos[aMixFboIndex]->setLabel(mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName() + "/" + mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName());
 		return mMixFbos[aMixFboIndex]->getLabel();
 	}
 	void VDMix::renderMix() {

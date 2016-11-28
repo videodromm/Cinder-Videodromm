@@ -55,7 +55,7 @@ namespace VideoDromm
 		bool							isFlipV() { return mFlipV; };
 
 		unsigned int					getMixFbosCount() { return mMixFbos.size(); };
-		string							getMixFboLabel(unsigned int aMixFboIndex);
+		string							getMixFboName(unsigned int aMixFboIndex);
 		// blendmodes
 		unsigned int					getFboBlendCount();
 		ci::gl::TextureRef				getFboThumb(unsigned int aBlendIndex);
