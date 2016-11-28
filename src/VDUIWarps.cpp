@@ -38,7 +38,7 @@ void VDUIWarps::Run(const char* title) {
 
 				sprintf(buf, "%d##wia%d%d", a, w, a);
 				if (ui::Button(buf)) mVDSession->setWarpAFboIndex(w, a);
-				sprintf(buf, "Set input fbo A to %s", mVDSession->getShaderName(mVDSession->getWarpAShaderIndex(w)).c_str());
+				sprintf(buf, "Set input fbo A to %s", mVDSession->getShaderName(mVDSession->getWarpAShaderIndex(a)).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
 			}
@@ -56,7 +56,7 @@ void VDUIWarps::Run(const char* title) {
 
 				sprintf(buf, "%d##wib%d%d", b, w, b);
 				if (ui::Button(buf)) mVDSession->setWarpBFboIndex(w, b);
-				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(mVDSession->getWarpBShaderIndex(w)).c_str());
+				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(mVDSession->getWarpBShaderIndex(b)).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
 			}
