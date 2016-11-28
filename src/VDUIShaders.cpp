@@ -112,8 +112,7 @@ void VDUIShaders::Run(const char* title) {
 		}
 		ui::End();
 		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
-		//if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW))
-		if (s % 10 == 9)
+		if (xPos > mVDSettings->mRenderWidth)
 		{
 			xPos = mVDSettings->uiMargin;
 			yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;

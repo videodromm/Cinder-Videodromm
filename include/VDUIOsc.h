@@ -35,7 +35,7 @@ namespace VideoDromm
 		// Session
 		VDSessionRef				mVDSession;
 		// imgui
-		float						f = 0.0f;
+		//float						f = 0.0f;
 		char						buf[64];
 	};
 }

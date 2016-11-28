@@ -12,10 +12,12 @@ VDUIFbos::~VDUIFbos() {
 
 void VDUIFbos::Run(const char* title) {
 	// fbos
+	xPos = mVDSettings->uiMargin + mVDSettings->uiXPosCol1;
+	yPos = mVDSettings->uiYPosRow2;
 
 	for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.5));
-		ui::SetNextWindowPos(ImVec2((f * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
+		ui::SetNextWindowPos(ImVec2(xPos, yPos));
 		sprintf(buf, "%s##fbolbl%d", mVDSession->getFboName(f).c_str(), f);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 		{
@@ -53,7 +55,13 @@ void VDUIFbos::Run(const char* title) {
 			sprintf(buf, "U##fboupd%d", f);
 			if (ui::Button(buf)) mVDSession->getFboTexture(f);
 			ui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(f)->getWidth(), mVDSession->getFboRenderedTexture(f)->getHeight());
+			xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 
+			if (xPos > mVDSettings->mRenderWidth - mVDSettings->uiXPosCol1)
+			{
+				xPos = mVDSettings->uiMargin + mVDSettings->uiXPosCol1;
+				yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;
+			}
 			ui::PopID();
 		}
 		ui::End();

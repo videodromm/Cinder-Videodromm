@@ -35,5 +35,6 @@ namespace VideoDromm
 		VDSessionRef				mVDSession;
 		// imgui
 		char						buf[64];
+		int							xPos, yPos;
 	};
 }
