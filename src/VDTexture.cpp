@@ -114,6 +114,11 @@ namespace VideoDromm {
 					t->fromXml(detailsXml);
 					vdtexturelist.push_back(t);
 				}
+				else if (texturetype == "stream") {
+					TextureStreamRef t(new TextureStream(aVDAnimation));
+					t->fromXml(detailsXml);
+					vdtexturelist.push_back(t);
+				}
 				else {
 					// unknown texture type
 					CI_LOG_V("unknown texture type");
@@ -385,8 +390,6 @@ namespace VideoDromm {
 		mNextIndexFrameToTry = 0;
 		mPlayheadPosition = 0;
 		mNumberOfDigits = 4;
-
-
 	}
 	bool TextureImageSequence::loadFromFullPath(string aPath)
 	{
@@ -586,7 +589,6 @@ namespace VideoDromm {
 			mTexture = mSequenceTextures[mPlayheadPosition];
 		}
 		return mTexture;
-
 	}
 
 	// Stops playback and resets the playhead to zero
@@ -1067,5 +1069,61 @@ namespace VideoDromm {
 	}
 	TextureAudio::~TextureAudio(void) {
 	}
+	/*
+	** ---- TextureStream ------------------------------------------------
+	*/
+	TextureStream::TextureStream(VDAnimationRef aVDAnimation) {
+		mVDAnimation = aVDAnimation;
+		mType = STREAM;
+		mName = "stream";
+		mTexture = gl::Texture::create(mWidth, mHeight);
+	}
+	XmlTree	TextureStream::toXml() const {
+		XmlTree xml = VDTexture::toXml();
 
+		// add attributes specific to this type of texture
+		xml.setAttribute("path", mPath);
+		xml.setAttribute("flipv", mFlipV);
+		xml.setAttribute("fliph", mFlipH);
+
+		return xml;
+	}
+
+	bool TextureStream::fromXml(const XmlTree &xml)
+	{
+		VDTexture::fromXml(xml);
+		// retrieve attributes specific to this type of texture
+		mFlipV = xml.getAttributeValue<bool>("flipv", "false");
+		mFlipH = xml.getAttributeValue<bool>("fliph", "false");
+		mTexture = gl::Texture::create(mWidth, mHeight);
+		return true;
+	}
+	bool TextureStream::loadFromFullPath(string aStream)
+	{
+		bool rtn = false;
+		size_t len;
+		size_t comma = aStream.find(",");
+		if (comma == string::npos) {
+			CI_LOG_W("comma not found");
+		}
+		else {
+			len = aStream.size() - comma - 1;
+			auto buf = make_shared<Buffer>(fromBase64(&aStream[comma + 1], len));
+			try {
+				shared_ptr<Surface8u> result(new Surface8u(ci::loadImage(DataSourceBuffer::create(buf), ImageSource::Options(), "jpeg")));
+				mTexture = gl::Texture2d::create(*result, ci::gl::Texture::Format());
+				rtn = true;
+			}
+			catch (std::exception &exc) {
+				CI_LOG_W("failed to parse streamed data image, what: " << exc.what());
+			}
+		}
+		return rtn;
+	}
+
+	ci::gl::Texture2dRef TextureStream::getTexture() {
+		return mTexture;
+	}
+	TextureStream::~TextureStream(void) {
+	}
 } // namespace VideoDromm

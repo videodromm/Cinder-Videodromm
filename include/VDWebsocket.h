@@ -54,10 +54,11 @@ namespace VideoDromm
 		void						changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex, unsigned int aSlot); //aSlot 0 = A, 1 = B,...
 		void                        changeFragmentShader(string aFragmentShaderText);
 		// received shaders
-		bool						hasReceivedShader() { return shaderReceived; }; // TODO remove
+		bool						hasReceivedShader() { return shaderReceived; };
 		string						getReceivedShader();
-		string						getBase64Image() { return mBase64String; };
-
+		// received stream
+		string						getBase64Image();
+		bool						hasReceivedStream() { return streamReceived; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -97,6 +98,8 @@ namespace VideoDromm
 		bool						shaderReceived; // TODO remove
 		string						receivedFragString; // TODO remove
 		string						mBase64String;
+		// received stream
+		bool						streamReceived;
 	};
 }
 

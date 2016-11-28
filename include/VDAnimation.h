@@ -40,20 +40,6 @@ namespace VideoDromm
 		int								textureIndex;
 		bool							isValid;
 	};
-	/*struct WarpMix
-	{
-		unsigned int					AFboIndex;		// index of the fbo A
-		unsigned int					AShaderIndex;	// index of the shader used by the fbo A
-		// stored in fbo unsigned int				ATextureIndex;	// index of the texture used by the shader A
-		unsigned int					AMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
-		unsigned int					BFboIndex;		// index of the fbo B
-		unsigned int					BShaderIndex;	// index of the shader used by the fbo B
-		// stored in fbo unsigned int				BTextureIndex;	// index of the texture used by the shader B
-		unsigned int					BMode;			// 0 for mixfbo, 1 for shader, 2 for input texture
-		Anim<float>						ABCrossfade;	// from 0 A to 1 B can be automated via timeline
-		unsigned int					MixFboIndex;	// index of the fbo mixing A and B
-		string							Name;			// name of the warp
-	};*/
 
 	class VDAnimation {
 	public:		

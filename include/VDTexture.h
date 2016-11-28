@@ -37,6 +37,8 @@
 #include "cinder/audio/SampleRecorderNode.h"
 #include "cinder/audio/NodeEffects.h"
 #include "cinder/Rand.h"
+// base64 for stream
+#include "cinder/Base64.h"
 
 #include <atomic>
 #include <vector>
@@ -58,7 +60,7 @@ namespace VideoDromm
 
 	class VDTexture : public std::enable_shared_from_this < VDTexture > {
 	public:
-		typedef enum { UNKNOWN, IMAGE, SEQUENCE, MOVIE, CAMERA, SHARED, AUDIO } TextureType;
+		typedef enum { UNKNOWN, IMAGE, SEQUENCE, MOVIE, CAMERA, SHARED, AUDIO, STREAM } TextureType;
 	public:
 		VDTexture(TextureType aType = UNKNOWN);
 		virtual ~VDTexture(void);
@@ -189,7 +191,7 @@ namespace VideoDromm
 		void						stopSequence();
 		void						toggleLoadingFromDisk() override;
 		bool						isLoadingFromDisk() override;
-		void						stopLoading();
+		//void						stopLoading();
 		int							getPlayheadPosition() override;
 		void						setPlayheadPosition(int position) override;
 
@@ -382,6 +384,40 @@ namespace VideoDromm
 
 		// textures
 		unsigned char					dTexture[1024];
+		ci::gl::Texture2dRef			mTexture;
+
+	};
+
+	/*
+	** ---- TextureStream ------------------------------------------------
+	*/
+	typedef std::shared_ptr<class TextureStream>	TextureStreamRef;
+
+	class TextureStream
+		: public VDTexture {
+	public:
+		//
+		static TextureStreamRef	create(VDAnimationRef aVDAnimation) { return std::make_shared<TextureStream>(aVDAnimation); }
+		//!
+		bool					fromXml(const XmlTree &xml) override;
+		//!
+		virtual	XmlTree			toXml() const override;
+		//!
+		virtual bool			loadFromFullPath(string aStream) override;
+
+	public:
+		TextureStream(VDAnimationRef aVDAnimation);
+		virtual ~TextureStream(void);
+
+		//! returns a shared pointer 
+		TextureStreamRef				getPtr() { return std::static_pointer_cast<TextureStream>(shared_from_this()); }
+	protected:
+		//! 
+		virtual ci::gl::Texture2dRef	getTexture() override;
+	private:
+		// Animation
+		VDAnimationRef					mVDAnimation;
+		// textures
 		ci::gl::Texture2dRef			mTexture;
 
 	};

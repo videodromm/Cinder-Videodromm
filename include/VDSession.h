@@ -20,8 +20,6 @@
 #include "VDMix.h"
 // Logger
 #include "VDLog.h"
-// base64
-#include "cinder/Base64.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -160,11 +158,11 @@ namespace VideoDromm {
 		unsigned int					getInputTexturesCount();
 		int								getTextureWidth();
 		int								getTextureHeight();
-		void							loadImageFile(string aFile, unsigned int aTextureIndex, bool right);
+		void							loadImageFile(string aFile, unsigned int aTextureIndex);
 		void							loadAudioFile(string aFile);
 		void							loadMovie(string aFile, unsigned int aTextureIndex);
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex);
-		ci::gl::TextureRef				getStreamedTexture();
+		//ci::gl::TextureRef				getStreamedTexture();
 
 		// move, rotate, zoom methods
 		void							setPosition(int x, int y);
@@ -283,7 +281,8 @@ namespace VideoDromm {
 		float							mPosY;
 		float							mZoom;
 		void							updateWarpName(unsigned int aWarpIndex);
-		ci::gl::TextureRef			mStreamedTexture;
+		void							updateStream();
+		//ci::gl::TextureRef			mStreamedTexture;
 	};
 
 }

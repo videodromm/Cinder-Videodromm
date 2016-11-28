@@ -10,6 +10,7 @@ VDWebsocket::VDWebsocket(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation,
 	CI_LOG_V("VDWebsocket constructor");
 	shaderReceived = false;
 	receivedFragString = "";
+	streamReceived = false;
 	// WebSockets
 	clientConnected = false;
 #if defined( CINDER_MSW )
@@ -74,6 +75,10 @@ void VDWebsocket::wsPing() {
 	}
 #endif
 }
+string VDWebsocket::getBase64Image() { 
+	streamReceived = false; 
+	return mBase64String; 
+}
 
 void VDWebsocket::parseMessage(string msg) {
 	mVDSettings->mWebSocketsMsg = "WS onRead";
@@ -103,10 +108,7 @@ void VDWebsocket::parseMessage(string msg) {
 						if (val == "canvas") {
 							// we received a jpeg base64
 							mBase64String = json.getChild("message").getValue<string>();
-							// texture
-							//ci::gl::Texture2dRef mTexture = ci::gl::Texture::create(jpeg);
-							//Surface	mInputSurface = Surface(jpeg);
-
+							streamReceived = true;
 						}
 						else {
 							// we received a fragment shader string

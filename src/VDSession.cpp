@@ -71,7 +71,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		mVDMix->createWarp("default", 1, 1, 2, 2, 1.0f);
 	}
 	// init texture
-	mStreamedTexture = gl::Texture::create(mWidth, mHeight);
+	//mStreamedTexture = gl::Texture::create(mWidth, mHeight);
 
 }
 
@@ -332,6 +332,9 @@ bool VDSession::initTextureList() {
 					else if (texturetype == "audio") {
 						// audio texture done in initTextures
 					}
+					else if (texturetype == "stream") {
+						// stream texture done when websocket texture received
+					}
 					else {
 						// unknown texture type
 						CI_LOG_V("unknown texture type");
@@ -357,7 +360,9 @@ void VDSession::resize() {
 void VDSession::update() {
 	// fps calculated in main app
 	mVDSettings->sFps = toString(floor(getControlValue(30)));
-
+	if (mVDWebsocket->hasReceivedStream() && (getElapsedFrames() % 100 == 0)) {
+		updateStream();
+	}
 	if (mVDWebsocket->hasReceivedShader()) {
 		if (mVDMix->getWarpCrossfade(0) < 0.5) {
 			setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
@@ -543,7 +548,7 @@ void VDSession::fileDrop(FileDropEvent event) {
 	else if (ext == "png" || ext == "jpg") {
 		if (index < 1) index = 1;
 		if (index > 3) index = 3;
-		loadImageFile(absolutePath, index, true);
+		loadImageFile(absolutePath, index);
 	}
 	else if (ext == "glsl" || ext == "frag") {
 		// if we don't reuse fbo, create corresponding fbo	
@@ -1019,29 +1024,6 @@ unsigned int VDSession::getInputTextureOriginalHeight(unsigned int aTextureIndex
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	return mTextureList[aTextureIndex]->getOriginalHeight();
 }
-ci::gl::TextureRef VDSession::getStreamedTexture() {
-
-	string data = mVDWebsocket->getBase64Image();
-	size_t len;
-	size_t comma = data.find(",");
-	if (comma == string::npos) {
-		CI_LOG_W("comma not found");
-	}
-	else {
-		len = data.size() - comma - 1;
-		auto buf = make_shared<Buffer>(fromBase64(&data[comma + 1], len));
-		//Buffer buf = fromBase64(mVDWebsocket->getBase64Image());
-		try {
-			shared_ptr<Surface8u> result(new Surface8u(ci::loadImage(DataSourceBuffer::create(buf), ImageSource::Options(), "jpeg")));
-			mStreamedTexture = gl::Texture2d::create(*result, ci::gl::Texture::Format());
-		}
-		catch (std::exception &exc) {
-			CI_LOG_W("failed to parse data image, what: " << exc.what());
-		}
-	}
-	return mStreamedTexture;
-}
-
 bool VDSession::loadImageSequence(string aFolder, unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	CI_LOG_V("loadImageSequence " + aFolder + " at textureIndex " + toString(aTextureIndex));
@@ -1074,13 +1056,34 @@ void VDSession::loadMovie(string aFile, unsigned int aTextureIndex) {
 	mTextureList.push_back(t);
 #endif
 }
-void VDSession::loadImageFile(string aFile, unsigned int aTextureIndex, bool right) {
+void VDSession::loadImageFile(string aFile, unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 	CI_LOG_V("loadImageFile " + aFile + " at textureIndex " + toString(aTextureIndex));
 	mTextureList[aTextureIndex]->loadFromFullPath(aFile);
 }
 void VDSession::loadAudioFile(string aFile) {
 	mTextureList[0]->loadFromFullPath(aFile);
+}
+void VDSession::updateStream() {
+	int found = -1;
+	for (int i = 0; i < mTextureList.size(); i++)
+	{
+		if (mTextureList[i]->getType() == mTextureList[i]->STREAM) found = i;
+	}
+	if (found < 0) {
+		// create stream texture
+		TextureStreamRef t(new TextureStream(mVDAnimation));
+		// add texture xml
+		XmlTree			textureXml;
+		textureXml.setTag("texture");
+		textureXml.setAttribute("id", "9");
+		textureXml.setAttribute("texturetype", "stream");
+		t->fromXml(textureXml);
+		mTextureList.push_back(t);
+		found = mTextureList.size() - 1;
+	}
+	string stream = mVDWebsocket->getBase64Image();
+	mTextureList[found]->loadFromFullPath(stream);
 }
 int VDSession::getInputTextureXLeft(unsigned int aTextureIndex) {
 	if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
