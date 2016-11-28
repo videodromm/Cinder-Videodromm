@@ -425,7 +425,7 @@ void VDSettings::resetSomeParams() {
 	uiLargeW = (mPreviewFboWidth + uiMargin) * 3;
 	uiLargeH = (mPreviewFboHeight + uiMargin) * 7;
 	uiLargePreviewW = (mPreviewFboWidth + uiMargin) * 1.5;
-	uiLargePreviewH = (mPreviewHeight + uiMargin) * 1.6;
+	uiLargePreviewH = (mPreviewHeight + uiMargin) * 1.7;
 	uiXPosCol1 = uiLargeW + uiMargin * 2;
 	uiXPosCol2 = uiXPosCol1 + uiMargin + uiElementWidth; //largeW + mVDSettings->uiMargin * 2;
 	uiXPosCol3 = uiXPosCol2 + uiMargin;
