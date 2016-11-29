@@ -90,7 +90,7 @@ namespace VideoDromm
 
 		string							mError;
 		// uniforms
-		vec3							iChannelResolution0;
+		//vec3							iChannelResolution0;
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

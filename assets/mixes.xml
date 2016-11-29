@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fbos version="1.0">
-	<fbo id="1" width="640" height="480" inputtextureindex="1" shadername="Test.glsl"/>	
-	<fbo id="2" width="640" height="480" inputtextureindex="1" shadername="TransparentCubeField.glsl"/>	
+	<fbo id="2" width="640" height="480" inputtextureindex="0" shadername="BasicAudioVisualizer.glsl"/>	
+	<fbo id="3" width="640" height="480" inputtextureindex="1" shadername="Test.glsl"/>	
+	<fbo id="4" width="640" height="480" inputtextureindex="1" shadername="TransparentCubeField.glsl"/>	
 </fbos>
 
 

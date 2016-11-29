@@ -31,15 +31,9 @@ namespace VideoDromm {
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 		// mix fbo to render
 		warpMixToRender = 0;
-		mMixRenderFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		//mMixRenderFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
 		mWarpJson = getAssetPath("") / mVDSettings->mAssetsPath / "warps.json";
-		//if (fs::exists(mWarpSettings)) {
-		// load warp settings from file if one exists
-		//mWarps = Warp::readSettings(loadFile(mWarpSettings)); // TODO load from json file
-		//}
-		//else {
-		// otherwise create a warp from scratch
 
 		mCurrentBlend = 0;
 		for (size_t i = 0; i < mVDAnimation->getBlendModesCount(); i++)
@@ -94,7 +88,7 @@ namespace VideoDromm {
 #pragma region warps
 	void VDMix::createWarp(string wName, unsigned int aFboIndex, unsigned int aShaderIndex, unsigned int bFboIndex, unsigned int bShaderIndex, float xFade) {
 
-		//mMixFbos[mMixFbos.size()].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		mMixFbos[mMixFbos.size()].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mMixFbos[mMixFbos.size()].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		mMixFbos[mMixFbos.size()].name = wName;
 
@@ -193,10 +187,17 @@ namespace VideoDromm {
 		while (mMixFbos.size() < mWarps.size())
 		{
 			CI_LOG_V("mMixFbos.size() < mWarps.size(), we create a new mixFbo");
-			//mMixFbos[i].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+			mMixFbos[i].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 			mMixFbos[i].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 			mMixFbos[i].name = "new";
 			i++;
+		}
+		// ensure all indexes are valid
+		for (auto &warp : mWarps) {
+			if (warp->getAFboIndex() > mFboList.size() - 1) warp->setAFboIndex(0);
+			if (warp->getBFboIndex() > mFboList.size() - 1) warp->setBFboIndex(0);
+			if (warp->getAShaderIndex() > mShaderList.size() - 1) warp->setAShaderIndex(0);
+			if (warp->getBShaderIndex() > mShaderList.size() - 1) warp->setBShaderIndex(0);
 		}
 	}
 	// Render the scene into the FBO
@@ -223,24 +224,26 @@ namespace VideoDromm {
 	void VDMix::renderMix() {
 		//warpMixToRender = 0;
 		//for (auto &warp : mWarps) {
-			gl::ScopedFramebuffer scopedFbo(mMixRenderFbo);// was mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo
-			gl::clear(Color::black());
-			// render A and B fbos 
-			mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getFboTexture();
-			mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getFboTexture();
-			// texture binding must be before ScopedGlslProg
-			mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
-			mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
-			gl::ScopedGlslProg glslScope(mGlslMix);
-			mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
+		//gl::ScopedFramebuffer scopedFbo(mMixRenderFbo);
+		gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo);
+		gl::clear(Color::black());
+		// render A and B fbos 
+		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getFboTexture();
+		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getFboTexture();
+		// texture binding must be before ScopedGlslProg
+		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
+		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
+		gl::ScopedGlslProg glslScope(mGlslMix);
+		mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
 
-			gl::drawSolidRect(Rectf(0, 0, mMixRenderFbo->getWidth(), mMixRenderFbo->getHeight()));
-			// save to a texture
-			mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].texture = mMixRenderFbo->getColorTexture();
-			warpMixToRender++;
-			if (warpMixToRender >= mWarps.size()) {
-				warpMixToRender = 0;
-			}
+		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getWidth(), mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getHeight()));
+		// save to a texture
+		//mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].texture = mMixRenderFbo->getColorTexture();
+		mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].texture = mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getColorTexture();
+		warpMixToRender++;
+		if (warpMixToRender >= mWarps.size()) {
+			warpMixToRender = 0;
+		}
 		//}
 	}
 	ci::gl::Texture2dRef VDMix::getRenderedTexture() {

@@ -152,7 +152,7 @@ namespace VideoDromm {
 	gl::GlslProgRef VDFbo::getShader() {
 		auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
-			//CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
+			CI_LOG_V(mFboTextureShader->getLabel() + ", getShader uniform name:" + uniform.getName());
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
 				int uniformType = mVDAnimation->getUniformType(uniform.getName());
 				switch (uniformType)
@@ -209,17 +209,19 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef VDFbo::getFboTexture() {
 		// TODO move this:
 		getShader();
-		iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
+		//iChannelResolution0 = vec3(mPosX, mPosY, 0.5);
 		gl::ScopedFramebuffer fbScp(mFbo);
 		gl::clear(Color::black());
+		// TODO check mTextureList size for bounds
+		// 20161129 gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
+		mTextureList[mInputTextureIndex]->getTexture()->bind(0);
 		// setup the viewport to match the dimensions of the FBO
-		gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
-		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
+		// 20161129 gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
 
-		mFboTextureShader->bind();
-		auto &uniforms = mFboTextureShader->getActiveUniforms();
+		// 20161129 mFboTextureShader->bind();
+		/*auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
-			//CI_LOG_V(mFboTextureShader->getLabel() + ", uniform name:" + uniform.getName());
+			CI_LOG_V(mFboTextureShader->getLabel() + ", getFboTexture uniform name:" + uniform.getName());
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
 				int uniformType = mVDAnimation->getUniformType(uniform.getName());
 				switch (uniformType)
@@ -262,16 +264,16 @@ namespace VideoDromm {
 					CI_LOG_V(mVDSettings->mMsg);
 				}
 			}
-		}
-		// TODO check mTextureList size for bounds
-		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
+		}*/
+		//gl::ScopedGlslProg shaderScp(mFboTextureShader);
+		gl::ScopedGlslProg glslScope(mFboTextureShader);
 		//if (mFlipV) {
 		//gl::drawSolidRoundedRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), 150, 20);
 		// CHECK gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), vec2(1.0f, 1.0f), vec2(0.0f, 0.0f));
 		//}
 		//else {
-		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
-		// 20161129 why is it cut!?! gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
+		// 20161129 why is it cut!?! gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 		//}
 		mRenderedTexture = mFbo->getColorTexture();
 		return mRenderedTexture;

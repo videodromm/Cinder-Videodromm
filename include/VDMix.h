@@ -34,7 +34,7 @@ namespace VideoDromm
 	typedef std::shared_ptr<class VDMix> 	VDMixRef;
 	struct VDMixFbo
 	{
-		//ci::gl::FboRef					fbo;
+		ci::gl::FboRef					fbo;
 		ci::gl::Texture2dRef			texture;
 		string							name;
 	};
@@ -98,7 +98,7 @@ namespace VideoDromm
 		//! mix shader
 		gl::GlslProgRef					mMixShader;
 		// uniforms
-		vec3							iChannelResolution0;
+		//vec3							iChannelResolution0;
 
 		// Animation
 		VDAnimationRef					mVDAnimation;
@@ -109,7 +109,7 @@ namespace VideoDromm
 		// maintain a list of fbos specific to this mix
 		VDFboList						mFboList;
 		map<int, VDMixFbo>				mMixFbos;
-		ci::gl::FboRef					mMixRenderFbo;
+		//ci::gl::FboRef					mMixRenderFbo;
 
 		//! Shaders
 		VDShaderList					mShaderList;

@@ -127,24 +127,24 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createVec3Uniform("iResolution", 60, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 	createVec3Uniform("iColor", 61, vec3(1.0, 0.5, 0.0));
 	createVec3Uniform("iBackgroundColor", 62);
-	createVec3Uniform("iChannelResolution[0]", 63, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+	//createVec3Uniform("iChannelResolution[0]", 63, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 
 	// vec4
 	createVec4Uniform("iMouse", 70, vec4(320.0f, 240.0f, 0.0f, 0.0f));
 	createVec4Uniform("iDate", 71, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
 
 	// boolean
+	// invert
+	createBoolUniform("iInvert", 48);
+	createBoolUniform("iFlipH", 81);
+	createBoolUniform("iFlipV", 82);
+	createBoolUniform("iXorY", 83);
 	// glitch
 	createBoolUniform("iGlitch", 45);
 	// toggle
 	createBoolUniform("iToggle", 46);
 	// vignette
 	createBoolUniform("iVignette", 47);
-	// invert
-	createBoolUniform("iInvert", 48);
-	createBoolUniform("iFlipH", 50);
-	createBoolUniform("iFlipV", 51);
-	createBoolUniform("iXorY", 52);
 
 	// textures
 	for (size_t i = 0; i < 8; i++)

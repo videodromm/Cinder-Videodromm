@@ -84,11 +84,12 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mOriginalFragmentString = aFragmentShaderString;
 	string mCurrentUniformsString = "";
-	string mNotFoundUniformsString = "/*\n";
+	string mProcessedShaderString = "";
 	// we would like a name
 	if (aName.length() == 0) aName = toString((int)getElapsedSeconds());
 	// name of the shader
 	mName = aName;
+	string mNotFoundUniformsString = "/* " + mName + "\n";
 	// filename to save
 	aName += ".frag";
 	mValid = false;
@@ -162,15 +163,15 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		ofstream mFragReceived(receivedFile.string(), std::ofstream::binary);
 		mFragReceived << aFragmentShaderString;
 		mFragReceived.close();
-		CI_LOG_V("Received file saved:" + receivedFile.string());
+		CI_LOG_V("file saved:" + receivedFile.string());
 
-		// try to compile
+		// try to compile a first time to get active uniforms
 		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
 		mVDSettings->mMsg = aName + " loaded and compiled";
-		CI_LOG_V(mVDSettings->mMsg);
 		mValid = true;
+
 		auto &uniforms = mShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
 			CI_LOG_V(mShader->getLabel() + ", uniform name:" + uniform.getName());
@@ -224,14 +225,23 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 				}
 			}
 		}
-		mNotFoundUniformsString += "*/\n";
+		mNotFoundUniformsString += "*/\nout vec4 fragColor;\nvec2  fragCoord = gl_FragCoord.xy; // keep the 2 spaces between vec2 and fragCoord\n";
 		// save .frag file to migrate old shaders
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
 		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-		//mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
-		mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
+		mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
+		// 20161129 mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
+
+		// try to compile a second time 
+		mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
+		mShader = gl::GlslProg::create(mVertexShaderString, mProcessedShaderString);
+		mFragmentShaderString = mProcessedShaderString;
+		// update only if success
+		mVDSettings->mMsg = aName + " loaded and compiled";
+		CI_LOG_V(mVDSettings->mMsg);
+		mValid = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{

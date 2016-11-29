@@ -499,10 +499,10 @@ void VDSettings::reset()
 	{
 		iChannelTime[i] = i;
 	}
-	for (int i = 0; i < MAX; i++)
+	/*for (int i = 0; i < MAX; i++)
 	{
 		iChannelResolution[i] = vec3(mFboWidth, mFboHeight, 1.0);
-	}
+	}*/
 #ifdef _DEBUG
 	iDebug = true;
 #else

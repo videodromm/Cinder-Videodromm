@@ -101,14 +101,15 @@ void VDUIWarps::Run(const char* title) {
 			// A (left)
 			int t = 0;
 			int fboIndex = mVDSession->getWarpAFboIndex(currentNode);
+			int inputTexture = mVDSession->getFboInputTextureIndex(mVDSession->getWarpAFboIndex(currentNode));
 
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2));
-			sprintf(buf, "txa %s", mVDSession->getInputTextureName(mVDSession->getFboInputTextureIndex(mVDSession->getWarpAFboIndex(currentNode))).c_str());
+			sprintf(buf, "%s##txa", mVDSession->getInputTextureName(inputTexture).c_str());
 			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-				ui::Image((void*)mVDSession->getInputTexture(mVDSession->getFboInputTextureIndex(mVDSession->getWarpAFboIndex(currentNode)))->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::Image((void*)mVDSession->getInputTexture(inputTexture)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip(buf);
@@ -116,11 +117,11 @@ void VDUIWarps::Run(const char* title) {
 			t++;
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2));
-			sprintf(buf, "%s", mVDSession->getFboName(fboIndex).c_str());
+			sprintf(buf, "%s##fboa", mVDSession->getFboName(fboIndex).c_str());
 			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-				ui::Image((void*)mVDSession->getFboTexture(fboIndex)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::Image((void*)mVDSession->getFboRenderedTexture(fboIndex)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip(buf);
@@ -130,14 +131,15 @@ void VDUIWarps::Run(const char* title) {
 			// B (right)
 			t = 0;
 			fboIndex = mVDSession->getWarpBFboIndex(currentNode);
+			inputTexture = mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode));
 
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2 + mVDSettings->uiPreviewH + mVDSettings->uiMargin));
-			sprintf(buf, "txb %s", mVDSession->getInputTextureName(mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode))).c_str());
+			sprintf(buf, "%s##txb", mVDSession->getInputTextureName(inputTexture).c_str());
 			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-				ui::Image((void*)mVDSession->getInputTexture(mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode)))->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::Image((void*)mVDSession->getInputTexture(inputTexture)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip(buf);
@@ -146,11 +148,11 @@ void VDUIWarps::Run(const char* title) {
 			t++;
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2 + mVDSettings->uiPreviewH + mVDSettings->uiMargin));
-			sprintf(buf, "%s", mVDSession->getFboName(fboIndex).c_str());
+			sprintf(buf, "%s##fbob", mVDSession->getFboName(fboIndex).c_str());
 			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-				ui::Image((void*)mVDSession->getFboTexture(fboIndex)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::Image((void*)mVDSession->getFboRenderedTexture(fboIndex)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip(buf);
@@ -164,7 +166,6 @@ void VDUIWarps::Run(const char* title) {
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 				ui::Image((void*)mVDSession->getMixTexture(currentNode)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-				// ui::Image((void*)mVDSession->getRenderTexture()->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 				ui::PopItemWidth();
 			}
 			ui::End();

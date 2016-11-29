@@ -1227,7 +1227,7 @@ ci::gl::TextureRef VDSession::getShaderThumb(unsigned int aShaderIndex) {
 	{
 		if (mFboList[i]->getShaderIndex() == aShaderIndex) found = i;
 	}
-	return mVDMix->getFboTexture(found);
+	return mVDMix->getFboRenderedTexture(found);
 }
 void VDSession::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
