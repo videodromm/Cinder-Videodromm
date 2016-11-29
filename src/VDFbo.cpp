@@ -119,12 +119,6 @@ namespace VideoDromm {
 	void VDFbo::setShaderIndex(unsigned int aShaderIndex) {
 		mShaderIndex = aShaderIndex;
 	}
-
-	/*std::string VDFbo::getLabel() {
-		mFbo->setLabel(mFboTextureShader->getLabel() + " " + mId + mShaderName); // add mId to make it unique for imgui
-		return mFbo->getLabel();
-	}*/
-
 	void VDFbo::setPosition(int x, int y) {
 		mPosX = ((float)x / (float)mVDSettings->mFboWidth) - 0.5;
 		mPosY = ((float)y / (float)mVDSettings->mFboHeight) - 0.5;
@@ -146,7 +140,7 @@ namespace VideoDromm {
 	}
 
 	std::string VDFbo::getName() {
-		return mId + " " + mTextureList[mInputTextureIndex]->getName() + " " + mShaderName;
+		return mShaderName + " " + mTextureList[mInputTextureIndex]->getName() + " " + mId;
 	}
 	std::string VDFbo::getShaderName() {
 		return mShaderName;
@@ -271,15 +265,16 @@ namespace VideoDromm {
 		}
 		// TODO check mTextureList size for bounds
 		gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
-		if (mFlipV) {
-			gl::drawSolidRoundedRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), 150, 20);
-			// CHECK gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), vec2(1.0f, 1.0f), vec2(0.0f, 0.0f));
-		}
-		else {
-			gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
-		}
+		//if (mFlipV) {
+		//gl::drawSolidRoundedRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), 150, 20);
+		// CHECK gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), vec2(1.0f, 1.0f), vec2(0.0f, 0.0f));
+		//}
+		//else {
+		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
+		// 20161129 why is it cut!?! gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
+		//}
 		mRenderedTexture = mFbo->getColorTexture();
-		return mRenderedTexture;// mFbo->getColorTexture();
+		return mRenderedTexture;
 	}
 
 	void VDFbo::updateThumbFile() {

@@ -110,28 +110,27 @@ void VDSession::fromXml(const XmlTree &xml) {
 		CI_LOG_V("VDSession got fbo childs");
 		for (XmlTree::ConstIter fboChild = xml.begin("fbo"); fboChild != xml.end(); ++fboChild) {
 			CI_LOG_V("VDSession create fbo ");
-			//mFbos.push_back(gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt));
-			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
-			f->fromXml(*fboChild);
-			mFboList.push_back(f);
-			int fboIndex = mFboList.size() - 1;
-			//mFboIndex[fboIndex] = fboIndex;
-
-			string mGlslPath = fboChild->getAttributeValue<string>("shadername", "0.frag");
+			string mGlslPath = fboChild->getAttributeValue<string>("shadername", ""); // no default in that case
 			CI_LOG_V("fbo shadername " + mGlslPath);
-			f->setLabel(mGlslPath);
 			if (mGlslPath.length() > 0) {
-				fs::path fr = getAssetPath("") / mVDSettings->mAssetsPath / mGlslPath;
-				if (fs::exists(fr)) {
-					loadFboFragmentShader(fr.string(), fboIndex);
-					CI_LOG_V("successfully loaded " + mGlslPath);
-				}
-				else {
-					CI_LOG_V("try upper level because file does not exist: " + mGlslPath);
-					fr = getAssetPath("") / mGlslPath;
-					if (fs::exists(fr)) {
-						loadFboFragmentShader(fr.string(), fboIndex);
-						CI_LOG_V("successfully loaded " + mGlslPath);
+				fs::path mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / mGlslPath;
+				if (fs::exists(mFragFile)) {
+					VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
+					if (s->isValid()) {
+						mShaderList.push_back(s);
+						// each shader element has a fbo
+						VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+						// create fbo xml
+						XmlTree			fboXml;
+						fboXml.setTag(mGlslPath);
+						fboXml.setAttribute("id", mShaderList.size() - 1);
+						fboXml.setAttribute("width", "640");
+						fboXml.setAttribute("height", "480");
+						fboXml.setAttribute("shadername", mGlslPath);
+						fboXml.setAttribute("inputtextureindex", fboChild->getAttributeValue<string>("inputtextureindex", "0"));
+						f->fromXml(fboXml);
+						f->setShaderIndex(mShaderList.size()-1);
+						mFboList.push_back(f);
 					}
 				}
 			}
@@ -220,9 +219,9 @@ bool VDSession::initShaderList() {
 			fboXml.setAttribute("width", "640");
 			fboXml.setAttribute("height", "480");
 			fboXml.setAttribute("shadername", "texture0.frag");
-			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size()/2)); // whatever value...
+			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size() / 2)); // whatever value...
 			f->fromXml(fboXml);
-			f->setShaderIndex(math<int>::max(1, mShaderList.size() - 1));
+			f->setShaderIndex(0);
 			mFboList.push_back(f);
 			isFirstLaunch = true;
 		}
@@ -245,7 +244,7 @@ bool VDSession::initShaderList() {
 			fboXml.setAttribute("shadername", "texture1.frag");
 			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size() / 3)); // whatever value...
 			f->fromXml(fboXml);
-			f->setShaderIndex(math<int>::max(2, mShaderList.size() - 1));
+			f->setShaderIndex(1);
 			mFboList.push_back(f);
 			isFirstLaunch = true;
 		}
@@ -294,7 +293,7 @@ bool VDSession::initTextureList() {
 						TextureImageRef t(TextureImage::create());
 						t->fromXml(detailsXml);
 						mTextureList.push_back(t);
-					}
+				}
 					else if (texturetype == "imagesequence") {
 						TextureImageSequenceRef t(new TextureImageSequence(mVDAnimation));
 						t->fromXml(detailsXml);
@@ -349,10 +348,10 @@ bool VDSession::initTextureList() {
 						t->fromXml(xml);
 						mTextureList.push_back(t);
 					}
-				}
 			}
 		}
 	}
+}
 	return isFirstLaunch;
 }
 
@@ -470,11 +469,11 @@ void VDSession::restore()
 		}
 
 		// warps TODO in warp.cpp
-	/*	if (doc.hasChild("warps")) {
-			unsigned int warpsize = 0;
-			JsonTree warps(doc.getChild("warps"));
-			if (warps.hasChild("size")) warpsize = warps.getValueForKey<int>("size");
-			for (unsigned int w = 0; w < warpsize; w++) {
+		/*	if (doc.hasChild("warps")) {
+				unsigned int warpsize = 0;
+				JsonTree warps(doc.getChild("warps"));
+				if (warps.hasChild("size")) warpsize = warps.getValueForKey<int>("size");
+				for (unsigned int w = 0; w < warpsize; w++) {
 				JsonTree jsonWarp(doc.getChild("warp" + toString(w)));
 				string wName = (jsonWarp.hasChild("name")) ? jsonWarp.getValueForKey<string>("name") : "no name";
 				unsigned int afboindex = (jsonWarp.hasChild("afboindex")) ? jsonWarp.getValueForKey<int>("afboindex") : 1;
@@ -483,9 +482,9 @@ void VDSession::restore()
 				unsigned int bShaderIndex = (jsonWarp.hasChild("bshaderindex")) ? jsonWarp.getValueForKey<int>("bshaderindex") : 1;
 				float xfade = (jsonWarp.hasChild("xfade")) ? jsonWarp.getValueForKey<float>("xfade") : 1.0f;
 				mVDMix->createWarp(wName, afboindex, aShaderIndex, bfboindex, bShaderIndex, xfade);
-			}
+				}
 
-		}*/
+				}*/
 	}
 	catch (const JsonTree::ExcJsonParserError& exc) {
 		CI_LOG_W(exc.what());
@@ -1250,7 +1249,7 @@ string VDSession::getVertexShaderString(unsigned int aShaderIndex) {
 /*void VDSession::renderShaderThumb(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 	mShaderList[aShaderIndex]->renderThumb();
-}*/
+	}*/
 void VDSession::updateShaderThumbFile(unsigned int aShaderIndex) {
 	for (int i = 0; i < mFboList.size(); i++)
 	{

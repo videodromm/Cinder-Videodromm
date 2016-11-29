@@ -37,7 +37,9 @@ void VDUIFbos::Run(const char* title) {
 
 				sprintf(buf, "%d##fboit%d%d", t, f, t);
 				if (ui::Button(buf)) mVDSession->setFboInputTexture(f, t);
-				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
+
+				sprintf(buf, "Set input texture to %s", mVDSession->getInputTextureName(t).c_str());
+				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
 			}
 			if (mVDSession->isFboFlipV(f)) {
@@ -77,20 +79,40 @@ void VDUIFbos::Run(const char* title) {
 		{
 			ui::PushID(m);
 			ui::Image((void*)mVDSession->getMixTexture(m)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-			for (unsigned int it = 0; it < mVDSession->getInputTexturesCount(); it++) {
-				if (it > 0) ui::SameLine();
-				if (mVDSession->getFboInputTextureIndex(m) == it) {
-					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(it / 7.0f, 1.0f, 1.0f));
+			// loop on the fbos
+			for (unsigned int a = 0; a < mVDSession->getFboListSize(); a++) {
+				if (a > 0) ui::SameLine();
+				if (mVDSession->getWarpAFboIndex(m) == a) {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(a / 7.0f, 1.0f, 1.0f));
 				}
 				else {
-					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(it / 7.0f, 0.1f, 0.1f));
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(a / 7.0f, 0.1f, 0.1f));
 				}
-				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(it / 7.0f, 0.7f, 0.7f));
-				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(it / 7.0f, 0.8f, 0.8f));
+				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(a / 7.0f, 0.7f, 0.7f));
+				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(a / 7.0f, 0.8f, 0.8f));
 
-				sprintf(buf, "%d##mixfboit%d%d", it, m, it);
-				if (ui::Button(buf)) mVDSession->setFboInputTexture(m, it);
-				if (ui::IsItemHovered()) ui::SetTooltip("Set input texture");
+				sprintf(buf, "%d##wia%d%d", a, m, a);
+				if (ui::Button(buf)) mVDSession->setWarpAFboIndex(m, a);
+				sprintf(buf, "Set input fbo A to %s", mVDSession->getShaderName(a).c_str());
+				if (ui::IsItemHovered()) ui::SetTooltip(buf);
+				ui::PopStyleColor(3);
+			}
+			// loop on the fbos
+			for (unsigned int b = 0; b < mVDSession->getFboListSize(); b++) {
+				if (b > 0) ui::SameLine();
+				if (mVDSession->getWarpBFboIndex(m) == b) {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(b / 7.0f, 1.0f, 1.0f));
+				}
+				else {
+					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(b / 7.0f, 0.1f, 0.1f));
+				}
+				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(b / 7.0f, 0.7f, 0.7f));
+				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(b / 7.0f, 0.8f, 0.8f));
+
+				sprintf(buf, "%d##wib%d%d", b, m, b);
+				if (ui::Button(buf)) mVDSession->setWarpBFboIndex(m, b);
+				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(b).c_str());
+				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
 			}
 			ui::Text("mixwh %dx%d", mVDSession->getMixTexture(m)->getWidth(), mVDSession->getMixTexture(m)->getHeight());

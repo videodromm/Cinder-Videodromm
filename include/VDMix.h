@@ -32,7 +32,12 @@ namespace VideoDromm
 {
 	// stores the pointer to the VDMix instance
 	typedef std::shared_ptr<class VDMix> 	VDMixRef;
-
+	struct VDMixFbo
+	{
+		//ci::gl::FboRef					fbo;
+		ci::gl::Texture2dRef			texture;
+		string							name;
+	};
 	class VDMix {
 	public:
 		VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList);
@@ -48,9 +53,6 @@ namespace VideoDromm
 		bool							handleMouseUp(MouseEvent &event);
 		bool							handleKeyDown(KeyEvent &event);
 		bool							handleKeyUp(KeyEvent &event);
-		ci::ivec2						getSize();
-		ci::Area						getBounds();
-		GLuint							getId();
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };
 
@@ -80,7 +82,7 @@ namespace VideoDromm
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		void							updateWarpName(unsigned int aWarpIndex);
-		ci::gl::Texture2dRef				getRenderTexture();
+		ci::gl::Texture2dRef			getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
 		void							save();
 		void							load();
@@ -106,7 +108,8 @@ namespace VideoDromm
 		//! Fbos
 		// maintain a list of fbos specific to this mix
 		VDFboList						mFboList;
-		vector<ci::gl::FboRef>			mMixFbos;
+		map<int, VDMixFbo>				mMixFbos;
+		ci::gl::FboRef					mMixRenderFbo;
 
 		//! Shaders
 		VDShaderList					mShaderList;
@@ -128,8 +131,7 @@ namespace VideoDromm
 		gl::FboRef						mRenderFbo;
 
 		int								warpMixToRender;
-		//map<int, WarpMix>				mWarpMix;
-		// temp
+		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
 	};
 }

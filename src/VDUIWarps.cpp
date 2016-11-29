@@ -38,7 +38,7 @@ void VDUIWarps::Run(const char* title) {
 
 				sprintf(buf, "%d##wia%d%d", a, w, a);
 				if (ui::Button(buf)) mVDSession->setWarpAFboIndex(w, a);
-				sprintf(buf, "Set input fbo A to %s", mVDSession->getShaderName(mVDSession->getWarpAShaderIndex(a)).c_str());
+				sprintf(buf, "Set input fbo A to %s", mVDSession->getShaderName(a).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
 			}
@@ -56,7 +56,7 @@ void VDUIWarps::Run(const char* title) {
 
 				sprintf(buf, "%d##wib%d%d", b, w, b);
 				if (ui::Button(buf)) mVDSession->setWarpBFboIndex(w, b);
-				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(mVDSession->getWarpBShaderIndex(b)).c_str());
+				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(b).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
 			}
@@ -104,7 +104,7 @@ void VDUIWarps::Run(const char* title) {
 
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2));
-			sprintf(buf, "tex a %s", mVDSession->getInputTextureName(mVDSession->getFboInputTextureIndex(mVDSession->getWarpAFboIndex(currentNode))).c_str());
+			sprintf(buf, "txa %s", mVDSession->getInputTextureName(mVDSession->getFboInputTextureIndex(mVDSession->getWarpAFboIndex(currentNode))).c_str());
 			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
@@ -133,7 +133,7 @@ void VDUIWarps::Run(const char* title) {
 
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH));
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2 + mVDSettings->uiPreviewH + mVDSettings->uiMargin));
-			sprintf(buf, "tex b %s", mVDSession->getInputTextureName(mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode))).c_str());
+			sprintf(buf, "txb %s", mVDSession->getInputTextureName(mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode))).c_str());
 			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			{
 				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);

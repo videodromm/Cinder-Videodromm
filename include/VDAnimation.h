@@ -88,11 +88,6 @@ namespace VideoDromm
 		float							iFreqs[7];
 		bool							mUseLineIn;
 
-		/*map<int, vec2>					vec2Values;
-		map<int, vec3>					vec3Values;
-		map<int, vec4>					vec4Values;
-		map<int, int>					intValues;*/
-		//int								getValuesSize() { return controlValues.size(); };
 		// shaders
 		bool							isExistingUniform(string aName);
 		int								getUniformType(string aName);
