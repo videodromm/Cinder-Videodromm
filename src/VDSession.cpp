@@ -118,18 +118,21 @@ void VDSession::fromXml(const XmlTree &xml) {
 					VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
 					if (s->isValid()) {
 						mShaderList.push_back(s);
+						unsigned int rtn = mShaderList.size() - 1;
 						// each shader element has a fbo
 						VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 						// create fbo xml
 						XmlTree			fboXml;
 						fboXml.setTag(mGlslPath);
-						fboXml.setAttribute("id", mShaderList.size() - 1);
+						fboXml.setAttribute("id", rtn);
 						fboXml.setAttribute("width", "640");
 						fboXml.setAttribute("height", "480");
 						fboXml.setAttribute("shadername", mGlslPath);
 						fboXml.setAttribute("inputtextureindex", fboChild->getAttributeValue<string>("inputtextureindex", "0"));
 						f->fromXml(fboXml);
-						f->setShaderIndex(mShaderList.size()-1);
+						f->setShaderIndex(rtn);
+						f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
+
 						mFboList.push_back(f);
 					}
 				}
@@ -222,6 +225,7 @@ bool VDSession::initShaderList() {
 			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size() / 2)); // whatever value...
 			f->fromXml(fboXml);
 			f->setShaderIndex(0);
+			f->setFragmentShader(0, mShaderList[0]->getFragmentString(), mShaderList[0]->getName());
 			mFboList.push_back(f);
 			isFirstLaunch = true;
 		}
@@ -245,6 +249,8 @@ bool VDSession::initShaderList() {
 			fboXml.setAttribute("inputtextureindex", math<int>::max(0, mTextureList.size() / 3)); // whatever value...
 			f->fromXml(fboXml);
 			f->setShaderIndex(1);
+			f->setFragmentShader(1, mShaderList[1]->getFragmentString(), mShaderList[1]->getName());
+
 			mFboList.push_back(f);
 			isFirstLaunch = true;
 		}
@@ -905,6 +911,7 @@ int VDSession::loadFragmentShader(string aFilePath) {
 		fboXml.setAttribute("inputtextureindex", "0");
 		f->fromXml(fboXml);
 		f->setShaderIndex(rtn);
+		f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 		mFboList.push_back(f);
 	}
 	return rtn;

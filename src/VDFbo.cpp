@@ -52,17 +52,17 @@ namespace VideoDromm {
 		}
 		// load passthru fragment shader
 		try {
-			fs::path fragFile = getAssetPath("") / "fbotexture.frag";
+			fs::path fragFile = getAssetPath("") / "0.frag";
 			if (fs::exists(fragFile)) {
-				mFboTextureFragmentShaderString = loadString(loadAsset("fbotexture.frag"));
+				mFboTextureFragmentShaderString = loadString(loadAsset("0.frag"));
 			}
 			else {
-				mError = "fbotexture.frag does not exist, should quit";
+				mError = "0.frag does not exist, should quit";
 				CI_LOG_V(mError);
 			}
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
 			mFboTextureShader->setLabel(mShaderName);
-			CI_LOG_V("fbotexture.frag loaded and compiled");
+			CI_LOG_V("0.frag loaded and compiled");
 		}
 		catch (gl::GlslProgCompileExc &exc) {
 			mError = string(exc.what());
@@ -200,7 +200,7 @@ namespace VideoDromm {
 	}
 	ci::gl::Texture2dRef VDFbo::getRenderedTexture() {
 		if (!isReady) {
-			getFboTexture();
+			//getFboTexture();
 			isReady = true;
 		}
 		return mRenderedTexture;
