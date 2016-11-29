@@ -68,6 +68,7 @@ namespace VideoDromm
 		void							setInputTexture(unsigned int aTextureIndex);
 		unsigned int					getInputTextureIndex() { return mInputTextureIndex; };
 		ci::gl::Texture2dRef			getFboTexture();
+		void							updateThumbFile();
 		gl::GlslProgRef					getShader();
 		ci::gl::Texture2dRef			getRenderedTexture();
 	protected:

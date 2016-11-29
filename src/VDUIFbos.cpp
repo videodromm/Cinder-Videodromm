@@ -52,8 +52,8 @@ void VDUIFbos::Run(const char* title) {
 			if (ui::Button(buf)) mVDSession->fboFlipV(f);
 			ui::PopStyleColor(3);
 			ui::SameLine();
-			sprintf(buf, "U##fboupd%d", f);
-			if (ui::Button(buf)) mVDSession->getFboTexture(f);
+			sprintf(buf, "T##fboupd%d", f);
+			if (ui::Button(buf)) mVDSession->updateShaderThumbFile(f);
 			ui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(f)->getWidth(), mVDSession->getFboRenderedTexture(f)->getHeight());
 			xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 

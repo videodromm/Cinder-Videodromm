@@ -11,8 +11,8 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	mVDSettings = aVDSettings;
 	mVDAnimation = aVDAnimation;
 	mError = "";
-	gl::Fbo::Format format;
-	mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
+	//gl::Fbo::Format format;
+	//mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
 
 	loadVertexStringFromFile(mVertexShaderFilePath);
 	loadFragmentStringFromFile(mFragmentShaderFilePath);
@@ -168,7 +168,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
-		mVDSettings->mMsg = aName + " live edited, loaded and compiled";
+		mVDSettings->mMsg = aName + " loaded and compiled";
 		CI_LOG_V(mVDSettings->mMsg);
 		mValid = true;
 		auto &uniforms = mShader->getActiveUniforms();
@@ -232,8 +232,6 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
-		createThumb();
-
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
@@ -247,73 +245,6 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	}
 	mVDSettings->mWebSocketsMsg = mError;
 	return mValid;
-}
-
-/*void VDShader::fromXml(const XmlTree &xml) {
-	mId = xml.getAttributeValue<string>("id", "");
-	string mVertfile = xml.getAttributeValue<string>("vertfile", "passthru.vert");
-	mName = xml.getAttributeValue<string>("fragfile", "0.frag");
-	CI_LOG_V("shader id " + mId + " name " + mName);
-	mVertexFile = getAssetPath("") / mVDSettings->mAssetsPath / mVertfile;
-	loadVertexStringFromFile(mVertexShaderFilePath);
-
-	mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / mName;
-	loadFragmentStringFromFile(mFragFile.string());
-}*/
-void VDShader::createThumb() {
-	// draw using the shader
-	mThumbFbo->bindFramebuffer();
-	// clear the FBO
-	gl::clear();
-	gl::setMatricesWindow(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-
-	mShader->bind();
-	mShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
-	mShader->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
-	mShader->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-	mShader->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
-	mShader->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));
-	mShader->uniform("iChannel0", 0);
-	mShader->uniform("iChannel1", 1);
-	mShader->uniform("iChannel2", 2);
-	mShader->uniform("iAudio0", 0);
-	mShader->uniform("iFreq0", 1.0f);
-	mShader->uniform("iFreq1", 1.0f);
-	mShader->uniform("iFreq2", 1.0f);
-	mShader->uniform("iFreq3", 1.0f);
-	mShader->uniform("spectrum", vec3(1.0f));
-	mShader->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
-	mShader->uniform("iColor", vec3(1.0f, 1.0f, 0.0f));
-	mShader->uniform("iBackgroundColor", vec3(1.0f, 0.0f, 0.0f));
-	mShader->uniform("iSteps", 16.0f);
-	mShader->uniform("iRatio", 20.0f);
-	mShader->uniform("iRenderXY", mVDSettings->mRenderXY);
-	mShader->uniform("iZoom", 1.0f);
-	mShader->uniform("iAlpha", 1.0f);
-	//mShader->uniform("iFps", mVDSession->getControlValue(30));
-
-	gl::drawSolidRect(Rectf(0, 0, mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-	// stop drawing into the FBO
-	mThumbFbo->unbindFramebuffer();
-	mThumbTexture = mThumbFbo->getColorTexture();
-}
-ci::gl::Texture2dRef VDShader::getThumb() {
-	if (!mThumbTexture) {
-		// init
-		mThumbTexture = ci::gl::Texture::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-		string filename = mName + ".jpg";
-		fs::path fr = getAssetPath("") / "thumbs" / filename;
-		if (!fs::exists(fr)) {
-			createThumb();
-			Surface s8(mThumbTexture->createSource());
-			writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
-		}
-		else {
-			// load from disk
-			mThumbTexture = ci::gl::Texture::create(loadImage(fr));
-		}
-	}
-	return mThumbTexture;
 }
 
 gl::GlslProgRef VDShader::getShader() {

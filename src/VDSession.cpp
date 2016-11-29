@@ -1223,7 +1223,12 @@ string VDSession::getShaderName(unsigned int aShaderIndex) {
 	return mShaderList[aShaderIndex]->getName();
 }
 ci::gl::TextureRef VDSession::getShaderThumb(unsigned int aShaderIndex) {
-	return mShaderList[aShaderIndex]->getThumb();
+	unsigned int found = 0;
+	for (int i = 0; i < mFboList.size(); i++)
+	{
+		if (mFboList[i]->getShaderIndex() == aShaderIndex) found = i;
+	}
+	return mVDMix->getFboTexture(found);
 }
 void VDSession::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
@@ -1242,9 +1247,15 @@ string VDSession::getVertexShaderString(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 	return mShaderList[aShaderIndex]->getVertexString();
 }
-void VDSession::createShaderThumb(unsigned int aShaderIndex) {
+/*void VDSession::renderShaderThumb(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	return mShaderList[aShaderIndex]->createThumb();
+	mShaderList[aShaderIndex]->renderThumb();
+}*/
+void VDSession::updateShaderThumbFile(unsigned int aShaderIndex) {
+	for (int i = 0; i < mFboList.size(); i++)
+	{
+		if (mFboList[i]->getShaderIndex() == aShaderIndex) mFboList[i]->updateThumbFile();
+	}
 }
 void VDSession::removeShader(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;

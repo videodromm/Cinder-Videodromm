@@ -216,8 +216,7 @@ namespace VideoDromm {
 			i++;
 		}
 		mRenderedTexture = mRenderFbo->getColorTexture();
-
-		return mRenderFbo->getColorTexture();
+		return mRenderedTexture;
 	}
 
 
@@ -246,9 +245,6 @@ namespace VideoDromm {
 		if (warpMixToRender >= mWarps.size()) {
 			warpMixToRender = 0;
 		}
-		/*if (warpMixToRender == 1) {
-			mRenderedTexture = mMixFbos[mWarpMix[warpMixToRender].MixFboIndex]->getColorTexture();
-		}*/
 	}
 	ci::gl::Texture2dRef VDMix::getRenderedTexture() {
 		getRenderTexture();

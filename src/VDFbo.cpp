@@ -281,5 +281,16 @@ namespace VideoDromm {
 		mRenderedTexture = mFbo->getColorTexture();
 		return mRenderedTexture;// mFbo->getColorTexture();
 	}
+
+	void VDFbo::updateThumbFile() {
+		if (mRenderedTexture) {
+			string filename = getShaderName() + ".jpg";
+			fs::path fr = getAssetPath("") / "thumbs" / filename;
+			getFboTexture();
+			Surface s8(mRenderedTexture->createSource());
+			writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
+		}
+	}
+
 } // namespace VideoDromm
 

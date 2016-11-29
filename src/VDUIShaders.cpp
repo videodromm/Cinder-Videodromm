@@ -21,7 +21,7 @@ VDUIShaders::VDUIShaders(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	catch (gl::GlslProgCompileExc &exc)
 	{
 		mError = string(exc.what());
-		CI_LOG_V("unable to load/compile passthru vertex shader:" + string(exc.what()));
+		CI_LOG_V("unable to load passthru vertex shader file:" + string(exc.what()));
 	}
 	catch (const std::exception &e)
 	{
@@ -48,7 +48,7 @@ void VDUIShaders::Run(const char* title) {
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(s);
 			ui::Image((void*)mVDSession->getShaderThumb(s)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-			if (ui::IsItemHovered()) mVDSession->createShaderThumb(s);
+			if (ui::IsItemHovered()) mVDSession->getShaderThumb(s);
 			// edit
 			if (shaderToEdit == s) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.8f, 1.0f, 0.5f));
@@ -83,7 +83,7 @@ void VDUIShaders::Run(const char* title) {
 			// thumb
 			sprintf(buf, "T##st%d", s);
 			if (ui::Button(buf)){
-				mVDSession->createShaderThumb(s);
+				mVDSession->updateShaderThumbFile(s);
 			}
 			if (ui::IsItemHovered()) ui::SetTooltip("Create thumb");
 			ui::SameLine();

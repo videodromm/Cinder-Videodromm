@@ -50,8 +50,7 @@ namespace VideoDromm
 		bool							setFragmentString(string aFragmentShaderString, string aName = "");
 		// thumb image
 		ci::gl::Texture2dRef			getThumb();
-		void							createThumb();
-        bool							isValid() { return mValid; };
+		bool							isValid() { return mValid; };
 		void							removeShader();
 	private:
 		// Settings
@@ -78,7 +77,7 @@ namespace VideoDromm
 		// include shader lines
 		std::string						shaderInclude;
 		// fbo
-		gl::FboRef						mThumbFbo;
-		ci::gl::Texture2dRef			mThumbTexture;
+		//gl::FboRef						mThumbFbo;
+		//ci::gl::Texture2dRef			mThumbTexture;
 	};
 }
