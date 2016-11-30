@@ -68,6 +68,14 @@ namespace VideoDromm {
 	}
 	ci::gl::TextureRef VDMix::getMixTexture(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = 0;
+		if (!mMixFbos[aMixFboIndex].texture) {
+			// should never happen 
+			mMixFbos[aMixFboIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		}
+		if (!mMixFbos[aMixFboIndex].fbo) {
+			// should never happen
+			mMixFbos[aMixFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		}
 		return mMixFbos[aMixFboIndex].texture;
 	}
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {
@@ -94,27 +102,27 @@ namespace VideoDromm {
 
 #pragma region warps
 	void VDMix::createWarp(string wName, unsigned int aFboIndex, unsigned int aShaderIndex, unsigned int bFboIndex, unsigned int bShaderIndex, float xFade) {
-
-		mMixFbos[mMixFbos.size()].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mMixFbos[mMixFbos.size()].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		mMixFbos[mMixFbos.size()].name = wName;
+		int newIndex = mMixFbos.size();
+		mMixFbos[newIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		mMixFbos[newIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		mMixFbos[newIndex].name = wName;
 
 		mWarps.push_back(WarpPerspectiveBilinear::create());
 		Warp::handleResize(mWarps);
 		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
 		Warp::handleResize(mWarps);
 
-		int i = mWarps.size() - 1; // must have at least 1 warp!
-		mWarps[i]->ABCrossfade = xFade;
-		mWarps[i]->setAFboIndex(aFboIndex);
-		mWarps[i]->setAShaderIndex(aShaderIndex);
-		mWarps[i]->setAShaderFilename(mShaderList[aShaderIndex]->getName());
-		mWarps[i]->setBFboIndex(bFboIndex);
-		mWarps[i]->setBShaderIndex(bShaderIndex);
-		mWarps[i]->setBShaderFilename(mShaderList[bShaderIndex]->getName());
-		mWarps[i]->setMixFboIndex(i);
-		mWarps[i]->setName(toString(mWarps[i]->getMixFboIndex()) + wName);
-		updateWarpName(i);
+		//int i = mWarps.size() - 1; // must have at least 1 warp!
+		mWarps[newIndex]->ABCrossfade = xFade;
+		mWarps[newIndex]->setAFboIndex(aFboIndex);
+		mWarps[newIndex]->setAShaderIndex(aShaderIndex);
+		mWarps[newIndex]->setAShaderFilename(mShaderList[aShaderIndex]->getName());
+		mWarps[newIndex]->setBFboIndex(bFboIndex);
+		mWarps[newIndex]->setBShaderIndex(bShaderIndex);
+		mWarps[newIndex]->setBShaderFilename(mShaderList[bShaderIndex]->getName());
+		mWarps[newIndex]->setMixFboIndex(newIndex);
+		mWarps[newIndex]->setName(toString(mWarps[newIndex]->getMixFboIndex()) + wName);
+		updateWarpName(newIndex);
 	}
 	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 		if (aWarpIndex < mWarps.size()) {
@@ -209,6 +217,7 @@ namespace VideoDromm {
 			// create the fbos and shaders
 			warp->setAShaderIndex(createShaderFbo(warp->getAShaderFilename(), 0));
 			warp->setBShaderIndex(createShaderFbo(warp->getBShaderFilename(), 0));
+			// ensure all indexes are valid
 			if (warp->getAFboIndex() > mFboList.size() - 1) warp->setAFboIndex(0);
 			if (warp->getBFboIndex() > mFboList.size() - 1) warp->setBFboIndex(0);
 			if (warp->getAShaderIndex() > mShaderList.size() - 1) warp->setAShaderIndex(0);
