@@ -169,7 +169,7 @@ void VDSession::update() {
 	// fps calculated in main app
 	mVDSettings->sFps = toString(floor(getControlValue(30)));
 	if (mVDWebsocket->hasReceivedStream() && (getElapsedFrames() % 100 == 0)) {
-		updateStream();
+		updateStream(mVDWebsocket->getBase64Image());
 	}
 	if (mVDWebsocket->hasReceivedShader()) {
 		if (mVDMix->getWarpCrossfade(0) < 0.5) {
@@ -706,112 +706,20 @@ int VDSession::loadFboFragmentShader(string aFilePath, unsigned int aFboIndex) {
 	loadFragmentShader(aFilePath);
 	return rtn;
 }
-/*string VDSession::getFboFragmentShaderText(unsigned int aFboIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
-	unsigned int shaderIndex = mFboList[aFboIndex]->getShaderIndex();
-	if (shaderIndex > mShaderList.size() - 1) shaderIndex = 0;
-	return mShaderList[shaderIndex]->getFragmentString();
-}
-void VDSession::setPosition(int x, int y) {
-	mPosX = ((float)x / (float)mWidth) - 0.5f;
-	mPosY = ((float)y / (float)mHeight) - 0.5f;
-	for (auto &fbo : mFboList)
-	{
-		fbo->setPosition(mPosX, mPosY);
-	}
-}
-void VDSession::setZoom(float aZoom) {
-	mZoom = aZoom;
-	for (auto &fbo : mFboList)
-	{
-		fbo->setZoom(mZoom);
-	}
-}
-
-string VDSession::getFboName(unsigned int aFboIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	return mFboList[aFboIndex]->getName();
-}
-int VDSession::getFboTextureWidth(unsigned int aFboIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	return mFboList[aFboIndex]->getTextureWidth();
-}
-int VDSession::getFboTextureHeight(unsigned int aFboIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	return mFboList[aFboIndex]->getTextureHeight();
-}
-void VDSession::setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
-	mFboList[aFboIndex]->setInputTexture(aInputTextureIndex);
-}
-unsigned int VDSession::getFboInputTextureIndex(unsigned int aFboIndex) {
-	if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-	return mFboList[aFboIndex]->getInputTextureIndex();
-}
-void VDSession::fboFlipV(unsigned int aFboIndex) {
-if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
-mFboList[aFboIndex]->flipV();
-}
-bool VDSession::isFboFlipV(unsigned int aFboIndex) {
-if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
-return mFboList[aFboIndex]->isFlipV();
-}
-void VDSession::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) {
-CI_LOG_V("setFboFragmentShaderIndex, before, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
-if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
-if (aFboShaderIndex > mShaderList.size() - 1) aFboShaderIndex = mShaderList.size() - 1;
-CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
-mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
-// route message
-// LOOP! mVDWebsocket->changeFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString());
-}
-unsigned int VDSession::getFboFragmentShaderIndex(unsigned int aFboIndex) {
-unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();
-//CI_LOG_V("getFboFragmentShaderIndex, fboIndex: " + toString(aFboIndex)+" shaderIndex: " + toString(rtn));
-if (rtn > mShaderList.size() - 1) rtn = mShaderList.size() - 1;
-return rtn;
-}
-*/
 string VDSession::getMixFboName(unsigned int aMixFboIndex) {
 	return mVDMix->getMixFboName(aMixFboIndex);
 }
 
 void VDSession::sendFragmentShader(unsigned int aShaderIndex) {
-	mVDWebsocket->changeFragmentShader(mShaderList[aShaderIndex]->getFragmentString());
+	mVDWebsocket->changeFragmentShader(mVDMix->getFragmentString(aShaderIndex));
 }
-
 
 unsigned int VDSession::getMixFbosCount() {
 	return mVDMix->getMixFbosCount();
 };
 
 #pragma endregion fbos
-#pragma region textures
 
-
-void VDSession::updateStream() {
-	int found = -1;
-	for (int i = 0; i < mTextureList.size(); i++)
-	{
-		if (mTextureList[i]->getType() == mTextureList[i]->STREAM) found = i;
-	}
-	if (found < 0) {
-		// create stream texture
-		TextureStreamRef t(new TextureStream(mVDAnimation));
-		// add texture xml
-		XmlTree			textureXml;
-		textureXml.setTag("texture");
-		textureXml.setAttribute("id", "9");
-		textureXml.setAttribute("texturetype", "stream");
-		t->fromXml(textureXml);
-		mTextureList.push_back(t);
-		found = mTextureList.size() - 1;
-	}
-
-	mTextureList[found]->loadFromFullPath(*mVDWebsocket->getBase64Image());
-}
-#pragma endregion textures
 
 // shaders
 #pragma region shaders
@@ -838,49 +746,7 @@ bool VDSession::loadShaderFolder(string aFolder) {
 	}
 	return true;
 }
-unsigned int VDSession::getShadersCount() {
-	return mShaderList.size();
-}
 
-string VDSession::getShaderName(unsigned int aShaderIndex) {
-	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	return mShaderList[aShaderIndex]->getName();
-}
-ci::gl::TextureRef VDSession::getShaderThumb(unsigned int aShaderIndex) {
-	unsigned int found = 0;
-	for (int i = 0; i < mFboList.size(); i++)
-	{
-		if (mFboList[i]->getShaderIndex() == aShaderIndex) found = i;
-	}
-	return mVDMix->getFboRenderedTexture(found);
-}
-void VDSession::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
-	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString, aName);
-	// if live coding shader compiles and is used by a fbo reload it
-	for (int i = 0; i < mFboList.size(); i++)
-	{
-		if (mFboList[i]->getShaderIndex() == aShaderIndex) setFboFragmentShaderIndex(i, aShaderIndex);
-	}
-}
-string VDSession::getFragmentShaderString(unsigned int aShaderIndex) {
-	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	return mShaderList[aShaderIndex]->getFragmentString();
-}
-string VDSession::getVertexShaderString(unsigned int aShaderIndex) {
-	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	return mShaderList[aShaderIndex]->getVertexString();
-}
-void VDSession::updateShaderThumbFile(unsigned int aShaderIndex) {
-	for (int i = 0; i < mFboList.size(); i++)
-	{
-		if (mFboList[i]->getShaderIndex() == aShaderIndex) mFboList[i]->updateThumbFile();
-	}
-}
-void VDSession::removeShader(unsigned int aShaderIndex) {
-	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	mShaderList[aShaderIndex]->removeShader();
-}
 #pragma endregion shaders
 
 // websockets

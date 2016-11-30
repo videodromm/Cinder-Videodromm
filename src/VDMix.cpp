@@ -32,7 +32,7 @@ namespace VideoDromm {
 		mMixesFilepath = getAssetPath("") / "mixes.xml";
 		if (fs::exists(mMixesFilepath)) {
 			// load textures from file if one exists
-			readSettings(mVDSettings, mVDAnimation, loadFile(mMixesFilepath));
+			// TODO readSettings(mVDSettings, mVDAnimation, loadFile(mMixesFilepath));
 		}
 		// render fbo
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
@@ -622,6 +622,7 @@ namespace VideoDromm {
 		if (rtn > mShaderList.size() - 1) rtn = mShaderList.size() - 1;
 		return rtn;
 	}
+#pragma region textures
 	ci::gl::TextureRef VDMix::getInputTexture(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		return mTextureList[aTextureIndex]->getTexture();
@@ -785,6 +786,73 @@ namespace VideoDromm {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		return mTextureList[aTextureIndex]->getMaxFrame();
 	}
+#pragma endregion textures
+	// shaders
+	void VDMix::updateShaderThumbFile(unsigned int aShaderIndex) {
+		for (int i = 0; i < mFboList.size(); i++)
+		{
+			if (mFboList[i]->getShaderIndex() == aShaderIndex) mFboList[i]->updateThumbFile();
+		}
+	}
+	void VDMix::removeShader(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		mShaderList[aShaderIndex]->removeShader();
+	}
+	void VDMix::setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		mShaderList[aShaderIndex]->setFragmentString(aFragmentShaderString, aName);
+		// if live coding shader compiles and is used by a fbo reload it
+		for (int i = 0; i < mFboList.size(); i++)
+		{
+			if (mFboList[i]->getShaderIndex() == aShaderIndex) setFboFragmentShaderIndex(i, aShaderIndex);
+		}
+	}
+	string VDMix::getFragmentShaderString(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->getFragmentString();
+	}
+	string VDMix::getVertexShaderString(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->getVertexString();
+	}
+	unsigned int VDMix::getShadersCount() {
+		return mShaderList.size();
+	}
+	string VDMix::getShaderName(unsigned int aShaderIndex) {
+		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
+		return mShaderList[aShaderIndex]->getName();
+	}
+	ci::gl::TextureRef VDMix::getShaderThumb(unsigned int aShaderIndex) {
+		unsigned int found = 0;
+		for (int i = 0; i < mFboList.size(); i++)
+		{
+			if (mFboList[i]->getShaderIndex() == aShaderIndex) found = i;
+		}
+		return getFboRenderedTexture(found);
+	}
+	void VDMix::updateStream(string * aStringPtr) {
+		int found = -1;
+		for (int i = 0; i < mTextureList.size(); i++)
+		{
+			if (mTextureList[i]->getType() == mTextureList[i]->STREAM) found = i;
+		}
+		if (found < 0) {
+			// create stream texture
+			TextureStreamRef t(new TextureStream(mVDAnimation));
+			// add texture xml
+			XmlTree			textureXml;
+			textureXml.setTag("texture");
+			textureXml.setAttribute("id", "9");
+			textureXml.setAttribute("texturetype", "stream");
+			t->fromXml(textureXml);
+			mTextureList.push_back(t);
+			found = mTextureList.size() - 1;
+		}
+
+		mTextureList[found]->loadFromFullPath(*aStringPtr);
+	}
+
+
 	bool VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex) {
 		bool rtn = false;
 		if (aShaderFilename.length() > 0) {

@@ -95,15 +95,14 @@ namespace VideoDromm {
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex) { return mVDMix->getFboFragmentShaderIndex(aFboIndex); };
 		bool							loadShaderFolder(string aFolder);
 		int								loadFragmentShader(string aFilePath);
-		unsigned int					getShadersCount();
-		string							getShaderName(unsigned int aShaderIndex);
-		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex);
-		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "");
-		string							getVertexShaderString(unsigned int aShaderIndex);
-		string							getFragmentShaderString(unsigned int aShaderIndex);
-		//void							renderShaderThumb(unsigned int aShaderIndex);
-		void							updateShaderThumbFile(unsigned int aShaderIndex);
-		void							removeShader(unsigned int aShaderIndex);
+		unsigned int					getShadersCount() { return mVDMix->getShadersCount(); };
+		string							getShaderName(unsigned int aShaderIndex) { return mVDMix->getShaderName(aShaderIndex); };
+		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex) { return mVDMix->getShaderThumb(aShaderIndex); };
+		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "") { mVDMix->setFragmentShaderString(aShaderIndex, aFragmentShaderString, aName); };
+		string							getVertexShaderString(unsigned int aShaderIndex) { return mVDMix->getVertexShaderString(aShaderIndex); };
+		string							getFragmentShaderString(unsigned int aShaderIndex) { return mVDMix->getFragmentShaderString(aShaderIndex); };
+		void							updateShaderThumbFile(unsigned int aShaderIndex) { mVDMix->updateShaderThumbFile(aShaderIndex); };
+		void							removeShader(unsigned int aShaderIndex) { mVDMix->removeShader(aShaderIndex); };
 		// utils
 		int								getWindowsResolution();
 		float							getTargetFps() { return mTargetFps; };
@@ -151,10 +150,10 @@ namespace VideoDromm {
 		void							useBlendmode(unsigned int aBlendIndex) { return mVDMix->useBlendmode(aBlendIndex); };
 
 		// textures
-		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex);
+		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex) { return mVDMix->getInputTexture(aTextureIndex); };
 		ci::gl::TextureRef				getRenderTexture();
-		string							getInputTextureName(unsigned int aTextureIndex);
-		unsigned int					getInputTexturesCount();
+		string							getInputTextureName(unsigned int aTextureIndex) { return mVDMix->getInputTextureName(aTextureIndex); };
+		unsigned int					getInputTexturesCount() { return mVDMix->getInputTexturesCount(); };
 		//int								getTextureWidth();
 		//int								getTextureHeight();
 		void							loadImageFile(string aFile, unsigned int aTextureIndex) { mVDMix->loadImageFile(aFile, aTextureIndex); };
@@ -183,7 +182,7 @@ namespace VideoDromm {
 		unsigned int					getInputTextureOriginalHeight(unsigned int aTextureIndex) { return mVDMix->getInputTextureOriginalHeight(aTextureIndex); };
 		void							togglePlayPause(unsigned int aTextureIndex) { mVDMix->togglePlayPause(aTextureIndex); };
 		// movie
-		bool							isMovie(unsigned int aTextureIndex{ return mVDMix->isMovie(aTextureIndex); });
+		bool							isMovie(unsigned int aTextureIndex) { return mVDMix->isMovie(aTextureIndex); };
 		// sequence
 		bool							isSequence(unsigned int aTextureIndex) { return mVDMix->isSequence(aTextureIndex); };
 		bool							isLoadingFromDisk(unsigned int aTextureIndex) { return mVDMix->isLoadingFromDisk(aTextureIndex); };
@@ -275,7 +274,7 @@ namespace VideoDromm {
 		float							mPosY;
 		float							mZoom;
 		void							updateWarpName(unsigned int aWarpIndex);
-		void							updateStream();
+		void							updateStream(string * aStringPtr) { mVDMix->updateStream(aStringPtr); };
 	};
 
 }

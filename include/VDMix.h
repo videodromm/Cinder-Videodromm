@@ -91,7 +91,7 @@ namespace VideoDromm
 		ci::gl::Texture2dRef			getRenderedTexture();
 		// fbos
 		bool							createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex);
-		string							getFboName(unsigned int aFboIndex);
+		string							getFboName(unsigned int aFboIndex) { return mFboList[aFboIndex]->getName(); };
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
 		void							fboFlipV(unsigned int aFboIndex);
@@ -99,6 +99,11 @@ namespace VideoDromm
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
 		// textures
+		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex);
+		//ci::gl::TextureRef				getRenderTexture();
+		string							getInputTextureName(unsigned int aTextureIndex);
+		unsigned int					getInputTexturesCount();
+
 		int								getInputTextureXLeft(unsigned int aTextureIndex);
 		void							setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft);
 		int								getInputTextureYTop(unsigned int aTextureIndex);
@@ -120,6 +125,8 @@ namespace VideoDromm
 		void							loadAudioFile(string aFile);
 		void							loadMovie(string aFile, unsigned int aTextureIndex);
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex);
+		void							updateStream(string * aStringPtr);
+
 		// movie
 		bool							isMovie(unsigned int aTextureIndex);
 
@@ -134,6 +141,16 @@ namespace VideoDromm
 		int								getPlayheadPosition(unsigned int aTextureIndex);
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition);
 		int								getMaxFrame(unsigned int aTextureIndex);
+		// shaders
+		void							updateShaderThumbFile(unsigned int aShaderIndex);
+		void							removeShader(unsigned int aShaderIndex);
+		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "");
+		string							getVertexShaderString(unsigned int aShaderIndex);
+		string							getFragmentShaderString(unsigned int aShaderIndex);
+		unsigned int					getShadersCount();
+		string							getShaderName(unsigned int aShaderIndex);
+		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex);
+		string							getFragmentString(unsigned int aShaderIndex) { return mShaderList[aShaderIndex]->getFragmentString(); };
 	private:
 		bool							mFlipV;
 		bool							mFlipH;
