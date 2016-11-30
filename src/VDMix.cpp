@@ -225,7 +225,8 @@ namespace VideoDromm {
 		//warpMixToRender = 0;
 		//for (auto &warp : mWarps) {
 		//gl::ScopedFramebuffer scopedFbo(mMixRenderFbo);
-		gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo);
+		//gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo);
+		gl::ScopedFramebuffer scopedFbo(mMixFbos[warpMixToRender].fbo);
 		gl::clear(Color::black());
 		// render A and B fbos 
 		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getFboTexture();
@@ -239,7 +240,7 @@ namespace VideoDromm {
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getWidth(), mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getHeight()));
 		// save to a texture
 		//mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].texture = mMixRenderFbo->getColorTexture();
-		mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].texture = mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getColorTexture();
+		mMixFbos[warpMixToRender].texture = mMixFbos[warpMixToRender].fbo->getColorTexture();
 		warpMixToRender++;
 		if (warpMixToRender >= mWarps.size()) {
 			warpMixToRender = 0;
