@@ -105,6 +105,7 @@ namespace VideoDromm {
 		mWarps[i]->setBShaderIndex(bShaderIndex);
 		mWarps[i]->setMixFboIndex(i);
 		mWarps[i]->setName(toString(mWarps[i]->getMixFboIndex()) + wName);
+		updateWarpName(i);
 	}
 	void VDMix::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
 		if (aWarpIndex < mWarps.size()) {

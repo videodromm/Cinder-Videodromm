@@ -200,7 +200,8 @@ namespace VideoDromm {
 	}
 	ci::gl::Texture2dRef VDFbo::getRenderedTexture() {
 		if (!isReady) {
-			//getFboTexture();
+			// render once for init
+			getFboTexture();
 			isReady = true;
 		}
 		return mRenderedTexture;

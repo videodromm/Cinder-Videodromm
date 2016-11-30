@@ -25,7 +25,7 @@ void VDUIFbos::Run(const char* title) {
 			ui::Image((void*)mVDSession->getFboRenderedTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			if (ui::IsItemHovered()) mVDSession->getFboTexture(f);
 			for (unsigned int t = 0; t < mVDSession->getInputTexturesCount(); t++) {
-				if (t > 0) ui::SameLine();
+				if (t > 0 && (t % 6 != 0)) ui::SameLine();
 				if (mVDSession->getFboInputTextureIndex(f) == t) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(t / 7.0f, 1.0f, 1.0f));
 				}
@@ -70,7 +70,7 @@ void VDUIFbos::Run(const char* title) {
 	}
 	// mix fbos
 	for (unsigned int m = 0; m < mVDSession->getMixFbosCount(); m++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH*1.2));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
 		//ui::SetNextWindowPos(ImVec2((f * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));
 		ui::SetNextWindowPos(ImVec2((m * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3));// + mVDSettings->uiPreviewH*1.3));
 		// TODO ui::Begin(mVDMix->getFboLabel(m).c_str(), NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
@@ -81,7 +81,7 @@ void VDUIFbos::Run(const char* title) {
 			ui::Image((void*)mVDSession->getMixTexture(m)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			// loop on the fbos
 			for (unsigned int a = 0; a < mVDSession->getFboListSize(); a++) {
-				if (a > 0) ui::SameLine();
+				if (a > 0 && (a % 6 != 0)) ui::SameLine();
 				if (mVDSession->getWarpAFboIndex(m) == a) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(a / 7.0f, 1.0f, 1.0f));
 				}
@@ -99,7 +99,7 @@ void VDUIFbos::Run(const char* title) {
 			}
 			// loop on the fbos
 			for (unsigned int b = 0; b < mVDSession->getFboListSize(); b++) {
-				if (b > 0) ui::SameLine();
+				if (b > 0 && (b % 6 != 0)) ui::SameLine();
 				if (mVDSession->getWarpBFboIndex(m) == b) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(b / 7.0f, 1.0f, 1.0f));
 				}

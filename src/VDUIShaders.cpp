@@ -93,7 +93,7 @@ void VDUIShaders::Run(const char* title) {
 			if (ui::Button(buf)) mVDSession->sendFragmentShader(s);
 
 			for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
-				if (f>0) ui::SameLine();
+				if (f > 0 && (f % 6 != 0)) ui::SameLine();
 				if (mVDSession->getFboFragmentShaderIndex(f) == s) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 1.0f, 0.5f));
 				}

@@ -174,7 +174,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 
 		auto &uniforms = mShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {
-			CI_LOG_V(mShader->getLabel() + ", uniform name:" + uniform.getName());
+			CI_LOG_V(aName + ", uniform name:" + uniform.getName());
 			// if uniform is handled
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
 				int uniformType = mVDAnimation->getUniformType(uniform.getName());
@@ -233,7 +233,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		// 20161129 mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
-
+		mShader->setLabel(mName);
 		// try to compile a second time 
 		mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
 		mShader = gl::GlslProg::create(mVertexShaderString, mProcessedShaderString);
@@ -241,6 +241,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		// update only if success
 		mVDSettings->mMsg = aName + " loaded and compiled";
 		CI_LOG_V(mVDSettings->mMsg);
+		mShader->setLabel(mName);
 		mValid = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)

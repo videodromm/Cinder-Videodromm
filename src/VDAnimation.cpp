@@ -6,7 +6,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	// mix fbo flip
 	mFlipH = true;
-	mFlipV = true;
+	mFlipV = false;
 	mBlendRender = false;
 	//audio
 	mUseLineIn = true;
