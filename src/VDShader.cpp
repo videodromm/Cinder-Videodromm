@@ -83,7 +83,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 }
 bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mOriginalFragmentString = aFragmentShaderString;
-	string mCurrentUniformsString = "";
+	string mCurrentUniformsString = "// active uniforms start\n";
 	string mProcessedShaderString = "";
 	// we would like a name
 	if (aName.length() == 0) aName = toString((int)getElapsedSeconds());
@@ -106,19 +106,12 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		pattern = { " out vec4 fragColor," };
 		replacement = { "void" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		//pattern = { "fragColor" };
-		//replacement = { "gl_FragColor" };
-		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		//CI_LOG_V("3 " + mOriginalFragmentString);
 		pattern = { " in vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { " vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		//pattern = { "fragCoord" };
-		//replacement = { "gl_FragCoord.xy" };
-		//mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		// html glslEditor:
 		// change vec2 u_resolution to vec3 iResolution
 		pattern = { "2 u_r" };
@@ -225,17 +218,24 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 				}
 			}
 		}
-		mNotFoundUniformsString += "*/\nout vec4 fragColor;\nvec2  fragCoord = gl_FragCoord.xy; // keep the 2 spaces between vec2 and fragCoord\n";
+		// add "out vec4 fragColor" if necessary
+		std::size_t foundFragColorDeclaration = mOriginalFragmentString.find("out vec4 fragColor;");
+		if (foundFragColorDeclaration == std::string::npos) {
+			mNotFoundUniformsString += "*/\nout vec4 fragColor;\nvec2  fragCoord = gl_FragCoord.xy; // keep the 2 spaces between vec2 and fragCoord\n";
+		}
+		else {
+			mNotFoundUniformsString += "*/\nvec2  fragCoord = gl_FragCoord.xy; // keep the 2 spaces between vec2 and fragCoord\n";
+		}
+		mCurrentUniformsString += "// active uniforms end\n";
 		// save .frag file to migrate old shaders
+		mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
 		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
-		mFragProcessed << mNotFoundUniformsString << mCurrentUniformsString << mOriginalFragmentString;
-		// 20161129 mFragProcessed << mNotFoundUniformsString << mOriginalFragmentString;
+		mFragProcessed << mProcessedShaderString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
 		mShader->setLabel(mName);
 		// try to compile a second time 
-		mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
 		mShader = gl::GlslProg::create(mVertexShaderString, mProcessedShaderString);
 		mFragmentShaderString = mProcessedShaderString;
 		// update only if success

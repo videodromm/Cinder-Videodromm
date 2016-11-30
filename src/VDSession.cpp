@@ -1265,7 +1265,7 @@ void VDSession::updateShaderThumbFile(unsigned int aShaderIndex) {
 }
 void VDSession::removeShader(unsigned int aShaderIndex) {
 	if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
-	return mShaderList[aShaderIndex]->removeShader();
+	mShaderList[aShaderIndex]->removeShader();
 }
 #pragma endregion shaders
 

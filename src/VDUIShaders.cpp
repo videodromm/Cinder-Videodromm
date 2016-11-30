@@ -39,11 +39,11 @@ void VDUIShaders::Run(const char* title) {
 	xPos = mVDSettings->uiMargin;
 	yPos = mVDSettings->uiYPosRow3;
 	for (int s = 0; s < mVDSession->getShadersCount(); s++) {
-		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH));
-		ui::SetNextWindowPos(ImVec2(xPos, yPos));
+		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
+		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		int hue = 0;
 		sprintf(buf, "%s##sh%d", mVDSession->getShaderName(s).c_str(), s);
-		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(s);
