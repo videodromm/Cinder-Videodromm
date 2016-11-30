@@ -8,7 +8,7 @@ using namespace ci::app;
 
 namespace VideoDromm {
 
-	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList, VDShaderList aShaderList, VDFboList aFboList)
+	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation)
 		: mFlipV(false)
 		, mFlipH(false)
 	{
@@ -17,16 +17,23 @@ namespace VideoDromm {
 		mVDSettings = aVDSettings;
 		// Animation
 		mVDAnimation = aVDAnimation;
-		// Router
-		mTextureList = aTextureList;
-		mShaderList = aShaderList;
-		mFboList = aFboList;
 		// init fbo format
 		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 		//fmt.setBorderColor(Color::black());		
 		// uncomment this to enable 4x antialiasing	
 		//fboFmt.setSamples( 4 ); 
 		fboFmt.setColorTextureFormat(fmt);
+		// initialize the textures list with audio texture
+		mTexturesFilepath = getAssetPath("") / mVDSettings->mAssetsPath / "textures.xml";
+		initTextureList();
+
+		// initialize the shaders list 
+		initShaderList();
+		mMixesFilepath = getAssetPath("") / "mixes.xml";
+		if (fs::exists(mMixesFilepath)) {
+			// load textures from file if one exists
+			readSettings(mVDSettings, mVDAnimation, loadFile(mMixesFilepath));
+		}
 		// render fbo
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 		// mix fbo to render
@@ -459,5 +466,358 @@ namespace VideoDromm {
 		return event.isHandled();
 	}
 #pragma endregion events
+	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
+		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
+		mFboList[aFboIndex]->setInputTexture(aInputTextureIndex);
+	}
+	unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
+		return mFboList[aFboIndex]->getInputTextureIndex();
+	}
+	bool VDMix::initShaderList() {
+		bool isFirstLaunch = false;
+
+		if (mShaderList.size() == 0) {
+			CI_LOG_V("VDSession::init mShaderList");
+			// direct input texture channel 0
+			createShaderFbo("texture0.frag", 0);
+
+			if (createShaderFbo("texture0.frag", 0)) {
+				isFirstLaunch = true;
+			}
+			else {
+				CI_LOG_V("VDSession::init mShaderList texture0 failed");
+			}
+			// direct input texture channel 1
+			if (createShaderFbo("texture1.frag", 0)) {
+				isFirstLaunch = true;
+			}
+			else {
+				CI_LOG_V("VDSession::init mShaderList texture1 failed");
+			}
+		}
+		return isFirstLaunch;
+	}
+	bool VDMix::initTextureList() {
+		bool isFirstLaunch = false;
+		if (mTextureList.size() == 0) {
+			CI_LOG_V("VDSession::init mTextureList");
+			isFirstLaunch = true;
+			// add an audio texture as first texture
+			TextureAudioRef t(new TextureAudio(mVDAnimation));
+
+			// add texture xml
+			XmlTree			textureXml;
+			textureXml.setTag("texture");
+			textureXml.setAttribute("id", "0");
+			textureXml.setAttribute("texturetype", "audio");
+
+			t->fromXml(textureXml);
+			mTextureList.push_back(t);
+			// then read textures.xml
+			if (fs::exists(mTexturesFilepath)) {
+				// load textures from file if one exists
+				//mTextureList = VDTexture::readSettings(mVDAnimation, loadFile(mTexturesFilepath));
+				XmlTree			doc;
+				try { doc = XmlTree(loadFile(mTexturesFilepath)); }
+				catch (...) { CI_LOG_V("could not load textures.xml"); }
+				if (doc.hasChild("textures")) {
+					XmlTree xml = doc.getChild("textures");
+					for (XmlTree::ConstIter textureChild = xml.begin("texture"); textureChild != xml.end(); ++textureChild) {
+						CI_LOG_V("texture ");
+
+						string texturetype = textureChild->getAttributeValue<string>("texturetype", "unknown");
+						CI_LOG_V("texturetype " + texturetype);
+						XmlTree detailsXml = textureChild->getChild("details");
+						// read or add the assets path
+						string mFolder = detailsXml.getAttributeValue<string>("folder", "");
+						if (mFolder.length() == 0) detailsXml.setAttribute("folder", mVDSettings->mAssetsPath);
+						// create the texture
+						if (texturetype == "image") {
+							TextureImageRef t(TextureImage::create());
+							t->fromXml(detailsXml);
+							mTextureList.push_back(t);
+						}
+						else if (texturetype == "imagesequence") {
+							TextureImageSequenceRef t(new TextureImageSequence(mVDAnimation));
+							t->fromXml(detailsXml);
+							mTextureList.push_back(t);
+						}
+						else if (texturetype == "movie") {
+#if defined( CINDER_MSW )
+							TextureMovieRef t(new TextureMovie());
+							t->fromXml(detailsXml);
+							mTextureList.push_back(t);
+#endif
+						}
+						else if (texturetype == "camera") {
+#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
+							TextureCameraRef t(new TextureCamera());
+							t->fromXml(detailsXml);
+							mTextureList.push_back(t);
+#else
+							// camera not supported on this platform
+							CI_LOG_V("camera not supported on this platform");
+							XmlTree		xml;
+							xml.setTag("details");
+							xml.setAttribute("path", "0.jpg");
+							xml.setAttribute("width", 640);
+							xml.setAttribute("height", 480);
+							t->fromXml(xml);
+							mTextureList.push_back(t);
+#endif
+						}
+						else if (texturetype == "shared") {
+#if defined( CINDER_MSW )
+							TextureSharedRef t(new TextureShared());
+							t->fromXml(detailsXml);
+							mTextureList.push_back(t);
+#endif
+						}
+						else if (texturetype == "audio") {
+							// audio texture done in initTextures
+						}
+						else if (texturetype == "stream") {
+							// stream texture done when websocket texture received
+						}
+						else {
+							// unknown texture type
+							CI_LOG_V("unknown texture type");
+							TextureImageRef t(new TextureImage());
+							XmlTree		xml;
+							xml.setTag("details");
+							xml.setAttribute("path", "0.jpg");
+							xml.setAttribute("width", 640);
+							xml.setAttribute("height", 480);
+							t->fromXml(xml);
+							mTextureList.push_back(t);
+						}
+					}
+				}
+			}
+		}
+		return isFirstLaunch;
+	}
+	void VDMix::fboFlipV(unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+		mFboList[aFboIndex]->flipV();
+	}
+	bool VDMix::isFboFlipV(unsigned int aFboIndex) {
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+		return mFboList[aFboIndex]->isFlipV();
+	}
+	void VDMix::setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) {
+		CI_LOG_V("setFboFragmentShaderIndex, before, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
+		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
+		if (aFboShaderIndex > mShaderList.size() - 1) aFboShaderIndex = mShaderList.size() - 1;
+		CI_LOG_V("setFboFragmentShaderIndex, after, fboIndex: " + toString(aFboIndex) + " shaderIndex " + toString(aFboShaderIndex));
+		mFboList[aFboIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
+		// route message
+		// LOOP! mVDWebsocket->changeFragmentShader(mShaderList[aFboShaderIndex]->getFragmentString());
+	}
+	unsigned int VDMix::getFboFragmentShaderIndex(unsigned int aFboIndex) {
+		unsigned int rtn = mFboList[aFboIndex]->getShaderIndex();
+		//CI_LOG_V("getFboFragmentShaderIndex, fboIndex: " + toString(aFboIndex)+" shaderIndex: " + toString(rtn));
+		if (rtn > mShaderList.size() - 1) rtn = mShaderList.size() - 1;
+		return rtn;
+	}
+	ci::gl::TextureRef VDMix::getInputTexture(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getTexture();
+	}
+	string VDMix::getInputTextureName(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getName();
+	}
+	unsigned int VDMix::getInputTexturesCount() {
+		return mTextureList.size();
+	}
+	unsigned int VDMix::getInputTextureOriginalWidth(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getOriginalWidth();
+	}
+	unsigned int VDMix::getInputTextureOriginalHeight(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getOriginalHeight();
+	}
+	int VDMix::getInputTextureXLeft(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getXLeft();
+	}
+	void VDMix::setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft) {
+		mTextureList[aTextureIndex]->setXLeft(aXLeft);
+	}
+	int VDMix::getInputTextureYTop(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getYTop();
+	}
+	void VDMix::setInputTextureYTop(unsigned int aTextureIndex, int aYTop) {
+		mTextureList[aTextureIndex]->setYTop(aYTop);
+	}
+	int VDMix::getInputTextureXRight(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getXRight();
+	}
+	void VDMix::setInputTextureXRight(unsigned int aTextureIndex, int aXRight) {
+		mTextureList[aTextureIndex]->setXRight(aXRight);
+	}
+	int VDMix::getInputTextureYBottom(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getYBottom();
+	}
+	void VDMix::setInputTextureYBottom(unsigned int aTextureIndex, int aYBottom) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->setYBottom(aYBottom);
+	}
+	bool VDMix::isFlipVInputTexture(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->isFlipV();
+	}
+	void VDMix::inputTextureFlipV(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->flipV();
+	}
+	bool VDMix::isFlipHInputTexture(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->isFlipH();
+	}
+	void VDMix::inputTextureFlipH(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->flipH();
+	}
+
+	bool VDMix::getInputTextureLockBounds(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getLockBounds();
+	}
+	void VDMix::toggleInputTextureLockBounds(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->toggleLockBounds();
+	}
+	void VDMix::togglePlayPause(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->togglePlayPause();
+	}
+	bool VDMix::loadImageSequence(string aFolder, unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		CI_LOG_V("loadImageSequence " + aFolder + " at textureIndex " + toString(aTextureIndex));
+		// add texture xml
+		XmlTree			textureXml;
+		textureXml.setTag("texture");
+		textureXml.setAttribute("id", "0");
+		textureXml.setAttribute("texturetype", "sequence");
+		textureXml.setAttribute("path", aFolder);
+		TextureImageSequenceRef t(new TextureImageSequence(mVDAnimation));
+		if (t->fromXml(textureXml)) {
+			mTextureList.push_back(t);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	void VDMix::loadMovie(string aFile, unsigned int aTextureIndex) {
+#if defined( CINDER_MSW )
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		CI_LOG_V("loadMovie " + aFile + " at textureIndex " + toString(aTextureIndex));
+		// add texture xml
+		XmlTree			textureXml;
+		textureXml.setTag("texture");
+		textureXml.setAttribute("id", "0");
+		textureXml.setAttribute("texturetype", "movie");
+		TextureMovieRef t(new TextureMovie());
+		t->fromXml(textureXml);
+		mTextureList.push_back(t);
+#endif
+	}
+	void VDMix::loadImageFile(string aFile, unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		CI_LOG_V("loadImageFile " + aFile + " at textureIndex " + toString(aTextureIndex));
+		mTextureList[aTextureIndex]->loadFromFullPath(aFile);
+	}
+	void VDMix::loadAudioFile(string aFile) {
+		mTextureList[0]->loadFromFullPath(aFile);
+	}
+	bool VDMix::isMovie(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return (mTextureList[aTextureIndex]->getType() == mTextureList[aTextureIndex]->MOVIE);
+	}
+
+	// sequence
+	bool VDMix::isSequence(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return (mTextureList[aTextureIndex]->getType() == mTextureList[aTextureIndex]->SEQUENCE);
+	}
+	bool VDMix::isLoadingFromDisk(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return (mTextureList[aTextureIndex]->isLoadingFromDisk());
+	}
+	void VDMix::toggleLoadingFromDisk(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->toggleLoadingFromDisk();
+	}
+	void VDMix::syncToBeat(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->syncToBeat();
+	}
+	void VDMix::reverse(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->reverse();
+	}
+	float VDMix::getSpeed(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getSpeed();
+	}
+	void VDMix::setSpeed(unsigned int aTextureIndex, float aSpeed) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->setSpeed(aSpeed);
+	}
+	int VDMix::getPlayheadPosition(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getPlayheadPosition();
+	}
+	void VDMix::setPlayheadPosition(unsigned int aTextureIndex, int aPosition) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		mTextureList[aTextureIndex]->setPlayheadPosition(aPosition);
+	}
+	int VDMix::getMaxFrame(unsigned int aTextureIndex) {
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+		return mTextureList[aTextureIndex]->getMaxFrame();
+	}
+	bool VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex) {
+		bool rtn = false;
+		if (aShaderFilename.length() > 0) {
+			fs::path mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / aShaderFilename;
+			if (!fs::exists(mFragFile)) {
+				// if file does not exist it may be a full path
+				mFragFile = aShaderFilename;
+			}
+			if (fs::exists(mFragFile)) {
+				// TODO find a removed shader
+				VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
+				if (s->isValid()) {
+					mShaderList.push_back(s);
+					unsigned int newShaderIndex = mShaderList.size() - 1;
+					// each shader element has a fbo
+					VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+					// create fbo xml
+					XmlTree			fboXml;
+					fboXml.setTag(aShaderFilename);
+					fboXml.setAttribute("id", newShaderIndex);
+					fboXml.setAttribute("width", "640");
+					fboXml.setAttribute("height", "480");
+					fboXml.setAttribute("shadername", aShaderFilename);
+					fboXml.setAttribute("inputtextureindex", aInputTextureIndex);
+					f->fromXml(fboXml);
+					f->setShaderIndex(newShaderIndex);
+					f->setFragmentShader(newShaderIndex, mShaderList[newShaderIndex]->getFragmentString(), mShaderList[newShaderIndex]->getName());
+
+					mFboList.push_back(f);
+				}
+			}
+		}
+		return rtn;
+	}
 
 } // namespace VideoDromm

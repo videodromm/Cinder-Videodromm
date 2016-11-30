@@ -91,8 +91,8 @@ namespace VideoDromm {
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 
 		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
-		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
-		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
+		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) { mVDMix->setFboFragmentShaderIndex(aFboIndex, aFboShaderIndex); };
+		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex) { return mVDMix->getFboFragmentShaderIndex(aFboIndex); };
 		bool							loadShaderFolder(string aFolder);
 		int								loadFragmentShader(string aFilePath);
 		unsigned int					getShadersCount();
@@ -126,20 +126,19 @@ namespace VideoDromm {
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
-		fs::path						mMixesFilepath;
 		// fbos
-		void							fboFlipV(unsigned int aFboIndex);
-		bool							isFboFlipV(unsigned int aFboIndex);
-		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
-		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
+		void							fboFlipV(unsigned int aFboIndex) { mVDMix->fboFlipV(aFboIndex); };
+		bool							isFboFlipV(unsigned int aFboIndex) { return mVDMix->isFboFlipV(aFboIndex); };
+		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex) { return mVDMix->getFboInputTextureIndex(aFboIndex); };
+		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) { mVDMix->setFboInputTexture(aFboIndex, aInputTextureIndex); };
 		ci::gl::TextureRef				getFboTexture(unsigned int aFboIndex = 0) { return mVDMix->getFboTexture(aFboIndex); };
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex) { return mVDMix->getFboRenderedTexture(aFboIndex); };
 		ci::gl::TextureRef				getFboThumb(unsigned int aBlendIndex) { return mVDMix->getFboThumb(aBlendIndex); };
-		string							getFboName(unsigned int aFboIndex);
-		int								getFboTextureWidth(unsigned int aFboIndex);
-		int								getFboTextureHeight(unsigned int aFboIndex);
-		unsigned int					getFboListSize() { return mFboList.size(); };
-		string							getFboFragmentShaderText(unsigned int aFboIndex);
+		string							getFboName(unsigned int aFboIndex) { return mVDMix->getFboName(aFboIndex); };
+		//int								getFboTextureWidth(unsigned int aFboIndex);
+		//int								getFboTextureHeight(unsigned int aFboIndex);
+		unsigned int					getFboListSize() { return mVDMix->getFboListSize(); };
+		//string							getFboFragmentShaderText(unsigned int aFboIndex);
 		string							getMixFboName(unsigned int aMixFboIndex);
 		ci::gl::TextureRef				getMixTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount();
@@ -156,46 +155,46 @@ namespace VideoDromm {
 		ci::gl::TextureRef				getRenderTexture();
 		string							getInputTextureName(unsigned int aTextureIndex);
 		unsigned int					getInputTexturesCount();
-		int								getTextureWidth();
-		int								getTextureHeight();
-		void							loadImageFile(string aFile, unsigned int aTextureIndex);
-		void							loadAudioFile(string aFile);
-		void							loadMovie(string aFile, unsigned int aTextureIndex);
-		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex);
+		//int								getTextureWidth();
+		//int								getTextureHeight();
+		void							loadImageFile(string aFile, unsigned int aTextureIndex) { mVDMix->loadImageFile(aFile, aTextureIndex); };
+		void							loadAudioFile(string aFile) { mVDMix->loadAudioFile(aFile); };
+		void							loadMovie(string aFile, unsigned int aTextureIndex) { mVDMix->loadMovie(aFile, aTextureIndex); };
+		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex) { return mVDMix->loadImageSequence(aFolder, aTextureIndex); };
 
 		// move, rotate, zoom methods
-		void							setPosition(int x, int y);
-		void							setZoom(float aZoom);
-		int								getInputTextureXLeft(unsigned int aTextureIndex);
-		void							setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft);
-		int								getInputTextureYTop(unsigned int aTextureIndex);
-		void							setInputTextureYTop(unsigned int aTextureIndex, int aYTop);
-		int								getInputTextureXRight(unsigned int aTextureIndex);
-		void							setInputTextureXRight(unsigned int aTextureIndex, int aXRight);
-		int								getInputTextureYBottom(unsigned int aTextureIndex);
-		void							setInputTextureYBottom(unsigned int aTextureIndex, int aYBottom);
-		bool							isFlipVInputTexture(unsigned int aTextureIndex);
-		bool							isFlipHInputTexture(unsigned int aTextureIndex);
-		void							inputTextureFlipV(unsigned int aTextureIndex);
-		void							inputTextureFlipH(unsigned int aTextureIndex);
-		bool							getInputTextureLockBounds(unsigned int aTextureIndex);
-		void							toggleInputTextureLockBounds(unsigned int aTextureIndex);
-		unsigned int					getInputTextureOriginalWidth(unsigned int aTextureIndex);
-		unsigned int					getInputTextureOriginalHeight(unsigned int aTextureIndex);
-		void							togglePlayPause(unsigned int aTextureIndex);
+		//void							setPosition(int x, int y);
+		//void							setZoom(float aZoom);
+		int								getInputTextureXLeft(unsigned int aTextureIndex) { return mVDMix->getInputTextureXLeft(aTextureIndex); };
+		void							setInputTextureXLeft(unsigned int aTextureIndex, int aXLeft) { mVDMix->setInputTextureXLeft(aTextureIndex, aXLeft); };
+		int								getInputTextureYTop(unsigned int aTextureIndex) { return mVDMix->getInputTextureYTop(aTextureIndex); };
+		void							setInputTextureYTop(unsigned int aTextureIndex, int aYTop) { mVDMix->setInputTextureYTop(aTextureIndex, aYTop); };
+		int								getInputTextureXRight(unsigned int aTextureIndex) { return mVDMix->getInputTextureXRight(aTextureIndex); };
+		void							setInputTextureXRight(unsigned int aTextureIndex, int aXRight) { mVDMix->setInputTextureXRight(aTextureIndex, aXRight); };
+		int								getInputTextureYBottom(unsigned int aTextureIndex) { return mVDMix->getInputTextureYBottom(aTextureIndex); };
+		void							setInputTextureYBottom(unsigned int aTextureIndex, int aYBottom) { mVDMix->setInputTextureYBottom(aTextureIndex, aYBottom); };
+		bool							isFlipVInputTexture(unsigned int aTextureIndex) { return mVDMix->isFlipVInputTexture(aTextureIndex); };
+		bool							isFlipHInputTexture(unsigned int aTextureIndex) { return mVDMix->isFlipHInputTexture(aTextureIndex); };
+		void							inputTextureFlipV(unsigned int aTextureIndex) { mVDMix->inputTextureFlipV(aTextureIndex); };
+		void							inputTextureFlipH(unsigned int aTextureIndex) { mVDMix->inputTextureFlipH(aTextureIndex); };
+		bool							getInputTextureLockBounds(unsigned int aTextureIndex) { return mVDMix->getInputTextureLockBounds(aTextureIndex); };
+		void							toggleInputTextureLockBounds(unsigned int aTextureIndex) { mVDMix->toggleInputTextureLockBounds(aTextureIndex); };
+		unsigned int					getInputTextureOriginalWidth(unsigned int aTextureIndex) { return mVDMix->getInputTextureOriginalWidth(aTextureIndex); };
+		unsigned int					getInputTextureOriginalHeight(unsigned int aTextureIndex) { return mVDMix->getInputTextureOriginalHeight(aTextureIndex); };
+		void							togglePlayPause(unsigned int aTextureIndex) { mVDMix->togglePlayPause(aTextureIndex); };
 		// movie
-		bool							isMovie(unsigned int aTextureIndex);
+		bool							isMovie(unsigned int aTextureIndex{ return mVDMix->isMovie(aTextureIndex); });
 		// sequence
-		bool							isSequence(unsigned int aTextureIndex);
-		bool							isLoadingFromDisk(unsigned int aTextureIndex);
-		void							toggleLoadingFromDisk(unsigned int aTextureIndex);
-		void							syncToBeat(unsigned int aTextureIndex);
-		void							reverse(unsigned int aTextureIndex);
-		float							getSpeed(unsigned int aTextureIndex);
-		void							setSpeed(unsigned int aTextureIndex, float aSpeed);
-		int								getPlayheadPosition(unsigned int aTextureIndex);
-		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition);
-		int								getMaxFrame(unsigned int aTextureIndex);
+		bool							isSequence(unsigned int aTextureIndex) { return mVDMix->isSequence(aTextureIndex); };
+		bool							isLoadingFromDisk(unsigned int aTextureIndex) { return mVDMix->isLoadingFromDisk(aTextureIndex); };
+		void							toggleLoadingFromDisk(unsigned int aTextureIndex) { return mVDMix->toggleLoadingFromDisk(aTextureIndex); };
+		void							syncToBeat(unsigned int aTextureIndex) { return mVDMix->syncToBeat(aTextureIndex); };
+		void							reverse(unsigned int aTextureIndex) { return mVDMix->reverse(aTextureIndex); };
+		float							getSpeed(unsigned int aTextureIndex) { return mVDMix->getSpeed(aTextureIndex); };
+		void							setSpeed(unsigned int aTextureIndex, float aSpeed) { mVDMix->setSpeed(aTextureIndex, aSpeed); };
+		int								getPlayheadPosition(unsigned int aTextureIndex) { return mVDMix->getPlayheadPosition(aTextureIndex); };
+		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition) { mVDMix->setPlayheadPosition(aTextureIndex, aPosition); };
+		int								getMaxFrame(unsigned int aTextureIndex) { return mVDMix->getMaxFrame(aTextureIndex); };
 		// websockets
 #if defined( CINDER_MSW )
 		void							wsConnect();
@@ -217,7 +216,7 @@ namespace VideoDromm {
 		void							closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
 		void							openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
 		void							closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
-		ci::gl::Texture2dRef			getRenderedTexture()  { return mVDMix->getRenderedTexture(); };
+		ci::gl::Texture2dRef			getRenderedTexture() { return mVDMix->getRenderedTexture(); };
 
 	private:
 		// Settings
@@ -257,7 +256,7 @@ namespace VideoDromm {
 		int								mTextPlaybackEnd;
 		//! Fbos
 		// maintain a list of fbo for right only or left/right or more fbos specific to this mix
-		VDFboList						mFboList;
+		//VDFboList						mFboList;
 		fs::path						mFbosFilepath;
 		// fbo 
 		bool							mFlipV;
@@ -266,14 +265,10 @@ namespace VideoDromm {
 		gl::Fbo::Format					fboFmt;
 
 		//! Shaders
-		VDShaderList					mShaderList;
-		bool							initShaderList();
 		string							mShaderLeft;
 		string							mShaderRight;
-		// textures
-		VDTextureList					mTextureList;
-		fs::path						mTexturesFilepath;
-		bool							initTextureList();
+		//! textures
+
 		int								mWidth;
 		int								mHeight;
 		float							mPosX;
