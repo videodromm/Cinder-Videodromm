@@ -90,7 +90,7 @@ namespace VideoDromm
 		void							load();
 		ci::gl::Texture2dRef			getRenderedTexture();
 		// fbos
-		bool							createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex);
+		unsigned int 					createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex);
 		string							getFboName(unsigned int aFboIndex) { return mFboList[aFboIndex]->getName(); };
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);
@@ -174,7 +174,7 @@ namespace VideoDromm
 
 		//! Shaders
 		VDShaderList					mShaderList;
-		bool							initShaderList();
+		void							initShaderList();
 		//! Textures
 		VDTextureList					mTextureList; 
 		fs::path						mTexturesFilepath;

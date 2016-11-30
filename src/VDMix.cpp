@@ -108,8 +108,10 @@ namespace VideoDromm {
 		mWarps[i]->ABCrossfade = xFade;
 		mWarps[i]->setAFboIndex(aFboIndex);
 		mWarps[i]->setAShaderIndex(aShaderIndex);
+		mWarps[i]->setAShaderFilename(mShaderList[aShaderIndex]->getName());
 		mWarps[i]->setBFboIndex(bFboIndex);
 		mWarps[i]->setBShaderIndex(bShaderIndex);
+		mWarps[i]->setBShaderFilename(mShaderList[bShaderIndex]->getName());
 		mWarps[i]->setMixFboIndex(i);
 		mWarps[i]->setName(toString(mWarps[i]->getMixFboIndex()) + wName);
 		updateWarpName(i);
@@ -146,12 +148,14 @@ namespace VideoDromm {
 	void VDMix::setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex) {
 		if (aWarpIndex < mWarps.size() && aWarpShaderIndex < mShaderList.size()) {
 			mWarps[aWarpIndex]->setAShaderIndex(aWarpShaderIndex);
+			mWarps[aWarpIndex]->setAShaderFilename(mShaderList[aWarpShaderIndex]->getName());
 			updateWarpName(aWarpShaderIndex);
 		}
 	}
 	void VDMix::setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex) {
 		if (aWarpIndex < mWarps.size() && aWarpShaderIndex < mShaderList.size()) {
 			mWarps[aWarpIndex]->setBShaderIndex(aWarpShaderIndex);
+			mWarps[aWarpIndex]->setBShaderFilename(mShaderList[aWarpShaderIndex]->getName());
 			updateWarpName(aWarpShaderIndex);
 		}
 	}
@@ -202,6 +206,9 @@ namespace VideoDromm {
 		}
 		// ensure all indexes are valid
 		for (auto &warp : mWarps) {
+			// create the fbos and shaders
+			warp->setAShaderIndex(createShaderFbo(warp->getAShaderFilename(), 0));
+			warp->setBShaderIndex(createShaderFbo(warp->getBShaderFilename(), 0));
 			if (warp->getAFboIndex() > mFboList.size() - 1) warp->setAFboIndex(0);
 			if (warp->getBFboIndex() > mFboList.size() - 1) warp->setBFboIndex(0);
 			if (warp->getAShaderIndex() > mShaderList.size() - 1) warp->setAShaderIndex(0);
@@ -475,29 +482,16 @@ namespace VideoDromm {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		return mFboList[aFboIndex]->getInputTextureIndex();
 	}
-	bool VDMix::initShaderList() {
-		bool isFirstLaunch = false;
+	void VDMix::initShaderList() {
 
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDSession::init mShaderList");
 			// direct input texture channel 0
 			createShaderFbo("texture0.frag", 0);
-
-			if (createShaderFbo("texture0.frag", 0)) {
-				isFirstLaunch = true;
-			}
-			else {
-				CI_LOG_V("VDSession::init mShaderList texture0 failed");
-			}
+			//createShaderFbo("texture0.frag", 0); // TODO check if 2 needed?
 			// direct input texture channel 1
-			if (createShaderFbo("texture1.frag", 0)) {
-				isFirstLaunch = true;
-			}
-			else {
-				CI_LOG_V("VDSession::init mShaderList texture1 failed");
-			}
+			createShaderFbo("texture1.frag", 0);
 		}
-		return isFirstLaunch;
 	}
 	bool VDMix::initTextureList() {
 		bool isFirstLaunch = false;
@@ -853,8 +847,8 @@ namespace VideoDromm {
 	}
 
 
-	bool VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex) {
-		bool rtn = false;
+	unsigned int VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex) {
+		unsigned int rtn = 0;
 		if (aShaderFilename.length() > 0) {
 			fs::path mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / aShaderFilename;
 			if (!fs::exists(mFragFile)) {
@@ -866,21 +860,20 @@ namespace VideoDromm {
 				VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
 				if (s->isValid()) {
 					mShaderList.push_back(s);
-					unsigned int newShaderIndex = mShaderList.size() - 1;
+					rtn = mShaderList.size() - 1;
 					// each shader element has a fbo
 					VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
 					// create fbo xml
 					XmlTree			fboXml;
 					fboXml.setTag(aShaderFilename);
-					fboXml.setAttribute("id", newShaderIndex);
+					fboXml.setAttribute("id", rtn);
 					fboXml.setAttribute("width", "640");
 					fboXml.setAttribute("height", "480");
 					fboXml.setAttribute("shadername", aShaderFilename);
 					fboXml.setAttribute("inputtextureindex", aInputTextureIndex);
 					f->fromXml(fboXml);
-					f->setShaderIndex(newShaderIndex);
-					f->setFragmentShader(newShaderIndex, mShaderList[newShaderIndex]->getFragmentString(), mShaderList[newShaderIndex]->getName());
-
+					f->setShaderIndex(rtn);
+					f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 					mFboList.push_back(f);
 				}
 			}

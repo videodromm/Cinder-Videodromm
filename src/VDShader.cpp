@@ -63,16 +63,16 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 		mFragFile = getAssetPath("") / "0.frag";
 	}
 
-	string fileName = mFragFile.filename().string();
+	mName = mFragFile.filename().string();
 	// get filename without extension
-	int dotIndex = fileName.find_last_of(".");
+	/*int dotIndex = fileName.find_last_of(".");
 
 	if (dotIndex != std::string::npos) {
 		mName = fileName.substr(0, dotIndex);
 	}
 	else {
 		mName = fileName;
-	}
+	}*/
 
 	mFragmentShaderFilePath = mFragFile.string();
 	mFragmentShaderString = loadString(loadFile(mFragFile));
@@ -86,12 +86,11 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mCurrentUniformsString = "// active uniforms start\n";
 	string mProcessedShaderString = "";
 	// we would like a name
-	if (aName.length() == 0) aName = toString((int)getElapsedSeconds());
+	if (aName.length() == 0) aName = toString((int)getElapsedSeconds()) + ".frag";
 	// name of the shader
 	mName = aName;
 	string mNotFoundUniformsString = "/* " + mName + "\n";
 	// filename to save
-	aName += ".frag";
 	mValid = false;
 	// load fragment shader
 	CI_LOG_V("setFragmentString, live loading" + mName);
