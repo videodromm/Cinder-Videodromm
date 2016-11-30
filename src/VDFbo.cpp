@@ -27,7 +27,7 @@ namespace VideoDromm {
 		mFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mError = "";
 		// init with passthru shader
-		mShaderName = "fbotexture";
+		mShaderName = "0";
 		try
 		{
 			fs::path vertexFile = getAssetPath("") / "passthru.vert";

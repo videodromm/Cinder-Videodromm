@@ -29,8 +29,8 @@ using namespace VideoDromm;
 namespace VideoDromm
 {
 	// stores the pointer to the VDFbo instance
-	typedef std::shared_ptr<class VDFbo> 	VDFboRef;
-	typedef std::vector<VDFboRef>			VDFboList;
+	typedef std::shared_ptr<class VDFbo> 			VDFboRef;
+	typedef std::vector<VDFboRef>					VDFboList;
 
 	class VDFbo : public VDTexture{
 	public:
@@ -48,7 +48,6 @@ namespace VideoDromm
 		TextureType						getType() { return mType; };
 		std::string						getName();
 		std::string						getShaderName();
-		//std::string						getLabel();
 		void							setLabel(string aLabel) { mFboTextureShader->setLabel(aLabel); };
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };
@@ -89,8 +88,6 @@ namespace VideoDromm
 		gl::GlslProgRef					mFboTextureShader;
 
 		string							mError;
-		// uniforms
-		//vec3							iChannelResolution0;
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

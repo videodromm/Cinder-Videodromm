@@ -162,7 +162,6 @@ namespace VideoDromm {
 		void							loadAudioFile(string aFile);
 		void							loadMovie(string aFile, unsigned int aTextureIndex);
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex);
-		//ci::gl::TextureRef				getStreamedTexture();
 
 		// move, rotate, zoom methods
 		void							setPosition(int x, int y);
@@ -205,20 +204,20 @@ namespace VideoDromm {
 		void							sendFragmentShader(unsigned int aShaderIndex);
 #endif
 		// midi
-		void						midiSetup() { mVDRouter->midiSetup(); };
+		void							midiSetup() { mVDRouter->midiSetup(); };
 #if defined( CINDER_MSW )
-		int							getMidiInPortsCount() { return mVDRouter->getMidiInPortsCount(); };
-		string						getMidiInPortName(int i) { return mVDRouter->getMidiInPortName(i); };
-		bool						isMidiInConnected(int i) { return mVDRouter->isMidiInConnected(i); };
-		int							getMidiOutPortsCount() { return mVDRouter->getMidiOutPortsCount(); };
-		string						getMidiOutPortName(int i) { return mVDRouter->getMidiOutPortName(i); };
-		bool						isMidiOutConnected(int i) { return mVDRouter->isMidiOutConnected(i); };
+		int								getMidiInPortsCount() { return mVDRouter->getMidiInPortsCount(); };
+		string							getMidiInPortName(int i) { return mVDRouter->getMidiInPortName(i); };
+		bool							isMidiInConnected(int i) { return mVDRouter->isMidiInConnected(i); };
+		int								getMidiOutPortsCount() { return mVDRouter->getMidiOutPortsCount(); };
+		string							getMidiOutPortName(int i) { return mVDRouter->getMidiOutPortName(i); };
+		bool							isMidiOutConnected(int i) { return mVDRouter->isMidiOutConnected(i); };
 #endif
-		void						openMidiInPort(int i) { mVDRouter->openMidiInPort(i); };
-		void						closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
-		void						openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
-		void						closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
-		ci::gl::Texture2dRef		getRenderedTexture()  { return mVDMix->getRenderedTexture(); };
+		void							openMidiInPort(int i) { mVDRouter->openMidiInPort(i); };
+		void							closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
+		void							openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
+		void							closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
+		ci::gl::Texture2dRef			getRenderedTexture()  { return mVDMix->getRenderedTexture(); };
 
 	private:
 		// Settings
@@ -282,7 +281,6 @@ namespace VideoDromm {
 		float							mZoom;
 		void							updateWarpName(unsigned int aWarpIndex);
 		void							updateStream();
-		//ci::gl::TextureRef			mStreamedTexture;
 	};
 
 }

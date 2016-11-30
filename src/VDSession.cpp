@@ -70,9 +70,6 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		// init for received shaders from websockets for warp 0
 		mVDMix->createWarp("default", 1, 1, 2, 2, 1.0f);
 	}
-	// init texture
-	//mStreamedTexture = gl::Texture::create(mWidth, mHeight);
-
 }
 
 VDSessionRef VDSession::create(VDSettingsRef aVDSettings)

@@ -97,8 +97,6 @@ namespace VideoDromm
 
 		//! mix shader
 		gl::GlslProgRef					mMixShader;
-		// uniforms
-		//vec3							iChannelResolution0;
 
 		// Animation
 		VDAnimationRef					mVDAnimation;
@@ -109,7 +107,6 @@ namespace VideoDromm
 		// maintain a list of fbos specific to this mix
 		VDFboList						mFboList;
 		map<int, VDMixFbo>				mMixFbos;
-		//ci::gl::FboRef					mMixRenderFbo;
 
 		//! Shaders
 		VDShaderList					mShaderList;
@@ -129,8 +126,8 @@ namespace VideoDromm
 		fs::path						mWarpJson;
 		WarpList						mWarps;
 		gl::FboRef						mRenderFbo;
-
 		int								warpMixToRender;
+
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
 	};
