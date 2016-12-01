@@ -288,7 +288,7 @@ namespace VideoDromm {
 		// update audio texture
 		mTextureList[0]->getTexture();
 		// check if xFade changed
-		if (mVDSettings->xFadeChanged) {
+		if (mVDSettings->xFadeChanged) { 
 			mVDSettings->xFadeChanged = false;
 			for (auto &warp : mWarps) {
 				// create the fbos and shaders
