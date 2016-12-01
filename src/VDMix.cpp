@@ -287,6 +287,15 @@ namespace VideoDromm {
 	void VDMix::update() {
 		// update audio texture
 		mTextureList[0]->getTexture();
+		// check if xFade changed
+		if (mVDSettings->xFadeChanged) {
+			mVDSettings->xFadeChanged = false;
+			for (auto &warp : mWarps) {
+				// create the fbos and shaders
+				warp->ABCrossfade = mVDSettings->xFade;
+			}
+		}
+
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendmode);
 		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
@@ -301,7 +310,6 @@ namespace VideoDromm {
 		mGlslMix->uniform("iAlpha", mVDAnimation->getFloatUniformValueByIndex(4) * mVDSettings->iAlpha);
 		mGlslMix->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(17));
 		mGlslMix->uniform("iRotationSpeed", mVDAnimation->getFloatUniformValueByIndex(9));
-		//mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(18));
 		mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
 		mGlslMix->uniform("iPixelate", mVDAnimation->getFloatUniformValueByIndex(15));
 		mGlslMix->uniform("iExposure", mVDAnimation->getFloatUniformValueByIndex(14));

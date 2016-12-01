@@ -28,7 +28,7 @@ void VDUIAudio::Run(const char* title) {
 			timeValues_offset = (timeValues_offset + 1) % timeValues.size();
 		}
 		multx = mVDSession->getControlValue(13);
-		if (ui::SliderFloat("mult x", &multx, 0.01f, 10.0f)) {
+		if (ui::SliderFloat("mult x", &multx, 0.01f, 12.0f)) {
 			mVDSession->setControlValue(13, multx);
 		}
 

@@ -219,6 +219,8 @@ namespace VideoDromm {
 		bool						mWebSocketsNewMsg;
 		// midi
 		std::string					mMidiMsg;
+		float						xFade;
+		bool						xFadeChanged;
 
 		// abp
 		float						mBend;

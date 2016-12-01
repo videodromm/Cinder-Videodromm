@@ -194,7 +194,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::DragFloat("maxzm", &maxZoom, 0.1f, minZoom, maxZoom);
 
 			// rotation speed 
-			ctrl = 19;
+			ctrl = 9;
 			if (ui::Button("a##rotationspeed")) { toggleAuto(ctrl); }
 			ui::SameLine();
 			if (ui::Button("t##rotationspeed")) { toggleTempo(ctrl); }

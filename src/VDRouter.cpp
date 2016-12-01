@@ -506,7 +506,11 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		if (iarg0 == 13) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * 10);
 		// exposure
 		if (iarg0 == 14) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
-
+		// xfade
+		if (iarg0 == 18) {
+			mVDSettings->xFade = farg1;
+			mVDSettings->xFadeChanged = true;
+		}
 		mVDWebsocket->wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 
 	}

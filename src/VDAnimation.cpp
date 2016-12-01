@@ -74,7 +74,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// zoom
 	createFloatUniform("iZoom", 12, 1.0f, -3.1f, 3.0f);
 	// Audio multfactor 
-	createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 10.0f);
+	createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 	// exposure
 	createFloatUniform("iExposure", 14, 1.0f, 0.00001f, 3.0f);
 	// Pixelate
