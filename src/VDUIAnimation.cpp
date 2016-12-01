@@ -10,7 +10,7 @@ VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 	maxZoom = 3.0f;
 	for (int c = 0; c < 128; c++)
 	{
-		localValues[c] = 0.01f;
+		localValues[c] = mVDSession->getControlValue(c);
 	}
 }
 VDUIAnimation::~VDUIAnimation() {
@@ -130,7 +130,7 @@ void VDUIAnimation::Run(const char* title) {
 			//ui::SliderInt("UI Zoom", &mVDSettings->mUIZoom, 1, 8);
 
 			// iChromatic
-			ctrl = 10;
+			ctrl = 17;
 			if (ui::Button("a##chromatic")) {
 				toggleAuto(ctrl);
 			}
@@ -141,6 +141,7 @@ void VDUIAnimation::Run(const char* title) {
 				resetAutoAnimation(ctrl);
 			}
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::SliderFloat("chromatic/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
 				mVDSession->setControlValue(ctrl, localValues[ctrl]);
@@ -154,6 +155,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::Button("x##ratio")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::SliderFloat("ratio/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
 				setValue(ctrl, localValues[ctrl]);
@@ -166,10 +168,10 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::Button("x##exposure")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::DragFloat("exposure", &localValues[ctrl], 0.1f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
 				setValue(ctrl, localValues[ctrl]);
-				//setExposure(localValues[ctrl]);
 			}
 			// zoom
 			ctrl = 22;
@@ -182,6 +184,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::Button("x##zoom")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::DragFloat("zoom", &localValues[ctrl], 0.1f, minZoom, maxZoom))
 			{
 				setValue(ctrl, localValues[ctrl]);
@@ -198,6 +201,7 @@ void VDUIAnimation::Run(const char* title) {
 			ui::SameLine();
 			if (ui::Button("x##rotationspeed")) { resetAutoAnimation(ctrl); }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::DragFloat("rotationSpeed", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
 				setValue(ctrl, localValues[ctrl]);
@@ -227,6 +231,7 @@ void VDUIAnimation::Run(const char* title) {
 			ctrl = 20;
 			if (ui::Button("x##steps")) { localValues[ctrl] = 16.0f; }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::SliderFloat("steps", &localValues[ctrl], 1.0f, 128.0f))
 			{
 				setValue(ctrl, localValues[ctrl]);
@@ -235,6 +240,7 @@ void VDUIAnimation::Run(const char* title) {
 			ctrl = 15;
 			if (ui::Button("x##pixelate")) { localValues[ctrl] = 1.0f; }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::SliderFloat("pixelate", &localValues[ctrl], 0.01f, 1.0f))
 			{
 				setValue(ctrl, localValues[ctrl]);
@@ -243,6 +249,7 @@ void VDUIAnimation::Run(const char* title) {
 			ctrl = 16;
 			if (ui::Button("x##trixels")) { localValues[ctrl] = 0.0f; }
 			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
 			if (ui::SliderFloat("trixels", &localValues[ctrl], 0.00f, 1.0f))
 			{
 				setValue(ctrl, localValues[ctrl]);

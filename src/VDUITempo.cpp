@@ -33,7 +33,7 @@ void VDUITempo::Run(const char* title) {
 		ui::SameLine();
 		ui::SliderInt("beats/bar", &mVDSession->iBeatsPerBar, 1, 8); */
 
-		ui::Text("Time %.2f", mVDSession->getControlValue(49));
+		ui::Text("Time %.2f", mVDSession->getControlValue(0));
 		ui::SameLine();
 		ui::Text("Trk %s %.2f", mVDSettings->mTrackName.c_str(), mVDSettings->liveMeter);
 		//			ui::Checkbox("Playing", &mVDSettings->mIsPlaying);

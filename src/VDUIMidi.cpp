@@ -92,6 +92,7 @@ void VDUIMidi::Run(const char* title) {
 			}
 			ui::Columns(1);
 		}
+		ui::TextWrapped(">%s", mVDSettings->mMidiMsg.c_str());
 	}
 	ui::End();
 #endif

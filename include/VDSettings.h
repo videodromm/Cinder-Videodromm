@@ -217,6 +217,9 @@ namespace VideoDromm {
 		uint16_t					mWebSocketsPort;
 		std::string					mWebSocketsMsg;
 		bool						mWebSocketsNewMsg;
+		// midi
+		std::string					mMidiMsg;
+
 		// abp
 		float						mBend;
 		float						liveMeter;

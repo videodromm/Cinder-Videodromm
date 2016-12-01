@@ -477,21 +477,12 @@ void VDSettings::reset()
 	mMarginSmall = 2;
 	mPreviewEnabled = true;
 	//audio
-	// audio in multiplication factor
-	//mAudioMultFactor = 1.0;
 	mIsPlaying = false;
 	iBeat = 0;
 	iSeed = 0.1;
 	mFftSize = 512;
 	mWindowSize = 1024;
-
 	liveMeter = 0.0f;
-	/*mData = new float[1024];
-	for (int i = 0; i < 1024; i++)
-	{
-	mData[i] = 0;
-	}*/
-
 
 	// shader uniforms
 	iResolution = vec3(mFboWidth, mFboHeight, 1.0);
@@ -499,10 +490,6 @@ void VDSettings::reset()
 	{
 		iChannelTime[i] = i;
 	}
-	/*for (int i = 0; i < MAX; i++)
-	{
-		iChannelResolution[i] = vec3(mFboWidth, mFboHeight, 1.0);
-	}*/
 #ifdef _DEBUG
 	iDebug = true;
 #else
@@ -586,6 +573,7 @@ void VDSettings::reset()
 	mWebSocketsMsg = "";
 	mNewMsg = false;
 	mWebSocketsNewMsg = false;
+	mMidiMsg = "";
 	InfoMsg = "";
 	mIsOSCSender = false;
 	// web sockets

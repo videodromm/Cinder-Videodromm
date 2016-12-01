@@ -29,10 +29,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	JsonBag::add(&mAutoBeatAnimation, "autobeatanimation");
 	currentScene = 0;
 
-	//colors
-	//autoFR = autoFG = autoFB = autoFA = autoBR = autoBG = autoBB = autoBA = false;
-	//tFR = tFG = tFB = tFA = tBR = tBG = tBB = tBA = false;
-
 	previousTime = 0.0f;
 	iBeatIndex = 1;
 	counter = 0;
@@ -47,13 +43,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	iDeltaTime = 60 / mBpm;//mTempo;
 	//iBar = 0;
 	//iBadTvRunning = false;
-	/*for (int c = 0; c < 128; c++)
-	{
-		controlValues[c] = 0.01f;
-	}*/
 	int ctrl;
-	// not used
-	createFloatUniform("iUseless", 0, 1.0f);
+	// global time in seconds
+	createFloatUniform("iGlobalTime", 0, 0.0f);
+	// rotary
 	// red
 	createFloatUniform("iFR", 1, 1.0f);
 	// green
@@ -70,10 +63,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iBB", 7, 0.1f);
 	// background alpha
 	createFloatUniform("iBA", 8, 0.2f);
-	// pointsphere zPosition
-	createFloatUniform("iZPos", 9, -0.7f);
-	// iChromatic
-	createFloatUniform("iChromatic", 10, 0.0f, 0.000000001f);
+
+	// rotary
 	// ratio
 	createFloatUniform("iRatio", 11, 20.0f, 0.00000000001f, 20.0f);
 	// Speed 
@@ -86,16 +77,18 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iPixelate", 15, 1.0f, 0.01f);
 	// Trixels
 	createFloatUniform("iTrixels", 16, 0.0f);
-	// GridSize
-	createFloatUniform("iGridSize", 17, 0.0f);
+	// iChromatic
+	createFloatUniform("iChromatic", 17, 0.0f, 0.000000001f);
 	// iCrossfade
 	createFloatUniform("iCrossfade", 18, 1.0f);
+
 	// RotationSpeed
 	createFloatUniform("iRotationSpeed", 19, 0.0f, -2.0f, 2.0f);
 	// Steps
 	createFloatUniform("iSteps", 20, 16.0f, 1.0f, 128.0f);
-	// iPreviewCrossfade
-	createFloatUniform("iPreviewCrossfade", 21, 0.0f);
+
+	// top row 21 to 28
+
 	// zoom
 	createFloatUniform("iZoom", 22, 1.0f, -3.1f, 3.0f);
 	// bad tv  TODO
@@ -114,9 +107,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iTempoTime", 29, 0.1f);
 	// fps
 	createFloatUniform("iFps", 30, 60.0f, 0.0f, 500.0f);
-	// global time in seconds
-	createFloatUniform("iGlobalTime", 49, 0.0f);
 
+	// middle row 31 to 38
+	// bottom row 41 to 88
 	// int
 	// blend mode 
 	createIntUniform("iBlendmode", 50, 0);
@@ -158,10 +151,6 @@ void VDAnimation::createSampler2DUniform(string aName, int aTextureIndex) {
 	shaderUniforms[aName].textureIndex = aTextureIndex;
 	shaderUniforms[aName].uniformType = 1;
 	shaderUniforms[aName].isValid = true;
-}
-
-float VDAnimation::getShaderUniformValue(unsigned int aCtrlIndex) {
-	return shaderUniforms[controlIndexes[aCtrlIndex]].floatValue;
 }
 
 void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue, float aMin, float aMax) {

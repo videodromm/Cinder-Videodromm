@@ -448,8 +448,9 @@ void VDRouter::midiListener(midi::MidiMessage msg) {
 		break;
 	}
 	ss << "MIDI Chn: " << midiChannel << " type: " << midiControlType << " CC: " << midiControl << " Pitch: " << midiPitch << " Vel: " << midiVelocity << " Val: " << midiValue << " NVal: " << midiNormalizedValue << std::endl;
-	mVDSettings->mWebSocketsMsg = ss.str();
-	mVDSettings->mWebSocketsNewMsg = true;
+	CI_LOG_V("Midi: " + ss.str());
+
+	mVDSettings->mMidiMsg = ss.str();
 }
 #endif
 void VDRouter::updateParams(int iarg0, float farg1) {
@@ -511,16 +512,14 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	}
 	// buttons
 	if (iarg0 > 20 && iarg0 < 29) {
-		// select index
-		mVDSettings->selectedWarp = iarg0 - 21;
+		// top row
+		mVDAnimation->changeFloatValue(iarg0, farg1);
 	}
-	/*if (iarg0 > 30 && iarg0 < 39)
+	if (iarg0 > 30 && iarg0 < 39)
 	{
-	// select input
-	mVDSettings->mWarpFbos[mVDSettings->selectedWarp].textureIndex = iarg0 - 31;
-	// activate
-	mVDSettings->mWarpFbos[mVDSettings->selectedWarp].active = !mVDSettings->mWarpFbos[mVDSettings->selectedWarp].active;
-	}*/
+		// middle row
+		mVDAnimation->changeFloatValue(iarg0, farg1);	
+	}
 	if (iarg0 > 40 && iarg0 < 49) {
 		// low row 
 		mVDAnimation->changeFloatValue(iarg0, farg1);

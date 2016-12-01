@@ -288,7 +288,7 @@ namespace VideoDromm {
 		// update audio texture
 		mTextureList[0]->getTexture();
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendmode);
-		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
+		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
 		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 		mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
@@ -299,7 +299,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iRenderXY", mVDSettings->mRenderXY);
 		mGlslMix->uniform("iZoom", mVDAnimation->getFloatUniformValueByIndex(22));
 		mGlslMix->uniform("iAlpha", mVDAnimation->getFloatUniformValueByIndex(4) * mVDSettings->iAlpha);
-		mGlslMix->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(10));
+		mGlslMix->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(17));
 		mGlslMix->uniform("iRotationSpeed", mVDAnimation->getFloatUniformValueByIndex(19));
 		//mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(18));
 		mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
@@ -331,7 +331,7 @@ namespace VideoDromm {
 		if (mVDAnimation->renderBlend()) {
 			mCurrentBlend = getElapsedFrames() % mVDAnimation->getBlendModesCount();
 			mGlslBlend->uniform("iBlendmode", mCurrentBlend);
-			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(49));
+			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 			mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
@@ -353,7 +353,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iRenderXY", mVDSettings->mRenderXY);
 			mGlslBlend->uniform("iZoom", mVDAnimation->getFloatUniformValueByIndex(22));
 			mGlslBlend->uniform("iAlpha", mVDAnimation->getFloatUniformValueByIndex(4) * mVDSettings->iAlpha);
-			mGlslBlend->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(10));
+			mGlslBlend->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(17));
 			mGlslBlend->uniform("iRotationSpeed", mVDAnimation->getFloatUniformValueByIndex(19));
 			mGlslBlend->uniform("iCrossfade", 0.5f);// blendmode only work if different than 0 or 1.0 mVDAnimation->getFloatUniformValueByIndex(18]);
 			mGlslBlend->uniform("iPixelate", mVDAnimation->getFloatUniformValueByIndex(15));

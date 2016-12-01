@@ -908,17 +908,6 @@ namespace VideoDromm {
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
 		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
-
-		//mVDAnimation->controlValues[13] = 1.0f; //audioMultFactor
-		/*mData = new float[1024];
-		for (int i = 0; i < 1024; i++)
-		{
-		mData[i] = 0;
-		}
-		for (int i = 0; i < 4; i++)
-		{
-		iFreqs[i] = i;
-		}*/
 	}
 	XmlTree	TextureAudio::toXml() const {
 		XmlTree xml = VDTexture::toXml();
