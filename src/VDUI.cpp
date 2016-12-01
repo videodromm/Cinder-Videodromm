@@ -149,12 +149,12 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		if (ui::GetTime() > refresh_time + 1.0f / 6.0f)
 		{
 			refresh_time = ui::GetTime();
-			values[values_offset] = mVDSession->getControlValue(30);
+			values[values_offset] = mVDSession->getControlValue(20);
 			values_offset = (values_offset + 1) % values.size();
 		}
-		if (mVDSession->getControlValue(30) < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+		if (mVDSession->getControlValue(20) < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 		ui::PlotLines("FPS ", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
-		if (mVDSession->getControlValue(30) < 12.0) ui::PopStyleColor();
+		if (mVDSession->getControlValue(20) < 12.0) ui::PopStyleColor();
 		ui::SameLine();
 		ui::Text("(Target FPS %.2f) ", mVDSession->getTargetFps());
 		ui::SameLine();
