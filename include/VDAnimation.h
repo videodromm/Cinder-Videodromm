@@ -69,7 +69,7 @@ namespace VideoDromm
 		bool							mUseTimeWithTempo;
 		float							iTempoTimeBeatPerBar;
 		float							getBpm() { return mBpm; };
-		void							setBpm(float aBpm) { mBpm = aBpm; };
+		void							setBpm(float aBpm) { iDeltaTime = 60 / mBpm; mBpm = aBpm; };
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
 		int								getEndFrame() { return mEndFrame; };
@@ -122,7 +122,6 @@ namespace VideoDromm
 		bool							renderBlend() { return mBlendRender; };
 
 		// timed animation
-		float							mBpm;
 		int								mEndFrame;
 		int								iBeatsPerBar;
 	private:
@@ -164,6 +163,8 @@ namespace VideoDromm
 		bool							mFlipH;
 		bool							mFlipV;
 		bool							mBlendRender;
+		// timed animation
+		float							mBpm;
 
 	};
 }

@@ -134,9 +134,31 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		pattern = { "u_" };
 		replacement = { "i" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "gl_TexCoord[0].st" };
+		replacement = { "gl_FragCoord.xy/iResolution.xy" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "iAudio0" };
+		replacement = { "iChannel0" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "iFreq0" };
+		replacement = { "iChannel0.x" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "iFreq1" };
+		replacement = { "iChannel0.y" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "iFreq2" };
+		replacement = { "iChannel0.x" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "iRenderXY.x" };
+		replacement = { "0.0" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		pattern = { "iRenderXY.y" };
+		replacement = { "0.0" };
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		CI_LOG_V("regexed " + mOriginalFragmentString);
 
-		// change texture2D to texture for version > 150?
+		// change texture2D to texture for version > 150?	
+		
 		// change fragCoord to gl_FragCoord
 		// change gl_FragColor to fragColor
 

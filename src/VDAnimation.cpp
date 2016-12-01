@@ -43,7 +43,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// init timer
 	mTimer.start();
 	startTime = currentTime = mTimer.getSeconds();
-
+	mBpm = 166;
 	iDeltaTime = 60 / mBpm;//mTempo;
 	//iBar = 0;
 	//iBadTvRunning = false;

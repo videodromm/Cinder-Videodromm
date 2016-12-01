@@ -254,13 +254,13 @@ void VDSession::restore()
 		JsonTree doc(loadFile(sessionPath));
 		if (doc.hasChild("settings")) {
 			JsonTree settings(doc.getChild("settings"));
-			if (settings.hasChild("bpm")) mVDAnimation->mBpm = mOriginalBpm = settings.getValueForKey<float>("bpm");
+			if (settings.hasChild("bpm")) { mOriginalBpm = settings.getValueForKey<float>("bpm", 166.0f); mVDAnimation->setBpm(mOriginalBpm); };
 			if (settings.hasChild("beatsperbar")) mVDAnimation->iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
 			if (mVDAnimation->iBeatsPerBar < 1) mVDAnimation->iBeatsPerBar = 1;
 			if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
 			if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
-			if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");
-			mTargetFps = mVDAnimation->mBpm / 60.0f * mFpb;
+			if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");			
+			mTargetFps = mVDAnimation->getBpm() / 60.0f * mFpb;
 		}
 
 		if (doc.hasChild("assets")) {
@@ -301,8 +301,8 @@ void VDSession::restore()
 void VDSession::resetSomeParams() {
 	// parameters not exposed in json file
 	mFpb = 16;
-	mVDAnimation->mBpm = mOriginalBpm;
-	mTargetFps = mVDAnimation->mBpm / 60.0f * mFpb;
+	mVDAnimation->setBpm(mOriginalBpm);
+	mTargetFps = mOriginalBpm / 60.0f * mFpb;
 }
 
 void VDSession::reset()
@@ -310,7 +310,7 @@ void VDSession::reset()
 	// parameters exposed in json file
 	mFlipV = false;
 	mFlipH = false;
-	mVDAnimation->mBpm = mOriginalBpm = 166;
+	mOriginalBpm = 166;
 	mVDAnimation->iBeatsPerBar = 1;
 	mWaveFileName = "";
 	mWavePlaybackDelay = 10;
