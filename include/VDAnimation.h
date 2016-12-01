@@ -64,7 +64,7 @@ namespace VideoDromm
 		// tap tempo
 		//float							mTempo;
 		float							iDeltaTime;
-		float							iTempoTime;
+		//float							iTempoTime;
 		float							iTimeFactor;
 		bool							mUseTimeWithTempo;
 		float							iTempoTimeBeatPerBar;

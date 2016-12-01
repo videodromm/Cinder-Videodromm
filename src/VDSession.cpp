@@ -395,9 +395,6 @@ void VDSession::fileDrop(FileDropEvent event) {
 			loadShaderFolder(absolutePath);
 		}
 	}
-	// load success, reset zoom
-	// useless mVDWebsocket->changeFloatValue(22, 1.0f);
-	//return rtn;
 }
 #pragma region events
 bool VDSession::handleMouseMove(MouseEvent &event)
@@ -539,7 +536,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
-				mVDWebsocket->changeFloatValue(22, mVDAnimation->getFloatUniformValueByIndex(22) - 0.05f);
+				mVDWebsocket->changeFloatValue(12, mVDAnimation->getFloatUniformValueByIndex(12) - 0.05f);
 				break;
 			case KeyEvent::KEY_LEFT:
 				//mVDTextures->rewindMovie();				
@@ -601,7 +598,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
-				mVDWebsocket->changeFloatValue(22, 1.0f);
+				mVDWebsocket->changeFloatValue(12, 1.0f);
 				break;
 			default:
 				handled = false;

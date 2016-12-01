@@ -174,7 +174,7 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// zoom
-			ctrl = 22;
+			ctrl = 12;
 			if (ui::Button("a##zoom"))
 			{
 				toggleAuto(ctrl);

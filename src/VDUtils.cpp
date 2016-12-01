@@ -26,31 +26,7 @@ float VDUtils::formatFloat(float f)
 
 void VDUtils::setup()
 {
-	createWarpFbos();
-}
-
-void VDUtils::createWarpFbos()
-{
-	// vector + dynamic resize
-	/*for (int a = 0; a < 12; a++)
-	{
-	WarpFbo newWarpFbo;
-	if (a == 0)
-	{
-	newWarpFbo.textureIndex = 0; // spout
-	newWarpFbo.textureMode = mVDSettings->TEXTUREMODEINPUT;
-	newWarpFbo.active = true;
-	newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-	}
-	else
-	{
-	newWarpFbo.textureIndex = 0; // index of MixFbo for shadamixa
-	newWarpFbo.textureMode = mVDSettings->TEXTUREMODESHADER;
-	newWarpFbo.active = false;
-	newWarpFbo.fbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight);
-	}
-	mVDSettings->mWarpFbos.push_back(newWarpFbo);
-	}*/
+	
 }
 
 int VDUtils::getWindowsResolution()

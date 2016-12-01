@@ -27,7 +27,6 @@ namespace VideoDromm
 		}
 		void						setup();
 		// TODO move to private when shadamixa upgraded
-		void						createWarpFbos();
 		void						splitWarp(int fboWidth, int fboHeight);
 		int							getWindowsResolution();
 		float						formatFloat(float f);
