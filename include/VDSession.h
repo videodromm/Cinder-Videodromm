@@ -141,6 +141,9 @@ namespace VideoDromm {
 		string							getMixFboName(unsigned int aMixFboIndex);
 		ci::gl::TextureRef				getMixTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount();
+		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true) { return mVDMix->getRenderedTexture(reDraw); };
+		ci::gl::TextureRef				getRenderTexture() { return mVDMix->getRenderTexture(); };
+
 		bool							isFlipH();
 		bool							isFlipV();
 		void							flipH();
@@ -151,7 +154,6 @@ namespace VideoDromm {
 
 		// textures
 		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex) { return mVDMix->getInputTexture(aTextureIndex); };
-		ci::gl::TextureRef				getRenderTexture();
 		string							getInputTextureName(unsigned int aTextureIndex) { return mVDMix->getInputTextureName(aTextureIndex); };
 		unsigned int					getInputTexturesCount() { return mVDMix->getInputTexturesCount(); };
 		//int								getTextureWidth();
@@ -215,7 +217,6 @@ namespace VideoDromm {
 		void							closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
 		void							openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
 		void							closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
-		ci::gl::Texture2dRef			getRenderedTexture() { return mVDMix->getRenderedTexture(); };
 
 	private:
 		// Settings

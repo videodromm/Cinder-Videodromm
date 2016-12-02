@@ -224,6 +224,11 @@ namespace VideoDromm {
 			if (warp->getBShaderIndex() > mShaderList.size() - 1) warp->setBShaderIndex(0);
 		}
 	}
+	/* RTE in release mode 
+	ci::gl::Texture2dRef VDMix::getRenderedTexture(bool reDraw) {
+		if (reDraw) getRenderTexture();
+		return mRenderedTexture;
+	}*/
 	// Render the scene into the FBO
 	ci::gl::Texture2dRef VDMix::getRenderTexture()
 	{
@@ -271,10 +276,7 @@ namespace VideoDromm {
 		}
 		//}
 	}
-	ci::gl::Texture2dRef VDMix::getRenderedTexture() {
-		getRenderTexture();
-		return mRenderedTexture;
-	}
+
 	string VDMix::getMixFboName(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
 		mMixFbos[aMixFboIndex].name = mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName() + "/" + mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName();

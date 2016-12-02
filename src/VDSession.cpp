@@ -660,11 +660,6 @@ unsigned int VDSession::getWarpCount() {
 	return mVDMix->getWarpCount();
 }
 
-// Render the scene into the FBO
-ci::gl::Texture2dRef VDSession::getRenderTexture()
-{
-	return mVDMix->getRenderTexture();
-}
 #pragma endregion warps
 
 #pragma region fbos

@@ -84,11 +84,11 @@ namespace VideoDromm
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		void							updateWarpName(unsigned int aWarpIndex);
+		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true);
 		ci::gl::Texture2dRef			getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
 		void							save();
 		void							load();
-		ci::gl::Texture2dRef			getRenderedTexture();
 		// fbos
 		unsigned int 					createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex);
 		string							getFboName(unsigned int aFboIndex) { return mFboList[aFboIndex]->getName(); };
