@@ -77,7 +77,7 @@ namespace VideoDromm
 		unsigned int					getWarpBShaderIndex(unsigned int aWarpIndex);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
 		unsigned int					getWarpCount();
-		void							createWarp(string wName = "warp", unsigned int aFboIndex = 1, unsigned int aShaderIndex = 4, unsigned int bFboIndex = 2, unsigned int bShaderIndex = 5, float xFade = 1.0f);
+		void							createWarp(string wName = "warp", unsigned int aFboIndex = 0, unsigned int aShaderIndex = 0, unsigned int bFboIndex = 0, unsigned int bShaderIndex = 0, float xFade = 1.0f);
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
@@ -147,7 +147,7 @@ namespace VideoDromm
 		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "");
 		string							getVertexShaderString(unsigned int aShaderIndex);
 		string							getFragmentShaderString(unsigned int aShaderIndex);
-		unsigned int					getShadersCount();
+		unsigned int					getShadersCount() { return mShaderList.size(); };
 		string							getShaderName(unsigned int aShaderIndex);
 		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex);
 		string							getFragmentString(unsigned int aShaderIndex) { return mShaderList[aShaderIndex]->getFragmentString(); };

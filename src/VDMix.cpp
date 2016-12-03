@@ -103,6 +103,11 @@ namespace VideoDromm {
 #pragma region warps
 	void VDMix::createWarp(string wName, unsigned int aFboIndex, unsigned int aShaderIndex, unsigned int bFboIndex, unsigned int bShaderIndex, float xFade) {
 		int newIndex = mMixFbos.size();
+		// ensure bounds are valid
+		aFboIndex = math<int>::min(aFboIndex, getFboListSize() - 1);
+		bFboIndex = math<int>::min(bFboIndex, getFboListSize() - 1);
+		aShaderIndex = math<int>::min(aShaderIndex, getShadersCount() - 1);
+		bShaderIndex = math<int>::min(bShaderIndex, getShadersCount() - 1);
 		mMixFbos[newIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mMixFbos[newIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		mMixFbos[newIndex].name = wName;
@@ -828,9 +833,6 @@ namespace VideoDromm {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getVertexString();
 	}
-	unsigned int VDMix::getShadersCount() {
-		return mShaderList.size();
-	}
 	string VDMix::getShaderName(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getName();
@@ -875,25 +877,41 @@ namespace VideoDromm {
 				mFragFile = aShaderFilename;
 			}
 			if (fs::exists(mFragFile)) {
-				// TODO find a removed shader
-				VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
-				if (s->isValid()) {
-					mShaderList.push_back(s);
-					rtn = mShaderList.size() - 1;
-					// each shader element has a fbo
-					VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
-					// create fbo xml
-					XmlTree			fboXml;
-					fboXml.setTag(aShaderFilename);
-					fboXml.setAttribute("id", rtn);
-					fboXml.setAttribute("width", "640");
-					fboXml.setAttribute("height", "480");
-					fboXml.setAttribute("shadername", aShaderFilename);
-					fboXml.setAttribute("inputtextureindex", aInputTextureIndex);
-					f->fromXml(fboXml);
-					f->setShaderIndex(rtn);
-					f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
-					mFboList.push_back(f);
+				// find a removed shader
+				int found = -1;
+				for (int i = mShaderList.size()-1; i > 0; i--)
+				{
+					if (!mShaderList[i]->isValid()) { found = i; }
+				}
+				if (found > 0) {
+					if (found < mFboList.size()) {
+						if (mShaderList[found]->loadFragmentStringFromFile(aShaderFilename)) {
+							mFboList[found]->setFragmentShader(found, mShaderList[found]->getFragmentString(), mShaderList[found]->getName());
+						}
+					}
+				}
+				else {
+					// new shader
+					VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
+					if (s->isValid()) {
+						mShaderList.push_back(s);
+						rtn = mShaderList.size() - 1;
+						// each shader element has a fbo
+						VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+						// create fbo xml
+						XmlTree			fboXml;
+						fboXml.setTag(aShaderFilename);
+						fboXml.setAttribute("id", rtn);
+						fboXml.setAttribute("width", "640");
+						fboXml.setAttribute("height", "480");
+						fboXml.setAttribute("shadername", mShaderList[rtn]->getName());//aShaderFilename
+						fboXml.setAttribute("inputtextureindex", aInputTextureIndex);
+						f->fromXml(fboXml);
+						//f->setShaderIndex(rtn);
+						f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
+						mFboList.push_back(f);
+					}
+
 				}
 			}
 		}

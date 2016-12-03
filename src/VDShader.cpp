@@ -268,14 +268,14 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	catch (gl::GlslProgCompileExc &exc)
 	{
 		mError = string(exc.what());
-		CI_LOG_V("setFragmentString, unable to compile live fragment shader:" + string(exc.what()));
+		CI_LOG_V("setFragmentString, unable to compile live fragment shader:" + aName + mError);
 	}
 	catch (const std::exception &e)
 	{
 		mError = string(e.what());
-		CI_LOG_V("setFragmentString, error on live fragment shader:" + string(e.what()));
+		CI_LOG_V("setFragmentString, error on live fragment shader:" + aName + mError);
 	}
-	mVDSettings->mWebSocketsMsg = mError;
+	mVDSettings->mMsg = mError;
 	return mValid;
 }
 

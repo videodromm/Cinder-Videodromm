@@ -97,7 +97,6 @@ void VDUIWarps::Run(const char* title) {
 
 #pragma region Nodes
 		if (currentNode == w) {
-			mVDSettings->mMsg = "Warp " + toString(currentNode) + " name " + mVDSession->getWarpName(currentNode);
 			// A (left)
 			int t = 0;
 			int fboIndex = mVDSession->getWarpAFboIndex(currentNode);
