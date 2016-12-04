@@ -870,6 +870,7 @@ namespace VideoDromm {
 
 	unsigned int VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex) {
 		unsigned int rtn = 0;
+		string fName = aShaderFilename;
 		if (aShaderFilename.length() > 0) {
 			fs::path mFragFile = getAssetPath("") / mVDSettings->mAssetsPath / aShaderFilename;
 			if (!fs::exists(mFragFile)) {
@@ -877,16 +878,16 @@ namespace VideoDromm {
 				mFragFile = aShaderFilename;
 			}
 			if (fs::exists(mFragFile)) {
+				fName = mFragFile.filename().string();
 				// find a removed shader
-				int found = -1;
 				for (int i = mShaderList.size()-1; i > 0; i--)
 				{
-					if (!mShaderList[i]->isValid()) { found = i; }
+					if (!mShaderList[i]->isValid() || fName == mShaderList[i]->getName()) { rtn = i; }
 				}
-				if (found > 0) {
-					if (found < mFboList.size()) {
-						if (mShaderList[found]->loadFragmentStringFromFile(aShaderFilename)) {
-							mFboList[found]->setFragmentShader(found, mShaderList[found]->getFragmentString(), mShaderList[found]->getName());
+				if (rtn > 0) {
+					if (rtn < mFboList.size()) {
+						if (mShaderList[rtn]->loadFragmentStringFromFile(aShaderFilename)) {
+							mFboList[rtn]->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 						}
 					}
 				}
@@ -913,6 +914,7 @@ namespace VideoDromm {
 					}
 
 				}
+				mFboList[rtn]->updateThumbFile();
 			}
 		}
 		return rtn;

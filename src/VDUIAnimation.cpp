@@ -228,7 +228,7 @@ void VDUIAnimation::Run(const char* title) {
 			mVDSettings->iXorY ^= ui::Button(buf);
 
 			// steps
-			ctrl = 20;
+			ctrl = 10;
 			if (ui::Button("x##steps")) { localValues[ctrl] = 16.0f; }
 			ui::SameLine();
 			localValues[ctrl] = mVDSession->getControlValue(ctrl);

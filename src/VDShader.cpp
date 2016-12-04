@@ -85,6 +85,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	string mOriginalFragmentString = aFragmentShaderString;
 	string mCurrentUniformsString = "// active uniforms start\n";
 	string mProcessedShaderString = "";
+	mError = "";
 	// we would like a name
 	if (aName.length() == 0) aName = toString((int)getElapsedSeconds()) + ".frag";
 	// name of the shader
@@ -267,13 +268,13 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
-		mError = string(exc.what());
-		CI_LOG_V("setFragmentString, unable to compile live fragment shader:" + aName + mError);
+		mError = aName + string(exc.what());
+		CI_LOG_V("setFragmentString, unable to compile live fragment shader:" + mError);
 	}
 	catch (const std::exception &e)
 	{
-		mError = string(e.what());
-		CI_LOG_V("setFragmentString, error on live fragment shader:" + aName + mError);
+		mError = aName + string(e.what());
+		CI_LOG_V("setFragmentString, error on live fragment shader:" + mError);
 	}
 	mVDSettings->mMsg = mError;
 	return mValid;
