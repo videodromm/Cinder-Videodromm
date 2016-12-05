@@ -20,7 +20,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 using namespace asio;
-using namespace asio::ip; 
+//using namespace asio::ip; 
 
 namespace VideoDromm
 {
