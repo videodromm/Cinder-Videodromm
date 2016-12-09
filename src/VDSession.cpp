@@ -747,12 +747,12 @@ bool VDSession::loadShaderFolder(string aFolder) {
 void VDSession::wsConnect() {
 	mVDWebsocket->wsConnect();
 }
-void VDSession::wsWrite(string msg)
-{
-	mVDWebsocket->wsWrite(msg);
-}
 void VDSession::wsPing() {
 	mVDWebsocket->wsPing();
 }
 #endif
+void VDSession::wsWrite(string msg)
+{
+	mVDWebsocket->wsWrite(msg);
+}
 #pragma endregion websockets

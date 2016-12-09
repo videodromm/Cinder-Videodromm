@@ -200,8 +200,8 @@ namespace VideoDromm {
 #if defined( CINDER_MSW )
 		void							wsConnect();
 		void							wsPing();
-		void							wsWrite(std::string msg);
 #endif
+		void							wsWrite(std::string msg);
 		void							sendFragmentShader(unsigned int aShaderIndex);
 		// midi
 		void							midiSetup() { mVDRouter->midiSetup(); };
