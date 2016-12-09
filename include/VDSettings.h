@@ -108,9 +108,6 @@ namespace VideoDromm {
 		bool						iLight;
 		bool						iLightAuto;
 		int							iBlendmode;
-		/*float						iRedMultiplier;
-		float						iGreenMultiplier;
-		float						iBlueMultiplier;*/
 		float						iParam1;
 		float						iParam2;
 		bool						iXorY;
@@ -164,6 +161,7 @@ namespace VideoDromm {
 		ColorA						ColorPurple;
 		// audio
 		bool						mIsPlaying;
+		bool						mUseLineIn;
 		int							iBeat;
 		int							mFftSize;
 		int							mWindowSize;

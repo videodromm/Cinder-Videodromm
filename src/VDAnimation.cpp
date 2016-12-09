@@ -9,7 +9,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mFlipV = false;
 	mBlendRender = false;
 	//audio
-	mUseLineIn = true;
+	//setUseLineIn(true);
 	maxVolume = 0.0f;
 	for (int i = 0; i < 7; i++)
 	{
@@ -157,7 +157,7 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].minValue = aMin;
 	shaderUniforms[aName].maxValue = aMax;
 	shaderUniforms[aName].defaultValue = aValue;
-	shaderUniforms[aName].boolValue = false;	
+	shaderUniforms[aName].boolValue = false;
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
 	shaderUniforms[aName].index = aCtrlIndex;
@@ -211,13 +211,13 @@ string VDAnimation::getUniformNameForIndex(int aIndex) {
 }
 /*bool VDAnimation::hasFloatChanged(int aIndex) {
 	if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != controlValues[aIndex]) {
-		//CI_LOG_V("hasFloatChanged, aIndex:" + toString(aIndex));
-		CI_LOG_V("hasFloatChanged, shaderUniforms[getUniformNameForIndex(aIndex)].floatValue:" + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue));
-		CI_LOG_V("hasFloatChanged, controlValues[aIndex]:" + toString(controlValues[aIndex]));
-		//CI_LOG_W("hasFloatChanged, getUniformNameForIndex(aIndex):" + toString(getUniformNameForIndex(aIndex)));
+	//CI_LOG_V("hasFloatChanged, aIndex:" + toString(aIndex));
+	CI_LOG_V("hasFloatChanged, shaderUniforms[getUniformNameForIndex(aIndex)].floatValue:" + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue));
+	CI_LOG_V("hasFloatChanged, controlValues[aIndex]:" + toString(controlValues[aIndex]));
+	//CI_LOG_W("hasFloatChanged, getUniformNameForIndex(aIndex):" + toString(getUniformNameForIndex(aIndex)));
 	}
 	return (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != controlValues[aIndex]);
-}*/
+	}*/
 bool VDAnimation::toggleValue(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].boolValue = !shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
 	return shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
@@ -252,12 +252,12 @@ bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
 	if (aIndex > 0) {
 		if (aIndex == 1) {
-			CI_LOG_V("changeFloatValue, getUniformNameForIndex(aIndex):" + toString( getUniformNameForIndex(aIndex)));
-			CI_LOG_V("changeFloatValue, shaderUniforms[getUniformNameForIndex(aIndex)].floatValue:" + toString( shaderUniforms[getUniformNameForIndex(aIndex)].floatValue));
-			CI_LOG_V("changeFloatValue, aValue:" + toString( aValue));
+			CI_LOG_V("changeFloatValue, getUniformNameForIndex(aIndex):" + toString(getUniformNameForIndex(aIndex)));
+			CI_LOG_V("changeFloatValue, shaderUniforms[getUniformNameForIndex(aIndex)].floatValue:" + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue));
+			CI_LOG_V("changeFloatValue, aValue:" + toString(aValue));
 		}
 		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
-			if (aValue>=shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue<=shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
+			if (aValue >= shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue <= shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
 				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
 				rtn = true;
 			}
@@ -590,4 +590,18 @@ void VDAnimation::setTimeFactor(const int &aTimeFactor)
 		iTimeFactor = 1.0;
 		break;
 	}
+}
+bool VDAnimation::getUseLineIn() {
+	return mVDSettings->mUseLineIn;
+}
+void VDAnimation::setUseLineIn(bool useLineIn) {
+	mVDSettings->mUseLineIn = useLineIn;
+}
+void VDAnimation::preventLineInCrash() {
+	setUseLineIn(false);
+	mVDSettings->save();
+}
+void VDAnimation::saveLineIn() {
+	setUseLineIn(true);
+	mVDSettings->save();
 }

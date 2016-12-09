@@ -46,19 +46,6 @@ void VDUIColor::Run(const char* title) {
 			color[2] = getValue(3);
 			color[3] = getValue(4);
 			ui::ColorEdit4("f", color);
-
-			// red
-			ctrl = 1;
-			if (ui::Button("a##red")) { toggleAuto(ctrl); }
-			ui::SameLine();
-			if (ui::Button("t##red")) { toggleTempo(ctrl); }
-			ui::SameLine();
-			if (ui::Button("x##red")) { resetAutoAnimation(ctrl); }
-			ui::SameLine();
-			if (ui::SliderFloat("red/min/max", &color[ctrl], 0.0f, 1.0f))
-			{
-				// TODO color[0] not mVDAnimation->controlValues[ctrl]??
-			}
 			for (int i = 0; i < 4; i++)
 			{
 				if (getValue(i + 1) != color[i])
@@ -120,25 +107,6 @@ void VDUIColor::Run(const char* title) {
 			{
 				setValue(ctrl, localValues[ctrl]);
 			}
-			/*
-			if (ui::Button("x##RedX")) { mVDSettings->iRedMultiplier = 1.0f; }
-			ui::SameLine();
-			if (ui::SliderFloat("RedX", &mVDSettings->iRedMultiplier, 0.0f, 3.0f))
-			{
-			}
-			if (ui::Button("x##GreenX")) { mVDSettings->iGreenMultiplier = 1.0f; }
-			ui::SameLine();
-			if (ui::SliderFloat("GreenX", &mVDSettings->iGreenMultiplier, 0.0f, 3.0f))
-			{
-			}
-			if (ui::Button("x##BlueX")) { mVDSettings->iBlueMultiplier = 1.0f; }
-			ui::SameLine();
-			if (ui::SliderFloat("BlueX", &mVDSettings->iBlueMultiplier, 0.0f, 3.0f))
-			{
-			}*/
-
-
 		}
 		ui::End();
-
 }

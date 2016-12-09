@@ -179,9 +179,9 @@ bool VDSettings::save()
 	AssetsPath.setAttribute("value", toString(mAssetsPath));
 	settings.push_back(AssetsPath);
 
-	/*XmlTree UseLineIn("UseLineIn", "");
+	XmlTree UseLineIn("UseLineIn", "");
 	UseLineIn.setAttribute("value", toString(mUseLineIn));
-	settings.push_back(UseLineIn);*/
+	settings.push_back(UseLineIn);
 
 	XmlTree SplitWarpH("SplitWarpH", "");
 	SplitWarpH.setAttribute("value", toString(mSplitWarpH));
@@ -320,10 +320,10 @@ bool VDSettings::restore()
 					mAssetsPath = "";
 				}
 			}
-			/*if (settings.hasChild("UseLineIn")) {
+			if (settings.hasChild("UseLineIn")) {
 				XmlTree UseLineIn = settings.getChild("UseLineIn");
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
-				}*/
+			}
 			if (settings.hasChild("SplitWarpH")) {
 				XmlTree SplitWarpH = settings.getChild("SplitWarpH");
 				mSplitWarpH = SplitWarpH.getAttributeValue<bool>("value");

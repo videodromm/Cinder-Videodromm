@@ -84,8 +84,10 @@ namespace VideoDromm
 		// audio
 		float							maxVolume;
 		float							iFreqs[7];
-		bool							mUseLineIn;
-
+		void							preventLineInCrash(); // at next launch
+		void							saveLineIn();
+		bool							getUseLineIn();
+		void							setUseLineIn(bool useLineIn);
 		// shaders
 		bool							isExistingUniform(string aName);
 		int								getUniformType(string aName);

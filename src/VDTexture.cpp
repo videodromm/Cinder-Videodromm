@@ -916,7 +916,7 @@ namespace VideoDromm {
 		xml.setAttribute("path", mPath);
 		xml.setAttribute("flipv", mFlipV);
 		xml.setAttribute("fliph", mFlipH);
-		xml.setAttribute("uselinein", mVDAnimation->mUseLineIn);
+		xml.setAttribute("uselinein", mVDAnimation->getUseLineIn());
 
 		return xml;
 	}
@@ -927,8 +927,8 @@ namespace VideoDromm {
 		// retrieve attributes specific to this type of texture
 		mFlipV = xml.getAttributeValue<bool>("flipv", "false");
 		mFlipH = xml.getAttributeValue<bool>("fliph", "false");
-		mVDAnimation->mUseLineIn = xml.getAttributeValue<bool>("uselinein", "true");
-		mName = (mVDAnimation->mUseLineIn) ? "line in" : "wave";
+		// prevent linein not present crash mVDAnimation->setUseLineIn(xml.getAttributeValue<bool>("uselinein", "true"));
+		mName = (mVDAnimation->getUseLineIn()) ? "line in" : "wave";
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
 		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
 		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
@@ -955,7 +955,7 @@ namespace VideoDromm {
 				filePlayer->setSourceFile(mSourceFile);
 
 				mSamplePlayerNode->start();
-				mVDAnimation->mUseLineIn = false;
+				mVDAnimation->setUseLineIn(false);
 			}
 		}
 		catch (...) {
@@ -971,11 +971,13 @@ namespace VideoDromm {
 			CI_LOG_V("TextureAudio::getTexture() init");
 			auto ctx = audio::Context::master();
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
-			if (mVDAnimation->mUseLineIn) {
+			if (mVDAnimation->getUseLineIn()) {
 				// linein
-				CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed so put UseLineIn to false in the textures.xml file");
+				mVDAnimation->preventLineInCrash(); // at next launch
+				CI_LOG_W("trying to open mic/line in, if no line follows in the log, the app crashed so put UseLineIn to false in the VDSettings.xml file");
 				mLineIn = ctx->createInputDeviceNode(); //crashes if linein is present but disabled, doesn't go to catch block
 				CI_LOG_V("mic/line in opened");
+				mVDAnimation->saveLineIn();
 
 				auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(512).windowSize(512);
 				mMonitorLineInSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeLineInFmt));
@@ -991,7 +993,7 @@ namespace VideoDromm {
 			initialized = true;
 		}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
-		if (mVDAnimation->mUseLineIn) {
+		if (mVDAnimation->getUseLineIn()) {
 			mMagSpectrum = mMonitorLineInSpectralNode->getMagSpectrum();
 		}
 		else {
@@ -1010,7 +1012,7 @@ namespace VideoDromm {
 				for (size_t i = 0; i < mDataSize; i++) {
 					float f = mMagSpectrum[i];
 					db = audio::linearToDecibel(f);
-					f = db *mVDAnimation->getFloatUniformValueByIndex( 13);// audioMultFactor;
+					f = db *mVDAnimation->getFloatUniformValueByIndex(13);// audioMultFactor;
 					if (f > mVDAnimation->maxVolume)
 					{
 						mVDAnimation->maxVolume = f;
