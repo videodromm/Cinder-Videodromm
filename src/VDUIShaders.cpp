@@ -165,7 +165,7 @@ void VDUIShaders::Run(const char* title) {
 					try
 					{
 						aShader = gl::GlslProg::create(mPassthruVextexShaderString, mShaderText);
-						aShader->setLabel("live");
+						// 20161209 problem on Mac aShader->setLabel("live");
 						CI_LOG_V("live.frag loaded and compiled");
 						mFboTextureFragmentShaderString = mShaderText;
 						stringstream sParams;

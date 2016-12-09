@@ -49,9 +49,9 @@ namespace VideoDromm {
 		}
 
 		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
-		mGlslMix->setLabel("mixfbo");
+		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
-		mGlslBlend->setLabel("blend mixfbo");
+		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
 	}
 
 #pragma region blendmodes

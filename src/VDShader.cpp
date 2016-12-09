@@ -256,14 +256,14 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mFragProcessed << mProcessedShaderString;
 		mFragProcessed.close();
 		CI_LOG_V("processed file saved:" + processedFile.string());
-		mShader->setLabel(mName);
+		// 20161209 problem on Mac mShader->setLabel(mName);
 		// try to compile a second time 
 		mShader = gl::GlslProg::create(mVertexShaderString, mProcessedShaderString);
 		mFragmentShaderString = mProcessedShaderString;
 		// update only if success
 		mVDSettings->mMsg = aName + " loaded and compiled";
 		CI_LOG_V(mVDSettings->mMsg);
-		mShader->setLabel(mName);
+		// 20161209 problem on Mac mShader->setLabel(mName);
 		mValid = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)

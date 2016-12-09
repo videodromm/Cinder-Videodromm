@@ -61,7 +61,7 @@ namespace VideoDromm {
 				CI_LOG_V(mError);
 			}
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
-			mFboTextureShader->setLabel(mShaderName);
+			// 20161209 problem on Mac mFboTextureShader->setLabel(mShaderName);
 			CI_LOG_V("0.frag loaded and compiled");
 		}
 		catch (gl::GlslProgCompileExc &exc) {
@@ -96,14 +96,14 @@ namespace VideoDromm {
 		mInputTextureIndex = xml.getAttributeValue<int>("inputtextureindex", 0);
 		CI_LOG_V("fbo id " + mId + "fbo shadername " + mGlslPath);
 		mShaderName = mGlslPath;
-		mFboTextureShader->setLabel(mShaderName);
+		// 20161209 problem on Mac mFboTextureShader->setLabel(mShaderName);
 		return true;
 	}
 	void VDFbo::setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 		try {
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, aFragmentShaderString);
 			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
-			mFboTextureShader->setLabel(aName);
+			// 20161209 problem on Mac mFboTextureShader->setLabel(aName);
 			mFboName = aName;
 			mShaderIndex = aShaderIndex;
 		}
@@ -191,7 +191,7 @@ namespace VideoDromm {
 			}
 			else {
 				if (uniform.getName() != "ciModelViewProjection") {
-					mVDSettings->mMsg = mFboTextureShader->getLabel() + ", uniform not found:" + uniform.getName();
+					mVDSettings->mMsg = mShaderName + ", uniform not found:" + uniform.getName();
 					CI_LOG_V(mVDSettings->mMsg);
 				}
 			}
