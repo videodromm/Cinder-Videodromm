@@ -36,7 +36,10 @@ namespace VideoDromm
 		float							getValue(unsigned int aCtrl);
 		void							setValue(unsigned int aCtrl, float aValue);
 		void							toggleAuto(unsigned int aCtrl);
+		void							toggleTempo(unsigned int aCtrl);
 		void							resetAutoAnimation(unsigned int aCtrl);
+		float							getMinUniformValueByIndex(unsigned int aIndex);
+		float							getMaxUniformValueByIndex(unsigned int aIndex);
 
 		// imgui
 		int							ctrl;

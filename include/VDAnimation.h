@@ -62,9 +62,7 @@ namespace VideoDromm
 		const int						mBlendModes = 28;
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// tap tempo
-		//float							mTempo;
 		float							iDeltaTime;
-		//float							iTempoTime;
 		float							iTimeFactor;
 		bool							mUseTimeWithTempo;
 		float							iTempoTimeBeatPerBar;

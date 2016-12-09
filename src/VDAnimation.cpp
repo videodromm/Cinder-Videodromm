@@ -45,7 +45,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	int ctrl;
 	// global time in seconds
 	createFloatUniform("iGlobalTime", 0, 0.0f);
-	// slider
+	// sliders
 	// red
 	createFloatUniform("iFR", 1, 1.0f);
 	// green
@@ -54,14 +54,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iFB", 3, 0.0f);
 	// Alpha 
 	createFloatUniform("iAlpha", 4, 1.0f);
-	// background red
-	createFloatUniform("iBR", 5, 0.1f);
-	// background green
-	createFloatUniform("iBG", 6, 0.1f);
-	// background blue
-	createFloatUniform("iBB", 7, 0.1f);
-	// background alpha
-	createFloatUniform("iBA", 8, 0.2f);
+	// red multiplier 
+	createFloatUniform("iRedMultiplier", 5, 1.0f, 0.0f, 3.0f);
+	// green multiplier 
+	createFloatUniform("iGreenMultiplier", 6, 1.0f, 0.0f, 3.0f);
+	// blue multiplier 
+	createFloatUniform("iBlueMultiplier", 7, 1.0f, 0.0f, 3.0f);
 
 	// RotationSpeed
 	createFloatUniform("iRotationSpeed", 9, 0.0f, -2.0f, 2.0f);
@@ -85,10 +83,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iChromatic", 17, 0.0f, 0.000000001f);
 	// iCrossfade
 	createFloatUniform("iCrossfade", 18, 1.0f);
-	// tempo time
-	createFloatUniform("iTempoTime", 19, 0.1f);
-	// fps
-	createFloatUniform("iFps", 20, 60.0f, 0.0f, 500.0f);
+	// background red
+	createFloatUniform("iBR", 19, 0.1f);
+	// background green
+	createFloatUniform("iBG", 20, 0.5f);
+	// background blue
+	createFloatUniform("iBB", 21, 0.1f);
 
 
 	// top row 21 to 28
@@ -96,12 +96,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iSpeed", 22, 12.0f, 0.01f, 12.0f);
 	// bad tv  TODO
 	createFloatUniform("iBadTv", 23, 0.0f, 0.0f, 5.0f);
-	// red multiplier 
-	createFloatUniform("iRedMultiplier", 24, 1.0f);
-	// green multiplier 
-	createFloatUniform("iGreenMultiplier", 25, 1.0f);
-	// blue multiplier 
-	createFloatUniform("iBlueMultiplier", 26, 1.0f);
+	// tempo time
+	createFloatUniform("iTempoTime", 24, 0.1f);
+	// background alpha
+	createFloatUniform("iBA", 25, 0.2f);
 	// slitscan (or other) Param1 
 	createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
 	// slitscan (or other) Param2 
@@ -137,11 +135,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createBoolUniform("iToggle", 46);
 	// vignette
 	createBoolUniform("iVignette", 47);
+	// fps
+	createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
 
 	// textures
 	for (size_t i = 0; i < 8; i++)
 	{
-		createSampler2DUniform("iChannel" + toString(i), i);
+		createSampler2DUniform("iChannel" + toString(i), i);// TODO verify doesn't mess up type (uint!)
 	}
 	load();
 	loadAnimation();
@@ -501,7 +501,7 @@ void VDAnimation::update() {
 		shaderUniforms["iColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue, shaderUniforms[getUniformNameForIndex(2)].floatValue, shaderUniforms[getUniformNameForIndex(3)].floatValue);
 
 		// background color vec3 update
-		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(5)].floatValue, shaderUniforms[getUniformNameForIndex(6)].floatValue, shaderUniforms[getUniformNameForIndex(7)].floatValue);
+		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(19)].floatValue, shaderUniforms[getUniformNameForIndex(20)].floatValue, shaderUniforms[getUniformNameForIndex(21)].floatValue);
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{

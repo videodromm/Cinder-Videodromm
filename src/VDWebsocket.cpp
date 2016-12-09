@@ -437,7 +437,7 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 
 void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue) {
 	// check if changed
-	if (mVDAnimation->changeFloatValue(aControl, aValue) && aControl != 20) {
+	if (mVDAnimation->changeFloatValue(aControl, aValue) && aControl != mVDSettings->IFPS) {
 		stringstream sParams;
 		// update color vec3
 		if (aControl > 0 && aControl < 4) {

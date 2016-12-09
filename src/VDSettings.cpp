@@ -589,10 +589,6 @@ void VDSettings::reset()
 	iBlendmode = 0;
 	// abp
 	mBend = 1.0f;
-	// mix shader color multipliers
-	iRedMultiplier = 1.0f;
-	iGreenMultiplier = 1.0f;
-	iBlueMultiplier = 1.0f;
 
 	resetSomeParams();
 }

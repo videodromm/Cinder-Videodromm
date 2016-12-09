@@ -167,7 +167,7 @@ void VDSession::resize() {
 }
 void VDSession::update() {
 	// fps calculated in main app
-	mVDSettings->sFps = toString(floor(getControlValue(20)));
+	mVDSettings->sFps = toString(floor(getControlValue(mVDSettings->IFPS)));
 	if (mVDWebsocket->hasReceivedStream() && (getElapsedFrames() % 100 == 0)) {
 		updateStream(mVDWebsocket->getBase64Image());
 	}

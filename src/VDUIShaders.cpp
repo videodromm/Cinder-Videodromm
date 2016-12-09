@@ -74,7 +74,7 @@ void VDUIShaders::Run(const char* title) {
 
 			if (s > 4)
 			{
-				sprintf_s(buf, "X##del%d", s);
+				sprintf(buf, "X##del%d", s);
 				if (ui::Button(buf)) mVDSession->removeShader(s);
 				if (ui::IsItemHovered()) ui::SetTooltip("Remove shader");
 				ui::SameLine();

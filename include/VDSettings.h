@@ -34,6 +34,7 @@ namespace VideoDromm {
 
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
+		static const int			IFPS = 120;
 		// texture modes
 		static const int			TEXTUREMODEMIX = 0;				// mix two shaders
 		static const int			TEXTUREMODEAUDIO = 1;			// audio spectrum
@@ -107,9 +108,9 @@ namespace VideoDromm {
 		bool						iLight;
 		bool						iLightAuto;
 		int							iBlendmode;
-		float						iRedMultiplier;
+		/*float						iRedMultiplier;
 		float						iGreenMultiplier;
-		float						iBlueMultiplier;
+		float						iBlueMultiplier;*/
 		float						iParam1;
 		float						iParam2;
 		bool						iXorY;
