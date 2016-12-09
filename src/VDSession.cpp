@@ -743,14 +743,13 @@ bool VDSession::loadShaderFolder(string aFolder) {
 
 // websockets
 #pragma region websockets
-#if defined( CINDER_MSW )
+
 void VDSession::wsConnect() {
 	mVDWebsocket->wsConnect();
 }
 void VDSession::wsPing() {
 	mVDWebsocket->wsPing();
 }
-#endif
 void VDSession::wsWrite(string msg)
 {
 	mVDWebsocket->wsWrite(msg);

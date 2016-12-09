@@ -197,10 +197,8 @@ namespace VideoDromm {
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition) { mVDMix->setPlayheadPosition(aTextureIndex, aPosition); };
 		int								getMaxFrame(unsigned int aTextureIndex) { return mVDMix->getMaxFrame(aTextureIndex); };
 		// websockets
-#if defined( CINDER_MSW )
 		void							wsConnect();
 		void							wsPing();
-#endif
 		void							wsWrite(std::string msg);
 		void							sendFragmentShader(unsigned int aShaderIndex);
 		// midi

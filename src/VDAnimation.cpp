@@ -60,6 +60,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iGreenMultiplier", 6, 1.0f, 0.0f, 3.0f);
 	// blue multiplier 
 	createFloatUniform("iBlueMultiplier", 7, 1.0f, 0.0f, 3.0f);
+	// bad tv
+	createFloatUniform("iBadTv", 8, 0.0f, 0.0f, 5.0f);
 
 	// RotationSpeed
 	createFloatUniform("iRotationSpeed", 9, 0.0f, -2.0f, 2.0f);
@@ -94,12 +96,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// top row 21 to 28
 	// Speed 
 	createFloatUniform("iSpeed", 22, 12.0f, 0.01f, 12.0f);
-	// bad tv  TODO
-	createFloatUniform("iBadTv", 23, 0.0f, 0.0f, 5.0f);
+	// background alpha
+	createFloatUniform("iBA", 23, 0.2f);
 	// tempo time
 	createFloatUniform("iTempoTime", 24, 0.1f);
-	// background alpha
-	createFloatUniform("iBA", 25, 0.2f);
+	// fps
+	createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
 	// slitscan (or other) Param1 
 	createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
 	// slitscan (or other) Param2 
@@ -135,8 +137,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createBoolUniform("iToggle", 46);
 	// vignette
 	createBoolUniform("iVignette", 47);
-	// fps
-	createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
 
 	// textures
 	for (size_t i = 0; i < 8; i++)
