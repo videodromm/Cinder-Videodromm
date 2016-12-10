@@ -62,8 +62,8 @@ namespace VideoDromm {
 		string							getMovieFileName() { return mMovieFileName; };
 		int								getMoviePlaybackDelay() { return mMoviePlaybackDelay; };
 		bool							hasMovie() { return mMovieFileName.length() > 0; };
-		int								getFadeInDelay() { return mFadeInDelay; };
-		int								getFadeOutDelay() { return mFadeOutDelay; };
+		unsigned int					getFadeInDelay() { return mFadeInDelay; };
+		unsigned int					getFadeOutDelay() { return mFadeOutDelay; };
 		string							getImageSequencePath() { return mImageSequencePath; };
 		bool							hasImageSequencePath() { return mImageSequencePath.length() > 0; };
 		string							getText() { return mText; };
@@ -90,7 +90,6 @@ namespace VideoDromm {
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 
-		int								loadFboFragmentShader(string aFilePath, unsigned int aFboIndex = 0);
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) { mVDMix->setFboFragmentShaderIndex(aFboIndex, aFboShaderIndex); };
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex) { return mVDMix->getFboFragmentShaderIndex(aFboIndex); };
 		bool							loadShaderFolder(string aFolder);
@@ -246,8 +245,8 @@ namespace VideoDromm {
 		// delay
 		int								mWavePlaybackDelay;
 		int								mMoviePlaybackDelay;
-		int								mFadeInDelay;
-		int								mFadeOutDelay;
+		unsigned int					mFadeInDelay;
+		unsigned int					mFadeOutDelay;
 		// font and text 
 		string							mText;
 		int								mTextPlaybackDelay;

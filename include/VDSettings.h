@@ -111,7 +111,7 @@ namespace VideoDromm {
 		float						iParam1;
 		float						iParam2;
 		bool						iXorY;
-		ci::Anim<float> 			iBadTv;
+		//ci::Anim<float> 			iBadTv;
 		ci::Anim<float> 			iAlpha;
 
 		string						mAssetsPath;

@@ -6,6 +6,7 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVertexShaderFilePath = aVextexShaderFilePath;
 	mValid = false;
+	mActive = true;
 	// shadertoy include
 	shaderInclude = loadString(loadAsset("shadertoy.inc"));
 	mVDSettings = aVDSettings;
@@ -290,6 +291,7 @@ string VDShader::getName() {
 void VDShader::removeShader() {
 	CI_LOG_V("remove shader");
 	mValid = false;
+	mActive = false;
 }
 
 #pragma warning(pop) // _CRT_SECURE_NO_WARNINGS

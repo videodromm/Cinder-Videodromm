@@ -360,26 +360,6 @@ void VDSession::fileDrop(FileDropEvent event) {
 	}
 	else if (ext == "glsl" || ext == "frag") {
 		loadFragmentShader(absolutePath);
-		// if we don't reuse fbo, create corresponding fbo	
-		/*if (index == 0) {
-			// find a removed shader
-			bool notFound = true;
-			for (unsigned int s = 0; s < mShaderList.size(); ++s) {
-				if (!mShaderList[s]->isValid() && notFound) {
-					notFound = false;
-					loadFboFragmentShader(absolutePath, s);
-				}
-			}
-			if (notFound) loadFragmentShader(absolutePath);
-		}
-		else {
-			if (index > mFboList.size() - 1) {
-				loadFragmentShader(absolutePath);
-			}
-			else {
-				loadFboFragmentShader(absolutePath, index);
-			}
-		}*/
 	}
 	else if (ext == "xml") {
 	}
@@ -540,19 +520,19 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_LEFT:
 				//mVDTextures->rewindMovie();				
-				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) - 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) - 0.1f);
 				break;
 			case KeyEvent::KEY_RIGHT:
 				//mVDTextures->fastforwardMovie();
-				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1f);
 				break;
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
-				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1f);
 				break;
 			case KeyEvent::KEY_PAGEUP:
 				// crossfade left
-				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) - 0.1);
+				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) - 0.1f);
 				break;
 
 			default:
@@ -682,22 +662,11 @@ ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 int VDSession::loadFragmentShader(string aFilePath) {
 	int rtn = -1;
 	CI_LOG_V("loadFragmentShader " + aFilePath);
-	mVDMix->createShaderFbo(aFilePath, 0); // TODO verify only filename, not path
+	mVDMix->createShaderFbo(aFilePath); 
 	
 	return rtn;
 }
-int VDSession::loadFboFragmentShader(string aFilePath, unsigned int aFboIndex) {
-	int rtn = -1;
-	/*if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
-	CI_LOG_V("fbo" + toString(aFboIndex) + ": loadPixelFragmentShader " + aFilePath);
-	rtn = loadFragmentShader(aFilePath);
-	if (rtn > -1) {
-		mFboList[aFboIndex]->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
-	}
-	*/
-	loadFragmentShader(aFilePath);
-	return rtn;
-}
+
 string VDSession::getMixFboName(unsigned int aMixFboIndex) {
 	return mVDMix->getMixFboName(aMixFboIndex);
 }

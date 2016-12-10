@@ -72,11 +72,11 @@ namespace VideoDromm
 		void						midiSetup();
 #if defined( CINDER_MSW )
 		int							getMidiInPortsCount() { return mMidiInputs.size(); };
-		string						getMidiInPortName(int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
-		bool						isMidiInConnected(int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
+		string						getMidiInPortName(unsigned int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
+		bool						isMidiInConnected(unsigned int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
 		int							getMidiOutPortsCount() { return mMidiOutputs.size(); };
-		string						getMidiOutPortName(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].portName : "No midi out ports"; };
-		bool						isMidiOutConnected(int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].isConnected : false; };
+		string						getMidiOutPortName(unsigned int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].portName : "No midi out ports"; };
+		bool						isMidiOutConnected(unsigned int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].isConnected : false; };
 #endif
 		void						midiOutSendNoteOn(int i, int channel, int pitch, int velocity);
 

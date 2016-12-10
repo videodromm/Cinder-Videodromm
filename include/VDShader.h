@@ -49,8 +49,10 @@ namespace VideoDromm
 		string							getVertexString() { return mVertexShaderString; };
 		bool							setFragmentString(string aFragmentShaderString, string aName = "");
 		// thumb image
-		ci::gl::Texture2dRef			getThumb();
+		//ci::gl::Texture2dRef			getThumb();
 		bool							isValid() { return mValid; };
+		bool							isActive() { return mActive; };
+		void							setActive(bool active) { mActive = active; };
 		void							removeShader();
 	private:
 		// Settings

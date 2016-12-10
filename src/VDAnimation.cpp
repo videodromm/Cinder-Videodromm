@@ -251,11 +251,6 @@ void VDAnimation::changeVec4Value(unsigned int aIndex, vec4 aValue) {
 bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
 	if (aIndex > 0) {
-		if (aIndex == 1) {
-			CI_LOG_V("changeFloatValue, getUniformNameForIndex(aIndex):" + toString(getUniformNameForIndex(aIndex)));
-			CI_LOG_V("changeFloatValue, shaderUniforms[getUniformNameForIndex(aIndex)].floatValue:" + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue));
-			CI_LOG_V("changeFloatValue, aValue:" + toString(aValue));
-		}
 		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
 			if (aValue >= shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue <= shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
 				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
@@ -365,7 +360,7 @@ void VDAnimation::loadAnimation() {
 
 		}
 	}
-	catch (const JsonTree::ExcJsonParserError&)  {
+	catch (const JsonTree::ExcJsonParserError&) {
 		CI_LOG_W("Failed to parse json file.");
 	}
 }
@@ -390,7 +385,8 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		mBadTV[getElapsedFrames() - 10] = 1.0f;
 		//iBadTvRunning = true;
 		// duration = 0.2
-		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
+		shaderUniforms["iBadTv"].floatValue = 5.0f;
+		//timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
 		break;
 	case KeyEvent::KEY_d:
 		// save end keyframe
@@ -413,9 +409,10 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 {
 	bool handled = true;
 	switch (event.getCode()) {
-	case KeyEvent::KEY_b:
+	case KeyEvent::KEY_a:
 		// save badtv keyframe
 		mBadTV[getElapsedFrames()] = 0.001f;
+		shaderUniforms["iBadTv"].floatValue = 0.0f;
 		break;
 
 	default:
@@ -428,9 +425,13 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 
 void VDAnimation::update() {
 
-	if (mBadTV[getElapsedFrames()] != 0) {
+	if (mBadTV[getElapsedFrames()] == 0) {
+		// TODO check shaderUniforms["iBadTv"].floatValue = 0.0f;
+	}
+	else {
 		// duration = 0.2
-		timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
+		//timeline().apply(&mVDSettings->iBadTv, 60.0f, 0.0f, 0.2f, EaseInCubic());
+		shaderUniforms["iBadTv"].floatValue = 5.0f;
 	}
 
 	mVDSettings->iChannelTime[0] = getElapsedSeconds();

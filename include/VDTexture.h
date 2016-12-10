@@ -21,6 +21,7 @@
 #include "cinder/qtime/QuickTimeGl.h"
 // syphon
 #include "syphon.h"
+using namespace reza::syphon;
 #endif
 
 // Settings
@@ -46,7 +47,7 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
-using namespace reza::syphon;
+
 
 namespace VideoDromm
 {

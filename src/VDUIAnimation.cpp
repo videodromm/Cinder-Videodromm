@@ -54,14 +54,6 @@ void VDUIAnimation::Run(const char* title) {
 		{
 			int hue = 0;
 
-			/*(mVDSettings->iRepeat) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-			mVDSettings->iRepeat ^= ui::Button("repeat");
-			ui::PopStyleColor(3);
-			hue++;
-			ui::SameLine();*/
-
 			ctrl = 45;
 			(getBoolValue(ctrl)) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
@@ -119,16 +111,10 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(2, 0.0);
 				setValue(3, 0.0);
 				setValue(4, 0.0);
-				setValue(5, 0.0);
-				setValue(6, 0.0);
-				setValue(7, 0.0);
-				setValue(8, 0.0);
 			}
 		}
 		if (ui::CollapsingHeader("Animation", NULL, true, true))
 		{
-			//ui::SliderInt("UI Zoom", &mVDSettings->mUIZoom, 1, 8);
-
 			// iChromatic
 			ctrl = 17;
 			if (ui::Button("a##chromatic")) {
@@ -207,11 +193,18 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// badTv
-			/*if (ui::Button("x##badtv")) { mVDSettings->iBadTv = 0.0f; }
+			ctrl = 8;
+			if (ui::Button("a##badtv")) { toggleAuto(ctrl); }
 			ui::SameLine();
-			if (ui::SliderFloat("badTv/min/max", &mVDSettings->iBadTv, 0.0f, 5.0f))
+			if (ui::Button("t##badtv")) { toggleTempo(ctrl); }
+			ui::SameLine();
+			if (ui::Button("x##badtv")) { resetAutoAnimation(ctrl); }
+			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
+			if (ui::DragFloat("badTv", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
-			}*/
+				setValue(ctrl, localValues[ctrl]);
+			}
 			// param1
 			if (ui::Button("x##param1")) { mVDSettings->iParam1 = 1.0f; }
 			ui::SameLine();
@@ -256,31 +249,6 @@ void VDUIAnimation::Run(const char* title) {
 			}
 			ui::SliderFloat("ABP Bend", &mVDSettings->mBend, -20.0f, 20.0f);
 		}
-		// grid
-		/*
-		ctrl = 17;
-		if (ui::Button("x##grid")) { localValues[ctrl] = 0.0f; }
-		ui::SameLine();
-		if (ui::SliderFloat("grid", &localValues[ctrl], 0.00f, 60.0f))
-		{
-			aParams << ",{\"name\" : " << ctrl << ",\"value\" : " << localValues[ctrl] << "}";
-		}
-
-	if (ui::CollapsingHeader("Camera", NULL, true, true))
-	{
-		ui::SliderFloat("Pos.x", &mVDSettings->mRenderPosXY.x, 0.0f, mVDSettings->mRenderWidth);
-		ui::SliderFloat("Pos.y", &mVDSettings->mRenderPosXY.y, 0.0f, mVDSettings->mRenderHeight);
-		float eyeZ = mVDSettings->mCamera.getEyePoint().z;
-		if (ui::SliderFloat("Eye.z", &eyeZ, -500.0f, 1.0f))
-		{
-			vec3 eye = mVDSettings->mCamera.getEyePoint();
-			eye.z = eyeZ;
-			mVDSettings->mCamera.setEyePoint(eye);
-		}
-
-	}
-		*/
-
 		ui::PopItemWidth();
 	}
 	ui::End();

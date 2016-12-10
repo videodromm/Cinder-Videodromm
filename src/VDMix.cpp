@@ -338,8 +338,8 @@ namespace VideoDromm {
 		mGlslMix->uniform("iParam1", mVDSettings->iParam1);
 		mGlslMix->uniform("iParam2", mVDSettings->iParam2);
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
-		mGlslMix->uniform("iBadTv", mVDSettings->iBadTv);
-		mGlslMix->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(20));
+		mGlslMix->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
+		mGlslMix->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFPS));
 
 		renderMix();
 		// blendmodes preview
@@ -386,7 +386,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iInvert", (int)mVDAnimation->getBoolUniformValueByIndex(48));
 			mGlslBlend->uniform("iDebug", (int)mVDSettings->iDebug);
 			mGlslBlend->uniform("iShowFps", (int)mVDSettings->iShowFps);
-			mGlslBlend->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(20));
+			mGlslBlend->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFPS));
 			mGlslBlend->uniform("iTempoTime", mVDAnimation->getFloatUniformValueByName("iTempoTime"));
 			mGlslBlend->uniform("iGlitch", (int)mVDAnimation->getBoolUniformValueByIndex(45));
 			mGlslBlend->uniform("iTrixels", mVDAnimation->getFloatUniformValueByIndex(16));
@@ -400,7 +400,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iParam1", mVDSettings->iParam1);
 			mGlslBlend->uniform("iParam2", mVDSettings->iParam2);
 			mGlslBlend->uniform("iXorY", mVDSettings->iXorY);
-			mGlslBlend->uniform("iBadTv", mVDSettings->iBadTv);
+			mGlslBlend->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
 			renderBlend();
 		}
 	}
@@ -884,6 +884,26 @@ namespace VideoDromm {
 				{
 					if (!mShaderList[i]->isValid() || fName == mShaderList[i]->getName()) { rtn = i; }
 				}
+				// find a not used shader if no removed shader
+				if (rtn == 0) {
+					// first reset all shaders (excluding the first 6 ones)
+					for (int i = mShaderList.size() - 1; i > 6; i--)
+					{
+						mShaderList[i]->setActive(false);
+					}
+					// set active shaders according to warps
+					for (auto &warp : mWarps) {
+						if (warp->getAShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getAShaderIndex()]->setActive(true);
+						if (warp->getBShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getBShaderIndex()]->setActive(true);
+					}
+					// find inactive shader index
+					for (int i = mShaderList.size() - 1; i > 6; i--)
+					{
+						if (!mShaderList[i]->isActive()) rtn = i;
+					}
+
+				}
+				// if we found an available slot
 				if (rtn > 0) {
 					if (rtn < mFboList.size()) {
 						if (mShaderList[rtn]->loadFragmentStringFromFile(aShaderFilename)) {
@@ -892,7 +912,7 @@ namespace VideoDromm {
 					}
 				}
 				else {
-					// new shader
+					// no slot available, create new shader
 					VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
 					if (s->isValid()) {
 						mShaderList.push_back(s);
