@@ -64,7 +64,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 		mFragFile = getAssetPath("") / "0.frag";
 	}
 
-	mName = mFragFile.filename().string();
+	//mName = mFragFile.filename().string();
 	// get filename without extension
 	/*int dotIndex = fileName.find_last_of(".");
 
@@ -77,7 +77,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 
 	mFragmentShaderFilePath = mFragFile.string();
 	mFragmentShaderString = loadString(loadFile(mFragFile));
-	mValid = setFragmentString(mFragmentShaderString, mName);
+	mValid = setFragmentString(mFragmentShaderString, mFragFile.filename().string());
 
 	CI_LOG_V(mFragFile.string() + " loaded and compiled");
 	return mValid;
@@ -89,13 +89,11 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	mError = "";
 	// we would like a name
 	if (aName.length() == 0) aName = toString((int)getElapsedSeconds()) + ".frag";
-	// name of the shader
-	mName = aName;
-	string mNotFoundUniformsString = "/* " + mName + "\n";
+	string mNotFoundUniformsString = "/* " + aName + "\n";
 	// filename to save
 	mValid = false;
 	// load fragment shader
-	CI_LOG_V("setFragmentString, live loading" + mName);
+	CI_LOG_V("setFragmentString, loading" + aName);
 	try
 	{
 		CI_LOG_V("before regex " + mOriginalFragmentString);
@@ -186,6 +184,9 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
 		mVDSettings->mMsg = aName + " loaded and compiled";
+		// name of the shader
+		mName = aName;
+
 		mValid = true;
 
 		auto &uniforms = mShader->getActiveUniforms();

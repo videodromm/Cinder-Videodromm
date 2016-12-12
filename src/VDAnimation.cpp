@@ -250,12 +250,13 @@ void VDAnimation::changeVec4Value(unsigned int aIndex, vec4 aValue) {
 }
 bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
+	// we can't change iGlobalTime at index 0
 	if (aIndex > 0) {
-		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
-			if (aValue >= shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue <= shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
-				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
-				rtn = true;
-			}
+		// not all controls are from 0.0 to 1.0
+		float lerpValue = lerp<float, float>(shaderUniforms[getUniformNameForIndex(aIndex)].minValue, shaderUniforms[getUniformNameForIndex(aIndex)].maxValue, aValue);
+		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != lerpValue) {
+			shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = lerpValue;
+			rtn = true;
 		}
 	}
 	return rtn;

@@ -484,6 +484,10 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 			mVDSettings->iTrack++;
 			if (mVDSettings->iTrack > 7) mVDSettings->iTrack = 7;
 		}
+		if (iarg0 == 60) {
+			// set (reset blendmode)
+			mVDSettings->iBlendmode = 0;
+		}
 		if (iarg0 == 61) {
 			// right arrow
 			mVDSettings->iBlendmode--;

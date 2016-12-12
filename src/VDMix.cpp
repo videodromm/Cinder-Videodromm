@@ -863,7 +863,6 @@ namespace VideoDromm {
 			mTextureList.push_back(t);
 			found = mTextureList.size() - 1;
 		}
-
 		mTextureList[found]->loadFromFullPath(*aStringPtr);
 	}
 
@@ -886,8 +885,8 @@ namespace VideoDromm {
 				}
 				// find a not used shader if no removed shader
 				if (rtn == 0) {
-					// first reset all shaders (excluding the first 6 ones)
-					for (int i = mShaderList.size() - 1; i > 6; i--)
+					// first reset all shaders (excluding the first 8 ones)
+					for (int i = mShaderList.size() - 1; i > 8; i--)
 					{
 						mShaderList[i]->setActive(false);
 					}
@@ -897,7 +896,7 @@ namespace VideoDromm {
 						if (warp->getBShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getBShaderIndex()]->setActive(true);
 					}
 					// find inactive shader index
-					for (int i = mShaderList.size() - 1; i > 6; i--)
+					for (int i = mShaderList.size() - 1; i > 8; i--)
 					{
 						if (!mShaderList[i]->isActive()) rtn = i;
 					}
@@ -939,5 +938,4 @@ namespace VideoDromm {
 		}
 		return rtn;
 	}
-
 } // namespace VideoDromm
