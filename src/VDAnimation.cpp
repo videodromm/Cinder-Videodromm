@@ -76,7 +76,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// Audio multfactor 
 	createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 	// exposure
-	createFloatUniform("iExposure", 14, 1.0f, 0.00001f, 3.0f);
+	createFloatUniform("iExposure", 14, 1.0f, 0.0f, 3.0f);
 	// Pixelate
 	createFloatUniform("iPixelate", 15, 1.0f, 0.01f);
 	// Trixels
@@ -252,12 +252,18 @@ bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	bool rtn = false;
 	// we can't change iGlobalTime at index 0
 	if (aIndex > 0) {
+		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
+			if (aValue >= shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue <= shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
+				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
+				rtn = true;
+			}
+		}
 		// not all controls are from 0.0 to 1.0
-		float lerpValue = lerp<float, float>(shaderUniforms[getUniformNameForIndex(aIndex)].minValue, shaderUniforms[getUniformNameForIndex(aIndex)].maxValue, aValue);
+		/* not working float lerpValue = lerp<float, float>(shaderUniforms[getUniformNameForIndex(aIndex)].minValue, shaderUniforms[getUniformNameForIndex(aIndex)].maxValue, aValue);
 		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != lerpValue) {
 			shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = lerpValue;
 			rtn = true;
-		}
+		}*/
 	}
 	return rtn;
 }
@@ -494,8 +500,9 @@ void VDAnimation::update() {
 			}
 			else
 			{
-				changeFloatValue(anim, shaderUniforms[getUniformNameForIndex(anim)].automatic ? lmap<float>(shaderUniforms["iTempoTime"].floatValue, 0.00001, iDeltaTime, shaderUniforms[getUniformNameForIndex(anim)].minValue, shaderUniforms[getUniformNameForIndex(anim)].maxValue) : shaderUniforms[getUniformNameForIndex(anim)].floatValue);
-				//controlValues[14] = autoExposure ? (sin(getElapsedFrames() / (controlValues[12] + 1.0))) : controlValues[14];
+				if (shaderUniforms[getUniformNameForIndex(anim)].automatic) {
+					changeFloatValue(anim, lmap<float>(shaderUniforms["iTempoTime"].floatValue, 0.00001, iDeltaTime, shaderUniforms[getUniformNameForIndex(anim)].minValue, shaderUniforms[getUniformNameForIndex(anim)].maxValue));
+				}
 			}
 		}
 
