@@ -30,7 +30,7 @@ namespace VideoDromm {
 	typedef std::shared_ptr<class VDSession> VDSessionRef;
 
 
-	class VDSession	{
+	class VDSession {
 	public:
 		VDSession(VDSettingsRef aVDSettings);
 		static VDSessionRef				create(VDSettingsRef aVDSettings);
@@ -161,7 +161,9 @@ namespace VideoDromm {
 		void							loadAudioFile(string aFile) { mVDMix->loadAudioFile(aFile); };
 		void							loadMovie(string aFile, unsigned int aTextureIndex) { mVDMix->loadMovie(aFile, aTextureIndex); };
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex) { return mVDMix->loadImageSequence(aFolder, aTextureIndex); };
-
+		void							toggleSpoutOutput(unsigned int aMixFboIndex = 0) { mVDMix->toggleSpoutOutput(aMixFboIndex);  };
+		bool							isSpoutOutputActive() {return mVDMix->isSpoutOutputActive();};
+		unsigned int					getSpoutMixIndex() { return mVDMix->getSpoutMixIndex(); };
 		// move, rotate, zoom methods
 		//void							setPosition(int x, int y);
 		//void							setZoom(float aZoom);

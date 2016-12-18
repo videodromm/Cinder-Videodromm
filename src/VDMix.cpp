@@ -52,6 +52,12 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
+		// spout output
+		mSpoutOutputActive = false;
+		mSpoutFboIndex = 0;
+		strcpy_s(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
+		// Initialize a sender
+		mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 	}
 
 #pragma region blendmodes
@@ -76,8 +82,17 @@ namespace VideoDromm {
 			// should never happen
 			mMixFbos[aMixFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		}
+		if (mSpoutInitialized && mSpoutOutputActive && mSpoutFboIndex == aMixFboIndex) {
+			mSpoutSender.SendTexture(mMixFbos[mSpoutFboIndex].texture->getId(), mMixFbos[mSpoutFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		}
 		return mMixFbos[aMixFboIndex].texture;
 	}
+	// spout output
+	void VDMix::toggleSpoutOutput(unsigned int aMixFboIndex) {
+		if (aMixFboIndex > mMixFbos.size() - 1) mSpoutFboIndex = 0;
+		mSpoutOutputActive = !mSpoutOutputActive;
+	}
+
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 		return mFboList[aFboIndex]->getFboTexture();

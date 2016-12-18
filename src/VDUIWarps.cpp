@@ -90,7 +90,22 @@ void VDUIWarps::Run(const char* title) {
 			ui::PopStyleColor(3);
 			if (ui::IsItemHovered()) ui::SetTooltip("Show nodes");
 			ui::SameLine();
-			// other button 
+			// spout output
+			if (mVDSession->getSpoutMixIndex() == w && mVDSession->isSpoutOutputActive()) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+			sprintf(buf, "O##sp%d", w);
+			if (ui::Button(buf)) {
+				mVDSession->toggleSpoutOutput(w);
+			}
+			ui::PopStyleColor(3);
+			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Spout output");
+
 			ui::PopID();
 			ui::PopItemWidth();
 		}

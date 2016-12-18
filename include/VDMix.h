@@ -151,6 +151,10 @@ namespace VideoDromm
 		string							getShaderName(unsigned int aShaderIndex);
 		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex);
 		string							getFragmentString(unsigned int aShaderIndex) { return mShaderList[aShaderIndex]->getFragmentString(); };
+		// spout output
+		void							toggleSpoutOutput(unsigned int aMixFboIndex = 0);
+		bool							isSpoutOutputActive() { return mSpoutOutputActive; };
+		unsigned int					getSpoutMixIndex() { return mSpoutFboIndex; };
 	private:
 		bool							mFlipV;
 		bool							mFlipH;
@@ -196,5 +200,11 @@ namespace VideoDromm
 
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
+		// spout output
+		bool							mSpoutOutputActive;
+		bool							mSpoutInitialized;
+		unsigned int					mSpoutFboIndex;
+		SpoutSender						mSpoutSender;
+		char							mSenderName[256];
 	};
 }
