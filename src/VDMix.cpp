@@ -54,10 +54,9 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
 		// spout output
 		mSpoutOutputActive = false;
+		mSpoutInitialized = false;
 		mSpoutFboIndex = 0;
 		strcpy_s(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
-		// Initialize a sender
-		mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 	}
 
 #pragma region blendmodes
@@ -91,6 +90,10 @@ namespace VideoDromm {
 	void VDMix::toggleSpoutOutput(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) mSpoutFboIndex = 0;
 		mSpoutOutputActive = !mSpoutOutputActive;
+		if (mSpoutOutputActive && !mSpoutInitialized) {
+			// Initialize a sender
+			mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		}
 	}
 
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {

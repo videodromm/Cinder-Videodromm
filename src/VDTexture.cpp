@@ -877,6 +877,8 @@ namespace VideoDromm {
 					g_Height = height;
 					// Update the local texture to receive the new dimensions
 					mTexture = gl::Texture::create(g_Width, g_Height);
+					mWidth = g_Width;
+					mHeight = g_Height;
 					return mTexture; // quit for next round
 				}
 				// received OK
