@@ -202,6 +202,8 @@ namespace VideoDromm {
 		void							sendFragmentShader(unsigned int aShaderIndex);
 		// midi
 		void							midiSetup() { mVDRouter->midiSetup(); };
+		void							midiOutSendNoteOn(int i, int channel, int pitch, int velocity) { mVDRouter->midiOutSendNoteOn( i, channel, pitch, velocity); };
+
 #if defined( CINDER_MSW )
 		int								getMidiInPortsCount() { return mVDRouter->getMidiInPortsCount(); };
 		string							getMidiInPortName(int i) { return mVDRouter->getMidiInPortName(i); };
