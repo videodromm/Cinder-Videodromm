@@ -869,6 +869,7 @@ namespace VideoDromm {
 		// ----------------------------
 		if (initialized) {
 			if (spoutreceiver.ReceiveTexture(SenderName, width, height, mTexture->getId(), mTexture->getTarget())) {
+				mName = SenderName;
 				//  Width and height are changed for sender change so the local texture has to be resized.
 				if (width != g_Width || height != g_Height) {
 					// The sender dimensions have changed - update the global width and height
@@ -877,7 +878,7 @@ namespace VideoDromm {
 					// Update the local texture to receive the new dimensions
 					mTexture = gl::Texture::create(g_Width, g_Height);
 					// reset render window
-					setWindowSize(g_Width, g_Height);
+					//setWindowSize(g_Width, g_Height);
 					return mTexture; // quit for next round
 				}
 				// received OK
