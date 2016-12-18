@@ -847,7 +847,8 @@ namespace VideoDromm {
 				// Optionally test for texture share compatibility
 				// bMemoryMode informs us whether Spout initialized for texture share or memory share
 				bMemoryMode = spoutreceiver.GetMemoryShareMode();
-
+				// set name for UI
+				mName = SenderName;
 				// Is the size of the detected sender different from the current texture size ?
 				// This is detected for both texture share and memoryshare
 				if (width != g_Width || height != g_Height) {
@@ -869,7 +870,6 @@ namespace VideoDromm {
 		// ----------------------------
 		if (initialized) {
 			if (spoutreceiver.ReceiveTexture(SenderName, width, height, mTexture->getId(), mTexture->getTarget())) {
-				mName = SenderName;
 				//  Width and height are changed for sender change so the local texture has to be resized.
 				if (width != g_Width || height != g_Height) {
 					// The sender dimensions have changed - update the global width and height
@@ -877,8 +877,6 @@ namespace VideoDromm {
 					g_Height = height;
 					// Update the local texture to receive the new dimensions
 					mTexture = gl::Texture::create(g_Width, g_Height);
-					// reset render window
-					//setWindowSize(g_Width, g_Height);
 					return mTexture; // quit for next round
 				}
 				// received OK
