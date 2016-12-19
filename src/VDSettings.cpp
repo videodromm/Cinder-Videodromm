@@ -429,7 +429,7 @@ void VDSettings::resetSomeParams() {
 	uiXPosCol1 = uiLargeW + uiMargin * 2;
 	uiXPosCol2 = uiXPosCol1 + uiMargin + uiElementWidth; //largeW + mVDSettings->uiMargin * 2;
 	uiXPosCol3 = uiXPosCol2 + uiMargin;
-	uiYPos;
+	//uiYPos;
 	uiYPosRow1 = 18;
 	uiYPosRow2 = 160;
 	uiYPosRow3 = uiYPosRow2 + uiLargeH + uiMargin * 1.5;

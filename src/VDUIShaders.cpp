@@ -41,7 +41,7 @@ void VDUIShaders::Run(const char* title) {
 	for (int s = 0; s < mVDSession->getShadersCount(); s++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
-		int hue = 0;
+		//int hue = 0;
 		sprintf(buf, "%s##sh%d", mVDSession->getShaderName(s).c_str(), s);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
 		{

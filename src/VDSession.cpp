@@ -540,9 +540,9 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			}
 		}
-		event.setHandled(handled);
-		return event.isHandled();
 	}
+    event.setHandled(handled);
+    return event.isHandled();
 }
 bool VDSession::handleKeyUp(KeyEvent &event) {
 	bool handled = true;
@@ -585,9 +585,9 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				break;
 			}
 		}
-		event.setHandled(handled);
-		return event.isHandled();
 	}
+    event.setHandled(handled);
+    return event.isHandled();
 }
 #pragma endregion events
 
@@ -685,7 +685,6 @@ unsigned int VDSession::getMixFbosCount() {
 // shaders
 #pragma region shaders
 bool VDSession::loadShaderFolder(string aFolder) {
-	int i = 0;
 	string ext = "";
 	fs::path p(aFolder);
 	for (fs::directory_iterator it(p); it != fs::directory_iterator(); ++it)

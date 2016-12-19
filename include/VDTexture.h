@@ -20,8 +20,7 @@
 // quicktime movie
 #include "cinder/qtime/QuickTimeGl.h"
 // syphon
-#include "syphon.h"
-using namespace reza::syphon;
+#include "cinderSyphon.h"
 #endif
 
 // Settings
@@ -334,7 +333,7 @@ namespace VideoDromm
 		char SenderName[256];                       // sender name 
 #endif
 #if defined( CINDER_MAC )
-		ClientRef                   mClientSyphon;
+		syphonClient                mClientSyphon;
 #endif
 		ci::gl::Texture2dRef		mTexture;
 	};

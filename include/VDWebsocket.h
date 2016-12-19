@@ -10,11 +10,11 @@
 // Mix
 #include "VDMix.h"
 
-#if defined( CINDER_MSW )
+
 // WebSockets
 #include "WebSocketClient.h"
 #include "WebSocketServer.h"
-#endif
+
 
 using namespace ci;
 using namespace ci::app;
@@ -80,7 +80,7 @@ namespace VideoDromm
 		int							receivedFboIndex;
 		int							receivedShaderIndex;
 		int							receivedSlot;
-#if defined( CINDER_MSW )
+
 		WebSocketClient				mClient;
 		void						onWsConnect();
 		void						onWsDisconnect();
@@ -93,7 +93,7 @@ namespace VideoDromm
 		void						serverConnect();
 		void						serverDisconnect();
 		double						mPingTime;
-#endif
+
 		// received shaders
 		bool						shaderReceived; // TODO remove
 		string						receivedFragString; // TODO remove

@@ -795,9 +795,9 @@ namespace VideoDromm {
 
 #endif
 #if defined( CINDER_MAC )
-		mClientSyphon->setup();
-		mClientSyphon->set("", "Videodromm client");
-		mClientSyphon->bind();
+		mClientSyphon.setup();
+		mClientSyphon.setServerName("Videodromm client");
+		mClientSyphon.bind();
 #endif
 	}
 	bool TextureShared::fromXml(const XmlTree &xml)
@@ -886,7 +886,7 @@ namespace VideoDromm {
 		}
 #endif
 #if defined( CINDER_MAC )
-		mClientSyphon->draw(vec2(0.f, 0.f));
+		mClientSyphon.draw(vec2(0.f, 0.f));
 #endif
 		return mTexture;
 	}

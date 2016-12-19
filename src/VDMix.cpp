@@ -56,7 +56,7 @@ namespace VideoDromm {
 		mSpoutOutputActive = false;
 		mSpoutInitialized = false;
 		mSpoutFboIndex = 0;
-		strcpy_s(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
+		strcpy(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
 	}
 
 #pragma region blendmodes
@@ -81,9 +81,18 @@ namespace VideoDromm {
 			// should never happen
 			mMixFbos[aMixFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		}
+        // spout
+#if defined( CINDER_MSW )
 		if (mSpoutInitialized && mSpoutOutputActive && mSpoutFboIndex == aMixFboIndex) {
 			mSpoutSender.SendTexture(mMixFbos[mSpoutFboIndex].texture->getId(), mMixFbos[mSpoutFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		}
+#endif
+        // syphon
+#if defined( CINDER_MAC )
+        if (mSpoutOutputActive && mSpoutFboIndex == aMixFboIndex) {
+            mSyphonServer.publishTexture(mMixFbos[mSpoutFboIndex].texture);
+        }
+#endif
 		return mMixFbos[aMixFboIndex].texture;
 	}
 	// spout output
@@ -92,10 +101,14 @@ namespace VideoDromm {
 			mSpoutFboIndex = aMixFboIndex;
 		}
 		mSpoutOutputActive = !mSpoutOutputActive;
+#if defined( CINDER_MSW )
 		if (mSpoutOutputActive && !mSpoutInitialized) {
 			// Initialize a sender
 			mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		}
+#endif
+        
+
 	}
 
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {
@@ -607,11 +620,11 @@ namespace VideoDromm {
 #endif
 						}
 						else if (texturetype == "shared") {
-#if defined( CINDER_MSW )
+// TODO CHECK USELESS? #if defined( CINDER_MSW )
 							TextureSharedRef t(new TextureShared());
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
-#endif
+//#endif
 						}
 						else if (texturetype == "audio") {
 							// audio texture done in initTextures

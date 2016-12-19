@@ -21,8 +21,13 @@
 	<asset>assets/passthru.frag</asset>
 	<asset>assets/defaulttextures.xml</asset>
 	<asset>assets/defaulttexturesquicktime.xml</asset>
-	<asset>assets/pupilles640x480.hap.mov</asset>
 	<asset>assets/fingers.mov</asset>
+	<asset>assets/pupilles640x480.hap.mov</asset>
+	<asset>assets/mixes.xml</asset>
+	<asset>assets/mixfbo.frag</asset>
+	<asset>assets/texture0.frag</asset>
+	<asset>assets/texture1.frag</asset>
+	<asset>assets/textures.xml</asset>
 	<asset>assets/mandalas/p0001.jpg</asset>
 	<asset>assets/mandalas/p0002.jpg</asset>
 	<asset>assets/mandalas/p0003.jpg</asset>

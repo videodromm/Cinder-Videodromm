@@ -19,6 +19,9 @@
 // Warping
 #include "Warp.h"
 
+// Syphon
+#include "cinderSyphon.h"
+
 #include <atomic>
 #include <vector>
 
@@ -204,7 +207,14 @@ namespace VideoDromm
 		bool							mSpoutOutputActive;
 		bool							mSpoutInitialized;
 		unsigned int					mSpoutFboIndex;
+        char							mSenderName[256];
+
+#if defined( CINDER_MSW )
 		SpoutSender						mSpoutSender;
-		char							mSenderName[256];
+#endif
+        // syphon
+#if defined( CINDER_MAC )
+        syphonServer                    mSyphonServer;
+#endif
 	};
 }

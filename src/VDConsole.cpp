@@ -167,8 +167,8 @@ void VDConsole::ExecCommand(const char* command_line)
 		// for instance WARPF 0 4
 		if (strlen(command_line) > 8)
 		{
-			int index = command_line[6];
-			int fbo = command_line[8];
+			//int index = command_line[6];
+			//int fbo = command_line[8];
 
 			//mVDMix->assignFboToWarp(index - 48, fbo - 48);
 		}
@@ -182,7 +182,7 @@ void VDConsole::ExecCommand(const char* command_line)
 		if (strlen(command_line) > 7)
 		{
 			string to = command_line;
-			int firstDigit = to.find_first_of("0123456789");
+			//int firstDigit = to.find_first_of("0123456789");
 			//if (firstDigit > -1) mVDSettings->mTempo = std::stoi(to.substr(firstDigit));
 		}
 	}

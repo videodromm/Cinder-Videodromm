@@ -13,10 +13,10 @@ VDWebsocket::VDWebsocket(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation,
 	streamReceived = false;
 	// WebSockets
 	clientConnected = false;
-#if defined( CINDER_MSW )
+
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup) wsConnect();
 	mPingTime = getElapsedSeconds();
-#endif
+
 }
 
 void VDWebsocket::updateParams(int iarg0, float farg1) {
@@ -246,11 +246,11 @@ void VDWebsocket::parseMessage(string msg) {
 		else if (first == "/")
 		{
 			// osc from videodromm-nodejs-router
-			int f = msg.size();
+			/*int f = msg.size();
 			const char c = msg[9];
 			int s = msg[12];
 			int t = msg[13];
-			int u = msg[14];
+			int u = msg[14];*/
 			CI_LOG_V(msg);
 		}
 		else if (first == "I") {
@@ -284,7 +284,7 @@ string VDWebsocket::getReceivedShader() {
 	return receivedFragString;
 }
 void VDWebsocket::wsConnect() {
-#if defined( CINDER_MSW )
+
 	// either a client or a server
 	if (mVDSettings->mIsWebSocketsServer) {
 		mServer.connectOpenEventHandler([&]() {
@@ -359,28 +359,28 @@ void VDWebsocket::wsConnect() {
 	}
 	mVDSettings->mAreWebSocketsEnabledAtStartup = true;
 	clientConnected = true;
-#endif
+
 }
 void VDWebsocket::wsClientConnect()
 {
-#if defined( CINDER_MSW )
+
 	stringstream s;
 	s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
 	mClient.connect(s.str());
-#endif
+
 }
 void VDWebsocket::wsClientDisconnect()
 {
-#if defined( CINDER_MSW )	
+
 	if (clientConnected)
 	{
 		mClient.disconnect();
 	}
-#endif
+
 }
 void VDWebsocket::wsWrite(string msg)
 {
-#if defined( CINDER_MSW )
+
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
 	{
 		if (mVDSettings->mIsWebSocketsServer)
@@ -392,13 +392,13 @@ void VDWebsocket::wsWrite(string msg)
 			if (clientConnected) mClient.write(msg);
 		}
 	}
-#endif
+
 }
 
 void VDWebsocket::sendJSON(string params) {
-#if defined( CINDER_MSW )
+
 	wsWrite(params);
-#endif
+
 }
 void VDWebsocket::toggleAuto(unsigned int aIndex) {
 	// toggle
@@ -473,7 +473,7 @@ void VDWebsocket::changeFragmentShader(string aFragmentShaderText) {
 }
 void VDWebsocket::colorWrite()
 {
-#if defined( CINDER_MSW )
+
 	// lights4events
 	char col[8];
 	int r = mVDAnimation->getFloatUniformValueByIndex(1) * 255;
@@ -481,13 +481,13 @@ void VDWebsocket::colorWrite()
 	int b = mVDAnimation->getFloatUniformValueByIndex(3) * 255;
 	sprintf(col, "#%02X%02X%02X", r, g, b);
 	wsWrite(col);
-#endif
+
 }
 
 void VDWebsocket::update() {
 
 	// websockets
-#if defined( CINDER_MSW )
+
 	if (mVDSettings->mAreWebSocketsEnabledAtStartup)
 	{
 		if (mVDSettings->mIsWebSocketsServer)
@@ -502,7 +502,7 @@ void VDWebsocket::update() {
 			}
 		}
 	}
-#endif
+
 	/* OLD KINECT AND TOUCHOSC
 	// check for mouse moved message
 	if(m.getAddress() == "/mouse/position"){

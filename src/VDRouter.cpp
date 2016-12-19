@@ -65,7 +65,7 @@ void VDRouter::setupOSCReceiver() {
 	});
 	mOSCReceiver->setListener("/Freq1",
 		[&](const osc::Message &msg) {
-		float f1 = msg[0].flt();
+		//float f1 = msg[0].flt();
 	});
 	mOSCReceiver->setListener("/backgroundcolor",
 		[&](const osc::Message &msg) {
@@ -188,7 +188,7 @@ void VDRouter::setupOSCReceiver() {
 	// kinect
 	mOSCReceiver->setListener("/joint",
 		[&](const osc::Message &msg) {
-		int skeletonIndex = msg[0].int32();
+		//int skeletonIndex = msg[0].int32();
 		int jointIndex = msg[1].int32();
 		if (jointIndex < 20)
 		{

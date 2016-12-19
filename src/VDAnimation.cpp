@@ -42,7 +42,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	iDeltaTime = 60 / mBpm;//mTempo;
 	//iBar = 0;
 	//iBadTvRunning = false;
-	int ctrl;
+	//int ctrl;
 	// global time in seconds
 	createFloatUniform("iGlobalTime", 0, 0.0f);
 	// sliders
@@ -380,7 +380,7 @@ void VDAnimation::setAutoBeatAnimation(bool aAutoBeatAnimation) {
 }
 bool VDAnimation::handleKeyDown(KeyEvent &event)
 {
-	float newValue;
+	//float newValue;
 	bool handled = true;
 	switch (event.getCode()) {
 	case KeyEvent::KEY_s:
