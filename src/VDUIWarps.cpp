@@ -91,7 +91,7 @@ void VDUIWarps::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Show nodes");
 			ui::SameLine();
 			// spout output
-			if (mVDSession->getSpoutMixIndex() == w && mVDSession->isSpoutOutputActive()) {
+			if (mVDSession->getSharedMixIndex() == w && mVDSession->isSharedOutputActive()) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
 			}
 			else {
@@ -101,7 +101,7 @@ void VDUIWarps::Run(const char* title) {
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
 			sprintf(buf, "O##sp%d", w);
 			if (ui::Button(buf)) {
-				mVDSession->toggleSpoutOutput(w);
+				mVDSession->toggleSharedOutput(w);
 			}
 			ui::PopStyleColor(3);
 			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Spout output");

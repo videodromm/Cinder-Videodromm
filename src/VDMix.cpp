@@ -52,10 +52,10 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
-		// spout output
-		mSpoutOutputActive = false;
+		// shared output
+		mSharedOutputActive = false;
+        mSharedFboIndex = 0;
 		mSpoutInitialized = false;
-		mSpoutFboIndex = 0;
 		strcpy(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
 	}
 
@@ -81,26 +81,27 @@ namespace VideoDromm {
 			// should never happen
 			mMixFbos[aMixFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		}
-        // spout
+        // texturing sharing
+        if (mSharedOutputActive && mSharedFboIndex == aMixFboIndex) {
 #if defined( CINDER_MSW )
-		if (mSpoutInitialized && mSpoutOutputActive && mSpoutFboIndex == aMixFboIndex) {
-			mSpoutSender.SendTexture(mMixFbos[mSpoutFboIndex].texture->getId(), mMixFbos[mSpoutFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		}
+            // spout
+            if (mSpoutInitialized) {
+                mSpoutSender.SendTexture(mMixFbos[mSharedFboIndex].texture->getId(), mMixFbos[mSharedFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+            }
 #endif
-        // syphon
 #if defined( CINDER_MAC )
-        if (mSpoutOutputActive && mSpoutFboIndex == aMixFboIndex) {
-            mSyphonServer.publishTexture(mMixFbos[mSpoutFboIndex].texture);
-        }
+            // syphon
+            mSyphonServer.publishTexture(mMixFbos[mSharedFboIndex].texture);
 #endif
+        }
 		return mMixFbos[aMixFboIndex].texture;
 	}
 	// spout output
-	void VDMix::toggleSpoutOutput(unsigned int aMixFboIndex) {
+	void VDMix::toggleSharedOutput(unsigned int aMixFboIndex) {
 		if (aMixFboIndex < mMixFbos.size())  {
-			mSpoutFboIndex = aMixFboIndex;
+			mSharedFboIndex = aMixFboIndex;
 		}
-		mSpoutOutputActive = !mSpoutOutputActive;
+		mSharedOutputActive = !mSharedOutputActive;
 #if defined( CINDER_MSW )
 		if (mSpoutOutputActive && !mSpoutInitialized) {
 			// Initialize a sender

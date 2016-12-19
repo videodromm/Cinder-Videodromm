@@ -155,9 +155,9 @@ namespace VideoDromm
 		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex);
 		string							getFragmentString(unsigned int aShaderIndex) { return mShaderList[aShaderIndex]->getFragmentString(); };
 		// spout output
-		void							toggleSpoutOutput(unsigned int aMixFboIndex = 0);
-		bool							isSpoutOutputActive() { return mSpoutOutputActive; };
-		unsigned int					getSpoutMixIndex() { return mSpoutFboIndex; };
+		void							toggleSharedOutput(unsigned int aMixFboIndex = 0);
+		bool							isSharedOutputActive() { return mSharedOutputActive; };
+		unsigned int					getSharedMixIndex() { return mSharedFboIndex; };
 	private:
 		bool							mFlipV;
 		bool							mFlipH;
@@ -203,16 +203,16 @@ namespace VideoDromm
 
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
-		// spout output
-		bool							mSpoutOutputActive;
+		// shared texture output
+		bool							mSharedOutputActive;
+        unsigned int					mSharedFboIndex;
 		bool							mSpoutInitialized;
-		unsigned int					mSpoutFboIndex;
         char							mSenderName[256];
-
 #if defined( CINDER_MSW )
+        // spout output
 		SpoutSender						mSpoutSender;
 #endif
-        // syphon
+        // syphon output
 #if defined( CINDER_MAC )
         syphonServer                    mSyphonServer;
 #endif

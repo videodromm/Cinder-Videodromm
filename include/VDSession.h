@@ -161,9 +161,9 @@ namespace VideoDromm {
 		void							loadAudioFile(string aFile) { mVDMix->loadAudioFile(aFile); };
 		void							loadMovie(string aFile, unsigned int aTextureIndex) { mVDMix->loadMovie(aFile, aTextureIndex); };
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex) { return mVDMix->loadImageSequence(aFolder, aTextureIndex); };
-		void							toggleSpoutOutput(unsigned int aMixFboIndex = 0) { mVDMix->toggleSpoutOutput(aMixFboIndex);  };
-		bool							isSpoutOutputActive() {return mVDMix->isSpoutOutputActive();};
-		unsigned int					getSpoutMixIndex() { return mVDMix->getSpoutMixIndex(); };
+		void							toggleSharedOutput(unsigned int aMixFboIndex = 0) { mVDMix->toggleSharedOutput(aMixFboIndex);  };
+		bool							isSharedOutputActive() {return mVDMix->isSharedOutputActive();};
+		unsigned int					getSharedMixIndex() { return mVDMix->getSharedMixIndex(); };
 		// move, rotate, zoom methods
 		//void							setPosition(int x, int y);
 		//void							setZoom(float aZoom);
