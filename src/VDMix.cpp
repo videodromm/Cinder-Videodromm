@@ -88,7 +88,9 @@ namespace VideoDromm {
 	}
 	// spout output
 	void VDMix::toggleSpoutOutput(unsigned int aMixFboIndex) {
-		if (aMixFboIndex > mMixFbos.size() - 1) mSpoutFboIndex = 0;
+		if (aMixFboIndex < mMixFbos.size())  {
+			mSpoutFboIndex = aMixFboIndex;
+		}
 		mSpoutOutputActive = !mSpoutOutputActive;
 		if (mSpoutOutputActive && !mSpoutInitialized) {
 			// Initialize a sender
