@@ -20,7 +20,9 @@
 #include "Warp.h"
 
 // Syphon
+#if defined( CINDER_MAC )
 #include "cinderSyphon.h"
+#endif
 
 #include <atomic>
 #include <vector>

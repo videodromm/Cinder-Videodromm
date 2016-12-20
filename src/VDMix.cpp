@@ -103,7 +103,7 @@ namespace VideoDromm {
 		}
 		mSharedOutputActive = !mSharedOutputActive;
 #if defined( CINDER_MSW )
-		if (mSpoutOutputActive && !mSpoutInitialized) {
+		if (mSharedOutputActive && !mSpoutInitialized) {
 			// Initialize a sender
 			mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		}
