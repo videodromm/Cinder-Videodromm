@@ -110,6 +110,16 @@ void VDWebsocket::parseMessage(string msg) {
 							mBase64String = json.getChild("message").getValue<string>();
 							streamReceived = true;
 						}
+						else if (val == "params") {
+							//{"event":"params","message":"{\"params\" :[{\"name\" : 12,\"value\" :0.132}]}"}
+							JsonTree jsonParams = json.getChild("message");
+							for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
+								int name = jsonElement->getChild("name").getValue<int>();
+								float value = jsonElement->getChild("value").getValue<float>();
+								// basic name value 
+								mVDAnimation->changeFloatValue(name, value);
+							}
+						}
 						else {
 							// we received a fragment shader string
 							receivedFragString = json.getChild("message").getValue<string>();
