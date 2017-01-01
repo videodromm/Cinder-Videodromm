@@ -112,7 +112,7 @@ void _TBOX_PREFIX_App::fileDrop(FileDropEvent event)
 }
 void _TBOX_PREFIX_App::update()
 {
-	mVDSession->setControlValue(30, getAverageFps());
+	mVDSession->setControlValue(mVDSettings->IFPS, getAverageFps());
 	mVDSession->update();
 }
 void _TBOX_PREFIX_App::cleanup()
@@ -195,7 +195,7 @@ void _TBOX_PREFIX_App::draw()
 	//gl::setMatricesWindow(toPixels(getWindowSize()),false);
 	gl::setMatricesWindow(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, false);
 	gl::draw(mVDSession->getMixTexture(), getWindowBounds());
-	getWindow()->setTitle(mVDSettings->sFps + " fps Videodromm visualizer");
+	getWindow()->setTitle(mVDSettings->sFps + " fps Videodromm");
 	// imgui
 	if (!mVDSettings->mCursorVisible) return;
 
