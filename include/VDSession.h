@@ -128,6 +128,7 @@ namespace VideoDromm {
 		void							toggleWarpActive(unsigned int aWarpIndex);
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
+		bool							isWarpDeleted(unsigned int aWarpIndex);
 		void							toggleDeleteWarp(unsigned int aWarpIndex);
 		// fbos
 		void							fboFlipV(unsigned int aFboIndex) { mVDMix->fboFlipV(aFboIndex); };

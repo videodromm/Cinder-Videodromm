@@ -91,6 +91,7 @@ namespace VideoDromm
 		void							updateWarpName(unsigned int aWarpIndex);
 		bool							isWarpActive(unsigned int aWarpIndex);
 		void							toggleWarpActive(unsigned int aWarpIndex);
+		bool							isWarpDeleted(unsigned int aWarpIndex);
 		void							toggleDeleteWarp(unsigned int aWarpIndex);
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();

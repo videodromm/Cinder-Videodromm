@@ -335,6 +335,9 @@ namespace VideoDromm {
 	void VDMix::toggleWarpTriangle() {
 		mUseTriangles = !mUseTriangles;
 	}
+	bool VDMix::isWarpDeleted(unsigned int aWarpIndex) {
+		return mWarps[aWarpIndex]->isDeleted();
+	}
 	void VDMix::toggleDeleteWarp(unsigned int aWarpIndex) {
 		mWarps[aWarpIndex]->toggleDeleteWarp();
 	}

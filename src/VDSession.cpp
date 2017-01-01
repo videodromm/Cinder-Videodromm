@@ -614,6 +614,9 @@ bool VDSession::isWarpActive(unsigned int aWarpIndex) {
 void VDSession::toggleWarpActive(unsigned int aWarpIndex) {
 	mVDMix->toggleWarpActive(aWarpIndex);
 }
+bool VDSession::isWarpDeleted(unsigned int aWarpIndex) {
+	return mVDMix->isWarpDeleted(aWarpIndex);
+}
 void VDSession::toggleDeleteWarp(unsigned int aWarpIndex) {
 	mVDMix->toggleDeleteWarp(aWarpIndex);
 }

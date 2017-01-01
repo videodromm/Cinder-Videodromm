@@ -139,7 +139,7 @@ void VDUIWarps::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Use Triangle");
 			ui::SameLine();
 			// delete
-			if (mVDSession->isWarpDeleted()) {
+			if (mVDSession->isWarpDeleted(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
 			}
 			else {
