@@ -54,9 +54,18 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
 		// shared output
 		mSharedOutputActive = false;
-        mSharedFboIndex = 0;
+		mSharedFboIndex = 0;
 		mSpoutInitialized = false;
 		strcpy(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
+		// triangles
+		const int r = 400;
+		vec2 pt1(0.0, 0.0);
+		vec2 pt2(r, 0.0);
+		vec2 pt3((cos(M_PI / 3) * r), (sin(M_PI / 3) * r));
+		mVertices[0] = pt1;
+		mVertices[1] = pt2;
+		mVertices[2] = pt3;
+		mUseTriangles = true;
 	}
 
 #pragma region blendmodes
@@ -81,24 +90,24 @@ namespace VideoDromm {
 			// should never happen
 			mMixFbos[aMixFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		}
-        // texturing sharing
-        if (mSharedOutputActive && mSharedFboIndex == aMixFboIndex) {
+		// texturing sharing
+		if (mSharedOutputActive && mSharedFboIndex == aMixFboIndex) {
 #if defined( CINDER_MSW )
-            // spout
-            if (mSpoutInitialized) {
-                mSpoutSender.SendTexture(mMixFbos[mSharedFboIndex].texture->getId(), mMixFbos[mSharedFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-            }
+			// spout
+			if (mSpoutInitialized) {
+				mSpoutSender.SendTexture(mMixFbos[mSharedFboIndex].texture->getId(), mMixFbos[mSharedFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+			}
 #endif
 #if defined( CINDER_MAC )
-            // syphon
-            mSyphonServer.publishTexture(mMixFbos[mSharedFboIndex].texture);
+			// syphon
+			mSyphonServer.publishTexture(mMixFbos[mSharedFboIndex].texture);
 #endif
-        }
+		}
 		return mMixFbos[aMixFboIndex].texture;
 	}
 	// spout output
 	void VDMix::toggleSharedOutput(unsigned int aMixFboIndex) {
-		if (aMixFboIndex < mMixFbos.size())  {
+		if (aMixFboIndex < mMixFbos.size()) {
 			mSharedFboIndex = aMixFboIndex;
 		}
 		mSharedOutputActive = !mSharedOutputActive;
@@ -108,7 +117,7 @@ namespace VideoDromm {
 			mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		}
 #endif
-        
+
 
 	}
 
@@ -224,6 +233,12 @@ namespace VideoDromm {
 	unsigned int VDMix::getWarpCount() {
 		return mWarps.size();
 	}
+	bool VDMix::isWarpActive(unsigned int aWarpIndex) {
+		return mWarps[aWarpIndex]->isActive();
+	}
+	void VDMix::toggleWarpActive(unsigned int aWarpIndex) {
+		mWarps[aWarpIndex]->toggleWarpActive();
+	}
 	void VDMix::crossfadeWarp(unsigned int aWarpIndex, float aValue) {
 		timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f);
 	}
@@ -263,7 +278,7 @@ namespace VideoDromm {
 			if (warp->getBShaderIndex() > mShaderList.size() - 1) warp->setBShaderIndex(0);
 		}
 	}
-	/* RTE in release mode 
+	/* RTE in release mode
 	ci::gl::Texture2dRef VDMix::getRenderedTexture(bool reDraw) {
 		if (reDraw) getRenderTexture();
 		return mRenderedTexture;
@@ -290,10 +305,6 @@ namespace VideoDromm {
 	}
 #pragma endregion warps
 	void VDMix::renderMix() {
-		//warpMixToRender = 0;
-		//for (auto &warp : mWarps) {
-		//gl::ScopedFramebuffer scopedFbo(mMixRenderFbo);
-		//gl::ScopedFramebuffer scopedFbo(mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo);
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[warpMixToRender].fbo);
 		gl::clear(Color::black());
 		// render A and B fbos 
@@ -304,18 +315,29 @@ namespace VideoDromm {
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
-
-		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getWidth(), mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getHeight()));
+		if (mUseTriangles) {
+			gl::drawSolidTriangle(mVertices);
+		}
+		else {
+			gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getWidth(), mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getHeight()));
+		}
 		// save to a texture
-		//mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].texture = mMixRenderFbo->getColorTexture();
 		mMixFbos[warpMixToRender].texture = mMixFbos[warpMixToRender].fbo->getColorTexture();
 		warpMixToRender++;
 		if (warpMixToRender >= mWarps.size()) {
 			warpMixToRender = 0;
 		}
-		//}
-	}
 
+	}
+	bool VDMix::isWarpTriangle() {
+		return mUseTriangles;
+	}
+	void VDMix::toggleWarpTriangle() {
+		mUseTriangles = !mUseTriangles;
+	}
+	void VDMix::toggleDeleteWarp(unsigned int aWarpIndex) {
+		mWarps[aWarpIndex]->toggleDeleteWarp();
+	}
 	string VDMix::getMixFboName(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
 		mMixFbos[aMixFboIndex].name = mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName() + "/" + mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName();
@@ -329,7 +351,7 @@ namespace VideoDromm {
 		// update audio texture
 		mTextureList[0]->getTexture();
 		// check if xFade changed
-		if (mVDSettings->xFadeChanged) { 
+		if (mVDSettings->xFadeChanged) {
 			mVDSettings->xFadeChanged = false;
 			for (auto &warp : mWarps) {
 				// create the fbos and shaders
@@ -621,11 +643,11 @@ namespace VideoDromm {
 #endif
 						}
 						else if (texturetype == "shared") {
-// TODO CHECK USELESS? #if defined( CINDER_MSW )
+							// TODO CHECK USELESS? #if defined( CINDER_MSW )
 							TextureSharedRef t(new TextureShared());
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
-//#endif
+							//#endif
 						}
 						else if (texturetype == "audio") {
 							// audio texture done in initTextures
@@ -913,7 +935,7 @@ namespace VideoDromm {
 			if (fs::exists(mFragFile)) {
 				fName = mFragFile.filename().string();
 				// find a removed shader
-				for (int i = mShaderList.size()-1; i > 0; i--)
+				for (int i = mShaderList.size() - 1; i > 0; i--)
 				{
 					if (!mShaderList[i]->isValid() || fName == mShaderList[i]->getName()) { rtn = i; }
 				}

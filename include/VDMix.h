@@ -89,6 +89,12 @@ namespace VideoDromm
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		void							updateWarpName(unsigned int aWarpIndex);
+		bool							isWarpActive(unsigned int aWarpIndex);
+		void							toggleWarpActive(unsigned int aWarpIndex);
+		void							toggleDeleteWarp(unsigned int aWarpIndex);
+		bool							isWarpTriangle();
+		void							toggleWarpTriangle();
+
 		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true);
 		ci::gl::Texture2dRef			getRenderTexture();
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
@@ -205,6 +211,9 @@ namespace VideoDromm
 
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
+		// triangles
+		ci::vec2						mStartPt, mVertices[3];
+		bool							mUseTriangles;
 		// shared texture output
 		bool							mSharedOutputActive;
         unsigned int					mSharedFboIndex;

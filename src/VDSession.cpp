@@ -608,6 +608,22 @@ unsigned int VDSession::getWarpAShaderIndex(unsigned int aWarpIndex) {
 unsigned int VDSession::getWarpBShaderIndex(unsigned int aWarpIndex) {
 	return mVDMix->getWarpBShaderIndex(aWarpIndex);
 }
+bool VDSession::isWarpActive(unsigned int aWarpIndex) {
+	return mVDMix->isWarpActive(aWarpIndex);
+}
+void VDSession::toggleWarpActive(unsigned int aWarpIndex) {
+	mVDMix->toggleWarpActive(aWarpIndex);
+}
+void VDSession::toggleDeleteWarp(unsigned int aWarpIndex) {
+	mVDMix->toggleDeleteWarp(aWarpIndex);
+}
+
+bool VDSession::isWarpTriangle() {
+	return mVDMix->isWarpTriangle();
+}
+void VDSession::toggleWarpTriangle() {
+	mVDMix->toggleWarpTriangle();
+}
 void VDSession::setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex) {
 	mVDMix->setWarpAShaderIndex(aWarpIndex, aWarpShaderIndex);
 	mVDWebsocket->changeShaderIndex(aWarpIndex, aWarpShaderIndex, 0);

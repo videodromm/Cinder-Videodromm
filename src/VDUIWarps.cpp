@@ -105,6 +105,54 @@ void VDUIWarps::Run(const char* title) {
 			}
 			ui::PopStyleColor(3);
 			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Spout output");
+			ui::SameLine();
+			// active
+			if (mVDSession->isWarpActive(w) == w) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+			sprintf(buf, "A##a%d", w);
+			if (ui::Button(buf)) {
+				mVDSession->toggleWarpActive(w);
+			}
+			ui::PopStyleColor(3);
+			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Warp active");
+			ui::SameLine();
+			// use triangles
+			if (mVDSession->isWarpTriangle()) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+			sprintf(buf, "T##t%d", w);
+			if (ui::Button(buf)) {
+				mVDSession->toggleWarpTriangle();
+			}
+			ui::PopStyleColor(3);
+			if (ui::IsItemHovered()) ui::SetTooltip("Use Triangle");
+			ui::SameLine();
+			// delete
+			if (mVDSession->isWarpDeleted()) {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+			}
+			else {
+				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			}
+			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+			sprintf(buf, "X##x%d", w);
+			if (ui::Button(buf)) {
+				mVDSession->toggleDeleteWarp(w);
+			}
+			ui::PopStyleColor(3);
+			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Delete Warp");
 
 			ui::PopID();
 			ui::PopItemWidth();

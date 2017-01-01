@@ -124,6 +124,11 @@ namespace VideoDromm {
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
 		float							getWarpCrossfade(unsigned int aWarpIndex);
+		bool							isWarpActive(unsigned int aWarpIndex);
+		void							toggleWarpActive(unsigned int aWarpIndex);
+		bool							isWarpTriangle();
+		void							toggleWarpTriangle();
+		void							toggleDeleteWarp(unsigned int aWarpIndex);
 		// fbos
 		void							fboFlipV(unsigned int aFboIndex) { mVDMix->fboFlipV(aFboIndex); };
 		bool							isFboFlipV(unsigned int aFboIndex) { return mVDMix->isFboFlipV(aFboIndex); };
@@ -155,8 +160,6 @@ namespace VideoDromm {
 		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex) { return mVDMix->getInputTexture(aTextureIndex); };
 		string							getInputTextureName(unsigned int aTextureIndex) { return mVDMix->getInputTextureName(aTextureIndex); };
 		unsigned int					getInputTexturesCount() { return mVDMix->getInputTexturesCount(); };
-		//int								getTextureWidth();
-		//int								getTextureHeight();
 		void							loadImageFile(string aFile, unsigned int aTextureIndex) { mVDMix->loadImageFile(aFile, aTextureIndex); };
 		void							loadAudioFile(string aFile) { mVDMix->loadAudioFile(aFile); };
 		void							loadMovie(string aFile, unsigned int aTextureIndex) { mVDMix->loadMovie(aFile, aTextureIndex); };
