@@ -72,7 +72,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// ratio
 	createFloatUniform("iRatio", 11, 20.0f, 0.00000000001f, 20.0f);
 	// zoom
-	createFloatUniform("iZoom", 12, 1.0f, -3.1f, 3.0f);
+	createFloatUniform("iZoom", 12, 1.0f, -3.0f, 3.0f);
 	// Audio multfactor 
 	createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 	// exposure
@@ -103,7 +103,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// fps
 	createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
 	// contour
-	createFloatUniform("iContour", 26, 0.0f, 0.0f, 1.0f);
+	createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
 	// slitscan (or other) Param1 
 	createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
 	// slitscan (or other) Param2 

@@ -277,6 +277,7 @@ namespace VideoDromm {
 			if (warp->getBFboIndex() > mFboList.size() - 1) warp->setBFboIndex(0);
 			if (warp->getAShaderIndex() > mShaderList.size() - 1) warp->setAShaderIndex(0);
 			if (warp->getBShaderIndex() > mShaderList.size() - 1) warp->setBShaderIndex(0);
+			if (warp->getMixFboIndex() > mMixFbos.size() - 1) warp->setMixFboIndex(0);
 		}
 	}
 	/* RTE in release mode

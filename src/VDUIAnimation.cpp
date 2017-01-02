@@ -6,8 +6,8 @@ VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession)
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
 	// zoom
-	minZoom = -3.0f;
-	maxZoom = 3.0f;
+	minZoom = getMinUniformValueByIndex(12);
+	maxZoom = getMaxUniformValueByIndex(12);
 	for (int c = 0; c < 128; c++)
 	{
 		localValues[c] = mVDSession->getControlValue(c);
@@ -175,9 +175,9 @@ void VDUIAnimation::Run(const char* title) {
 			{
 				setValue(ctrl, localValues[ctrl]);
 			}
-			ui::DragFloat("minzm", &minZoom, 0.1f, minZoom, maxZoom);
+			ui::DragFloat("minzm", &minZoom, 0.1f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl));
 			ui::SameLine();
-			ui::DragFloat("maxzm", &maxZoom, 0.1f, minZoom, maxZoom);
+			ui::DragFloat("maxzm", &maxZoom, 0.1f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl));
 
 			// rotation speed 
 			ctrl = 9;

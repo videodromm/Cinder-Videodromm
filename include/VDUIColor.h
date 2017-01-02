@@ -30,9 +30,9 @@ namespace VideoDromm
 		void    Run(const char* title);
 	private:
 		// Settings
-		VDSettingsRef				mVDSettings;
+		VDSettingsRef					mVDSettings;
 		// Session
-		VDSessionRef				mVDSession;
+		VDSessionRef					mVDSession;
 		float							getValue(unsigned int aCtrl);
 		void							setValue(unsigned int aCtrl, float aValue);
 		void							toggleAuto(unsigned int aCtrl);
@@ -42,11 +42,14 @@ namespace VideoDromm
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
 
 		// imgui
-		int							ctrl;
-		map<int, float>				localValues;
-		float						f = 0.0f;
-		char						buf[64];
-		float						color[4];
-		float						backcolor[4];
+		int								ctrl;
+		map<int, float>					localValues;
+		float							f = 0.0f;
+		char							buf[64];
+		float							color[4];
+		float							backcolor[4];
+		// contour
+		float							minContour;
+		float							maxContour;
 	};
 }
