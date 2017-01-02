@@ -63,6 +63,11 @@ void VDRouter::setupOSCReceiver() {
 		mVDAnimation->changeFloatValue(msg[0].int32(), msg[1].flt());
 		updateParams(msg[0].int32(), msg[1].flt());
 	});
+	mOSCReceiver->setListener("/fader3/out",
+		[&](const osc::Message &msg) {
+		mVDSettings->mOSCMsg = "/fader3/out" + toString(msg[0].flt());
+		mVDSettings->mOSCNewMsg = true;
+	});
 	mOSCReceiver->setListener("/Freq1",
 		[&](const osc::Message &msg) {
 		//float f1 = msg[0].flt();
