@@ -614,6 +614,12 @@ bool VDSession::isWarpActive(unsigned int aWarpIndex) {
 void VDSession::toggleWarpActive(unsigned int aWarpIndex) {
 	mVDMix->toggleWarpActive(aWarpIndex);
 }
+bool VDSession::isWarpSolo(unsigned int aWarpIndex) {
+	return mVDMix->isWarpSolo(aWarpIndex);
+}
+void VDSession::toggleWarpSolo(unsigned int aWarpIndex) {
+	mVDMix->toggleWarpSolo(aWarpIndex);
+}
 bool VDSession::isWarpDeleted(unsigned int aWarpIndex) {
 	return mVDMix->isWarpDeleted(aWarpIndex);
 }

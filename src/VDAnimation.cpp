@@ -102,6 +102,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	createFloatUniform("iTempoTime", 24, 0.1f);
 	// fps
 	createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
+	// contour
+	createFloatUniform("iContour", 26, 0.0f, 0.0f, 1.0f);
 	// slitscan (or other) Param1 
 	createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
 	// slitscan (or other) Param2 

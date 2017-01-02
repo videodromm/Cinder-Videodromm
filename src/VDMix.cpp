@@ -66,6 +66,7 @@ namespace VideoDromm {
 		mVertices[1] = pt2;
 		mVertices[2] = pt3;
 		mUseTriangles = true;
+		mSolo = -1;
 	}
 
 #pragma region blendmodes
@@ -286,19 +287,22 @@ namespace VideoDromm {
 	// Render the scene into the FBO
 	ci::gl::Texture2dRef VDMix::getRenderTexture()
 	{
-		// this will restore the old framebuffer binding when we leave this function
-		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
-		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
 		gl::ScopedFramebuffer fbScp(mRenderFbo);
 		gl::clear(Color::black());
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
-		// iterate over the warps and draw their content
-		int i = 0;
-		for (auto &warp : mWarps) {
-			//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
-			warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
-			i++;
+		// if solo then only render this solo warp
+		if (mSolo > -1) {
+			mWarps[mSolo]->draw(getMixTexture(mSolo), getMixTexture(mSolo)->getBounds());
+		}
+		else {
+			// iterate over the warps and draw their content
+			int i = 0;
+			for (auto &warp : mWarps) {
+				//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
+				warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
+				i++;
+			}
 		}
 		mRenderedTexture = mRenderFbo->getColorTexture();
 		return mRenderedTexture;
@@ -315,7 +319,8 @@ namespace VideoDromm {
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
-		if (mUseTriangles) {
+		// we draw triangle if there is no solo warp which takes the whole area
+		if (mUseTriangles && mSolo < 0) {
 			gl::drawSolidTriangle(mVertices);
 		}
 		else {
@@ -327,13 +332,20 @@ namespace VideoDromm {
 		if (warpMixToRender >= mWarps.size()) {
 			warpMixToRender = 0;
 		}
-
+		if (mSolo > -1) warpMixToRender = mSolo;
 	}
 	bool VDMix::isWarpTriangle() {
 		return mUseTriangles;
 	}
 	void VDMix::toggleWarpTriangle() {
 		mUseTriangles = !mUseTriangles;
+	}
+	bool VDMix::isWarpSolo(unsigned int aWarpIndex) {
+		return (mSolo == aWarpIndex);
+	}
+	void VDMix::toggleWarpSolo(unsigned int aWarpIndex) {
+		//(aWarpIndex == mSolo) ? mSolo = -1 : mSolo = aWarpIndex;
+		mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex;
 	}
 	bool VDMix::isWarpDeleted(unsigned int aWarpIndex) {
 		return mWarps[aWarpIndex]->isDeleted();
@@ -399,7 +411,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
 		mGlslMix->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
 		mGlslMix->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFPS));
-
+		mGlslMix->uniform("iContour", mVDAnimation->getFloatUniformValueByName("iContour"));
 		renderMix();
 		// blendmodes preview
 		if (mVDAnimation->renderBlend()) {
@@ -460,6 +472,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iParam2", mVDSettings->iParam2);
 			mGlslBlend->uniform("iXorY", mVDSettings->iXorY);
 			mGlslBlend->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
+			mGlslBlend->uniform("iContour", mVDAnimation->getFloatUniformValueByName("iContour"));
 			renderBlend();
 		}
 	}

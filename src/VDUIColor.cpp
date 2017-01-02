@@ -5,7 +5,7 @@ using namespace VideoDromm;
 VDUIColor::VDUIColor(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
-	for (int c = 0; c < 128; c++)
+	for (int c = 0; c < 28; c++)
 	{
 		localValues[c] = 1.0f;
 	}
@@ -107,6 +107,20 @@ void VDUIColor::Run(const char* title) {
 			{
 				setValue(ctrl, localValues[ctrl]);
 			}
+			// iContour
+			ctrl = 26;
+			if (ui::Button("a##contour")) { toggleAuto(ctrl); }
+			ui::SameLine();
+			if (ui::Button("t##contour")) { toggleTempo(ctrl); }
+			ui::SameLine();
+			if (ui::Button("x##contour")) { resetAutoAnimation(ctrl); }
+			ui::SameLine();
+			localValues[ctrl] = mVDSession->getControlValue(ctrl);
+			if (ui::DragFloat("contour", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+			{
+				setValue(ctrl, localValues[ctrl]);
+			}
+
 		}
 		ui::End();
 }

@@ -126,6 +126,8 @@ namespace VideoDromm {
 		float							getWarpCrossfade(unsigned int aWarpIndex);
 		bool							isWarpActive(unsigned int aWarpIndex);
 		void							toggleWarpActive(unsigned int aWarpIndex);
+		bool							isWarpSolo(unsigned int aWarpIndex);
+		void							toggleWarpSolo(unsigned int aWarpIndex);
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
 		bool							isWarpDeleted(unsigned int aWarpIndex);
