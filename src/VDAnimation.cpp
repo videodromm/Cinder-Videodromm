@@ -144,7 +144,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	// textures
 	for (size_t i = 0; i < 8; i++)
 	{
-		createSampler2DUniform("iChannel" + toString(i), i);// TODO verify doesn't mess up type (uint!)
+		createSampler2DUniform("iChannel" + toString(i), 100+i, i);// TODO verify doesn't mess up type (uint!)
 	}
 	load();
 	loadAnimation();
@@ -206,7 +206,7 @@ void VDAnimation::floatFromJson(const ci::JsonTree &json) {
 	if (json.hasChild("uniform")) {
 		JsonTree u(json.getChild("uniform"));
 		jName = (u.hasChild("name")) ? u.getValueForKey<string>("name") : "unknown";
-		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 255;
+		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 249;
 		jValue = (u.hasChild("value")) ? u.getValueForKey<float>("value") : 0.01f;
 		jMin = (u.hasChild("min")) ? u.getValueForKey<float>("min") : 0.0f;
 		jMax = (u.hasChild("max")) ? u.getValueForKey<float>("max") : 1.0f;
@@ -215,11 +215,13 @@ void VDAnimation::floatFromJson(const ci::JsonTree &json) {
 }
 void VDAnimation::sampler2dFromJson(const ci::JsonTree &json) {
 	string jName;
+	int jCtrlIndex;
 	int jTextureIndex;
 	if (json.hasChild("uniform")) {
 		JsonTree u(json.getChild("uniform"));
 		jName = (u.hasChild("name")) ? u.getValueForKey<string>("name") : "unknown";
-		jTextureIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 0;;
+		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 250;
+		jTextureIndex = (u.hasChild("textureindex")) ? u.getValueForKey<int>("textureindex") : 0;;
 		createSampler2DUniform(jName, jTextureIndex);
 	}
 }
@@ -229,7 +231,7 @@ void VDAnimation::vec2FromJson(const ci::JsonTree &json){
 	if (json.hasChild("uniform")) {
 		JsonTree u(json.getChild("uniform"));
 		jName = (u.hasChild("name")) ? u.getValueForKey<string>("name") : "unknown";
-		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 255;
+		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 251;
 		createVec2Uniform(jName, jCtrlIndex);
 	}
 }
@@ -239,7 +241,7 @@ void VDAnimation::vec3FromJson(const ci::JsonTree &json){
 	if (json.hasChild("uniform")) {
 		JsonTree u(json.getChild("uniform"));
 		jName = (u.hasChild("name")) ? u.getValueForKey<string>("name") : "unknown";
-		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 255;
+		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 252;
 		createVec3Uniform(jName, jCtrlIndex);
 	}
 }
@@ -249,7 +251,7 @@ void VDAnimation::vec4FromJson(const ci::JsonTree &json){
 	if (json.hasChild("uniform")) {
 		JsonTree u(json.getChild("uniform"));
 		jName = (u.hasChild("name")) ? u.getValueForKey<string>("name") : "unknown";
-		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 255;
+		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 253;
 		createVec4Uniform(jName, jCtrlIndex);
 	}
 }
@@ -259,7 +261,7 @@ void VDAnimation::intFromJson(const ci::JsonTree &json){
 	if (json.hasChild("uniform")) {
 		JsonTree u(json.getChild("uniform"));
 		jName = (u.hasChild("name")) ? u.getValueForKey<string>("name") : "unknown";
-		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 255;
+		jCtrlIndex = (u.hasChild("index")) ? u.getValueForKey<int>("index") : 254;
 		jValue = (u.hasChild("value")) ? u.getValueForKey<int>("value") : 1;
 		createIntUniform(jName, jCtrlIndex, jValue);
 	}
@@ -277,17 +279,64 @@ void VDAnimation::boolFromJson(const ci::JsonTree &json){
 		createBoolUniform(jName, jCtrlIndex, jValue);
 	}
 }
-JsonTree VDAnimation::toJson() const
+//! uniform to json
+JsonTree VDAnimation::uniformToJson(int i)
 {
 	JsonTree		json;
-	JsonTree u = JsonTree::makeArray("uniform");
+	string s = controlIndexes[i];
 
-	u.addChild(ci::JsonTree("type", 0)); // needs a switch
-	u.addChild(ci::JsonTree("value", 1.0f));
+	JsonTree u = JsonTree::makeArray("uniform");
+	// common
+	int uniformType = shaderUniforms[s].uniformType;
+	u.addChild(ci::JsonTree("type", uniformType));
+	u.addChild(ci::JsonTree("name", s));
+	u.addChild(ci::JsonTree("index", i));
+	// type specific 
+	switch (uniformType) {
+	case 0:
+		//float
+		u.addChild(ci::JsonTree("value", shaderUniforms[s].defaultValue));
+		u.addChild(ci::JsonTree("min", shaderUniforms[s].minValue));
+		u.addChild(ci::JsonTree("max", shaderUniforms[s].maxValue));
+		break;
+	case 1:
+		// sampler2d
+		u.addChild(ci::JsonTree("textureindex", shaderUniforms[s].textureIndex));
+		break;
+	case 5:
+		// int
+		u.addChild(ci::JsonTree("value", shaderUniforms[s].intValue));
+		break;
+	case 6:
+		// boolean
+		u.addChild(ci::JsonTree("value", shaderUniforms[s].boolValue));
+		break;
+	default:
+		break;
+	}
 
 	json.pushBack(u);
 	return json;
 }
+void VDAnimation::saveUniforms()
+{
+	string jName;
+	int jCtrlIndex;
+	float jMin, jMax;
+	JsonTree		json;
+	// create uniforms json
+	JsonTree uniformsJson = JsonTree::makeArray("uniforms");
+
+	for (unsigned i = 0; i < controlIndexes.size(); ++i) {
+		JsonTree		u(uniformToJson(i));
+		// create <uniform>
+		uniformsJson.pushBack(u);
+	}
+	// write file
+	json.pushBack(uniformsJson);
+	json.write(mUniformsJson);
+}
+
 void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue, float aMin, float aMax) {
 	controlIndexes[aCtrlIndex] = aName;
 	shaderUniforms[aName].minValue = aMin;
@@ -301,8 +350,9 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].uniformType = 0;
 	shaderUniforms[aName].isValid = true;
 }
-void VDAnimation::createSampler2DUniform(string aName, int aTextureIndex) {
+void VDAnimation::createSampler2DUniform(string aName, int aCtrlIndex, int aTextureIndex) {
 	shaderUniforms[aName].textureIndex = aTextureIndex;
+	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].uniformType = 1;
 	shaderUniforms[aName].isValid = true;
 }
@@ -468,6 +518,7 @@ void VDAnimation::save() {
 #if defined( CINDER_MSW )
 	bag()->save(mJsonFilePath);
 	saveAnimation();
+	saveUniforms();
 #endif
 }
 void VDAnimation::saveAnimation() {

@@ -197,6 +197,8 @@ bool VDSession::save()
 {
 	// save warp settings
 	mVDMix->save();
+	// save uniforms settings
+	mVDAnimation->save();
 	// save in sessionPath
 	JsonTree doc;
 

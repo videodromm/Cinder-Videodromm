@@ -156,7 +156,7 @@ namespace VideoDromm {
 		mMixFbos[newIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		mMixFbos[newIndex].name = wName;
 
-		mWarps.push_back(WarpPerspectiveBilinear::create());
+		mWarps.push_back(WarpBilinear::create());// 20170103 was WarpPerspectiveBilinear
 		Warp::handleResize(mWarps);
 		Warp::setSize(mWarps, ivec2(mVDSettings->mFboWidth, mVDSettings->mFboHeight)); // create small new warps 
 		Warp::handleResize(mWarps);
@@ -248,7 +248,7 @@ namespace VideoDromm {
 		CI_LOG_V("VDMix save: " + mWarpJson.string());
 
 		// save warp settings
-		Warp::writeSettings(mWarps, writeFile(mWarpSettings));
+		// no more xml Warp::writeSettings(mWarps, writeFile(mWarpSettings));
 		Warp::save(mWarps, writeFile(mWarpJson));
 	}
 	void VDMix::load()
@@ -536,10 +536,14 @@ namespace VideoDromm {
 		if (isModDown) {
 			switch (event.getCode()) {
 			case KeyEvent::KEY_s:
-				fileWarpsName = "warps" + toString(getElapsedFrames()) + ".xml";
+				/* no more xml fileWarpsName = "warps" + toString(getElapsedFrames()) + ".xml";
 				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / fileWarpsName;
 				Warp::writeSettings(mWarps, writeFile(mWarpSettings));
-				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";*/
+				fileWarpsName = "warps" + toString(getElapsedFrames()) + ".json";
+				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / fileWarpsName;
+				Warp::save(mWarps, writeFile(mWarpSettings));
+				Warp::save(mWarps, writeFile(mWarpJson));
 				break;
 			case KeyEvent::KEY_n:
 				createWarp();

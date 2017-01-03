@@ -136,6 +136,7 @@ namespace VideoDromm
 		// shaders
 		map<int, string>				controlIndexes;
 		map<string, VDUniform>			shaderUniforms;
+		//! read a uniforms json file 
 		void							loadUniforms(const ci::DataSourceRef &source);
 		void							floatFromJson(const ci::JsonTree &json);
 		void							sampler2dFromJson(const ci::JsonTree &json);
@@ -147,12 +148,15 @@ namespace VideoDromm
 		fs::path						mUniformsJson;
 
 		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f, float aMin = 0.0f, float aMax = 1.0f);
-		void							createSampler2DUniform(string aName, int aTextureIndex = 0);
+		void							createSampler2DUniform(string aName, int aCtrlIndex, int aTextureIndex = 0);
 		void							createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue = vec2(0.0));
 		void							createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
 		void							createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue = vec4(0.0));
 		void							createIntUniform(string aName, int aCtrlIndex, int aValue = 1);
 		void							createBoolUniform(string aName, int aCtrlIndex, bool aValue = false);
+		//! write a uniforms json file
+		void							saveUniforms();
+		ci::JsonTree					uniformToJson(int i);
 
 		// time
 		ci::Timer						mTimer;
