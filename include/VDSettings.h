@@ -101,7 +101,7 @@ namespace VideoDromm {
 		//float						iGlobalTime;        // shader playback time (in seconds)
 		float						iSpeedMultiplier;        // speed multiplier
 		float						iChannelTime[4];
-		vec3						iResolution;        // viewport resolution (in pixels)
+		//vec3						iResolution;        // viewport resolution (in pixels)
 		//vec3						iChannelResolution[MAX];	// channel resolution (in pixels)
 		bool						iFade;
 		bool						iRepeat;

@@ -453,7 +453,9 @@ void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue) {
 		if (aControl > 0 && aControl < 4) {
 			mVDAnimation->changeVec3Value(61, vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
 			colorWrite(); //lights4events
-
+		}
+		if (aControl == 29 || aControl ==30) {
+			mVDAnimation->changeVec3Value(60, vec3(mVDAnimation->getFloatUniformValueByIndex(29), mVDAnimation->getFloatUniformValueByIndex(30), 1.0));
 		}
 		sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(aControl) << "}]}";
 		string strParams = sParams.str();

@@ -9,9 +9,7 @@ VDUIColor::VDUIColor(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	{
 		localValues[c] = 1.0f;
 	}
-	// contour
-	minContour = getMinUniformValueByIndex(26);
-	maxContour = getMaxUniformValueByIndex(26);
+
 }
 VDUIColor::~VDUIColor() {
 
@@ -120,13 +118,6 @@ void VDUIColor::Run(const char* title) {
 		if (ui::Button("x##contour")) { resetAutoAnimation(ctrl); }
 		ui::SameLine();
 		localValues[ctrl] = mVDSession->getControlValue(ctrl);
-		if (ui::DragFloat("contour", &localValues[ctrl], 0.001f, minContour, maxContour))
-		{
-			setValue(ctrl, localValues[ctrl]);
-		}
-		ui::DragFloat("mincr", &minContour, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl));
-		ui::SameLine();
-		ui::DragFloat("maxcr", &maxContour, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl));
 
 		ui::PopItemWidth();
 	}

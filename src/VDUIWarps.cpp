@@ -138,22 +138,6 @@ void VDUIWarps::Run(const char* title) {
 			ui::PopStyleColor(3);
 			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Warp Solo");
 			ui::SameLine();
-			// use triangles
-			if (mVDSession->isWarpTriangle()) {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
-			}
-			else {
-				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
-			}
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "T##t%d", w);
-			if (ui::Button(buf)) {
-				mVDSession->toggleWarpTriangle();
-			}
-			ui::PopStyleColor(3);
-			if (ui::IsItemHovered()) ui::SetTooltip("Use Triangle");
-			ui::SameLine();
 			// delete
 			if (mVDSession->isWarpDeleted(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));

@@ -33,6 +33,8 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mUIShaders = VDUIShaders::create(mVDSettings, mVDSession);
 	// UIWarps
 	mUIWarps = VDUIWarps::create(mVDSettings, mVDSession);
+	// UIRender
+	mUIRender = VDUIRender::create(mVDSettings, mVDSession);
 	// imgui
 	margin = 3;
 	inBetween = 3;
@@ -168,6 +170,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Mouse", &currentWindowRow1, 5); ui::SameLine();
 		ui::RadioButton("Osc", &currentWindowRow1, 6);  ui::SameLine();
 		ui::RadioButton("WS", &currentWindowRow1, 7);  ui::SameLine();
+		ui::RadioButton("Render", &currentWindowRow1, 8);  ui::SameLine();
 		// flip vertically
 		int hue = 0;
 		mVDSession->isFlipV() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
@@ -239,6 +242,10 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	case 7:
 		// Websockets
 		mUIWebsockets->Run("Websockets");
+		break;
+	case 8:
+		// Render
+		mUIRender->Run("Render");
 		break;
 	}
 	switch (currentWindowRow2) {

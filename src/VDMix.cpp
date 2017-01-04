@@ -377,7 +377,8 @@ namespace VideoDromm {
 
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendmode);
 		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
-		mGlslMix->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+		// was vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0)):
+		mGlslMix->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 		mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
 		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));

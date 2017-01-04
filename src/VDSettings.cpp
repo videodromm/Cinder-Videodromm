@@ -332,7 +332,6 @@ bool VDSettings::restore()
 				XmlTree SplitWarpV = settings.getChild("SplitWarpV");
 				mSplitWarpV = SplitWarpV.getAttributeValue<bool>("value");
 			}
-			iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 			// if AutoLayout is false we have to read the custom screen layout
 			if (mAutoLayout)
 			{
@@ -342,8 +341,7 @@ bool VDSettings::restore()
 				mRenderWidth = 1024;
 				mRenderHeight = 768;
 				mRenderX = 1024;
-				mRenderY = 0;
-				iResolution = vec3(mFboWidth, mFboHeight, 1.0);
+				mRenderY = 0;				
 			}
 			else
 			{
@@ -485,7 +483,6 @@ void VDSettings::reset()
 	liveMeter = 0.0f;
 
 	// shader uniforms
-	iResolution = vec3(mFboWidth, mFboHeight, 1.0);
 	for (int i = 0; i < 4; i++)
 	{
 		iChannelTime[i] = i;

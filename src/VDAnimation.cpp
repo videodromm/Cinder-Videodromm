@@ -43,108 +43,115 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	//iBar = 0;
 	//iBadTvRunning = false;
 	//int ctrl;
-	// global time in seconds
-	createFloatUniform("iGlobalTime", 0, 0.0f);
-	// sliders
-	// red
-	createFloatUniform("iFR", 1, 1.0f);
-	// green
-	createFloatUniform("iFG", 2, 0.3f);
-	// blue
-	createFloatUniform("iFB", 3, 0.0f);
-	// Alpha 
-	createFloatUniform("iAlpha", 4, 1.0f);
-	// red multiplier 
-	createFloatUniform("iRedMultiplier", 5, 1.0f, 0.0f, 3.0f);
-	// green multiplier 
-	createFloatUniform("iGreenMultiplier", 6, 1.0f, 0.0f, 3.0f);
-	// blue multiplier 
-	createFloatUniform("iBlueMultiplier", 7, 1.0f, 0.0f, 3.0f);
-	// bad tv
-	createFloatUniform("iBadTv", 8, 0.0f, 0.0f, 5.0f);
 
-	// RotationSpeed
-	createFloatUniform("iRotationSpeed", 9, 0.0f, -2.0f, 2.0f);
-	// Steps
-	createFloatUniform("iSteps", 10, 16.0f, 1.0f, 128.0f);
-
-	// rotary
-	// ratio
-	createFloatUniform("iRatio", 11, 20.0f, 0.00000000001f, 20.0f);
-	// zoom
-	createFloatUniform("iZoom", 12, 1.0f, -3.0f, 3.0f);
-	// Audio multfactor 
-	createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
-	// exposure
-	createFloatUniform("iExposure", 14, 1.0f, 0.0f, 3.0f);
-	// Pixelate
-	createFloatUniform("iPixelate", 15, 1.0f, 0.01f);
-	// Trixels
-	createFloatUniform("iTrixels", 16, 0.0f);
-	// iChromatic
-	createFloatUniform("iChromatic", 17, 0.0f, 0.000000001f);
-	// iCrossfade
-	createFloatUniform("iCrossfade", 18, 1.0f);
-	// background red
-	createFloatUniform("iBR", 19, 0.1f);
-	// background green
-	createFloatUniform("iBG", 20, 0.5f);
-	// background blue
-	createFloatUniform("iBB", 21, 0.1f);
-
-
-	// top row 21 to 28
-	// Speed 
-	createFloatUniform("iSpeed", 22, 12.0f, 0.01f, 12.0f);
-	// background alpha
-	createFloatUniform("iBA", 23, 0.2f);
-	// tempo time
-	createFloatUniform("iTempoTime", 24, 0.1f);
-	// fps
-	createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
-	// contour
-	createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
-	// slitscan (or other) Param1 
-	createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
-	// slitscan (or other) Param2 
-	createFloatUniform("iParam2", 28, 1.0f, 0.01f, 100.0f);
-
-	// middle row 31 to 38
-	// bottom row 41 to 88
-	// int
-	// blend mode 
-	createIntUniform("iBlendmode", 50, 0);
-	// greyscale 
-	createIntUniform("iGreyScale", 51, 0);
-
-	// vec3
-	createVec3Uniform("iResolution", 60, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
-	createVec3Uniform("iColor", 61, vec3(1.0, 0.5, 0.0));
-	createVec3Uniform("iBackgroundColor", 62);
-	//createVec3Uniform("iChannelResolution[0]", 63, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
-
-	// vec4
-	createVec4Uniform("iMouse", 70, vec4(320.0f, 240.0f, 0.0f, 0.0f));
-	createVec4Uniform("iDate", 71, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
-
-	// boolean
-	// invert
-	createBoolUniform("iInvert", 48);
-	createBoolUniform("iFlipH", 81);
-	createBoolUniform("iFlipV", 82);
-	createBoolUniform("iXorY", 83);
-	// glitch
-	createBoolUniform("iGlitch", 45);
-	// toggle
-	createBoolUniform("iToggle", 46);
-	// vignette
-	createBoolUniform("iVignette", 47);
 	mUniformsJson = getAssetPath("") / mVDSettings->mAssetsPath / "uniforms.json";
-	if (fs::exists(mUniformsJson)) loadUniforms(loadFile(mUniformsJson));
+	if (fs::exists(mUniformsJson)) {
+		loadUniforms(loadFile(mUniformsJson));
+	}
+	else {
+		// global time in seconds
+		createFloatUniform("iGlobalTime", 0, 0.0f);
+		// sliders
+		// red
+		createFloatUniform("iFR", 1, 1.0f);
+		// green
+		createFloatUniform("iFG", 2, 0.3f);
+		// blue
+		createFloatUniform("iFB", 3, 0.0f);
+		// Alpha 
+		createFloatUniform("iAlpha", 4, 1.0f);
+		// red multiplier 
+		createFloatUniform("iRedMultiplier", 5, 1.0f, 0.0f, 3.0f);
+		// green multiplier 
+		createFloatUniform("iGreenMultiplier", 6, 1.0f, 0.0f, 3.0f);
+		// blue multiplier 
+		createFloatUniform("iBlueMultiplier", 7, 1.0f, 0.0f, 3.0f);
+		// bad tv
+		createFloatUniform("iBadTv", 8, 0.0f, 0.0f, 5.0f);
+
+		// RotationSpeed
+		createFloatUniform("iRotationSpeed", 9, 0.0f, -2.0f, 2.0f);
+		// Steps
+		createFloatUniform("iSteps", 10, 16.0f, 1.0f, 128.0f);
+
+		// rotary
+		// ratio
+		createFloatUniform("iRatio", 11, 20.0f, 0.00000000001f, 20.0f);
+		// zoom
+		createFloatUniform("iZoom", 12, 1.0f, -3.0f, 3.0f);
+		// Audio multfactor 
+		createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
+		// exposure
+		createFloatUniform("iExposure", 14, 1.0f, 0.0f, 3.0f);
+		// Pixelate
+		createFloatUniform("iPixelate", 15, 1.0f, 0.01f);
+		// Trixels
+		createFloatUniform("iTrixels", 16, 0.0f);
+		// iChromatic
+		createFloatUniform("iChromatic", 17, 0.0f, 0.000000001f);
+		// iCrossfade
+		createFloatUniform("iCrossfade", 18, 1.0f);
+		// background red
+		createFloatUniform("iBR", 19, 0.1f);
+		// background green
+		createFloatUniform("iBG", 20, 0.5f);
+		// background blue
+		createFloatUniform("iBB", 21, 0.1f);
+
+
+		// top row 21 to 28
+		// Speed 
+		createFloatUniform("iSpeed", 22, 12.0f, 0.01f, 12.0f);
+		// background alpha
+		createFloatUniform("iBA", 23, 0.2f);
+		// tempo time
+		createFloatUniform("iTempoTime", 24, 0.1f);
+		// fps
+		createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
+		// contour
+		createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
+		// slitscan (or other) Param1 
+		createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
+		// slitscan (or other) Param2 
+		createFloatUniform("iParam2", 28, 1.0f, 0.01f, 100.0f);
+		// iResolutionX (should be fbowidth) 
+		createFloatUniform("iResolutionX", 29, 640.0f, 0.01f, 1024.0f);
+		// iResolutionY (should be fboheight)  
+		createFloatUniform("iResolutionY", 30, 480.0f, 0.01f, 800.0f);
+		// nanokontrol middle row 31 to 38, bottom row 41 to 88
+		// int
+		// blend mode 
+		createIntUniform("iBlendmode", 50, 0);
+		// greyscale 
+		createIntUniform("iGreyScale", 51, 0);
+
+		// vec3
+		createVec3Uniform("iResolution", 60, vec3(getFloatUniformValueByName("iResolutionX"), getFloatUniformValueByName("iResolutionY"), 1.0));
+		createVec3Uniform("iColor", 61, vec3(1.0, 0.5, 0.0));
+		createVec3Uniform("iBackgroundColor", 62);
+		//createVec3Uniform("iChannelResolution[0]", 63, vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+
+		// vec4
+		createVec4Uniform("iMouse", 70, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+		createVec4Uniform("iDate", 71, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
+
+		// boolean
+		// invert
+		createBoolUniform("iInvert", 48);
+		createBoolUniform("iFlipH", 81);
+		createBoolUniform("iFlipV", 82);
+		createBoolUniform("iXorY", 83);
+		// glitch
+		createBoolUniform("iGlitch", 45);
+		// toggle
+		createBoolUniform("iToggle", 46);
+		// vignette
+		createBoolUniform("iVignette", 47);
+	}
 	// textures
 	for (size_t i = 0; i < 8; i++)
 	{
-		createSampler2DUniform("iChannel" + toString(i), 100+i, i);// TODO verify doesn't mess up type (uint!)
+		createSampler2DUniform("iChannel" + toString(i), 100 + i, i);// TODO verify doesn't mess up type (uint!)
 	}
 	load();
 	loadAnimation();
@@ -225,7 +232,7 @@ void VDAnimation::sampler2dFromJson(const ci::JsonTree &json) {
 		createSampler2DUniform(jName, jTextureIndex);
 	}
 }
-void VDAnimation::vec2FromJson(const ci::JsonTree &json){
+void VDAnimation::vec2FromJson(const ci::JsonTree &json) {
 	string jName;
 	int jCtrlIndex;
 	if (json.hasChild("uniform")) {
@@ -235,7 +242,7 @@ void VDAnimation::vec2FromJson(const ci::JsonTree &json){
 		createVec2Uniform(jName, jCtrlIndex);
 	}
 }
-void VDAnimation::vec3FromJson(const ci::JsonTree &json){
+void VDAnimation::vec3FromJson(const ci::JsonTree &json) {
 	string jName;
 	int jCtrlIndex;
 	if (json.hasChild("uniform")) {
@@ -245,7 +252,7 @@ void VDAnimation::vec3FromJson(const ci::JsonTree &json){
 		createVec3Uniform(jName, jCtrlIndex);
 	}
 }
-void VDAnimation::vec4FromJson(const ci::JsonTree &json){
+void VDAnimation::vec4FromJson(const ci::JsonTree &json) {
 	string jName;
 	int jCtrlIndex;
 	if (json.hasChild("uniform")) {
@@ -255,7 +262,7 @@ void VDAnimation::vec4FromJson(const ci::JsonTree &json){
 		createVec4Uniform(jName, jCtrlIndex);
 	}
 }
-void VDAnimation::intFromJson(const ci::JsonTree &json){
+void VDAnimation::intFromJson(const ci::JsonTree &json) {
 	string jName;
 	int jCtrlIndex, jValue;
 	if (json.hasChild("uniform")) {
@@ -267,7 +274,7 @@ void VDAnimation::intFromJson(const ci::JsonTree &json){
 	}
 
 }
-void VDAnimation::boolFromJson(const ci::JsonTree &json){
+void VDAnimation::boolFromJson(const ci::JsonTree &json) {
 	string jName;
 	int jCtrlIndex;
 	bool jValue;

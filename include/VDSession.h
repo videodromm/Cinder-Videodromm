@@ -72,6 +72,7 @@ namespace VideoDromm {
 		bool							hasText() { return mText.length() > 0; };
 		// control values
 		float							getControlValue(unsigned int aCtrl);
+		float							getControlValueByName(string aCtrlName);
 		void							setControlValue(unsigned int aCtrl, float aValue);
 		void							toggleValue(unsigned int aCtrl);
 		void							toggleAuto(unsigned int aCtrl);

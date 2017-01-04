@@ -102,6 +102,9 @@ void VDSession::fromXml(const XmlTree &xml) {
 float VDSession::getControlValue(unsigned int aCtrl) {
 	return mVDAnimation->getFloatUniformValueByIndex(aCtrl);
 }
+float VDSession::getControlValueByName(string aCtrlName) {
+	return mVDAnimation->getFloatUniformValueByName(aCtrlName);
+}
 void VDSession::setControlValue(unsigned int aCtrl, float aValue) {
 	// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
 	mVDWebsocket->changeFloatValue(aCtrl, aValue);
@@ -127,40 +130,6 @@ float VDSession::getMinUniformValueByIndex(unsigned int aIndex) {
 float VDSession::getMaxUniformValueByIndex(unsigned int aIndex) {
 	return mVDAnimation->getMaxUniformValueByIndex(aIndex);
 }
-
-/* void VDSession::writeSettings(const VDMixList &VDMixlist, const ci::DataTargetRef &target) {
-
-// create config document and root <textures>
-TODO XmlTree			doc;
-doc.setTag("mixes");
-doc.setAttribute("version", "1.0");
-
-//
-for (unsigned int i = 0; i < VDMixlist.size(); ++i) {
-// create <texture>
-XmlTree			mix;
-mix.setTag("fbo");
-mix.setAttribute("id", i + 1);
-// details specific to texture type
-mix.push_back(VDMixlist[i]->toXml());
-
-// add fbo to doc
-doc.push_back(mix);
-}
-
-// write file
-doc.write(target);
-}
-XmlTree	VDMix::toXml() const {
-XmlTree		xml;
-xml.setTag("details");
-// TODO rewrite xml.setAttribute("fbopath", mFbosPath);
-xml.setAttribute("width", mWidth);
-xml.setAttribute("height", mHeight);
-return xml;
-}*/
-
-
 
 void VDSession::resize() {
 	mVDMix->resize();

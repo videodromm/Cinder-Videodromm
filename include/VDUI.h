@@ -37,6 +37,8 @@
 #include "VDUIShaders.h"
 // Warps
 #include "VDUIWarps.h"
+// Render
+#include "VDUIRender.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -120,6 +122,10 @@ namespace VideoDromm
 		VDUIWarpsRef				mUIWarps;
 		bool						showUIWarps;
 		void						showVDUIWarps();
+		// UIRender
+		VDUIRenderRef				mUIRender;
+		bool						showUIRender;
+		void						showVDUIRender();
 		
 		char						buf[64];
 		bool						mIsResizing;
