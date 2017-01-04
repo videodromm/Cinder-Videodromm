@@ -159,8 +159,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		if (mVDSession->getControlValue(mVDSettings->IFPS) < 12.0) ui::PopStyleColor();
 		ui::SameLine();
 		ui::Text("(Target FPS %.2f) ", mVDSession->getTargetFps());
-		ui::SameLine();
-		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 
 		ui::RadioButton("Audio", &currentWindowRow1, 0); ui::SameLine();
 		ui::RadioButton("Midi", &currentWindowRow1, 1); ui::SameLine();

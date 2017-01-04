@@ -96,7 +96,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	CI_LOG_V("setFragmentString, loading" + aName);
 	try
 	{
-		CI_LOG_V("before regex " + mOriginalFragmentString);
+		//CI_LOG_V("before regex " + mOriginalFragmentString);
 		// shadertoy: 
 		// change void mainImage( out vec4 fragColor, in vec2 fragCoord ) to void main(void)
 		std::regex pattern{ "mainImage" };
@@ -155,7 +155,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		pattern = { "iRenderXY.y" };
 		replacement = { "0.0" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		CI_LOG_V("regexed " + mOriginalFragmentString);
+		//CI_LOG_V("regexed " + mOriginalFragmentString);
 
 		// change texture2D to texture for version > 150?	
 		

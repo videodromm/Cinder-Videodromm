@@ -10,13 +10,14 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 {
 	CI_LOG_V("VDSession ctor");
 	mVDSettings = aVDSettings;
+	// allow log to file
+	mVDLog = VDLog::create();	
 	// Utils
 	mVDUtils = VDUtils::create(mVDSettings);
 	// Animation
 	mVDAnimation = VDAnimation::create(mVDSettings);
 	mVDAnimation->tapTempo();
-	// allow log to file
-	mVDLog = VDLog::create();
+
 	// init fbo format
 	//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 	//fmt.setBorderColor(Color::black());		

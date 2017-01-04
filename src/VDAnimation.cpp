@@ -155,6 +155,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	}
 	load();
 	loadAnimation();
+	CI_LOG_V("VDAnimation, iResX:" + toString(getFloatUniformValueByIndex(29)));
+	CI_LOG_V("VDAnimation, iResY:" + toString(getFloatUniformValueByIndex(30)));
+
+	changeVec3Value(60, vec3(getFloatUniformValueByIndex(29), getFloatUniformValueByIndex(30), 1.0));
+	CI_LOG_V("VDAnimation, iResolution:" + toString(shaderUniforms[getUniformNameForIndex(60)].vec3Value));
+
 }
 void VDAnimation::loadUniforms(const ci::DataSourceRef &source) {
 
