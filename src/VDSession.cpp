@@ -568,35 +568,11 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 void VDSession::createWarpMix() {
 	mVDMix->createWarp();
 }
-void VDSession::setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) {
-	mVDMix->setWarpCrossfade(aWarpIndex, aCrossfade);
-}
-float VDSession::getWarpCrossfade(unsigned int aWarpIndex) {
-	return mVDMix->getWarpCrossfade(aWarpIndex);
-}
 unsigned int VDSession::getWarpAShaderIndex(unsigned int aWarpIndex) {
 	return mVDMix->getWarpAShaderIndex(aWarpIndex);
 }
 unsigned int VDSession::getWarpBShaderIndex(unsigned int aWarpIndex) {
 	return mVDMix->getWarpBShaderIndex(aWarpIndex);
-}
-bool VDSession::isWarpActive(unsigned int aWarpIndex) {
-	return mVDMix->isWarpActive(aWarpIndex);
-}
-void VDSession::toggleWarpActive(unsigned int aWarpIndex) {
-	mVDMix->toggleWarpActive(aWarpIndex);
-}
-bool VDSession::isWarpSolo(unsigned int aWarpIndex) {
-	return mVDMix->isWarpSolo(aWarpIndex);
-}
-void VDSession::toggleWarpSolo(unsigned int aWarpIndex) {
-	mVDMix->toggleWarpSolo(aWarpIndex);
-}
-bool VDSession::isWarpDeleted(unsigned int aWarpIndex) {
-	return mVDMix->isWarpDeleted(aWarpIndex);
-}
-void VDSession::toggleDeleteWarp(unsigned int aWarpIndex) {
-	mVDMix->toggleDeleteWarp(aWarpIndex);
 }
 
 bool VDSession::isWarpTriangle() {
@@ -624,21 +600,19 @@ void VDSession::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboI
 void VDSession::updateWarpName(unsigned int aWarpIndex) {
 	mVDMix->updateWarpName(aWarpIndex);
 }
-string VDSession::getWarpName(unsigned int aWarpIndex) {
-	return mVDMix->getWarpName(aWarpIndex);
-}
-unsigned int VDSession::getWarpAFboIndex(unsigned int aWarpIndex) {
-	return mVDMix->getWarpAFboIndex(aWarpIndex);
-}
-unsigned int VDSession::getWarpBFboIndex(unsigned int aWarpIndex) {
-	return mVDMix->getWarpBFboIndex(aWarpIndex);
-}
-unsigned int VDSession::getWarpCount() {
-	return mVDMix->getWarpCount();
-}
-
 #pragma endregion warps
-
+// triangles
+#pragma region triangles
+void VDSession::setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
+	mVDMix->setTriangleAFboIndex(aTriangleIndex, aTriangleFboIndex);
+	mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 0);
+}
+void VDSession::setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
+	mVDMix->setTriangleBFboIndex(aTriangleIndex, aTriangleFboIndex);
+	mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 1);
+}
+#pragma endregion triangles
+// fbos
 #pragma region fbos
 bool VDSession::isFlipH() {
 	return mVDAnimation->isFlipH();
@@ -677,8 +651,6 @@ unsigned int VDSession::getMixFbosCount() {
 };
 
 #pragma endregion fbos
-
-
 // shaders
 #pragma region shaders
 bool VDSession::loadShaderFolder(string aFolder) {

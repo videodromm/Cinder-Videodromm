@@ -37,6 +37,8 @@
 #include "VDUIShaders.h"
 // Warps
 #include "VDUIWarps.h"
+// Triangles
+#include "VDUITriangles.h"
 // Render
 #include "VDUIRender.h"
 
@@ -122,6 +124,10 @@ namespace VideoDromm
 		VDUIWarpsRef				mUIWarps;
 		bool						showUIWarps;
 		void						showVDUIWarps();
+		// UITriangles
+		VDUITrianglesRef			mUITriangles;
+		bool						showUITriangles;
+		void						showVDUITriangles();
 		// UIRender
 		VDUIRenderRef				mUIRender;
 		bool						showUIRender;

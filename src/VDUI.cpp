@@ -33,6 +33,8 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mUIShaders = VDUIShaders::create(mVDSettings, mVDSession);
 	// UIWarps
 	mUIWarps = VDUIWarps::create(mVDSettings, mVDSession);
+	// UITriangles
+	mUITriangles = VDUITriangles::create(mVDSettings, mVDSession);
 	// UIRender
 	mUIRender = VDUIRender::create(mVDSettings, mVDSession);
 	// imgui
@@ -195,7 +197,8 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ui::RadioButton("Shaders", &currentWindowRow2, 2); ui::SameLine();
 		ui::RadioButton("Blend", &currentWindowRow2, 3); ui::SameLine();
 		ui::RadioButton("Console", &currentWindowRow2, 4); ui::SameLine();
-		ui::RadioButton("Warps", &currentWindowRow2, 5);
+		ui::RadioButton("Warps", &currentWindowRow2, 5); ui::SameLine();
+		ui::RadioButton("Triangles", &currentWindowRow2, 6);
 
 #pragma region Info
 		ui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
@@ -270,6 +273,10 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	case 5:
 		// Warps
 		mUIWarps->Run("Warps");
+		break;
+	case 6:
+		// Triangles
+		mUITriangles->Run("Triangles");
 		break;
 	}
 	

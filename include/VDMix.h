@@ -16,6 +16,8 @@
 #include "VDAnimation.h"
 // Fbos
 #include "VDFbo.h"
+// Triangles
+#include "VDTriangle.h"
 // Warping
 #include "Warp.h"
 
@@ -30,7 +32,7 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
-using namespace ph::warping; 
+using namespace ph::warping;
 using namespace VideoDromm;
 
 namespace VideoDromm
@@ -75,32 +77,50 @@ namespace VideoDromm
 		ci::gl::TextureRef				getFboRenderedTexture(unsigned int aFboIndex);
 		unsigned int					getBlendFbosCount() { return mBlendFbos.size(); }
 		// warps
-		string							getWarpName(unsigned int aWarpIndex);
-		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex);
-		unsigned int					getWarpBFboIndex(unsigned int aWarpIndex);
+		string							getWarpName(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->getName(); };
+		unsigned int					getWarpAFboIndex(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->getAFboIndex(); };
+		unsigned int					getWarpBFboIndex(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->getBFboIndex(); };
 		unsigned int					getWarpAShaderIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpBShaderIndex(unsigned int aWarpIndex);
-		float							getWarpCrossfade(unsigned int aWarpIndex);
-		unsigned int					getWarpCount();
+		unsigned int					getWarpCount() { return mWarps.size(); };
 		void							createWarp(string wName = "warp", unsigned int aFboIndex = 0, unsigned int aShaderIndex = 0, unsigned int bFboIndex = 0, unsigned int bShaderIndex = 0, float xFade = 1.0f);
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
-		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade);
+		float							getWarpCrossfade(unsigned int aWarpIndex) { if (aWarpIndex > mWarps.size() - 1) aWarpIndex = 0; return mWarps[aWarpIndex]->ABCrossfade; };
+		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) { if (aWarpIndex < mWarps.size()) mWarps[aWarpIndex]->ABCrossfade = aCrossfade; };
 		void							updateWarpName(unsigned int aWarpIndex);
-		bool							isWarpActive(unsigned int aWarpIndex);
-		void							toggleWarpActive(unsigned int aWarpIndex);
-		bool							isWarpSolo(unsigned int aWarpIndex);
-		void							toggleWarpSolo(unsigned int aWarpIndex);
-		bool							isWarpDeleted(unsigned int aWarpIndex);
-		void							toggleDeleteWarp(unsigned int aWarpIndex);
+		void							crossfadeWarp(unsigned int aWarpIndex, float aValue) { timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f); };
+		bool							isWarpActive(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isActive(); };
+		void							toggleWarpActive(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleWarpActive(); };
+		bool							isWarpSolo(unsigned int aWarpIndex) { return (mSolo == aWarpIndex); };
+		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; };
+		bool							isWarpDeleted(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isDeleted(); };
+		void							toggleDeleteWarp(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleDeleteWarp(); };
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
 
+		// triangles
+		void							createTriangle(string wName = "triangle", unsigned int aFboIndex = 0, unsigned int aShaderIndex = 0, unsigned int bFboIndex = 0, unsigned int bShaderIndex = 0, float xFade = 1.0f);
+		void							updateTriangleName(unsigned int aTriangleIndex);
+		string							getTriangleName(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->getName(); };
+		unsigned int					getTriangleCount() { return mVDTriangles.size(); };
+		unsigned int					getTriangleAFboIndex(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->getAFboIndex(); };
+		unsigned int					getTriangleBFboIndex(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->getBFboIndex(); };
+		void							setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex);
+		void							setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex);
+		bool							isTriangleActive(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->isActive(); };
+		void							toggleTriangleActive(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleTriangleActive(); };
+		bool							isTriangleSolo(unsigned int aTriangleIndex) { return (mSolo == aTriangleIndex); };
+		void							toggleTriangleSolo(unsigned int aTriangleIndex) { mSolo = (aTriangleIndex == mSolo) ? -1 : aTriangleIndex; };
+		bool							isTriangleDeleted(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->isDeleted(); };
+		void							toggleDeleteTriangle(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleDeleteTriangle(); };
+		float							getTriangleCrossfade(unsigned int aTriangleIndex) { if (aTriangleIndex > mVDTriangles.size() - 1) aTriangleIndex = 0; return mVDTriangles[aTriangleIndex]->ABCrossfade; };
+		void							setTriangleCrossfade(unsigned int aTriangleIndex, float aCrossfade) { if (aTriangleIndex < mVDTriangles.size()) mVDTriangles[aTriangleIndex]->ABCrossfade = aCrossfade; };
+
 		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true);
 		ci::gl::Texture2dRef			getRenderTexture();
-		void							crossfadeWarp(unsigned int aWarpIndex, float aValue);
 		void							save();
 		void							load();
 		// fbos
@@ -169,6 +189,7 @@ namespace VideoDromm
 		void							toggleSharedOutput(unsigned int aMixFboIndex = 0);
 		bool							isSharedOutputActive() { return mSharedOutputActive; };
 		unsigned int					getSharedMixIndex() { return mSharedFboIndex; };
+
 	private:
 		bool							mFlipV;
 		bool							mFlipH;
@@ -194,7 +215,7 @@ namespace VideoDromm
 		VDShaderList					mShaderList;
 		void							initShaderList();
 		//! Textures
-		VDTextureList					mTextureList; 
+		VDTextureList					mTextureList;
 		fs::path						mTexturesFilepath;
 		bool							initTextureList();
 		// blendmodes fbos
@@ -215,20 +236,26 @@ namespace VideoDromm
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
 		// triangles
-		ci::vec2						mStartPt, mVertices[3];
+		VDTriangleList					mVDTriangles;
+		fs::path						mTrianglesJson;
+		void							renderTriangles();
 		bool							mUseTriangles;
+		int								triangleMixToRender;
+
+		// old to refactor:
+		//ci::vec2						mStartPt, mVertices[3];
 		// shared texture output
 		bool							mSharedOutputActive;
-        unsigned int					mSharedFboIndex;
+		unsigned int					mSharedFboIndex;
 		bool							mSpoutInitialized;
-        char							mSenderName[256];
+		char							mSenderName[256];
 #if defined( CINDER_MSW )
-        // spout output
+		// spout output
 		SpoutSender						mSpoutSender;
 #endif
-        // syphon output
+		// syphon output
 #if defined( CINDER_MAC )
-        syphonServer                    mSyphonServer;
+		syphonServer                    mSyphonServer;
 #endif
 	};
 }
