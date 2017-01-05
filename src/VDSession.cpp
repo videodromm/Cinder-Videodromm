@@ -58,6 +58,11 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		// init for received shaders from websockets for warp 0
 		mVDMix->createWarp("default", 1, 1, 2, 2, 1.0f);
 	}
+	// check if something went wrong, if so, create a default warp
+	if (mVDMix->getTriangleCount() == 0) {
+		// init for received shaders from websockets for warp 0
+		mVDMix->createTriangle("default", 1, 1, 2, 2, 1.0f);
+	}
 }
 
 VDSessionRef VDSession::create(VDSettingsRef aVDSettings)

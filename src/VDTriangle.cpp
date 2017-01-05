@@ -122,7 +122,7 @@ namespace VideoDromm {
 		JsonTree VDTriangle = JsonTree::makeArray("VDTriangle");
 
 		VDTriangle.addChild(ci::JsonTree("afboindex", mAFboIndex));
-		VDTriangle.addChild(ci::JsonTree("bfboindex", mBFboIndex));
+		/*VDTriangle.addChild(ci::JsonTree("bfboindex", mBFboIndex));
 		VDTriangle.addChild(ci::JsonTree("ashaderindex", mAShaderIndex));
 		VDTriangle.addChild(ci::JsonTree("bshaderindex", mBShaderIndex));
 		VDTriangle.addChild(ci::JsonTree("ashaderfilename", mAShaderFilename));
@@ -143,7 +143,7 @@ namespace VideoDromm {
 			cps.pushBack(cp);
 			i++;
 		}
-		VDTriangle.pushBack(cps);
+		VDTriangle.pushBack(cps);*/
 		json.pushBack(VDTriangle);
 		return json;
 	}
@@ -191,55 +191,68 @@ namespace VideoDromm {
 	{
 		VDTriangleList	VDTriangles;
 		JsonTree json(source);
+		try {
+			// try to load the specified json file
+			if (json.hasChild("triangles")) {
+				JsonTree ws(json.getChild("triangles"));
 
-		// try to load the specified json file
-		if (json.hasChild("triangles")) {
-			JsonTree ws(json.getChild("triangles"));
+				// iterate VDTriangles
+				for (size_t i = 0; i < ws.getNumChildren(); i++) {
+					JsonTree child(ws.getChild(i));
 
-			// iterate VDTriangles
-			for (size_t i = 0; i < ws.getNumChildren(); i++) {
-				JsonTree child(ws.getChild(i));
-
-				if (child.hasChild("triangle")) {
-					JsonTree w(child.getChild("triangle"));
-					// create VDTriangle of the correct type
-					if (child.hasChild("afboindex")) {
-						// TODO
+					if (child.hasChild("triangle")) {
+						JsonTree w(child.getChild("triangle"));
+						// create VDTriangle of the correct type
+						if (child.hasChild("afboindex")) {
+							// TODO
+						}
+						VDTriangle t();
+						//t->fromJson(child);
+						//VDTriangles.push_back(t);
 					}
-					VDTriangle t();
-					//t->fromJson(child);
-					//VDTriangles.push_back(t);
 				}
-
-
 			}
-
 		}
+		catch (const JsonTree::ExcJsonParserError& exc) {
+			CI_LOG_W(exc.what());
+		}
+		catch (...) {
+			CI_LOG_W("VDTriangle::load error");
+		}
+
 		return VDTriangles;
 	}
 
 	void VDTriangle::save(const VDTriangleList &VDTriangles, const DataTargetRef &target)
 	{
-		CI_LOG_V("VDTriangles saving");
-		JsonTree		json;
-		// create VDTriangles json
-		JsonTree VDTrianglesJson = JsonTree::makeArray("triangles");
-		//VDTrianglesJson.addChild(ci::JsonTree("VDTriangles", "unknown"));
-		// 
-		for (unsigned i = 0; i < VDTriangles.size(); ++i) {
-			if (!VDTriangles[i]->isDeleted()) {
-				// create VDTriangle
-				JsonTree	VDTriangle(VDTriangles[i]->toJson());
-				VDTriangle.addChild(ci::JsonTree("id", i + 1));
+		try {
+			CI_LOG_V("VDTriangles saving");
+			JsonTree		json;
+			// create VDTriangles json
+			JsonTree VDTrianglesJson = JsonTree::makeArray("triangles");
+			//VDTrianglesJson.addChild(ci::JsonTree("VDTriangles", "unknown"));
 
-				// create <VDTriangle>
-				VDTrianglesJson.pushBack(VDTriangle);
+			for (unsigned i = 0; i < VDTriangles.size(); ++i) {
+				if (!VDTriangles[i]->isDeleted()) {
+					// create VDTriangle
+					JsonTree	VDTriangle(VDTriangles[i]->toJson());
+					VDTriangle.addChild(ci::JsonTree("id", i + 1));
+
+					// create <VDTriangle>
+					VDTrianglesJson.pushBack(VDTriangle);
+				}
 			}
+			// write file
+			json.pushBack(VDTrianglesJson);
+			json.write(target);
+			CI_LOG_V("VDTriangles saved");
 		}
-		// write file
-		json.pushBack(VDTrianglesJson);
-		json.write(target);
-		CI_LOG_V("VDTriangles saved");
+		catch (const JsonTree::ExcJsonParserError& exc) {
+			CI_LOG_W(exc.what());
+		}
+		catch (...) {
+			CI_LOG_W("VDTriangle::save error");
+		}
 
 	}
 

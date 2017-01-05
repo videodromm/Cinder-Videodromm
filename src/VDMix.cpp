@@ -61,9 +61,9 @@ namespace VideoDromm {
 		mTrianglesJson = getAssetPath("") / mVDSettings->mAssetsPath / "triangles.json";
 		mUseTriangles = true;
 		mSolo = -1;
-		createTriangle("tr", 2, 4, 5, 6, 0.5f);
-		createTriangle("tr", 3, 2, 4, 5, 0.5f);
-		createTriangle("tr", 4, 5, 6, 7, 0.5f);
+		//createTriangle("tr", 2, 4, 5, 6, 0.5f);
+		createTriangle("tr", 0, 0, 0, 0, 0.5f);
+		//createTriangle("tr", 4, 5, 6, 7, 0.5f);
 		triangleMixToRender = 0;
 	}
 

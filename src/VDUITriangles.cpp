@@ -99,7 +99,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "A##a%d", w);
+			sprintf(buf, "A##ta%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleTriangleActive(w);
 			}
@@ -115,7 +115,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "S##s%d", w);
+			sprintf(buf, "S##ts%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleTriangleSolo(w);
 			}
@@ -131,7 +131,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "X##x%d", w);
+			sprintf(buf, "X##tx%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleDeleteTriangle(w);
 			}
