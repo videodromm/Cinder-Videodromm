@@ -177,13 +177,13 @@ namespace VideoDromm {
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[triangleMixToRender].fbo);
 		gl::clear(Color::black());
 		// render A and B fbos 
-		mFboList[mWarps[triangleMixToRender]->getAFboIndex()]->getFboTexture();
-		mFboList[mWarps[triangleMixToRender]->getBFboIndex()]->getFboTexture();
+		mFboList[mVDTriangles[triangleMixToRender]->getAFboIndex()]->getFboTexture();
+		mFboList[mVDTriangles[triangleMixToRender]->getBFboIndex()]->getFboTexture();
 		// texture binding must be before ScopedGlslProg
-		mFboList[mWarps[triangleMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
-		mFboList[mWarps[triangleMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
+		mFboList[mVDTriangles[triangleMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
+		mFboList[mVDTriangles[triangleMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
 		gl::ScopedGlslProg glslScope(mGlslMix);
-		mGlslMix->uniform("iCrossfade", mWarps[triangleMixToRender]->ABCrossfade);
+		mGlslMix->uniform("iCrossfade", mVDTriangles[triangleMixToRender]->ABCrossfade);
 		// we draw triangle if there is no solo warp which takes the whole area
 		//gl::drawSolidTriangle(mVertices);
 		mVDTriangles[triangleMixToRender]->draw();
@@ -194,6 +194,23 @@ namespace VideoDromm {
 			triangleMixToRender = 0;
 		}
 		if (mSolo > -1) triangleMixToRender = mSolo;
+	}
+	void VDMix::updateTriangleName(unsigned int aTriangleIndex) {
+		if (aTriangleIndex < mVDTriangles.size()) {
+			mVDTriangles[aTriangleIndex]->setName(toString(mVDTriangles[aTriangleIndex]->getMixFboIndex()) + mFboList[mVDTriangles[aTriangleIndex]->getAFboIndex()]->getName().substr(0, 5) + "/" + mFboList[mVDTriangles[aTriangleIndex]->getBFboIndex()]->getName().substr(0, 5));
+		}
+	}
+	void VDMix::setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
+		if (aTriangleIndex < mVDTriangles.size() && aTriangleFboIndex < mFboList.size()) {
+			mVDTriangles[aTriangleIndex]->setAFboIndex(aTriangleFboIndex);
+			updateTriangleName(aTriangleIndex);
+		}
+	}
+	void VDMix::setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
+		if (aTriangleIndex < mVDTriangles.size() && aTriangleFboIndex < mFboList.size()) {
+			mVDTriangles[aTriangleIndex]->setBFboIndex(aTriangleFboIndex);
+			updateTriangleName(aTriangleIndex);
+		}
 	}
 #pragma endregion triangles
 
@@ -258,11 +275,6 @@ namespace VideoDromm {
 			mWarps[aWarpIndex]->setBShaderIndex(aWarpShaderIndex);
 			mWarps[aWarpIndex]->setBShaderFilename(mShaderList[aWarpShaderIndex]->getName());
 			updateWarpName(aWarpShaderIndex);
-		}
-	}
-	void VDMix::updateTriangleName(unsigned int aTriangleIndex) {
-		if (aTriangleIndex < mVDTriangles.size()) {
-			mVDTriangles[aTriangleIndex]->setName(toString(mVDTriangles[aTriangleIndex]->getMixFboIndex()) + mFboList[mVDTriangles[aTriangleIndex]->getAFboIndex()]->getName().substr(0, 5) + "/" + mFboList[mVDTriangles[aTriangleIndex]->getBFboIndex()]->getName().substr(0, 5));
 		}
 	}
 
@@ -350,9 +362,9 @@ namespace VideoDromm {
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mWarps[warpMixToRender]->ABCrossfade);
-		
+
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getWidth(), mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getHeight()));
-		
+
 		// save to a texture
 		mMixFbos[warpMixToRender].texture = mMixFbos[warpMixToRender].fbo->getColorTexture();
 		warpMixToRender++;
@@ -434,7 +446,7 @@ namespace VideoDromm {
 		else {
 			renderMix();
 		}
-		
+
 		// blendmodes preview
 		if (mVDAnimation->renderBlend()) {
 			mCurrentBlend = getElapsedFrames() % mVDAnimation->getBlendModesCount();
@@ -666,7 +678,7 @@ namespace VideoDromm {
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
 #endif
-						}
+					}
 						else if (texturetype == "camera") {
 #if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 							TextureCameraRef t(new TextureCamera());
@@ -709,10 +721,10 @@ namespace VideoDromm {
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 						}
-					}
 				}
 			}
 		}
+	}
 		return isFirstLaunch;
 	}
 	void VDMix::fboFlipV(unsigned int aFboIndex) {

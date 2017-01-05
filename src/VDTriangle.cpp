@@ -16,6 +16,7 @@ namespace VideoDromm {
 		mVertices[0] = pt1;
 		mVertices[1] = pt2;
 		mVertices[2] = pt3;
+		mDeleted = false;
 	}
 
 	void VDTriangle::draw(const gl::Texture2dRef &texture)
@@ -219,6 +220,7 @@ namespace VideoDromm {
 
 	void VDTriangle::save(const VDTriangleList &VDTriangles, const DataTargetRef &target)
 	{
+		CI_LOG_V("VDTriangles saving");
 		JsonTree		json;
 		// create VDTriangles json
 		JsonTree VDTrianglesJson = JsonTree::makeArray("triangles");
@@ -237,6 +239,8 @@ namespace VideoDromm {
 		// write file
 		json.pushBack(VDTrianglesJson);
 		json.write(target);
+		CI_LOG_V("VDTriangles saved");
+
 	}
 
 	bool VDTriangle::handleResize(VDTriangleList &VDTriangles)

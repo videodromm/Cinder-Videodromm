@@ -605,11 +605,11 @@ void VDSession::updateWarpName(unsigned int aWarpIndex) {
 #pragma region triangles
 void VDSession::setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
 	mVDMix->setTriangleAFboIndex(aTriangleIndex, aTriangleFboIndex);
-	mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 0);
+	// TODO mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 0);
 }
 void VDSession::setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
 	mVDMix->setTriangleBFboIndex(aTriangleIndex, aTriangleFboIndex);
-	mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 1);
+	// TODO mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 1);
 }
 #pragma endregion triangles
 // fbos
