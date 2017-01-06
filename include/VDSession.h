@@ -246,7 +246,7 @@ namespace VideoDromm {
 		//! window management
 		void							createWindow() { cmd = 0; };
 		void							deleteWindow() { cmd = 1; };
-		int								getCmd() { int rtn = cmd; cmd = -1; return cmd; };
+		int								getCmd() { int rtn = cmd; cmd = -1; return rtn; };
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
