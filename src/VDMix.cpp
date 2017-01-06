@@ -59,7 +59,7 @@ namespace VideoDromm {
 		strcpy(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
 		// triangles
 		mTrianglesJson = getAssetPath("") / mVDSettings->mAssetsPath / "triangles.json";
-		mUseTriangles = true;
+		mUseTriangles = false;
 		mSolo = -1;
 		//createTriangle("tr", 2, 4, 5, 6, 0.5f);
 		//createTriangle("tr", 0, 0, 0, 0, 0.5f);
