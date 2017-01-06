@@ -119,7 +119,7 @@ namespace VideoDromm {
 		unsigned int					getWarpBShaderIndex(unsigned int aWarpIndex);
 		unsigned int					getWarpCount() { return mVDMix->getWarpCount(); };
 
-		void							createWarpMix();
+		void							createWarpMix() { mVDMix->createWarp(); };
 		void							setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
@@ -151,6 +151,11 @@ namespace VideoDromm {
 		void							setTriangleCrossfade(unsigned int aTriangleIndex, float aCrossfade) { mVDMix->setTriangleCrossfade(aTriangleIndex, aCrossfade); };
 		float							getTriangleCrossfade(unsigned int aTriangleIndex) { return mVDMix->getTriangleCrossfade(aTriangleIndex); };
 		ci::gl::TextureRef				getTriangleTexture(unsigned int aTriangleFboIndex) { return mVDMix->getTriangleTexture(aTriangleFboIndex); }
+		void							createTriangleMix() { mVDMix->createTriangle(); };
+		int								getTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDMix->getTrianglePointX(aTriangleIndex, aPointIndex); };
+		int								getTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDMix->getTrianglePointY(aTriangleIndex, aPointIndex); };
+		void							setTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDMix->setTrianglePointX(aTriangleIndex, aPointIndex, aValue); };
+		void							setTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDMix->setTrianglePointY(aTriangleIndex, aPointIndex, aValue); };
 		// fbos
 		void							fboFlipV(unsigned int aFboIndex) { mVDMix->fboFlipV(aFboIndex); };
 		bool							isFboFlipV(unsigned int aFboIndex) { return mVDMix->isFboFlipV(aFboIndex); };

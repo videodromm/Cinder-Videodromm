@@ -95,8 +95,8 @@ namespace VideoDromm
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue) { timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f); };
 		bool							isWarpActive(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isActive(); };
 		void							toggleWarpActive(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleWarpActive(); };
-		bool							isWarpSolo(unsigned int aWarpIndex) { return (mSolo == aWarpIndex); };
-		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; };
+		bool							isWarpSolo(unsigned int aWarpIndex) { CI_LOG_V(toString((mSolo == aWarpIndex))); return (mSolo == aWarpIndex); };
+		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; CI_LOG_V(toString(mSolo) + " " + toString(aWarpIndex)); };
 		bool							isWarpDeleted(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isDeleted(); };
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleDeleteWarp(); };
 		bool							isWarpTriangle();
@@ -114,7 +114,9 @@ namespace VideoDromm
 		bool							isTriangleActive(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->isActive(); };
 		void							toggleTriangleActive(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleTriangleActive(); };
 		bool							isTriangleSolo(unsigned int aTriangleIndex) { return (mSolo == aTriangleIndex); };
-		void							toggleTriangleSolo(unsigned int aTriangleIndex) { mSolo = (aTriangleIndex == mSolo) ? -1 : aTriangleIndex; };
+		void							toggleTriangleSolo(unsigned int aTriangleIndex) {
+			mSolo = (aTriangleIndex == mSolo) ? -1 : aTriangleIndex; CI_LOG_V(toString(mSolo) + " " + toString(aTriangleIndex));
+		};
 		bool							isTriangleDeleted(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->isDeleted(); };
 		void							toggleDeleteTriangle(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleDeleteTriangle(); };
 		float							getTriangleCrossfade(unsigned int aTriangleIndex) { if (aTriangleIndex > mVDTriangles.size() - 1) aTriangleIndex = 0; return mVDTriangles[aTriangleIndex]->ABCrossfade; };
@@ -122,6 +124,11 @@ namespace VideoDromm
 		ci::gl::TextureRef				getTriangleTexture(unsigned int aTriangleFboIndex);
 		unsigned int					getTriangleFbosCount() { return mTriangleFbos.size(); };
 		string							getTriangleFboName(unsigned int aTriangleFboIndex);
+		int								getTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDTriangles[aTriangleIndex]->getControlPoint(aPointIndex).x; };
+		int								getTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDTriangles[aTriangleIndex]->getControlPoint(aPointIndex).y; };
+		void							setTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDTriangles[aTriangleIndex]->setControlPoint(aTriangleIndex, vec2(aValue, getTrianglePointY(aTriangleIndex, aPointIndex))); };
+		void							setTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDTriangles[aTriangleIndex]->setControlPoint(aTriangleIndex, vec2(getTrianglePointX(aTriangleIndex, aPointIndex), aValue)); };
+
 		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true);
 		ci::gl::Texture2dRef			getRenderTexture();
 		void							save();

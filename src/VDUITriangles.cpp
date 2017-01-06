@@ -17,7 +17,7 @@ void VDUITriangles::Run(const char* title) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2((w * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3), ImGuiSetCond_Once);
 		//int hue = 0;
-		sprintf(buf, "%s##tn%d", mVDSession->getTriangleName(w).c_str(), w);
+		sprintf(buf, "%s##trin%d", mVDSession->getTriangleName(w).c_str(), w);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
@@ -36,7 +36,7 @@ void VDUITriangles::Run(const char* title) {
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(a / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(a / 7.0f, 0.8f, 0.8f));
 
-				sprintf(buf, "%d##tia%d%d", a, w, a);
+				sprintf(buf, "%d##tria%d%d", a, w, a);
 				if (ui::Button(buf)) mVDSession->setTriangleAFboIndex(w, a);
 				sprintf(buf, "Set input fbo A to %s", mVDSession->getShaderName(a).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
@@ -54,7 +54,7 @@ void VDUITriangles::Run(const char* title) {
 				ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(b / 7.0f, 0.7f, 0.7f));
 				ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(b / 7.0f, 0.8f, 0.8f));
 
-				sprintf(buf, "%d##tib%d%d", b, w, b);
+				sprintf(buf, "%d##trib%d%d", b, w, b);
 				if (ui::Button(buf)) mVDSession->setTriangleBFboIndex(w, b);
 				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(b).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
@@ -63,7 +63,7 @@ void VDUITriangles::Run(const char* title) {
 
 			// crossfade
 			float xFade = mVDSession->getTriangleCrossfade(w);
-			sprintf(buf, "xfade##txf%d", w);
+			sprintf(buf, "xfade##trixf%d", w);
 			if (ui::SliderFloat(buf, &xFade, 0.0f, 1.0f))
 			{
 				mVDSession->setTriangleCrossfade(w, xFade);
@@ -77,7 +77,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.8f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.8f, 0.8f, 0.8f));
-			sprintf(buf, "N##tnod%d", w);
+			sprintf(buf, "N##trinod%d", w);
 			if (ui::Button(buf)){
 				if (w == currentNode) {
 					// if the same button pressed we hide the nodes
@@ -99,7 +99,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "A##ta%d", w);
+			sprintf(buf, "A##tra%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleTriangleActive(w);
 			}
@@ -115,7 +115,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "S##ts%d", w);
+			sprintf(buf, "S##trs%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleTriangleSolo(w);
 			}
@@ -131,7 +131,7 @@ void VDUITriangles::Run(const char* title) {
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "X##tx%d", w);
+			sprintf(buf, "X##trx%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleDeleteTriangle(w);
 			}
@@ -143,6 +143,56 @@ void VDUITriangles::Run(const char* title) {
 		}
 		// current triangle editing
 		if (currentNode == w) {
+			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
+			ui::SetNextWindowPos(ImVec2( (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin) + mVDSettings->uiMargin + mVDSettings->uiXPosCol1, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+			sprintf(buf, "%s##tricnt%d", mVDSession->getTriangleName(w).c_str(), w);
+			ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
+			{
+				ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+				ui::Image((void*)mVDSession->getTriangleTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+				ui::PopItemWidth();
+			}
+			if (ui::IsItemHovered()) ui::SetTooltip(buf);
+			// points
+			static float p0x = mVDSession->getTrianglePointX(w, 0);
+			sprintf(buf, "p0x##p0x%d", w);
+			if (ui::SliderFloat(buf, &p0x, 0.0f, mVDSettings->mRenderWidth))
+			{
+				mVDSession->setTrianglePointX(w, 0, p0x);
+			}
+			static float p0y = mVDSession->getTrianglePointY(w, 0);
+			sprintf(buf, "p0y##p0y%d", w);
+			if (ui::SliderFloat(buf, &p0y, 0.0f, mVDSettings->mRenderHeight))
+			{
+				mVDSession->setTrianglePointY(w, 0, p0y);
+			}
+
+			static float p1x = mVDSession->getTrianglePointX(w, 1);
+			sprintf(buf, "p1x##p1x%d", w);
+			if (ui::SliderFloat(buf, &p1x, 0.0f, mVDSettings->mRenderWidth))
+			{
+				mVDSession->setTrianglePointX(w, 1, p1x);
+			}
+			static float p1y = mVDSession->getTrianglePointY(w, 1);
+			sprintf(buf, "p1y##p1y%d", w);
+			if (ui::SliderFloat(buf, &p1y, 0.0f, mVDSettings->mRenderHeight))
+			{
+				mVDSession->setTrianglePointY(w, 1, p1y);
+			}
+
+			static float p2x = mVDSession->getTrianglePointX(w, 2);
+			sprintf(buf, "p2x##p2x%d", w);
+			if (ui::SliderFloat(buf, &p2x, 0.0f, mVDSettings->mRenderWidth))
+			{
+				mVDSession->setTrianglePointX(w, 2, p2x);
+			}
+			static float p2y = mVDSession->getTrianglePointY(w, 2);
+			sprintf(buf, "p2y##p2y%d", w);
+			if (ui::SliderFloat(buf, &p2y, 0.0f, mVDSettings->mRenderHeight))
+			{
+				mVDSession->setTrianglePointY(w, 2, p2y);
+			}
+			ui::End();
 		}
 		ui::End();
 	}

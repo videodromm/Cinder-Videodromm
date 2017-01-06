@@ -571,9 +571,6 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 
 #pragma region warps
 
-void VDSession::createWarpMix() {
-	mVDMix->createWarp();
-}
 unsigned int VDSession::getWarpAShaderIndex(unsigned int aWarpIndex) {
 	return mVDMix->getWarpAShaderIndex(aWarpIndex);
 }

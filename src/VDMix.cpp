@@ -167,9 +167,9 @@ namespace VideoDromm {
 		mVDTriangles[newIndex]->setMixFboIndex(newIndex);
 		mVDTriangles[newIndex]->setName(toString(mVDTriangles[newIndex]->getMixFboIndex()) + wName);
 		if (newIndex > 0) {
-			mVDTriangles[newIndex]->setControlPoint(0, vec2(randInt(0, 100)));
-			mVDTriangles[newIndex]->setControlPoint(1, vec2(randInt(418, 580)));
-			mVDTriangles[newIndex]->setControlPoint(2, vec2(randInt(200, 350)));
+			mVDTriangles[newIndex]->setControlPoint(0, vec2(randInt(0, 1000)));
+			mVDTriangles[newIndex]->setControlPoint(1, vec2(randInt(418, 1080)));
+			mVDTriangles[newIndex]->setControlPoint(2, vec2(randInt(200, 1350)));
 		}
 		updateTriangleName(newIndex);
 	}
@@ -193,7 +193,10 @@ namespace VideoDromm {
 		if (triangleMixToRender >= mVDTriangles.size()) {
 			triangleMixToRender = 0;
 		}
-		if (mSolo > -1) triangleMixToRender = mSolo;
+		if (mSolo > -1) {
+			triangleMixToRender = mSolo;
+			CI_LOG_V(" solo " + toString(mSolo) );
+		}
 	}
 	ci::gl::TextureRef VDMix::getTriangleTexture(unsigned int aTriangleFboIndex) {
 		if (aTriangleFboIndex > mTriangleFbos.size() - 1) aTriangleFboIndex = 0;
@@ -431,7 +434,10 @@ namespace VideoDromm {
 		if (warpMixToRender >= mWarps.size()) {
 			warpMixToRender = 0;
 		}
-		if (mSolo > -1) warpMixToRender = mSolo;
+		if (mSolo > -1) {
+			warpMixToRender = mSolo;
+			CI_LOG_V(" solo " + toString( mSolo));
+		}
 	}
 	bool VDMix::isWarpTriangle() {
 		return mUseTriangles;

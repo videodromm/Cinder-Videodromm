@@ -100,6 +100,13 @@ void VDUIRender::Run(const char* title) {
 		if (ui::Button("Delete Window")) {
 			mVDSession->deleteWindow();
 		}
+		if (ui::Button("Create Warp")) {
+			mVDSession->createWarpMix();
+		}
+		ui::SameLine();
+		if (ui::Button("Create Triangle")) {
+			mVDSession->createTriangleMix();
+		}
 		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 
 		ui::PopItemWidth();
