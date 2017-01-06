@@ -65,6 +65,7 @@ namespace VideoDromm
 
 		unsigned int					getMixFbosCount() { return mMixFbos.size(); };
 		string							getMixFboName(unsigned int aMixFboIndex);
+
 		// blendmodes
 		unsigned int					getFboBlendCount();
 		ci::gl::TextureRef				getFboThumb(unsigned int aBlendIndex);
@@ -118,7 +119,9 @@ namespace VideoDromm
 		void							toggleDeleteTriangle(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleDeleteTriangle(); };
 		float							getTriangleCrossfade(unsigned int aTriangleIndex) { if (aTriangleIndex > mVDTriangles.size() - 1) aTriangleIndex = 0; return mVDTriangles[aTriangleIndex]->ABCrossfade; };
 		void							setTriangleCrossfade(unsigned int aTriangleIndex, float aCrossfade) { if (aTriangleIndex < mVDTriangles.size()) mVDTriangles[aTriangleIndex]->ABCrossfade = aCrossfade; };
-
+		ci::gl::TextureRef				getTriangleTexture(unsigned int aTriangleFboIndex);
+		unsigned int					getTriangleFbosCount() { return mTriangleFbos.size(); };
+		string							getTriangleFboName(unsigned int aTriangleFboIndex);
 		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true);
 		ci::gl::Texture2dRef			getRenderTexture();
 		void							save();
@@ -207,6 +210,7 @@ namespace VideoDromm
 
 		//! Fbos
 		map<int, VDMixFbo>				mMixFbos;
+		map<int, VDMixFbo>				mTriangleFbos;
 		// maintain a list of fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mMixesFilepath;

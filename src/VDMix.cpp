@@ -30,10 +30,10 @@ namespace VideoDromm {
 		// initialize the shaders list 
 		initShaderList();
 		mMixesFilepath = getAssetPath("") / "mixes.xml";
-		if (fs::exists(mMixesFilepath)) {
+		/*if (fs::exists(mMixesFilepath)) {
 			// load textures from file if one exists
 			// TODO readSettings(mVDSettings, mVDAnimation, loadFile(mMixesFilepath));
-		}
+			}*/
 		// render fbo
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 		// mix fbo to render
@@ -62,7 +62,7 @@ namespace VideoDromm {
 		mUseTriangles = true;
 		mSolo = -1;
 		//createTriangle("tr", 2, 4, 5, 6, 0.5f);
-		createTriangle("tr", 0, 0, 0, 0, 0.5f);
+		//createTriangle("tr", 0, 0, 0, 0, 0.5f);
 		//createTriangle("tr", 4, 5, 6, 7, 0.5f);
 		triangleMixToRender = 0;
 	}
@@ -144,15 +144,15 @@ namespace VideoDromm {
 
 #pragma region triangles
 	void VDMix::createTriangle(string wName, unsigned int aFboIndex, unsigned int aShaderIndex, unsigned int bFboIndex, unsigned int bShaderIndex, float xFade) {
-		int newIndex = mMixFbos.size();
+		int newIndex = mTriangleFbos.size();
 		// ensure bounds are valid
 		aFboIndex = math<int>::min(aFboIndex, getFboListSize() - 1);
 		bFboIndex = math<int>::min(bFboIndex, getFboListSize() - 1);
 		aShaderIndex = math<int>::min(aShaderIndex, getShadersCount() - 1);
 		bShaderIndex = math<int>::min(bShaderIndex, getShadersCount() - 1);
-		mMixFbos[newIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mMixFbos[newIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		mMixFbos[newIndex].name = wName;
+		mTriangleFbos[newIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		mTriangleFbos[newIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		mTriangleFbos[newIndex].name = wName;
 
 		mVDTriangles.push_back(VDTriangle::create());
 
@@ -174,7 +174,7 @@ namespace VideoDromm {
 		updateTriangleName(newIndex);
 	}
 	void VDMix::renderTriangles() {
-		gl::ScopedFramebuffer scopedFbo(mMixFbos[triangleMixToRender].fbo);
+		gl::ScopedFramebuffer scopedFbo(mTriangleFbos[triangleMixToRender].fbo);
 		gl::clear(Color::black());
 		// render A and B fbos 
 		mFboList[mVDTriangles[triangleMixToRender]->getAFboIndex()]->getFboTexture();
@@ -188,12 +188,37 @@ namespace VideoDromm {
 		//gl::drawSolidTriangle(mVertices);
 		mVDTriangles[triangleMixToRender]->draw();
 		// save to a texture
-		mMixFbos[triangleMixToRender].texture = mMixFbos[triangleMixToRender].fbo->getColorTexture();
+		mTriangleFbos[triangleMixToRender].texture = mTriangleFbos[triangleMixToRender].fbo->getColorTexture();
 		triangleMixToRender++;
 		if (triangleMixToRender >= mVDTriangles.size()) {
 			triangleMixToRender = 0;
 		}
 		if (mSolo > -1) triangleMixToRender = mSolo;
+	}
+	ci::gl::TextureRef VDMix::getTriangleTexture(unsigned int aTriangleFboIndex) {
+		if (aTriangleFboIndex > mTriangleFbos.size() - 1) aTriangleFboIndex = 0;
+		if (!mTriangleFbos[aTriangleFboIndex].texture) {
+			// should never happen 
+			mTriangleFbos[aTriangleFboIndex].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		}
+		if (!mTriangleFbos[aTriangleFboIndex].fbo) {
+			// should never happen
+			mTriangleFbos[aTriangleFboIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		}
+		// texturing sharing
+		if (mSharedOutputActive && mSharedFboIndex == aTriangleFboIndex) {
+#if defined( CINDER_MSW )
+			// spout
+			if (mSpoutInitialized) {
+				mSpoutSender.SendTexture(mTriangleFbos[mSharedFboIndex].texture->getId(), mTriangleFbos[mSharedFboIndex].texture->getTarget(), mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+			}
+#endif
+#if defined( CINDER_MAC )
+			// syphon
+			mSyphonServer.publishTexture(mTriangleFbos[mSharedFboIndex].texture);
+#endif
+		}
+		return mTriangleFbos[aTriangleFboIndex].texture;
 	}
 	void VDMix::updateTriangleName(unsigned int aTriangleIndex) {
 		if (aTriangleIndex < mVDTriangles.size()) {
@@ -297,17 +322,15 @@ namespace VideoDromm {
 
 		// load warps
 		if (fs::exists(mWarpJson)) mWarps = Warp::load(loadFile(mWarpJson));
-		// load triangles
-		if (fs::exists(mTrianglesJson)) mVDTriangles = VDTriangle::load(loadFile(mTrianglesJson));
 		// create corresponding mMixFbos
-		unsigned int i = mMixFbos.size();
+		unsigned int m = mMixFbos.size();
 		while (mMixFbos.size() < mWarps.size())
 		{
 			CI_LOG_V("mMixFbos.size() < mWarps.size(), we create a new mixFbo");
-			mMixFbos[i].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-			mMixFbos[i].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-			mMixFbos[i].name = "new";
-			i++;
+			mMixFbos[m].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+			mMixFbos[m].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+			mMixFbos[m].name = "new";
+			m++;
 		}
 		// ensure all indexes are valid
 		for (auto &warp : mWarps) {
@@ -320,13 +343,33 @@ namespace VideoDromm {
 			if (warp->getAShaderIndex() > mShaderList.size() - 1) warp->setAShaderIndex(0);
 			if (warp->getBShaderIndex() > mShaderList.size() - 1) warp->setBShaderIndex(0);
 			if (warp->getMixFboIndex() > mMixFbos.size() - 1) warp->setMixFboIndex(0);
+		}		// load triangles
+		if (fs::exists(mTrianglesJson)) mVDTriangles = VDTriangle::load(loadFile(mTrianglesJson));
+		// create corresponding mTriangleFbos
+		unsigned int t = mTriangleFbos.size();
+		while (mTriangleFbos.size() < mVDTriangles.size())
+		{
+			CI_LOG_V("mTriangleFbos.size() < mVDTriangles.size(), we create a new mTriangleFbo");
+			mTriangleFbos[t].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+			mTriangleFbos[t].texture = gl::Texture2d::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+			mTriangleFbos[t].name = "triangle";
+			t++;
 		}
+		// ensure all indexes are valid
+		for (auto &triangle : mVDTriangles) {
+			// create the fbos and shaders
+			triangle->setAShaderIndex(createShaderFbo(triangle->getAShaderFilename(), 0));
+			triangle->setBShaderIndex(createShaderFbo(triangle->getBShaderFilename(), 0));
+			// ensure all indexes are valid
+			if (triangle->getAFboIndex() > mFboList.size() - 1) triangle->setAFboIndex(0);
+			if (triangle->getBFboIndex() > mFboList.size() - 1) triangle->setBFboIndex(0);
+			if (triangle->getAShaderIndex() > mShaderList.size() - 1) triangle->setAShaderIndex(0);
+			if (triangle->getBShaderIndex() > mShaderList.size() - 1) triangle->setBShaderIndex(0);
+			if (triangle->getMixFboIndex() > mTriangleFbos.size() - 1) triangle->setMixFboIndex(0);
+		}
+
 	}
-	/* RTE in release mode
-	ci::gl::Texture2dRef VDMix::getRenderedTexture(bool reDraw) {
-	if (reDraw) getRenderTexture();
-	return mRenderedTexture;
-	}*/
+
 	// Render the scene into the FBO
 	ci::gl::Texture2dRef VDMix::getRenderTexture()
 	{
@@ -334,17 +377,34 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
-		// if solo then only render this solo warp
-		if (mSolo > -1) {
-			mWarps[mSolo]->draw(getMixTexture(mSolo), getMixTexture(mSolo)->getBounds());
+		if (mUseTriangles) {
+
+			// if solo then only render this solo triangle
+			if (mSolo > -1) {
+				mVDTriangles[mSolo]->draw(getTriangleTexture(mSolo), getTriangleTexture(mSolo)->getBounds());
+			}
+			else {
+				// iterate over the triangles and draw their content
+				int i = 0;
+				for (auto &triangle : mVDTriangles) {
+					triangle->draw(getTriangleTexture(i), getTriangleTexture(i)->getBounds());
+					i++;
+				}
+			}
 		}
 		else {
-			// iterate over the warps and draw their content
-			int i = 0;
-			for (auto &warp : mWarps) {
-				//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
-				warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
-				i++;
+			// if solo then only render this solo warp
+			if (mSolo > -1) {
+				mWarps[mSolo]->draw(getMixTexture(mSolo), getMixTexture(mSolo)->getBounds());
+			}
+			else {
+				// iterate over the warps and draw their content
+				int i = 0;
+				for (auto &warp : mWarps) {
+					//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
+					warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
+					i++;
+				}
 			}
 		}
 		mRenderedTexture = mRenderFbo->getColorTexture();
@@ -384,6 +444,12 @@ namespace VideoDromm {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
 		mMixFbos[aMixFboIndex].name = mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName() + "/" + mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName();
 		return mMixFbos[aMixFboIndex].name;
+	}
+	string VDMix::getTriangleFboName(unsigned int aTriangleFboIndex) {
+		if (aTriangleFboIndex > mTriangleFbos.size() - 1) aTriangleFboIndex = mTriangleFbos.size() - 1;
+		mTriangleFbos[aTriangleFboIndex].name = mFboList[mVDTriangles[aTriangleFboIndex]->getAFboIndex()]->getShaderName() + "/" + mFboList[mVDTriangles[aTriangleFboIndex]->getAFboIndex()]->getShaderName();
+		return mTriangleFbos[aTriangleFboIndex].name;
+
 	}
 	void VDMix::resize() {
 		// tell the warps our window has been resized, so they properly scale up or down
@@ -553,10 +619,10 @@ namespace VideoDromm {
 		if (!Warp::handleMouseUp(mWarps, event)) {
 			// let your application perform its mouseUp handling here
 			handled = false;
-		}
+	}
 		event.setHandled(handled);
 		return event.isHandled();
-	}
+}
 
 	bool VDMix::handleKeyDown(KeyEvent &event)
 	{
@@ -678,7 +744,7 @@ namespace VideoDromm {
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
 #endif
-					}
+						}
 						else if (texturetype == "camera") {
 #if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 							TextureCameraRef t(new TextureCamera());
@@ -721,10 +787,10 @@ namespace VideoDromm {
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 						}
+					}
 				}
 			}
 		}
-	}
 		return isFirstLaunch;
 	}
 	void VDMix::fboFlipV(unsigned int aFboIndex) {

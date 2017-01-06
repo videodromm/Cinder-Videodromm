@@ -42,9 +42,9 @@ namespace VideoDromm {
 		float h = static_cast<float>(texture->getHeight());
 
 		if (texture->getTarget() == GL_TEXTURE_RECTANGLE_ARB)
-			setTexCoords((float)area.x1, (float)area.y1, (float)area.x2, (float)area.y2);
+		setTexCoords((float)area.x1, (float)area.y1, (float)area.x2, (float)area.y2);
 		else
-			setTexCoords(area.x1 / w, area.y1 / h, area.x2 / w, area.y2 / h);
+		setTexCoords(area.x1 / w, area.y1 / h, area.x2 / w, area.y2 / h);
 
 		// draw
 		draw();*/
@@ -118,53 +118,64 @@ namespace VideoDromm {
 	//! to json
 	JsonTree	VDTriangle::toJson() const
 	{
+
 		JsonTree		json;
-		JsonTree VDTriangle = JsonTree::makeArray("VDTriangle");
+		try {
+			JsonTree triangle = JsonTree::makeArray("triangle");
 
-		VDTriangle.addChild(ci::JsonTree("afboindex", mAFboIndex));
-		/*VDTriangle.addChild(ci::JsonTree("bfboindex", mBFboIndex));
-		VDTriangle.addChild(ci::JsonTree("ashaderindex", mAShaderIndex));
-		VDTriangle.addChild(ci::JsonTree("bshaderindex", mBShaderIndex));
-		VDTriangle.addChild(ci::JsonTree("ashaderfilename", mAShaderFilename));
-		VDTriangle.addChild(ci::JsonTree("bshaderfilename", mBShaderFilename));
-		VDTriangle.addChild(ci::JsonTree("mixfboindex", mMixFboIndex));
-		VDTriangle.addChild(ci::JsonTree("crossfade", ABCrossfade));
-		VDTriangle.addChild(ci::JsonTree("active", mActive));
+			triangle.addChild(ci::JsonTree("afboindex", mAFboIndex));
+			triangle.addChild(ci::JsonTree("bfboindex", mBFboIndex));
+			triangle.addChild(ci::JsonTree("ashaderindex", mAShaderIndex));
+			triangle.addChild(ci::JsonTree("bshaderindex", mBShaderIndex));
+			triangle.addChild(ci::JsonTree("ashaderfilename", mAShaderFilename));
+			triangle.addChild(ci::JsonTree("bshaderfilename", mBShaderFilename));
+			triangle.addChild(ci::JsonTree("mixfboindex", mMixFboIndex));
+			triangle.addChild(ci::JsonTree("crossfade", ABCrossfade));
+			triangle.addChild(ci::JsonTree("active", mActive));
 
-		// add <controlpoint> tags (column-major)
-		JsonTree	cps = JsonTree::makeArray("controlpoints");
-		std::vector<vec2>::const_iterator itr;
-		unsigned int i = 0;
-		for (itr = mPoints.begin(); itr != mPoints.end(); ++itr) {
-			JsonTree	cp;
-			cp.addChild(ci::JsonTree("controlpoint", i));
-			cp.addChild(ci::JsonTree("x", (*itr).x));
-			cp.addChild(ci::JsonTree("y", (*itr).y));
-			cps.pushBack(cp);
-			i++;
+			// add <controlpoint> tags (column-major)
+			JsonTree	cps = JsonTree::makeArray("controlpoints");
+			std::vector<vec2>::const_iterator itr;
+			unsigned int i = 0;
+			for (itr = mPoints.begin(); itr != mPoints.end(); ++itr) {
+				JsonTree	cp;
+				cp.addChild(ci::JsonTree("controlpoint", i));
+				cp.addChild(ci::JsonTree("x", (*itr).x));
+				cp.addChild(ci::JsonTree("y", (*itr).y));
+				cps.pushBack(cp);
+				i++;
+			}
+			triangle.pushBack(cps);
+			//CI_LOG_V(triangle);
+			json.pushBack(triangle);
+			//CI_LOG_V(json);
 		}
-		VDTriangle.pushBack(cps);*/
-		json.pushBack(VDTriangle);
+		catch (const JsonTree::ExcJsonParserError& exc) {
+			CI_LOG_W(exc.what());
+		}
+		catch (...) {
+			CI_LOG_W("VDTriangle::toJson error");
+		}
 		return json;
 	}
 	//! from json
 	void VDTriangle::fromJson(const JsonTree &json)
 	{
-		if (json.hasChild("VDTriangle")) {
-			JsonTree VDTriangle(json.getChild("VDTriangle"));
-			mAFboIndex = (VDTriangle.hasChild("afboindex")) ? VDTriangle.getValueForKey<int>("afboindex") : 1;
-			mBFboIndex = (VDTriangle.hasChild("bfboindex")) ? VDTriangle.getValueForKey<int>("bfboindex") : 2;
-			mAShaderIndex = (VDTriangle.hasChild("ashaderindex")) ? VDTriangle.getValueForKey<int>("ashaderindex") : 1;
-			mBShaderIndex = (VDTriangle.hasChild("bshaderindex")) ? VDTriangle.getValueForKey<int>("bshaderindex") : 2;
-			mAShaderFilename = (VDTriangle.hasChild("ashaderfilename")) ? VDTriangle.getValueForKey<std::string>("ashaderfilename") : "0.frag";
-			mBShaderFilename = (VDTriangle.hasChild("bshaderfilename")) ? VDTriangle.getValueForKey<std::string>("bshaderfilename") : "0.frag";
-			mMixFboIndex = (VDTriangle.hasChild("mixfboindex")) ? VDTriangle.getValueForKey<int>("mixfboindex") : 0;
-			ABCrossfade = (VDTriangle.hasChild("crossfade")) ? VDTriangle.getValueForKey<float>("crossfade") : 1.0f;
-			mActive = (VDTriangle.hasChild("active")) ? VDTriangle.getValueForKey<float>("active") : true;
+		if (json.hasChild("triangle")) {
+			JsonTree triangle(json.getChild("triangle"));
+			mAFboIndex = (triangle.hasChild("afboindex")) ? triangle.getValueForKey<int>("afboindex") : 1;
+			mBFboIndex = (triangle.hasChild("bfboindex")) ? triangle.getValueForKey<int>("bfboindex") : 2;
+			mAShaderIndex = (triangle.hasChild("ashaderindex")) ? triangle.getValueForKey<int>("ashaderindex") : 1;
+			mBShaderIndex = (triangle.hasChild("bshaderindex")) ? triangle.getValueForKey<int>("bshaderindex") : 2;
+			mAShaderFilename = (triangle.hasChild("ashaderfilename")) ? triangle.getValueForKey<std::string>("ashaderfilename") : "0.frag";
+			mBShaderFilename = (triangle.hasChild("bshaderfilename")) ? triangle.getValueForKey<std::string>("bshaderfilename") : "0.frag";
+			mMixFboIndex = (triangle.hasChild("mixfboindex")) ? triangle.getValueForKey<int>("mixfboindex") : 0;
+			ABCrossfade = (triangle.hasChild("crossfade")) ? triangle.getValueForKey<float>("crossfade") : 1.0f;
+			mActive = (triangle.hasChild("active")) ? triangle.getValueForKey<float>("active") : true;
 			mDeleted = false; // if we load it, we don't delete it!
 			// load control points
 			mPoints.clear();
-			JsonTree cps(VDTriangle.getChild("controlpoints"));
+			JsonTree cps(triangle.getChild("controlpoints"));
 			for (size_t i = 0; i < cps.getNumChildren(); i++) {
 				JsonTree child = cps.getChild(i);
 				float x = (child.hasChild("x")) ? child.getValueForKey<float>("x") : 0.0f;
@@ -229,21 +240,21 @@ namespace VideoDromm {
 			CI_LOG_V("VDTriangles saving");
 			JsonTree		json;
 			// create VDTriangles json
-			JsonTree VDTrianglesJson = JsonTree::makeArray("triangles");
-			//VDTrianglesJson.addChild(ci::JsonTree("VDTriangles", "unknown"));
+			JsonTree trianglesJson = JsonTree::makeArray("triangles");
 
 			for (unsigned i = 0; i < VDTriangles.size(); ++i) {
 				if (!VDTriangles[i]->isDeleted()) {
-					// create VDTriangle
-					JsonTree	VDTriangle(VDTriangles[i]->toJson());
-					VDTriangle.addChild(ci::JsonTree("id", i + 1));
+					// create triangle
+					JsonTree	triangle(VDTriangles[i]->toJson());
+					//triangle.addChild(ci::JsonTree("id", i + 1));
 
-					// create <VDTriangle>
-					VDTrianglesJson.pushBack(VDTriangle);
+					// create <triangle>
+					// TODO fix exception: 
+					trianglesJson.pushBack(triangle);
 				}
 			}
 			// write file
-			json.pushBack(VDTrianglesJson);
+			json.pushBack(trianglesJson);
 			json.write(target);
 			CI_LOG_V("VDTriangles saved");
 		}

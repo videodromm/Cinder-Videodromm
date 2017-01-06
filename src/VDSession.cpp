@@ -616,6 +616,7 @@ void VDSession::setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int a
 	mVDMix->setTriangleBFboIndex(aTriangleIndex, aTriangleFboIndex);
 	// TODO mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 1);
 }
+
 #pragma endregion triangles
 // fbos
 #pragma region fbos

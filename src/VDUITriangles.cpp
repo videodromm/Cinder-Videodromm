@@ -22,7 +22,7 @@ void VDUITriangles::Run(const char* title) {
 		{
 			ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 			ui::PushID(w);
-			ui::Image((void*)mVDSession->getMixTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
+			ui::Image((void*)mVDSession->getTriangleTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			if (ui::IsItemHovered()) ui::SetTooltip(mVDSession->getTriangleName(w).c_str());
 			// loop on the fbos
 			for (unsigned int a = 0; a < mVDSession->getFboListSize(); a++) {
@@ -141,7 +141,9 @@ void VDUITriangles::Run(const char* title) {
 			ui::PopID();
 			ui::PopItemWidth();
 		}
-
+		// current triangle editing
+		if (currentNode == w) {
+		}
 		ui::End();
 	}
 }

@@ -150,7 +150,7 @@ namespace VideoDromm {
 		void							toggleDeleteTriangle(unsigned int aTriangleIndex) { mVDMix->toggleDeleteTriangle(aTriangleIndex); };
 		void							setTriangleCrossfade(unsigned int aTriangleIndex, float aCrossfade) { mVDMix->setTriangleCrossfade(aTriangleIndex, aCrossfade); };
 		float							getTriangleCrossfade(unsigned int aTriangleIndex) { return mVDMix->getTriangleCrossfade(aTriangleIndex); };
-		
+		ci::gl::TextureRef				getTriangleTexture(unsigned int aTriangleFboIndex) { return mVDMix->getTriangleTexture(aTriangleFboIndex); }
 		// fbos
 		void							fboFlipV(unsigned int aFboIndex) { mVDMix->fboFlipV(aFboIndex); };
 		bool							isFboFlipV(unsigned int aFboIndex) { return mVDMix->isFboFlipV(aFboIndex); };
