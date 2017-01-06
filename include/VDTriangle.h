@@ -55,7 +55,7 @@ class VDTriangle : public std::enable_shared_from_this<VDTriangle> {
 	void							setBShaderFilename(std::string aShaderFilename) { mBShaderFilename = aShaderFilename; };
 	void							setMixFboIndex(unsigned int aMixFboIndex) { mMixFboIndex = aMixFboIndex; };
 	void							setName(std::string aName) { mName = aName; };
-	void							setPoint(unsigned int aIndex, vec2 aPoint) { mVertices[aIndex] = aPoint; };
+	//void							setPoint(unsigned int aIndex, vec2 aPoint) { mVertices[aIndex] = aPoint; };
 	//! get the width of the content in pixels
 	int getWidth() const { return mWidth; };
 	//! get the height of the content in pixels
@@ -79,13 +79,30 @@ class VDTriangle : public std::enable_shared_from_this<VDTriangle> {
 	void draw( const ci::gl::Texture2dRef &texture, const ci::Area &srcArea );
 	//! draws a specific area of a triangled texture to a specific region
 	//void draw( const ci::gl::Texture2dRef &texture, const ci::Area &srcArea, const ci::Rectf &destRect );
-	//! draws a warped texture
+	//! draws a triangle texture
 	void draw(const ci::gl::Texture2dRef &texture, const ci::Area &srcArea, const ci::Rectf &destRect);
 	//void setTexCoords(float x1, float y1, float x2, float y2);
 	void draw();
 	//! adjusts both the source area and destination rectangle so that they are clipped against the VDTriangle's content
 	bool clip( ci::Area &srcArea, ci::Rectf &destRect ) const;
 
+	//! returns the coordinates of the specified control point
+	 ci::vec2 getControlPoint(unsigned index) const;
+	//! sets the coordinates of the specified control point
+	 void setControlPoint(unsigned index, const ci::vec2 &pos);
+	//! moves the specified control point
+	 void moveControlPoint(unsigned index, const ci::vec2 &shift);
+	//! get the number of control points
+	 unsigned int getNumControlPoints() const { return mPoints.size(); }
+	//! get the index of the currently selected control point
+	 unsigned int getSelectedControlPoint() const { return mSelected; }
+	//! select one of the control points
+	 void selectControlPoint(unsigned index);
+	//! deselect the selected control point
+	 void deselectControlPoint();
+	//! returns the index of the closest control point, as well as the distance in pixels
+	// unsigned findControlPoint(const ci::vec2 &pos, float *distance) const;
+	void reset();
 	//! set the width and height in pixels of the content of all VDTriangles
 	static void setSize( const VDTriangleList &VDTriangles, int w, int h );
 	//! set the width and height in pixels of the content of all VDTriangles
@@ -123,28 +140,11 @@ class VDTriangle : public std::enable_shared_from_this<VDTriangle> {
 	std::string						mBShaderFilename;	// file name of the B shader
 	bool							mActive;			// active
 	bool							mDeleted;			// to be deleted
-	ci::vec2						mStartPt, mVertices[3];
+	//ci::vec2						mStartPt, mVertices[3];
 	std::vector<ci::vec2>			mPoints;
 	gl::GlslProgRef					mGlsl;
   private:
-	ci::vec2 mOffset;
-
-	//! instanced control points
-	/*typedef struct Data {
-		ci::vec2 position;
-		float    scale;
-		float    reserved;
-		ci::vec4 color;
-
-		Data() {}
-		Data( const ci::vec2 &pt, const ci::vec4 &clr, float scale )
-		    : position( pt )
-		    , scale( scale )
-		    , color( clr )
-		{
-		}
-	} Data;*/
-
+	//ci::vec2 mOffset;
 	ci::gl::VboRef   mInstanceDataVbo;
 	ci::gl::BatchRef mInstancedBatch;
 };

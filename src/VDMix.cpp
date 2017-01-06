@@ -167,9 +167,9 @@ namespace VideoDromm {
 		mVDTriangles[newIndex]->setMixFboIndex(newIndex);
 		mVDTriangles[newIndex]->setName(toString(mVDTriangles[newIndex]->getMixFboIndex()) + wName);
 		if (newIndex > 0) {
-			mVDTriangles[newIndex]->setPoint(0, vec2(randInt(8, 10)));
-			mVDTriangles[newIndex]->setPoint(1, vec2(randInt(18, 80)));
-			mVDTriangles[newIndex]->setPoint(2, vec2(randInt(20, 50)));
+			mVDTriangles[newIndex]->setControlPoint(0, vec2(randInt(8, 10)));
+			mVDTriangles[newIndex]->setControlPoint(1, vec2(randInt(18, 80)));
+			mVDTriangles[newIndex]->setControlPoint(2, vec2(randInt(20, 50)));
 		}
 		updateTriangleName(newIndex);
 	}
