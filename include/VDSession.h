@@ -243,7 +243,10 @@ namespace VideoDromm {
 		void							closeMidiInPort(int i) { mVDRouter->closeMidiInPort(i); };
 		void							openMidiOutPort(int i) { mVDRouter->openMidiOutPort(i); };
 		void							closeMidiOutPort(int i) { mVDRouter->closeMidiOutPort(i); };
-
+		//! window management
+		void							createWindow() { cmd = 0; };
+		void							deleteWindow() { cmd = 1; };
+		int								getCmd() { int rtn = cmd; cmd = -1; return cmd; };
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
@@ -294,7 +297,6 @@ namespace VideoDromm {
 		string							mShaderLeft;
 		string							mShaderRight;
 		//! textures
-
 		int								mWidth;
 		int								mHeight;
 		float							mPosX;
@@ -302,6 +304,8 @@ namespace VideoDromm {
 		float							mZoom;
 		void							updateWarpName(unsigned int aWarpIndex);
 		void							updateStream(string * aStringPtr) { mVDMix->updateStream(aStringPtr); };
+		//! window management
+		int								cmd;
 	};
 
 }

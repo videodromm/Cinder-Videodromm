@@ -63,6 +63,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		// init for received shaders from websockets for warp 0
 		mVDMix->createTriangle("default", 1, 1, 2, 2, 1.0f);
 	}
+	cmd = -1;
 }
 
 VDSessionRef VDSession::create(VDSettingsRef aVDSettings)

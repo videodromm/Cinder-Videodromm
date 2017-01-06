@@ -173,18 +173,15 @@ namespace VideoDromm {
 		try {
 			// try to load the specified json file
 			if (json.hasChild("triangles")) {
-				JsonTree ws(json.getChild("triangles"));
+				JsonTree triangles(json.getChild("triangles"));
 
 				// iterate VDTriangles
-				for (size_t i = 0; i < ws.getNumChildren(); i++) {
-					JsonTree child(ws.getChild(i));
+				for (size_t i = 0; i < triangles.getNumChildren(); i++) {
+					JsonTree child(triangles.getChild(i));
 
 					if (child.hasChild("triangle")) {
-						JsonTree w(child.getChild("triangle"));
-						// create VDTriangle of the correct type
-						if (child.hasChild("afboindex")) {
-							// TODO
-						}
+						JsonTree triangle(child.getChild("triangle"));
+					
 						VDTriangle t();
 						//t->fromJson(child);
 						//VDTriangles.push_back(t);
@@ -274,13 +271,13 @@ namespace VideoDromm {
 			triangle.addChild(ci::JsonTree("ashaderindex", mAShaderIndex));
 			triangle.addChild(ci::JsonTree("bshaderindex", mBShaderIndex));
 			triangle.addChild(ci::JsonTree("ashaderfilename", mAShaderFilename));
-			triangle.addChild(ci::JsonTree("bshaderfilename", mBShaderFilename));
+			/*triangle.addChild(ci::JsonTree("bshaderfilename", mBShaderFilename));
 			triangle.addChild(ci::JsonTree("mixfboindex", mMixFboIndex));
 			triangle.addChild(ci::JsonTree("crossfade", ABCrossfade));
 			triangle.addChild(ci::JsonTree("active", mActive));
 
 			// add <controlpoint> tags (column-major)
-			/*JsonTree	cps = JsonTree::makeArray("controlpoints");
+			JsonTree	cps = JsonTree::makeArray("controlpoints");
 			std::vector<vec2>::const_iterator itr;
 			unsigned int i = 0;
 			for (itr = mPoints.begin(); itr != mPoints.end(); ++itr) {
