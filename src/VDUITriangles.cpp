@@ -85,6 +85,7 @@ void VDUITriangles::Run(const char* title) {
 				}
 				else{
 					currentNode = w;
+					mVDSession->setCurrentEditIndex(w);
 				}
 			}
 			ui::PopStyleColor(3);

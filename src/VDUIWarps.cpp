@@ -26,7 +26,7 @@ void VDUIWarps::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip(mVDSession->getWarpName(w).c_str());
 			// loop on the fbos
 			for (unsigned int a = 0; a < mVDSession->getFboListSize(); a++) {
-				if (a > 0 && (a%6 != 0)) ui::SameLine();
+				if (a > 0 && (a % 6 != 0)) ui::SameLine();
 				if (mVDSession->getWarpAFboIndex(w) == a) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(a / 7.0f, 1.0f, 1.0f));
 				}
@@ -78,13 +78,14 @@ void VDUIWarps::Run(const char* title) {
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.8f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.8f, 0.8f, 0.8f));
 			sprintf(buf, "N##n%d", w);
-			if (ui::Button(buf)){
+			if (ui::Button(buf)) {
 				if (w == currentNode) {
 					// if the same button pressed we hide the nodes
 					currentNode = -1;
 				}
-				else{
+				else {
 					currentNode = w;
+					mVDSession->setCurrentEditIndex(w);
 				}
 			}
 			ui::PopStyleColor(3);
@@ -109,13 +110,14 @@ void VDUIWarps::Run(const char* title) {
 			// active
 			if (mVDSession->isWarpActive(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+				sprintf(buf, "AC##a%d", w);
 			}
 			else {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+				sprintf(buf, "A##a%d", w);
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "A##a%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleWarpActive(w);
 			}
@@ -125,13 +127,14 @@ void VDUIWarps::Run(const char* title) {
 			// solo
 			if (mVDSession->isWarpSolo(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+				sprintf(buf, "SOLO##s%d", w);
 			}
 			else {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+				sprintf(buf, "S##s%d", w);
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "S##s%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleWarpSolo(w);
 			}

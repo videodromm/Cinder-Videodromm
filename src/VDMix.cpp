@@ -195,6 +195,26 @@ namespace VideoDromm {
 			CI_LOG_V(" solo " + toString(mSolo) );
 		}
 	}
+	void VDMix::setCurrentEditIndex(unsigned int aIndex) {
+		mCurrentEditIndex = aIndex;
+	}
+	unsigned int VDMix::getSoloOrActiveIndex() {
+		unsigned int rtn = 0;
+		if (mSolo > -1) {
+			rtn = mSolo;
+		}
+		else {
+			if (mUseTriangles) {
+				if (mCurrentEditIndex > mVDTriangles.size() - 1) mCurrentEditIndex = 0;
+			}
+			else {
+				if (mCurrentEditIndex > mWarps.size() - 1) mCurrentEditIndex = 0;
+			}
+			rtn = mCurrentEditIndex;
+		}
+		return rtn; 
+	}
+
 	ci::gl::TextureRef VDMix::getTriangleTexture(unsigned int aTriangleFboIndex) {
 		if (aTriangleFboIndex > mTriangleFbos.size() - 1) aTriangleFboIndex = 0;
 		if (!mTriangleFbos[aTriangleFboIndex].texture) {
@@ -402,7 +422,7 @@ namespace VideoDromm {
 				int i = 0;
 				for (auto &warp : mWarps) {
 					//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
-					warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
+					if (warp->isActive()) warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
 					i++;
 				}
 			}

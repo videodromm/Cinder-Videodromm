@@ -132,9 +132,13 @@ namespace VideoDromm {
 		void							toggleWarpSolo(unsigned int aWarpIndex) { mVDMix->toggleWarpSolo(aWarpIndex); };
 		bool							isWarpDeleted(unsigned int aWarpIndex) { return mVDMix->isWarpDeleted(aWarpIndex); };
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mVDMix->toggleDeleteWarp(aWarpIndex); };
+		// common to warps and triangles
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
 		int								getSolo() { return mVDMix->getSolo(); };
+		unsigned int					getSoloOrActiveIndex() { return mVDMix->getSoloOrActiveIndex(); };
+		void							setCurrentEditIndex(unsigned int aIndex) { mVDMix->setCurrentEditIndex(aIndex); };
+		unsigned int					getCurrentEditIndex() { return mVDMix->getCurrentEditIndex(); };
 		// triangles
 		string							getTriangleName(unsigned int aTriangleIndex) { return mVDMix->getTriangleName(aTriangleIndex); };
 		unsigned int					getTriangleCount() { return mVDMix->getTriangleCount(); };

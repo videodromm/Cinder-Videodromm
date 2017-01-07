@@ -99,9 +99,13 @@ namespace VideoDromm
 		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; CI_LOG_V(toString(mSolo) + " " + toString(aWarpIndex)); };
 		bool							isWarpDeleted(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isDeleted(); };
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleDeleteWarp(); };
+		// common to warps and triangles
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
 		int								getSolo() { return mSolo; };
+		unsigned int					getSoloOrActiveIndex();
+		unsigned int					getCurrentEditIndex() { return mCurrentEditIndex; };
+		void							setCurrentEditIndex(unsigned int aIndex);
 
 		// triangles
 		void							createTriangle(string wName = "triangle", unsigned int aFboIndex = 0, unsigned int aShaderIndex = 0, unsigned int bFboIndex = 0, unsigned int bShaderIndex = 0, float xFade = 1.0f);
@@ -253,7 +257,8 @@ namespace VideoDromm
 		void							renderTriangles();
 		bool							mUseTriangles;
 		int								triangleMixToRender;
-
+		// common to warps and triangles
+		unsigned int					mCurrentEditIndex;
 		// old to refactor:
 		//ci::vec2						mStartPt, mVertices[3];
 		// shared texture output
