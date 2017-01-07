@@ -64,6 +64,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		mVDMix->createTriangle("default", 1, 1, 2, 2, 1.0f);
 	}
 	cmd = -1;
+	mEnabledAlphaBlending = true;
 }
 
 VDSessionRef VDSession::create(VDSettingsRef aVDSettings)

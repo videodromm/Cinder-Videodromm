@@ -107,7 +107,41 @@ void VDUIRender::Run(const char* title) {
 		if (ui::Button("Create Triangle")) {
 			mVDSession->createTriangleMix();
 		}
+
+		// alpha blending
+		if (mVDSession->isEnabledAlphaBlending()) {
+			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+		}
+		else {
+			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+		}
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+
+		if (ui::Button("Alpha Blending")) {
+			mVDSession->toggleEnabledAlphaBlending();
+		}
+		ui::PopStyleColor(3);
+		if (ui::IsItemHovered()) ui::SetTooltip("Enabled Alpha Blending");
+		// Render Texture
+		ui::SameLine();
+		if (mVDSession->isRenderTexture()) {
+			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+		}
+		else {
+			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+		}
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+
+		if (ui::Button("Render Texture")) {
+			mVDSession->toggleRenderTexture();
+		}
+		ui::PopStyleColor(3);
+		if (ui::IsItemHovered()) ui::SetTooltip("Render Texture or Mix");
+
 		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
+		ui::Text("solo %d", mVDSession->getSolo());
 
 		ui::PopItemWidth();
 	}

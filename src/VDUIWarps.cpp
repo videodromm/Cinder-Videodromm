@@ -107,7 +107,7 @@ void VDUIWarps::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Spout output");
 			ui::SameLine();
 			// active
-			if (mVDSession->isWarpActive(w) == w) {
+			if (mVDSession->isWarpActive(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
 			}
 			else {
@@ -123,7 +123,7 @@ void VDUIWarps::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Warp Active");
 			ui::SameLine();
 			// solo
-			if (mVDSession->isWarpSolo(w) == w) {
+			if (mVDSession->isWarpSolo(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
 			}
 			else {

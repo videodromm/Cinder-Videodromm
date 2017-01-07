@@ -101,6 +101,7 @@ namespace VideoDromm
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleDeleteWarp(); };
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
+		int								getSolo() { return mSolo; };
 
 		// triangles
 		void							createTriangle(string wName = "triangle", unsigned int aFboIndex = 0, unsigned int aShaderIndex = 0, unsigned int bFboIndex = 0, unsigned int bShaderIndex = 0, float xFade = 1.0f);

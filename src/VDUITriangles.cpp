@@ -91,15 +91,16 @@ void VDUITriangles::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Show nodes");
 			ui::SameLine();
 			// active
-			if (mVDSession->isTriangleActive(w) == w) {
+			if (mVDSession->isTriangleActive(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+				sprintf(buf, "AC##tra%d", w);
 			}
 			else {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+				sprintf(buf, "A##tra%d", w);
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "A##tra%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleTriangleActive(w);
 			}
@@ -107,15 +108,16 @@ void VDUITriangles::Run(const char* title) {
 			if (ui::IsItemHovered()) ui::SetTooltip("Toggle Triangle Active");
 			ui::SameLine();
 			// solo
-			if (mVDSession->isTriangleSolo(w) == w) {
+			if (mVDSession->isTriangleSolo(w)) {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+				sprintf(buf, "SOLO##trs%d", w);
 			}
 			else {
 				ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+				sprintf(buf, "S##trs%d", w);
 			}
 			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-			sprintf(buf, "S##trs%d", w);
 			if (ui::Button(buf)) {
 				mVDSession->toggleTriangleSolo(w);
 			}

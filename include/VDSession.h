@@ -134,7 +134,7 @@ namespace VideoDromm {
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mVDMix->toggleDeleteWarp(aWarpIndex); };
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
-
+		int								getSolo() { return mVDMix->getSolo(); };
 		// triangles
 		string							getTriangleName(unsigned int aTriangleIndex) { return mVDMix->getTriangleName(aTriangleIndex); };
 		unsigned int					getTriangleCount() { return mVDMix->getTriangleCount(); };
@@ -174,7 +174,10 @@ namespace VideoDromm {
 		unsigned int					getMixFbosCount();
 		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true) { return mVDMix->getRenderedTexture(reDraw); };
 		ci::gl::TextureRef				getRenderTexture() { return mVDMix->getRenderTexture(); };
-
+		bool							isEnabledAlphaBlending() { return mEnabledAlphaBlending; };
+		void							toggleEnabledAlphaBlending() { mEnabledAlphaBlending = !mEnabledAlphaBlending; }
+		bool							isRenderTexture() { return mRenderTexture; };
+		void							toggleRenderTexture() { mRenderTexture = !mRenderTexture; }
 		bool							isFlipH();
 		bool							isFlipV();
 		void							flipH();
@@ -297,7 +300,8 @@ namespace VideoDromm {
 		bool							mFlipH;
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;
-
+		bool							mEnabledAlphaBlending;
+		bool							mRenderTexture;
 		//! Shaders
 		string							mShaderLeft;
 		string							mShaderRight;
