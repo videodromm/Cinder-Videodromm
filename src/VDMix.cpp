@@ -60,6 +60,8 @@ namespace VideoDromm {
 		// triangles
 		mTrianglesJson = getAssetPath("") / mVDSettings->mAssetsPath / "triangles.json";
 		mUseTriangles = false;
+		mWarpAnimationActive = false;
+		mWarpActiveIndex = 0;
 		mSolo = -1;
 		triangleMixToRender = 0;
 	}
@@ -214,7 +216,6 @@ namespace VideoDromm {
 		}
 		return rtn; 
 	}
-
 	ci::gl::TextureRef VDMix::getTriangleTexture(unsigned int aTriangleFboIndex) {
 		if (aTriangleFboIndex > mTriangleFbos.size() - 1) aTriangleFboIndex = 0;
 		if (!mTriangleFbos[aTriangleFboIndex].texture) {
@@ -398,7 +399,6 @@ namespace VideoDromm {
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
 		if (mUseTriangles) {
-
 			// if solo then only render this solo triangle
 			if (mSolo > -1) {
 				mVDTriangles[mSolo]->draw(getTriangleTexture(mSolo), getTriangleTexture(mSolo)->getBounds());
@@ -413,6 +413,12 @@ namespace VideoDromm {
 			}
 		}
 		else {
+			// animate
+			if (mWarpAnimationActive) {
+				mWarpActiveIndex++;
+				if (mWarpActiveIndex > mWarps.size() - 1) mWarpActiveIndex = 0;
+				mSolo = mWarpActiveIndex;
+			}
 			// if solo then only render this solo warp
 			if (mSolo > -1) {
 				mWarps[mSolo]->draw(getMixTexture(mSolo), getMixTexture(mSolo)->getBounds());
@@ -430,6 +436,12 @@ namespace VideoDromm {
 		mRenderedTexture = mRenderFbo->getColorTexture();
 		return mRenderedTexture;
 	}
+	void VDMix::toggleWarpAnimationActive() { 
+		// reset solo
+		(mWarpAnimationActive) ? mSolo = -1 : mWarpActiveIndex=0;
+		mWarpAnimationActive = !mWarpAnimationActive; 
+	}
+
 #pragma endregion warps
 	void VDMix::renderMix() {
 		gl::ScopedFramebuffer scopedFbo(mMixFbos[warpMixToRender].fbo);

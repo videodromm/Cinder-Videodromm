@@ -132,6 +132,8 @@ namespace VideoDromm {
 		void							toggleWarpSolo(unsigned int aWarpIndex) { mVDMix->toggleWarpSolo(aWarpIndex); };
 		bool							isWarpDeleted(unsigned int aWarpIndex) { return mVDMix->isWarpDeleted(aWarpIndex); };
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mVDMix->toggleDeleteWarp(aWarpIndex); };
+		bool							isWarpAnimationActive() { return mVDMix->isWarpAnimationActive(); };
+		void							toggleWarpAnimationActive() { mVDMix->toggleWarpAnimationActive(); };
 		// common to warps and triangles
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();

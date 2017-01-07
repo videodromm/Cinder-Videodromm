@@ -99,6 +99,8 @@ namespace VideoDromm
 		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; CI_LOG_V(toString(mSolo) + " " + toString(aWarpIndex)); };
 		bool							isWarpDeleted(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isDeleted(); };
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleDeleteWarp(); };
+		bool							isWarpAnimationActive() { return mWarpAnimationActive; };
+		void							toggleWarpAnimationActive();
 		// common to warps and triangles
 		bool							isWarpTriangle();
 		void							toggleWarpTriangle();
@@ -249,6 +251,8 @@ namespace VideoDromm
 		gl::FboRef						mRenderFbo;
 		int								warpMixToRender;
 		int								mSolo;
+		bool							mWarpAnimationActive;
+		unsigned int					mWarpActiveIndex;
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
 		// triangles

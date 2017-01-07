@@ -67,8 +67,7 @@ void VDUI::resize() {
 }
 void VDUI::Run(const char* title, unsigned int fps) {
 	static int currentWindowRow1 = 8;
-	static int currentWindowRow2 = 6;
-	//static int currentWindowRow3 = 0;
+	static int currentWindowRow2 = 5;
 
 	ImGuiStyle& style = ui::GetStyle();
 
