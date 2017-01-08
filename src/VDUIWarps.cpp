@@ -12,10 +12,11 @@ VDUIWarps::~VDUIWarps() {
 
 void VDUIWarps::Run(const char* title) {
 	static int currentNode = 0;
-
+	xPos = mVDSettings->uiMargin;
+	yPos = mVDSettings->uiYPosRow3 - mVDSettings->uiLargePreviewH;
 	for (int w = 0; w < mVDSession->getWarpCount(); w++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
-		ui::SetNextWindowPos(ImVec2((w * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin, mVDSettings->uiYPosRow3), ImGuiSetCond_Once);
+		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		//int hue = 0;
 		sprintf(buf, "%s##sh%d", mVDSession->getWarpName(w).c_str(), w);
 		ui::Begin(buf, NULL, ImVec2(0, 0), ui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
@@ -247,5 +248,11 @@ void VDUIWarps::Run(const char* title) {
 #pragma endregion Nodes
 
 		ui::End();
+		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
+		if (xPos > mVDSettings->mRenderWidth)
+		{
+			xPos = mVDSettings->uiMargin;
+			yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;
+		}
 	}
 }
