@@ -12,8 +12,8 @@
 
 #if defined( CINDER_MSW )
 // MIDI (only on windows for now)
-#include "CinderMidi.h"
-
+//#include "CinderMidi.h"
+#include "MidiIn.h"
 #endif
 // OSC
 #include "Osc.h"
@@ -107,16 +107,16 @@ namespace VideoDromm
 #if defined( CINDER_MSW )
 		vector<midiInput>			mMidiInputs;
 		// midi inputs: couldn't make a vector
-		midi::MidiInput				mMidiIn0;
-		midi::MidiInput				mMidiIn1;
-		midi::MidiInput				mMidiIn2;
-		midi::MidiInput				mMidiIn3;
-		void						midiListener(midi::MidiMessage msg);
+		midi::Input					mMidiIn0;
+		midi::Input					mMidiIn1;
+		midi::Input					mMidiIn2;
+		midi::Input					mMidiIn3;
+		void						midiListener(midi::Message msg);
 		// midi output
-		midi::MidiOutput			mMidiOut0;
-		midi::MidiOutput			mMidiOut1;
-		midi::MidiOutput			mMidiOut2;
-		midi::MidiOutput			mMidiOut3;
+		midi::MidiOut				mMidiOut0;
+		midi::MidiOut				mMidiOut1;
+		midi::MidiOut				mMidiOut2;
+		midi::MidiOut				mMidiOut3;
 		vector<midiOutput>			mMidiOutputs;
 #endif
 		string						midiControlType;

@@ -222,9 +222,9 @@ void VDRouter::setupOSCReceiver() {
 }
 void VDRouter::shutdown() {
 #if defined( CINDER_MSW )
-	mMidiIn0.ClosePort();
-	mMidiIn1.ClosePort();
-	mMidiIn2.ClosePort();
+	mMidiIn0.closePort();
+	mMidiIn1.closePort();
+	mMidiIn2.closePort();
 	mMidiOut0.closePort();
 	mMidiOut1.closePort();
 	mMidiOut2.closePort();
@@ -235,19 +235,19 @@ void VDRouter::midiSetup() {
 	stringstream ss;
 	ss << "setupMidi: ";
 #if defined( CINDER_MSW )
-	mMidiIn0.GetPortList();
-	if (mMidiIn0.mPortCount > 0)
+	mMidiIn0.listPorts();
+	if (mMidiIn0.getNumPorts() > 0)
 	{
-		for (int i = 0; i < mMidiIn0.mPortCount; i++)
+		for (int i = 0; i < mMidiIn0.getNumPorts(); i++)
 		{
 			bool alreadyListed = false;
 			for (int j = 0; j < mMidiInputs.size(); j++)
 			{
-				if (mMidiInputs[j].portName == mMidiIn0.GetPortName(i)) alreadyListed = true;
+				if (mMidiInputs[j].portName == mMidiIn0.getPortName(i)) alreadyListed = true;
 			}
 			if (!alreadyListed) {
 				midiInput mIn;
-				mIn.portName = mMidiIn0.GetPortName(i);
+				mIn.portName = mMidiIn0.getPortName(i);
 				mMidiInputs.push_back(mIn);
 				if (mVDSettings->mMIDIOpenAllInputPorts) {
 					openMidiInPort(i);
@@ -256,7 +256,7 @@ void VDRouter::midiSetup() {
 				}
 				else {
 					mMidiInputs[i].isConnected = false;
-					ss << "Available MIDI in port " << i << " " << mMidiIn0.GetPortName(i);
+					ss << "Available MIDI in port " << i << " " << mMidiIn0.getPortName(i);
 				}
 			}
 		}
@@ -269,7 +269,7 @@ void VDRouter::midiSetup() {
 	mVDSettings->mNewMsg = true;
 	mVDSettings->mMsg = ss.str();
 	// midi out
-	mMidiOut0.getPortList();
+	//mMidiOut0.getPortList();
 	if (mMidiOut0.getNumPorts() > 0) {
 		for (int i = 0; i < mMidiOut0.getNumPorts(); i++)
 		{
@@ -300,21 +300,21 @@ void VDRouter::midiSetup() {
 void VDRouter::openMidiInPort(int i) {
 #if defined( CINDER_MSW )
 	// HACK Push2 has 2 midi ports, we keep the internal one not useable 
-	if (mMidiIn0.GetPortName(i) != "Ableton Push 2 1") {
+	if (mMidiIn0.getPortName(i) != "Ableton Push 2 1") {
 
 		stringstream ss;
-		if (i < mMidiIn0.mPortCount) {
+		if (i < mMidiIn0.getNumPorts()) {
 			if (i == 0) {
-				mMidiIn0.OpenPort(i);
-				mMidiIn0.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+				mMidiIn0.openPort(i);
+				mMidiIn0.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
 			}
 			if (i == 1) {
-				mMidiIn1.OpenPort(i);
-				mMidiIn1.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+				mMidiIn1.openPort(i);
+				mMidiIn1.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
 			}
 			if (i == 2) {
-				mMidiIn2.OpenPort(i);
-				mMidiIn2.mMidiInCallback = std::bind(&VDRouter::midiListener, this, std::placeholders::_1);
+				mMidiIn2.openPort(i);
+				mMidiIn2.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
 			}
 		}
 		mMidiInputs[i].isConnected = true;
@@ -328,15 +328,15 @@ void VDRouter::closeMidiInPort(int i) {
 #if defined( CINDER_MSW )
 	if (i == 0)
 	{
-		mMidiIn0.ClosePort();
+		mMidiIn0.closePort();
 	}
 	if (i == 1)
 	{
-		mMidiIn1.ClosePort();
+		mMidiIn1.closePort();
 	}
 	if (i == 2)
 	{
-		mMidiIn2.ClosePort();
+		mMidiIn2.closePort();
 	}
 	mMidiInputs[i].isConnected = false;
 #endif
@@ -417,15 +417,15 @@ void VDRouter::closeMidiOutPort(int i) {
 }
 
 #if defined( CINDER_MSW )
-void VDRouter::midiListener(midi::MidiMessage msg) {
+void VDRouter::midiListener(midi::Message msg) {
 	stringstream ss;
-	midiChannel = msg.Channel;
-	switch (msg.StatusCode)
+	midiChannel = msg.channel;
+	switch (msg.status)
 	{
 	case MIDI_CONTROL_CHANGE:
 		midiControlType = "/cc";
-		midiControl = msg.Control;
-		midiValue = msg.Value;
+		midiControl = msg.control;
+		midiValue = msg.value;
 		midiNormalizedValue = lmap<float>(midiValue, 0.0, 127.0, 0.0, 1.0);
 		if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
 			updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
@@ -437,16 +437,16 @@ void VDRouter::midiListener(midi::MidiMessage msg) {
 		break;
 	case MIDI_NOTE_ON:
 		midiControlType = "/on";
-		midiPitch = msg.Pitch;
-		midiVelocity = msg.Velocity;
+		midiPitch = msg.pitch;
+		midiVelocity = msg.velocity;
 		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		// quick hack!
 		mVDAnimation->changeFloatValue(14, 1.0f + midiNormalizedValue);
 		break;
 	case MIDI_NOTE_OFF:
 		midiControlType = "/off";
-		midiPitch = msg.Pitch;
-		midiVelocity = msg.Velocity;
+		midiPitch = msg.pitch;
+		midiVelocity = msg.velocity;
 		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		break;
 	default:
