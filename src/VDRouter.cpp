@@ -23,10 +23,9 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWeb
 		}
 	}
 
-#if defined( CINDER_MSW )
 	// midi
 	if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
-#endif
+
 }
 void VDRouter::setupOSCSender() {
 	// OSC sender with broadcast
@@ -221,23 +220,23 @@ void VDRouter::setupOSCReceiver() {
 	});
 }
 void VDRouter::shutdown() {
-#if defined( CINDER_MSW )
+
 	mMidiIn0.closePort();
 	mMidiIn1.closePort();
 	mMidiIn2.closePort();
 	mMidiOut0.closePort();
 	mMidiOut1.closePort();
 	mMidiOut2.closePort();
-#endif
+
 }
 
 void VDRouter::midiSetup() {
 	stringstream ss;
 	ss << "setupMidi: ";
-#if defined( CINDER_MSW )
-	mMidiIn0.listPorts();
+
 	if (mMidiIn0.getNumPorts() > 0)
 	{
+		mMidiIn0.listPorts();
 		for (int i = 0; i < mMidiIn0.getNumPorts(); i++)
 		{
 			bool alreadyListed = false;
@@ -294,11 +293,10 @@ void VDRouter::midiSetup() {
 	}
 	midiControlType = "none";
 	midiControl = midiPitch = midiVelocity = midiNormalizedValue = midiValue = midiChannel = 0;
-#endif
 }
 
 void VDRouter::openMidiInPort(int i) {
-#if defined( CINDER_MSW )
+
 	// HACK Push2 has 2 midi ports, we keep the internal one not useable 
 	if (mMidiIn0.getPortName(i) != "Ableton Push 2 1") {
 
@@ -322,10 +320,10 @@ void VDRouter::openMidiInPort(int i) {
 		mVDSettings->mMsg = ss.str();
 		mVDSettings->mNewMsg = true;
 	}
-#endif
+
 }
 void VDRouter::closeMidiInPort(int i) {
-#if defined( CINDER_MSW )
+
 	if (i == 0)
 	{
 		mMidiIn0.closePort();
@@ -339,10 +337,10 @@ void VDRouter::closeMidiInPort(int i) {
 		mMidiIn2.closePort();
 	}
 	mMidiInputs[i].isConnected = false;
-#endif
+
 }
 void VDRouter::midiOutSendNoteOn(int i, int channel, int pitch, int velocity) {
-#if defined( CINDER_MSW )
+
 	if (i == 0)
 	{
 		if (mMidiOutputs[i].isConnected) mMidiOut0.sendNoteOn(channel, pitch, velocity);
@@ -355,11 +353,10 @@ void VDRouter::midiOutSendNoteOn(int i, int channel, int pitch, int velocity) {
 	{
 		if (mMidiOutputs[i].isConnected) mMidiOut2.sendNoteOn(channel, pitch, velocity);
 	}
-#endif
 
 }
 void VDRouter::openMidiOutPort(int i) {
-#if defined( CINDER_MSW )
+
 	stringstream ss;
 	ss << "Port " << i << " ";
 	if (i < mMidiOutputs.size()) {
@@ -396,10 +393,10 @@ void VDRouter::openMidiOutPort(int i) {
 	}
 	mVDSettings->mMsg = ss.str();
 	mVDSettings->mNewMsg = true;
-#endif
+
 }
 void VDRouter::closeMidiOutPort(int i) {
-#if defined( CINDER_MSW )
+
 	if (i == 0)
 	{
 		mMidiOut0.closePort();
@@ -413,10 +410,9 @@ void VDRouter::closeMidiOutPort(int i) {
 		mMidiOut2.closePort();
 	}
 	mMidiOutputs[i].isConnected = false;
-#endif
+
 }
 
-#if defined( CINDER_MSW )
 void VDRouter::midiListener(midi::Message msg) {
 	stringstream ss;
 	midiChannel = msg.channel;
@@ -457,7 +453,7 @@ void VDRouter::midiListener(midi::Message msg) {
 
 	mVDSettings->mMidiMsg = ss.str();
 }
-#endif
+
 void VDRouter::updateParams(int iarg0, float farg1) {
 	if (farg1 > 0.1) {
 		//avoid to send twice

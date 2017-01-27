@@ -9,12 +9,8 @@
 #include "VDAnimation.h"
 // Websocket
 #include "VDWebsocket.h"
-
-#if defined( CINDER_MSW )
-// MIDI (only on windows for now)
-//#include "CinderMidi.h"
+// Midi
 #include "MidiIn.h"
-#endif
 // OSC
 #include "Osc.h"
 #define USE_UDP 1
@@ -70,14 +66,12 @@ namespace VideoDromm
 		void						updateParams(int iarg0, float farg1);
 		// MIDI
 		void						midiSetup();
-#if defined( CINDER_MSW )
 		int							getMidiInPortsCount() { return mMidiInputs.size(); };
 		string						getMidiInPortName(unsigned int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].portName : "No midi in ports"; };
 		bool						isMidiInConnected(unsigned int i) { return (i < mMidiInputs.size()) ? mMidiInputs[i].isConnected : false; };
 		int							getMidiOutPortsCount() { return mMidiOutputs.size(); };
 		string						getMidiOutPortName(unsigned int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].portName : "No midi out ports"; };
 		bool						isMidiOutConnected(unsigned int i) { return (i < mMidiOutputs.size()) ? mMidiOutputs[i].isConnected : false; };
-#endif
 		void						midiOutSendNoteOn(int i, int channel, int pitch, int velocity);
 
 		void						openMidiInPort(int i);
@@ -104,7 +98,6 @@ namespace VideoDromm
 		// lights4events
 		void						colorWrite();
 		// MIDI
-#if defined( CINDER_MSW )
 		vector<midiInput>			mMidiInputs;
 		// midi inputs: couldn't make a vector
 		midi::Input					mMidiIn0;
@@ -118,7 +111,6 @@ namespace VideoDromm
 		midi::MidiOut				mMidiOut2;
 		midi::MidiOut				mMidiOut3;
 		vector<midiOutput>			mMidiOutputs;
-#endif
 		string						midiControlType;
 		int							midiControl;
 		int							midiPitch;
