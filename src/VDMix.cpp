@@ -34,7 +34,7 @@ namespace VideoDromm {
 			// load textures from file if one exists
 			// TODO readSettings(mVDSettings, mVDAnimation, loadFile(mMixesFilepath));
 			}*/
-		// render fbo
+			// render fbo
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 		// mix fbo to render
 		warpMixToRender = 0;
@@ -194,7 +194,7 @@ namespace VideoDromm {
 		}
 		if (mSolo > -1) {
 			triangleMixToRender = mSolo;
-			CI_LOG_V(" solo " + toString(mSolo) );
+			CI_LOG_V(" solo " + toString(mSolo));
 		}
 	}
 	void VDMix::setCurrentEditIndex(unsigned int aIndex) {
@@ -214,7 +214,7 @@ namespace VideoDromm {
 			}
 			rtn = mCurrentEditIndex;
 		}
-		return rtn; 
+		return rtn;
 	}
 	ci::gl::TextureRef VDMix::getTriangleTexture(unsigned int aTriangleFboIndex) {
 		if (aTriangleFboIndex > mTriangleFbos.size() - 1) aTriangleFboIndex = 0;
@@ -436,10 +436,10 @@ namespace VideoDromm {
 		mRenderedTexture = mRenderFbo->getColorTexture();
 		return mRenderedTexture;
 	}
-	void VDMix::toggleWarpAnimationActive() { 
+	void VDMix::toggleWarpAnimationActive() {
 		// reset solo
-		(mWarpAnimationActive) ? mSolo = -1 : mWarpActiveIndex=0;
-		mWarpAnimationActive = !mWarpAnimationActive; 
+		(mWarpAnimationActive) ? mSolo = -1 : mWarpActiveIndex = 0;
+		mWarpAnimationActive = !mWarpAnimationActive;
 	}
 
 #pragma endregion warps
@@ -465,7 +465,7 @@ namespace VideoDromm {
 		}
 		if (mSolo > -1) {
 			warpMixToRender = mSolo;
-			CI_LOG_V(" solo " + toString( mSolo));
+			CI_LOG_V(" solo " + toString(mSolo));
 		}
 	}
 	bool VDMix::isWarpTriangle() {
@@ -654,10 +654,10 @@ namespace VideoDromm {
 		if (!Warp::handleMouseUp(mWarps, event)) {
 			// let your application perform its mouseUp handling here
 			handled = false;
-	}
+		}
 		event.setHandled(handled);
 		return event.isHandled();
-}
+	}
 
 	bool VDMix::handleKeyDown(KeyEvent &event)
 	{
@@ -1079,6 +1079,7 @@ namespace VideoDromm {
 
 
 	unsigned int VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex) {
+		// initialize rtn to 0 to force creation
 		unsigned int rtn = 0;
 		string fName = aShaderFilename;
 		if (aShaderFilename.length() > 0) {
@@ -1088,30 +1089,34 @@ namespace VideoDromm {
 				mFragFile = aShaderFilename;
 			}
 			if (fs::exists(mFragFile)) {
-				fName = mFragFile.filename().string();
-				// find a removed shader
-				for (int i = mShaderList.size() - 1; i > 0; i--)
-				{
-					if (!mShaderList[i]->isValid() || fName == mShaderList[i]->getName()) { rtn = i; }
-				}
-				// find a not used shader if no removed shader
-				if (rtn == 0) {
-					// first reset all shaders (excluding the first 8 ones)
-					for (int i = mShaderList.size() - 1; i > 8; i--)
+				// check if mShaderList contains a shader
+				if (mShaderList.size() > 0) {
+					fName = mFragFile.filename().string();
+					// find a removed shader
+					for (int i = mShaderList.size() - 1; i > 0; i--)
 					{
-						mShaderList[i]->setActive(false);
+						if (!mShaderList[i]->isValid() || fName == mShaderList[i]->getName()) { rtn = i; }
 					}
-					// set active shaders according to warps
-					for (auto &warp : mWarps) {
-						if (warp->getAShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getAShaderIndex()]->setActive(true);
-						if (warp->getBShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getBShaderIndex()]->setActive(true);
-					}
-					// find inactive shader index
-					for (int i = mShaderList.size() - 1; i > 8; i--)
-					{
-						if (!mShaderList[i]->isActive()) rtn = i;
-					}
+					// find a not used shader if no removed shader
+					if (rtn == 0) {
+						// first reset all shaders (excluding the first 8 ones)
+						for (int i = mShaderList.size() - 1; i > 8; i--)
+						{
+							mShaderList[i]->setActive(false);
+						}
+						// set active shaders according to warps
+						for (auto &warp : mWarps) {
+							// mShaderList.size() should be > 0 for this part
+							if (warp->getAShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getAShaderIndex()]->setActive(true);
+							if (warp->getBShaderIndex() < mShaderList.size() - 1) mShaderList[warp->getBShaderIndex()]->setActive(true);
+						}
+						// find inactive shader index
+						for (int i = mShaderList.size() - 1; i > 8; i--)
+						{
+							if (!mShaderList[i]->isActive()) rtn = i;
+						}
 
+					}
 				}
 				// if we found an available slot
 				if (rtn > 0) {
