@@ -266,6 +266,7 @@ namespace VideoDromm {
 		// ensure bounds are valid
 		aFboIndex = math<int>::min(aFboIndex, getFboListSize() - 1);
 		bFboIndex = math<int>::min(bFboIndex, getFboListSize() - 1);
+
 		aShaderIndex = math<int>::min(aShaderIndex, getShadersCount() - 1);
 		bShaderIndex = math<int>::min(bShaderIndex, getShadersCount() - 1);
 		mMixFbos[newIndex].fbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
@@ -721,11 +722,8 @@ namespace VideoDromm {
 
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDSession::init mShaderList");
-			// direct input texture channel 0
-			createShaderFbo("texture0.frag", 0);
-			//createShaderFbo("texture0.frag", 0); // TODO check if 2 needed?
-			// direct input texture channel 1
-			createShaderFbo("texture1.frag", 0);
+			createShaderFboFromString("void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;fragColor = texture(iChannel0, uv);}", "tex0");
+			createShaderFboFromString("void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;fragColor = texture(iChannel0, uv);}", "tex1");
 		}
 	}
 	bool VDMix::initTextureList() {
@@ -1036,6 +1034,30 @@ namespace VideoDromm {
 			if (mFboList[i]->getShaderIndex() == aShaderIndex) setFboFragmentShaderIndex(i, aShaderIndex);
 		}
 	}
+	unsigned int VDMix::createShaderFboFromString(string aFragmentShaderString, string aShaderFilename) {
+		unsigned int rtn = 0;
+		// no slot available, create new shader
+		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aShaderFilename, "", aFragmentShaderString));
+		if (s->isValid()) {
+			mShaderList.push_back(s);
+			rtn = mShaderList.size() - 1;
+			// each shader element has a fbo
+			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+			// create fbo xml
+			XmlTree			fboXml;
+			fboXml.setTag(aShaderFilename);
+			fboXml.setAttribute("id", rtn);
+			fboXml.setAttribute("width", "640");
+			fboXml.setAttribute("height", "480");
+			fboXml.setAttribute("shadername", mShaderList[rtn]->getName());//aShaderFilename
+			fboXml.setAttribute("inputtextureindex", 0);
+			f->fromXml(fboXml);
+			//f->setShaderIndex(rtn);
+			f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
+			mFboList.push_back(f);
+		}
+		return rtn;
+	}
 	string VDMix::getFragmentShaderString(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getFragmentString();
@@ -1128,26 +1150,7 @@ namespace VideoDromm {
 				}
 				else {
 					// no slot available, create new shader
-					VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, mFragFile.string(), ""));
-					if (s->isValid()) {
-						mShaderList.push_back(s);
-						rtn = mShaderList.size() - 1;
-						// each shader element has a fbo
-						VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
-						// create fbo xml
-						XmlTree			fboXml;
-						fboXml.setTag(aShaderFilename);
-						fboXml.setAttribute("id", rtn);
-						fboXml.setAttribute("width", "640");
-						fboXml.setAttribute("height", "480");
-						fboXml.setAttribute("shadername", mShaderList[rtn]->getName());//aShaderFilename
-						fboXml.setAttribute("inputtextureindex", aInputTextureIndex);
-						f->fromXml(fboXml);
-						//f->setShaderIndex(rtn);
-						f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
-						mFboList.push_back(f);
-					}
-
+					createShaderFboFromString(loadString(loadFile(mFragFile)), aShaderFilename);
 				}
 				mFboList[rtn]->updateThumbFile();
 			}

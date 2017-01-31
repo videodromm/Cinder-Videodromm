@@ -34,11 +34,11 @@ namespace VideoDromm
 
 	class VDShader {
 	public:
-		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath);
+		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath, string aFragmentShaderString = "");
 		//void update();
-		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath)
+		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath, string aFragmentShaderString = "")
 		{
-			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFragmentShaderFilePath, aVextexShaderFilePath));
+			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFragmentShaderFilePath, aVextexShaderFilePath, aFragmentShaderString));
 		}
 		//void fromXml(const XmlTree &xml);
 		gl::GlslProgRef					getShader();

@@ -2,9 +2,10 @@
 
 using namespace VideoDromm;
 
-VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath) {
+VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath, string aFragmentShaderString) {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mVertexShaderFilePath = aVextexShaderFilePath;
+	mFragmentShaderString = aFragmentShaderString;
 	mValid = false;
 	mActive = true;
 	// shadertoy include
@@ -14,9 +15,13 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	mError = "";
 	//gl::Fbo::Format format;
 	//mThumbFbo = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, format.depthTexture());
-
-	loadVertexStringFromFile(mVertexShaderFilePath);
-	loadFragmentStringFromFile(mFragmentShaderFilePath);
+	if (mFragmentShaderString.length() > 0) {
+		mValid = setFragmentString(mFragmentShaderString, mFragmentShaderFilePath);
+	}
+	else {
+		loadVertexStringFromFile(mVertexShaderFilePath);
+		loadFragmentStringFromFile(mFragmentShaderFilePath);
+	}
 	if (mValid) {
 		CI_LOG_V("VDShaders constructor success");
 	}
@@ -158,7 +163,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		//CI_LOG_V("regexed " + mOriginalFragmentString);
 
 		// change texture2D to texture for version > 150?	
-		
+
 		// change fragCoord to gl_FragCoord
 		// change gl_FragColor to fragColor
 
