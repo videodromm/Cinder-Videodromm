@@ -479,22 +479,22 @@ bool VDAnimation::changeBoolValue(unsigned int aIndex, bool aValue) {
 float VDAnimation::getFloatUniformValueByIndex(unsigned int aIndex) {
 	return shaderUniforms[getUniformNameForIndex(aIndex)].floatValue;
 }
-int VDAnimation::getSampler2DUniformValue(string aName) {
+int VDAnimation::getSampler2DUniformValueByName(string aName) {
 	return shaderUniforms[aName].textureIndex;
 }
 float VDAnimation::getFloatUniformValueByName(string aName) {
 	return shaderUniforms[aName].floatValue;
 }
-vec2 VDAnimation::getVec2UniformValue(string aName) {
+vec2 VDAnimation::getVec2UniformValueByName(string aName) {
 	return shaderUniforms[aName].vec2Value;
 }
-vec3 VDAnimation::getVec3UniformValue(string aName) {
+vec3 VDAnimation::getVec3UniformValueByName(string aName) {
 	return shaderUniforms[aName].vec3Value;
 }
-vec4 VDAnimation::getVec4UniformValue(string aName) {
+vec4 VDAnimation::getVec4UniformValueByName(string aName) {
 	return shaderUniforms[aName].vec4Value;
 }
-int VDAnimation::getIntUniformValue(string aName) {
+int VDAnimation::getIntUniformValueByName(string aName) {
 	return shaderUniforms[aName].intValue;
 }
 bool VDAnimation::getBoolUniformValueByIndex(unsigned int aIndex) {
@@ -506,7 +506,7 @@ float VDAnimation::getMinUniformValueByIndex(unsigned int aIndex) {
 float VDAnimation::getMaxUniformValueByIndex(unsigned int aIndex) {
 	return shaderUniforms[getUniformNameForIndex(aIndex)].maxValue;
 }
-bool VDAnimation::getBoolUniformValue(string aName) {
+bool VDAnimation::getBoolUniformValueByName(string aName) {
 	return shaderUniforms[aName].boolValue;
 }
 bool VDAnimation::isExistingUniform(string aName) {

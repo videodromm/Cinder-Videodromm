@@ -508,8 +508,8 @@ namespace VideoDromm {
 		// was vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0)):
 		mGlslMix->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-		mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
-		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));
+		mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mGlslMix->uniform("iChannel0", 0);
 		mGlslMix->uniform("iChannel1", 1);
 		mGlslMix->uniform("iRatio", mVDAnimation->getFloatUniformValueByIndex(11));//check if needed: +1;//mVDSettings->iRatio);
@@ -525,7 +525,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iLight", (int)mVDSettings->iLight);
 		mGlslMix->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
 		mGlslMix->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
-		mGlslMix->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValue("iBackgroundColor"));// vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
+		mGlslMix->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));// vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
 		mGlslMix->uniform("iVignette", (int)mVDAnimation->getBoolUniformValueByIndex(47));
 		mGlslMix->uniform("iInvert", (int)mVDAnimation->getBoolUniformValueByIndex(48));
 		mGlslMix->uniform("iTempoTime", mVDAnimation->getFloatUniformValueByName("iTempoTime"));
@@ -556,8 +556,8 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-			mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValue("iMouse"));
-			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValue("iDate"));
+			mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 			mGlslBlend->uniform("iChannel0", 0);
 			mGlslBlend->uniform("iChannel1", 1);
 			mGlslBlend->uniform("iAudio0", 0);
@@ -567,7 +567,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iFreq3", mVDAnimation->iFreqs[3]);
 			mGlslBlend->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
 			mGlslBlend->uniform("iColor", vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
-			mGlslBlend->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValue("iBackgroundColor"));//vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
+			mGlslBlend->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));//vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
 			mGlslBlend->uniform("iSteps", (int)mVDAnimation->getFloatUniformValueByIndex(10));
 			mGlslBlend->uniform("iRatio", mVDAnimation->getFloatUniformValueByIndex(11));
 			mGlslBlend->uniform("width", 1);

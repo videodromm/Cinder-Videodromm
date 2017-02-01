@@ -81,6 +81,25 @@ namespace VideoDromm {
 		void							resetAutoAnimation(unsigned int aIndex);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
+		int								getSampler2DUniformValueByName(string aName) {
+			return mVDAnimation->getSampler2DUniformValueByName(aName);
+		};
+		vec2							getVec2UniformValueByName(string aName) {
+			return mVDAnimation->getVec2UniformValueByName(aName);
+		};
+		vec3							getVec3UniformValueByName(string aName) {
+			return mVDAnimation->getVec3UniformValueByName(aName);
+		};
+		vec4							getVec4UniformValueByName(string aName) {
+			return mVDAnimation->getVec4UniformValueByName(aName);
+		};
+		int								getIntUniformValueByName(string aName) {
+			return mVDAnimation->getIntUniformValueByName(aName);
+		};
+		bool							getBoolUniformValueByName(string aName) {
+			return mVDAnimation->getBoolUniformValueByName(aName);
+		};
+
 		// tempo
 		float							getBpm() { return mVDAnimation->getBpm(); };
 		void							setBpm(float aBpm) { mVDAnimation->setBpm(aBpm); };

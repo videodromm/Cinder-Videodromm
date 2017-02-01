@@ -167,23 +167,23 @@ namespace VideoDromm {
 					break;
 				case 2:
 					// vec2
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValueByName(uniform.getName()));
 					break;
 				case 3:
 					// vec3
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValueByName(uniform.getName()));
 					break;
 				case 4:
 					// vec4
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValueByName(uniform.getName()));
 					break;
 				case 5:
 					// int
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValueByName(uniform.getName()));
 					break;
 				case 6:
 					// bool
-					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValue(uniform.getName()));
+					mFboTextureShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValueByName(uniform.getName()));
 					break;
 				default:
 					break;

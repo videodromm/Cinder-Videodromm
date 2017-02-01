@@ -105,12 +105,12 @@ namespace VideoDromm
 		float							getFloatUniformValueByIndex(unsigned int aIndex);
 		bool							getBoolUniformValueByIndex(unsigned int aIndex);
 		float							getFloatUniformValueByName(string aName);
-		int								getSampler2DUniformValue(string aName);
-		vec2							getVec2UniformValue(string aName);
-		vec3							getVec3UniformValue(string aName);
-		vec4							getVec4UniformValue(string aName);
-		int								getIntUniformValue(string aName);
-		bool							getBoolUniformValue(string aName);
+		int								getSampler2DUniformValueByName(string aName);
+		vec2							getVec2UniformValueByName(string aName);
+		vec3							getVec3UniformValueByName(string aName);
+		vec4							getVec4UniformValueByName(string aName);
+		int								getIntUniformValueByName(string aName);
+		bool							getBoolUniformValueByName(string aName);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
 		// mix fbo
