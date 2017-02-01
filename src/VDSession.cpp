@@ -497,14 +497,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				// zoom
 				mVDWebsocket->changeFloatValue(12, mVDAnimation->getFloatUniformValueByIndex(12) - 0.05f);
 				break;
-			case KeyEvent::KEY_LEFT:
+			/* removed temp for Sky Project case KeyEvent::KEY_LEFT:
 				//mVDTextures->rewindMovie();				
 				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) - 0.1f);
 				break;
 			case KeyEvent::KEY_RIGHT:
 				//mVDTextures->fastforwardMovie();
 				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1f);
-				break;
+				break;*/
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
 				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1f);
