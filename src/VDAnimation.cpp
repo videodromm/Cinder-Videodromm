@@ -117,7 +117,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// iResolutionX (should be fbowidth) 
 		createFloatUniform("iResolutionX", 29, mVDSettings->mFboWidth, 0.01f, 1024.0f);
 		// iResolutionY (should be fboheight)  
-		createFloatUniform("iResolutionY", 30, 480.0f, 0.01f, 800.0f);
+		createFloatUniform("iResolutionY", 30, mVDSettings->mFboHeight, 0.01f, 800.0f);
 		// nanokontrol middle row 31 to 38, bottom row 41 to 88
 		// int
 		// blend mode 

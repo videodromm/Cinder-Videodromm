@@ -35,7 +35,10 @@ void VDUITempo::Run(const char* title) {
 
 		ui::Text("Time %.2f", mVDSession->getControlValue(0));
 		ui::SameLine();
+		ui::Text("Tempo Time %.2f", mVDSession->getControlValue(24));
+
 		ui::Text("Trk %s %.2f", mVDSettings->mTrackName.c_str(), mVDSettings->liveMeter);
+		ui::SameLine();
 		//			ui::Checkbox("Playing", &mVDSettings->mIsPlaying);
 		ui::Text("Tempo %.2f ", mVDSession->getBpm());
 
