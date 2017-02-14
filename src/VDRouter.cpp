@@ -59,7 +59,7 @@ void VDRouter::setupOSCReceiver() {
 		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/cc";
 		mVDSettings->mOSCNewMsg = true;
-		mVDAnimation->changeFloatValue(msg[0].int32(), msg[1].flt());
+		mVDAnimation->setFloatUniformValueByIndex(msg[0].int32(), msg[1].flt());
 		updateParams(msg[0].int32(), msg[1].flt());
 	});
 	mOSCReceiver->setListener("/fader3/out",
@@ -74,11 +74,11 @@ void VDRouter::setupOSCReceiver() {
 	mOSCReceiver->setListener("/backgroundcolor",
 		[&](const osc::Message &msg) {
 		// background red
-		mVDAnimation->changeFloatValue(5, msg[0].flt());
+		mVDAnimation->setFloatUniformValueByIndex(5, msg[0].flt());
 		// background green
-		mVDAnimation->changeFloatValue(6, msg[1].flt());
+		mVDAnimation->setFloatUniformValueByIndex(6, msg[1].flt());
 		// background blue
-		mVDAnimation->changeFloatValue(7, msg[2].flt());
+		mVDAnimation->setFloatUniformValueByIndex(7, msg[2].flt());
 	});
 	mOSCReceiver->setListener("/live/beat",
 		[&](const osc::Message &msg) {
@@ -148,7 +148,7 @@ void VDRouter::setupOSCReceiver() {
 		[&](const osc::Message &msg) {
 		float sumMovement = msg[0].flt();
 		//exposure
-		mVDAnimation->changeFloatValue(14, sumMovement);
+		mVDAnimation->setFloatUniformValueByIndex(14, sumMovement);
 		//greyScale
 		if (sumMovement < 0.1)
 		{
@@ -166,24 +166,24 @@ void VDRouter::setupOSCReceiver() {
 		if (handsHeadHeight > 0.3)
 		{
 			// glitch
-			mVDAnimation->changeFloatValue(45, 1.0f);
+			mVDAnimation->setFloatUniformValueByIndex(45, 1.0f);
 		}
 		else
 		{
 			// glitch
-			mVDAnimation->changeFloatValue(45, 0.0f);
+			mVDAnimation->setFloatUniformValueByIndex(45, 0.0f);
 		}
 		// background red
-		mVDAnimation->changeFloatValue(5, handsHeadHeight*3.0);
+		mVDAnimation->setFloatUniformValueByIndex(5, handsHeadHeight*3.0);
 	});
 	mOSCReceiver->setListener("/centerXY",
 		[&](const osc::Message &msg) {
 		float x = msg[0].flt();
 		float y = msg[1].flt();
 		// background green
-		mVDAnimation->changeFloatValue(6, y);
+		mVDAnimation->setFloatUniformValueByIndex(6, y);
 		// green
-		mVDAnimation->changeFloatValue(2, x);
+		mVDAnimation->setFloatUniformValueByIndex(2, x);
 	});
 	mOSCReceiver->setListener("/selectShader",
 		[&](const osc::Message &msg) {
@@ -437,7 +437,7 @@ void VDRouter::midiListener(midi::Message msg) {
 		midiVelocity = msg.velocity;
 		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		// quick hack!
-		mVDAnimation->changeFloatValue(14, 1.0f + midiNormalizedValue);
+		mVDAnimation->setFloatUniformValueByIndex(14, 1.0f + midiNormalizedValue);
 		break;
 	case MIDI_NOTE_OFF:
 		midiControlType = "/off";
@@ -502,15 +502,15 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	}
 	if (iarg0 > 0 && iarg0 < 9) {
 		// sliders 
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 	if (iarg0 > 10 && iarg0 < 19) {
 		// rotary 
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 		// audio multfactor
-		if (iarg0 == 13) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * 10);
+		if (iarg0 == 13) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == 14) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
+		if (iarg0 == 14) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
 		// xfade
 		if (iarg0 == 18) {
 			mVDSettings->xFade = farg1;
@@ -522,16 +522,16 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	// buttons
 	if (iarg0 > 20 && iarg0 < 29) {
 		// top row
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 	if (iarg0 > 30 && iarg0 < 39)
 	{
 		// middle row
-		mVDAnimation->changeFloatValue(iarg0, farg1);	
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 	if (iarg0 > 40 && iarg0 < 49) {
 		// low row 
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 }
 void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {

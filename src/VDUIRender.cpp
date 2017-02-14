@@ -17,13 +17,13 @@ VDUIRender::~VDUIRender() {
 
 }
 float VDUIRender::getValueByName(string aCtrlName) {
-	return mVDSession->getControlValueByName(aCtrlName);
+	return mVDSession->getFloatUniformValueByName(aCtrlName);
 }
 float VDUIRender::getValue(unsigned int aCtrl) {
-	return mVDSession->getControlValue(aCtrl);
+	return mVDSession->getFloatUniformValueByIndex(aCtrl);
 }
 void VDUIRender::setValue(unsigned int aCtrl, float aValue) {
-	mVDSession->setControlValue(aCtrl, aValue);
+	mVDSession->setFloatUniformValueByIndex(aCtrl, aValue);
 }
 void VDUIRender::toggleAuto(unsigned int aCtrl) {
 	mVDSession->toggleAuto(aCtrl);
@@ -84,7 +84,7 @@ void VDUIRender::Run(const char* title) {
 		ui::SameLine();
 		if (ui::Button("x##contour")) { resetAutoAnimation(ctrl); }
 		ui::SameLine();
-		contour = mVDSession->getControlValue(ctrl);
+		contour = mVDSession->getFloatUniformValueByIndex(ctrl);
 		if (ui::DragFloat("contour", &contour, 0.001f, minContour, maxContour))
 		{
 			setValue(ctrl, contour);

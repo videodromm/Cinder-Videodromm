@@ -15,10 +15,10 @@ VDUIColor::~VDUIColor() {
 
 }
 float VDUIColor::getValue(unsigned int aCtrl) {
-	return mVDSession->getControlValue(aCtrl);
+	return mVDSession->getFloatUniformValueByIndex(aCtrl);
 }
 void VDUIColor::setValue(unsigned int aCtrl, float aValue) {
-	mVDSession->setControlValue(aCtrl, aValue);
+	mVDSession->setFloatUniformValueByIndex(aCtrl, aValue);
 }
 void VDUIColor::toggleAuto(unsigned int aCtrl) {
 	mVDSession->toggleAuto(aCtrl);
@@ -78,7 +78,7 @@ void VDUIColor::Run(const char* title) {
 		ui::SameLine();
 		if (ui::Button("x##redx")) { resetAutoAnimation(ctrl); }
 		ui::SameLine();
-		localValues[ctrl] = mVDSession->getControlValue(ctrl);
+		localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 		if (ui::DragFloat("red x", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 		{
 			setValue(ctrl, localValues[ctrl]);
@@ -91,7 +91,7 @@ void VDUIColor::Run(const char* title) {
 		ui::SameLine();
 		if (ui::Button("x##greenx")) { resetAutoAnimation(ctrl); }
 		ui::SameLine();
-		localValues[ctrl] = mVDSession->getControlValue(ctrl);
+		localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 		if (ui::DragFloat("green x", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 		{
 			setValue(ctrl, localValues[ctrl]);
@@ -104,7 +104,7 @@ void VDUIColor::Run(const char* title) {
 		ui::SameLine();
 		if (ui::Button("x##bluex")) { resetAutoAnimation(ctrl); }
 		ui::SameLine();
-		localValues[ctrl] = mVDSession->getControlValue(ctrl);
+		localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 		if (ui::DragFloat("blue x", &localValues[ctrl], 0.01f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 		{
 			setValue(ctrl, localValues[ctrl]);
@@ -117,7 +117,7 @@ void VDUIColor::Run(const char* title) {
 		ui::SameLine();
 		if (ui::Button("x##contour")) { resetAutoAnimation(ctrl); }
 		ui::SameLine();
-		localValues[ctrl] = mVDSession->getControlValue(ctrl);
+		localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 
 		ui::PopItemWidth();
 	}

@@ -35,15 +35,15 @@ void VDWebsocket::updateParams(int iarg0, float farg1) {
 	}
 	if (iarg0 > 0 && iarg0 < 9) {
 		// sliders 
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 	if (iarg0 > 10 && iarg0 < 19) {
 		// rotary 
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 		// audio multfactor
-		if (iarg0 == 13) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * 10);
+		if (iarg0 == 13) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == 14) mVDAnimation->changeFloatValue(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
+		if (iarg0 == 14) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
 
 		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 
@@ -62,7 +62,7 @@ void VDWebsocket::updateParams(int iarg0, float farg1) {
 	}*/
 	if (iarg0 > 40 && iarg0 < 49) {
 		// low row 
-		mVDAnimation->changeFloatValue(iarg0, farg1);
+		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 }
 
@@ -97,7 +97,7 @@ void VDWebsocket::parseMessage(string msg) {
 						int name = jsonElement->getChild("name").getValue<int>();
 						float value = jsonElement->getChild("value").getValue<float>();
 						// basic name value 
-						mVDAnimation->changeFloatValue(name, value);
+						mVDAnimation->setFloatUniformValueByIndex(name, value);
 					}
 				}
 				if (json.hasChild("event")) {
@@ -117,7 +117,7 @@ void VDWebsocket::parseMessage(string msg) {
 								int name = jsonElement->getChild("name").getValue<int>();
 								float value = jsonElement->getChild("value").getValue<float>();
 								// basic name value 
-								mVDAnimation->changeFloatValue(name, value);
+								mVDAnimation->setFloatUniformValueByIndex(name, value);
 							}
 						}
 						else {
@@ -136,9 +136,9 @@ void VDWebsocket::parseMessage(string msg) {
 						{
 						case 0:
 							// from changeWarpFboIndex
-							receivedWarpIndex = jsonElement->getChild("warp").getValue<float>();
-							receivedFboIndex = jsonElement->getChild("fbo").getValue<float>();
-							receivedSlot = jsonElement->getChild("slot").getValue<float>();
+							receivedWarpIndex = jsonElement->getChild("warp").getValue<float>(); // TODO int
+							receivedFboIndex = jsonElement->getChild("fbo").getValue<float>(); // TODO int
+							receivedSlot = jsonElement->getChild("slot").getValue<float>(); // TODO int
 							if (receivedSlot == 0) {
 								mVDMix->setWarpAFboIndex(receivedWarpIndex, receivedFboIndex);
 							}
@@ -148,9 +148,9 @@ void VDWebsocket::parseMessage(string msg) {
 							break;
 						case 1:
 							// from changeWarpShaderIndex
-							receivedWarpIndex = jsonElement->getChild("warp").getValue<float>();
-							receivedShaderIndex = jsonElement->getChild("shader").getValue<float>();
-							receivedSlot = jsonElement->getChild("slot").getValue<float>();
+							receivedWarpIndex = jsonElement->getChild("warp").getValue<float>(); // TODO int
+							receivedShaderIndex = jsonElement->getChild("shader").getValue<float>(); // TODO int
+							receivedSlot = jsonElement->getChild("slot").getValue<float>(); // TODO int
 							if (receivedSlot == 0) {
 								mVDMix->setWarpAShaderIndex(receivedWarpIndex, receivedShaderIndex);
 							}
@@ -437,7 +437,7 @@ void VDWebsocket::resetAutoAnimation(unsigned int aIndex) {
 
 void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 	// check if changed
-	mVDAnimation->changeBoolValue(aControl, aValue);
+	mVDAnimation->setBoolUniformValueByIndex(aControl, aValue);
 	stringstream sParams;
 	// TODO check boolean value:
 	sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << (int)aValue << "}]}";
@@ -447,15 +447,15 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 
 void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue) {
 	// check if changed
-	if (mVDAnimation->changeFloatValue(aControl, aValue) && aControl != mVDSettings->IFPS) {
+	if (mVDAnimation->setFloatUniformValueByIndex(aControl, aValue) && aControl != mVDSettings->IFPS) {
 		stringstream sParams;
 		// update color vec3
 		if (aControl > 0 && aControl < 4) {
-			mVDAnimation->changeVec3Value(61, vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
+			mVDAnimation->setVec3UniformValueByIndex(61, vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
 			colorWrite(); //lights4events
 		}
 		if (aControl == 29 || aControl ==30) {
-			mVDAnimation->changeVec3Value(60, vec3(mVDAnimation->getFloatUniformValueByIndex(29), mVDAnimation->getFloatUniformValueByIndex(30), 1.0));
+			mVDAnimation->setVec3UniformValueByIndex(60, vec3(mVDAnimation->getFloatUniformValueByIndex(29), mVDAnimation->getFloatUniformValueByIndex(30), 1.0));
 		}
 		sParams << "{\"params\" :[{\"name\" : " << aControl << ",\"value\" : " << mVDAnimation->getFloatUniformValueByIndex(aControl) << "}]}";
 		string strParams = sParams.str();
@@ -488,9 +488,9 @@ void VDWebsocket::colorWrite()
 
 	// lights4events
 	char col[8];
-	int r = mVDAnimation->getFloatUniformValueByIndex(1) * 255;
-	int g = mVDAnimation->getFloatUniformValueByIndex(2) * 255;
-	int b = mVDAnimation->getFloatUniformValueByIndex(3) * 255;
+	int r = (int)(mVDAnimation->getFloatUniformValueByIndex(1) * 255);
+	int g = (int)(mVDAnimation->getFloatUniformValueByIndex(2) * 255);
+	int b = (int)(mVDAnimation->getFloatUniformValueByIndex(3) * 255);
 	sprintf(col, "#%02X%02X%02X", r, g, b);
 	wsWrite(col);
 

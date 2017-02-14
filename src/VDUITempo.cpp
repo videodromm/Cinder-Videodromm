@@ -28,14 +28,16 @@ void VDUITempo::Run(const char* title) {
 		ui::Text("Beat Idx %d ", mVDAnimation->iBeatIndex);
 		//ui::SameLine();
 		//ui::Text("Bar %d ", mVDAnimation->iBar);
-
-		if (ui::Button("x##bpbx")) { mVDSession->iBeatsPerBar = 1; }
+		if (ui::Button("x##bpbx")) { mVDSession->setControlValue("iBeat", 1); }
 		ui::SameLine();
-		ui::SliderInt("beats/bar", &mVDSession->iBeatsPerBar, 1, 8); */
-
-		ui::Text("Time %.2f", mVDSession->getControlValue(0));
+ */
+		ui::Text("beat %d ", mVDSession->getIntUniformValueByName("iBeat"));
 		ui::SameLine();
-		ui::Text("Tempo Time %.2f", mVDSession->getControlValue(24));
+		ui::Text("beats/bar %d ", mVDSession->getIntUniformValueByName("iBeatsPerBar"));
+
+		ui::Text("Time %.2f", mVDSession->getFloatUniformValueByName("iGlobalTime"));
+		ui::SameLine();
+		ui::Text("Tempo Time %.2f", mVDSession->getFloatUniformValueByName("iTempoTime"));
 
 		ui::Text("Trk %s %.2f", mVDSettings->mTrackName.c_str(), mVDSettings->liveMeter);
 		ui::SameLine();

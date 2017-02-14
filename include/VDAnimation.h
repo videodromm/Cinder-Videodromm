@@ -74,7 +74,7 @@ namespace VideoDromm
 		void							setEndFrame(int frame) { mEndFrame = frame; };
 
 		//int							iBar;
-		int								iBeatIndex; //1 to beatsperbar
+		//int								iBeatIndex; //1 to beatsperbar
 		// animation
 		int								currentScene;
 		//int							getBadTV(int frame);
@@ -96,23 +96,71 @@ namespace VideoDromm
 		bool							toggleValue(unsigned int aIndex);
 		bool							toggleTempo(unsigned int aIndex);
 		void							resetAutoAnimation(unsigned int aIndex);
-		bool							changeFloatValue(unsigned int aIndex, float aValue);
-		bool							changeBoolValue(unsigned int aIndex, bool aValue);
-		void							changeIntValue(unsigned int aIndex, int aValue);
-		void							changeVec2Value(unsigned int aIndex, vec2 aValue);
-		void							changeVec3Value(unsigned int aIndex, vec3 aValue);
-		void							changeVec4Value(unsigned int aIndex, vec4 aValue);
-		float							getFloatUniformValueByIndex(unsigned int aIndex);
-		bool							getBoolUniformValueByIndex(unsigned int aIndex);
-		float							getFloatUniformValueByName(string aName);
-		int								getSampler2DUniformValueByName(string aName);
-		vec2							getVec2UniformValueByName(string aName);
-		vec3							getVec3UniformValueByName(string aName);
-		vec4							getVec4UniformValueByName(string aName);
-		int								getIntUniformValueByName(string aName);
-		bool							getBoolUniformValueByName(string aName);
-		float							getMinUniformValueByIndex(unsigned int aIndex);
-		float							getMaxUniformValueByIndex(unsigned int aIndex);
+		bool							setFloatUniformValueByIndex(unsigned int aIndex, float aValue);
+
+		bool							setBoolUniformValueByIndex(unsigned int aIndex, bool aValue) {
+			shaderUniforms[getUniformNameForIndex(aIndex)].boolValue = aValue;
+			return aValue;
+		}
+		void							setIntUniformValueByName(string aName, int aValue) {
+			shaderUniforms[aName].intValue = aValue;
+		};
+		void							setIntUniformValueByIndex(unsigned int aIndex, int aValue) {
+			shaderUniforms[getUniformNameForIndex(aIndex)].intValue = aValue;
+		}
+
+		void setVec2UniformValueByName(string aName, vec2 aValue) {
+			shaderUniforms[aName].vec2Value = aValue;
+		}
+		void setVec2UniformValueByIndex(unsigned int aIndex, vec2 aValue) {
+			shaderUniforms[getUniformNameForIndex(aIndex)].vec2Value = aValue;
+		}
+		void setVec3UniformValueByName(string aName, vec3 aValue) {
+			shaderUniforms[aName].vec3Value = aValue;
+		}
+		void setVec3UniformValueByIndex(unsigned int aIndex, vec3 aValue) {
+			shaderUniforms[getUniformNameForIndex(aIndex)].vec3Value = aValue;
+		}
+		void setVec4UniformValueByName(string aName, vec4 aValue) {
+			shaderUniforms[aName].vec4Value = aValue;
+		}
+		void setVec4UniformValueByIndex(unsigned int aIndex, vec4 aValue) {
+			shaderUniforms[getUniformNameForIndex(aIndex)].vec4Value = aValue;
+		}
+		bool							getBoolUniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
+		}
+		float							getMinUniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].minValue;
+		}
+		float							getMaxUniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].maxValue;
+		}
+		bool							getBoolUniformValueByName(string aName) {
+			return shaderUniforms[aName].boolValue;
+		}
+		float							getFloatUniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].floatValue;
+		}
+		int								getSampler2DUniformValueByName(string aName) {
+			return shaderUniforms[aName].textureIndex;
+		}
+		float							getFloatUniformValueByName(string aName) {
+			return shaderUniforms[aName].floatValue;
+		}
+		vec2							getVec2UniformValueByName(string aName) {
+			return shaderUniforms[aName].vec2Value;
+		}
+		vec3							getVec3UniformValueByName(string aName) {
+			return shaderUniforms[aName].vec3Value;
+		}
+		vec4							getVec4UniformValueByName(string aName) {
+			return shaderUniforms[aName].vec4Value;
+		}
+		int								getIntUniformValueByName(string aName) {
+			return shaderUniforms[aName].intValue;
+		};
+
 		// mix fbo
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };
@@ -123,7 +171,7 @@ namespace VideoDromm
 
 		// timed animation
 		int								mEndFrame;
-		int								iBeatsPerBar;
+		//int								iBeatsPerBar;
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

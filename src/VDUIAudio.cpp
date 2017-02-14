@@ -27,9 +27,9 @@ void VDUIAudio::Run(const char* title) {
 			timeValues[timeValues_offset] = mVDSession->getMaxVolume();
 			timeValues_offset = (timeValues_offset + 1) % timeValues.size();
 		}
-		multx = mVDSession->getControlValue(13);
+		multx = mVDSession->getFloatUniformValueByIndex(13);
 		if (ui::SliderFloat("mult x", &multx, 0.01f, 12.0f)) {
-			mVDSession->setControlValue(13, multx);
+			mVDSession->setFloatUniformValueByIndex(13, multx);
 		}
 
 		ui::PlotHistogram("Histogram", mVDSession->getFreqs(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));

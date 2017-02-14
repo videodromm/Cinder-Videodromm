@@ -107,19 +107,6 @@ void VDSession::fromXml(const XmlTree &xml) {
 	}
 }
 // control values
-float VDSession::getControlValue(unsigned int aCtrl) {
-	return mVDAnimation->getFloatUniformValueByIndex(aCtrl);
-}
-float VDSession::getControlValueByName(string aCtrlName) {
-	return mVDAnimation->getFloatUniformValueByName(aCtrlName);
-}
-void VDSession::setControlValue(unsigned int aCtrl, float aValue) {
-	// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
-	mVDWebsocket->changeFloatValue(aCtrl, aValue);
-}
-bool VDSession::getBoolValue(unsigned int aCtrl) {
-	return mVDAnimation->getBoolUniformValueByIndex(aCtrl);
-}
 void VDSession::toggleValue(unsigned int aCtrl) {
 	mVDWebsocket->toggleValue(aCtrl);
 }
@@ -144,7 +131,7 @@ void VDSession::resize() {
 }
 void VDSession::update() {
 	// fps calculated in main app
-	mVDSettings->sFps = toString(floor(getControlValue(mVDSettings->IFPS)));
+	mVDSettings->sFps = toString(floor(getFloatUniformValueByIndex(mVDSettings->IFPS)));
 	if (mVDWebsocket->hasReceivedStream() && (getElapsedFrames() % 100 == 0)) {
 		updateStream(mVDWebsocket->getBase64Image());
 	}
@@ -181,7 +168,7 @@ bool VDSession::save()
 
 	JsonTree settings = JsonTree::makeArray("settings");
 	settings.addChild(ci::JsonTree("bpm", mOriginalBpm));
-	settings.addChild(ci::JsonTree("beatsperbar", mVDAnimation->iBeatsPerBar));
+	settings.addChild(ci::JsonTree("beatsperbar", mVDAnimation->getIntUniformValueByName("iBeatsPerBar")));
 	settings.addChild(ci::JsonTree("fadeindelay", mFadeInDelay));
 	settings.addChild(ci::JsonTree("fadeoutdelay", mFadeOutDelay));
 	settings.addChild(ci::JsonTree("endframe", mVDAnimation->mEndFrame));
@@ -234,8 +221,8 @@ void VDSession::restore()
 		if (doc.hasChild("settings")) {
 			JsonTree settings(doc.getChild("settings"));
 			if (settings.hasChild("bpm")) { mOriginalBpm = settings.getValueForKey<float>("bpm", 166.0f); mVDAnimation->setBpm(mOriginalBpm); };
-			if (settings.hasChild("beatsperbar")) mVDAnimation->iBeatsPerBar = settings.getValueForKey<int>("beatsperbar");
-			if (mVDAnimation->iBeatsPerBar < 1) mVDAnimation->iBeatsPerBar = 1;
+			if (settings.hasChild("beatsperbar")) mVDAnimation->setIntUniformValueByName("iBeatsPerBar", settings.getValueForKey<int>("beatsperbar"));
+			if (mVDAnimation->getIntUniformValueByName("iBeatsPerBar") < 1) mVDAnimation->setIntUniformValueByName("iBeatsPerBar", 4);
 			if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
 			if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
 			if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");			
@@ -290,7 +277,6 @@ void VDSession::reset()
 	mFlipV = false;
 	mFlipH = false;
 	mOriginalBpm = 166;
-	mVDAnimation->iBeatsPerBar = 1;
 	mWaveFileName = "";
 	mWavePlaybackDelay = 10;
 	mMovieFileName = "";
@@ -308,9 +294,6 @@ void VDSession::reset()
 int VDSession::getWindowsResolution() {
 	return mVDUtils->getWindowsResolution();
 }
-/*void VDSession::setCrossfade(float aCrossfade) {
-	mVDRouter->changeFloatValue(21, aCrossfade);
-	}*/
 void VDSession::blendRenderEnable(bool render) {
 	mVDAnimation->blendRenderEnable(render);
 }
@@ -359,7 +342,7 @@ void VDSession::fileDrop(FileDropEvent event) {
 bool VDSession::handleMouseMove(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->changeVec4Value(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseMove(event)) {
 		// let your application perform its mouseMove handling here
@@ -372,7 +355,7 @@ bool VDSession::handleMouseMove(MouseEvent &event)
 bool VDSession::handleMouseDown(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->changeVec4Value(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseDown(event)) {
 		// let your application perform its mouseDown handling here
@@ -386,7 +369,7 @@ bool VDSession::handleMouseDown(MouseEvent &event)
 bool VDSession::handleMouseDrag(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->changeVec4Value(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseDrag(event)) {
 		// let your application perform its mouseDrag handling here
@@ -399,7 +382,7 @@ bool VDSession::handleMouseDrag(MouseEvent &event)
 bool VDSession::handleMouseUp(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->changeVec4Value(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseUp(event)) {
 		// let your application perform its mouseUp handling here

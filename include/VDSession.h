@@ -71,13 +71,10 @@ namespace VideoDromm {
 		int								getTextEnd() { return mTextPlaybackEnd; };
 		bool							hasText() { return mText.length() > 0; };
 		// control values
-		float							getControlValue(unsigned int aCtrl);
-		float							getControlValueByName(string aCtrlName);
-		void							setControlValue(unsigned int aCtrl, float aValue);
 		void							toggleValue(unsigned int aCtrl);
 		void							toggleAuto(unsigned int aCtrl);
 		void							toggleTempo(unsigned int aCtrl);
-		bool							getBoolValue(unsigned int aCtrl);
+
 		void							resetAutoAnimation(unsigned int aIndex);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
@@ -98,6 +95,19 @@ namespace VideoDromm {
 		};
 		bool							getBoolUniformValueByName(string aName) {
 			return mVDAnimation->getBoolUniformValueByName(aName);
+		};
+		bool							getBoolUniformValueByIndex(unsigned int aCtrl) {
+			return mVDAnimation->getBoolUniformValueByIndex(aCtrl);
+		}
+		float							getFloatUniformValueByIndex(unsigned int aCtrl) {
+			return mVDAnimation->getFloatUniformValueByIndex(aCtrl);
+		};
+		float							getFloatUniformValueByName(string aCtrlName) {
+			return mVDAnimation->getFloatUniformValueByName(aCtrlName);
+		};
+		void							setFloatUniformValueByIndex(unsigned int aCtrl, float aValue) {
+			// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
+			mVDWebsocket->changeFloatValue(aCtrl, aValue);
 		};
 
 		// tempo

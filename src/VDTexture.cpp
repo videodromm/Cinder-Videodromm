@@ -563,7 +563,7 @@ namespace VideoDromm {
 				if (mSyncToBeat) {
 					//newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
 					// TODO newPosition = (int)(((int)(mVDSettings->iBeat / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
-					newPosition = (int)(mVDAnimation->iBeatIndex % mSequenceTextures.size());
+					newPosition = (int)(mVDAnimation->getIntUniformValueByName("iBeat") % mSequenceTextures.size());
 				}
 				else {
 					newPosition = mPlayheadPosition;

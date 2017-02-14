@@ -30,7 +30,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	currentScene = 0;
 
 	previousTime = 0.0f;
-	iBeatIndex = 1;
 	counter = 0;
 	iTimeFactor = 1.0f;
 	// tempo
@@ -124,6 +123,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createIntUniform("iBlendmode", 50, 0);
 		// greyscale 
 		createIntUniform("iGreyScale", 51, 0);
+		// current beat
+		createIntUniform("iBeat", 52, 1);
+		// beats per bar 
+		createIntUniform("iBeatsPerBar", 53, 4);
 
 		// vec3
 		createVec3Uniform("iResolution", 60, vec3(getFloatUniformValueByName("iResolutionX"), getFloatUniformValueByName("iResolutionY"), 1.0));
@@ -158,7 +161,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	CI_LOG_V("VDAnimation, iResX:" + toString(getFloatUniformValueByIndex(29)));
 	CI_LOG_V("VDAnimation, iResY:" + toString(getFloatUniformValueByIndex(30)));
 
-	changeVec3Value(60, vec3(getFloatUniformValueByIndex(29), getFloatUniformValueByIndex(30), 1.0));
+	setVec3UniformValueByIndex(60, vec3(getFloatUniformValueByIndex(29), getFloatUniformValueByIndex(30), 1.0));
 	CI_LOG_V("VDAnimation, iResolution:" + toString(shaderUniforms[getUniformNameForIndex(60)].vec3Value));
 
 }
@@ -439,20 +442,8 @@ void VDAnimation::resetAutoAnimation(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
 }
-void VDAnimation::changeIntValue(unsigned int aIndex, int aValue) {
-	shaderUniforms[getUniformNameForIndex(aIndex)].intValue = aValue;
-}
 
-void VDAnimation::changeVec2Value(unsigned int aIndex, vec2 aValue) {
-	shaderUniforms[getUniformNameForIndex(aIndex)].vec2Value = aValue;
-}
-void VDAnimation::changeVec3Value(unsigned int aIndex, vec3 aValue) {
-	shaderUniforms[getUniformNameForIndex(aIndex)].vec3Value = aValue;
-}
-void VDAnimation::changeVec4Value(unsigned int aIndex, vec4 aValue) {
-	shaderUniforms[getUniformNameForIndex(aIndex)].vec4Value = aValue;
-}
-bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
+bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue) {
 	bool rtn = false;
 	// we can't change iGlobalTime at index 0
 	if (aIndex > 0) {
@@ -471,44 +462,7 @@ bool VDAnimation::changeFloatValue(unsigned int aIndex, float aValue) {
 	}
 	return rtn;
 }
-bool VDAnimation::changeBoolValue(unsigned int aIndex, bool aValue) {
-	shaderUniforms[getUniformNameForIndex(aIndex)].boolValue = aValue;
-	return aValue;
-}
 
-float VDAnimation::getFloatUniformValueByIndex(unsigned int aIndex) {
-	return shaderUniforms[getUniformNameForIndex(aIndex)].floatValue;
-}
-int VDAnimation::getSampler2DUniformValueByName(string aName) {
-	return shaderUniforms[aName].textureIndex;
-}
-float VDAnimation::getFloatUniformValueByName(string aName) {
-	return shaderUniforms[aName].floatValue;
-}
-vec2 VDAnimation::getVec2UniformValueByName(string aName) {
-	return shaderUniforms[aName].vec2Value;
-}
-vec3 VDAnimation::getVec3UniformValueByName(string aName) {
-	return shaderUniforms[aName].vec3Value;
-}
-vec4 VDAnimation::getVec4UniformValueByName(string aName) {
-	return shaderUniforms[aName].vec4Value;
-}
-int VDAnimation::getIntUniformValueByName(string aName) {
-	return shaderUniforms[aName].intValue;
-}
-bool VDAnimation::getBoolUniformValueByIndex(unsigned int aIndex) {
-	return shaderUniforms[getUniformNameForIndex(aIndex)].boolValue;
-}
-float VDAnimation::getMinUniformValueByIndex(unsigned int aIndex) {
-	return shaderUniforms[getUniformNameForIndex(aIndex)].minValue;
-}
-float VDAnimation::getMaxUniformValueByIndex(unsigned int aIndex) {
-	return shaderUniforms[getUniformNameForIndex(aIndex)].maxValue;
-}
-bool VDAnimation::getBoolUniformValueByName(string aName) {
-	return shaderUniforms[aName].boolValue;
-}
 bool VDAnimation::isExistingUniform(string aName) {
 	return shaderUniforms[aName].isValid;
 }
@@ -673,15 +627,15 @@ void VDAnimation::update() {
 
 	int time = (currentTime - startTime)*1000000.0;
 	int elapsed = iDeltaTime*1000000.0;
-	int elapsedBeatPerBar = iDeltaTime / iBeatsPerBar*1000000.0;
+	int elapsedBeatPerBar = iDeltaTime / shaderUniforms["iBeatsPerBar"].intValue*1000000.0;
 	if (elapsedBeatPerBar > 0)
 	{
 		double moduloBeatPerBar = (time % elapsedBeatPerBar) / 1000000.0;
 		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
 		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
 		{
-			if (iBeatIndex > iBeatsPerBar) iBeatIndex = 1;
-			iBeatIndex++;
+			if (shaderUniforms["iBeat"].intValue > shaderUniforms["iBeatsPerBar"].intValue ) shaderUniforms["iBeat"].intValue = 1;
+			shaderUniforms["iBeat"].intValue++;
 		}
 		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
 	}
@@ -701,12 +655,12 @@ void VDAnimation::update() {
 		{
 			if (shaderUniforms[getUniformNameForIndex(anim)].autotime)
 			{
-				changeFloatValue(anim, (modulo < 0.1) ? shaderUniforms[getUniformNameForIndex(anim)].maxValue : shaderUniforms[getUniformNameForIndex(anim)].minValue);
+				setFloatUniformValueByIndex(anim, (modulo < 0.1) ? shaderUniforms[getUniformNameForIndex(anim)].maxValue : shaderUniforms[getUniformNameForIndex(anim)].minValue);
 			}
 			else
 			{
 				if (shaderUniforms[getUniformNameForIndex(anim)].automatic) {
-					changeFloatValue(anim, lmap<float>(shaderUniforms["iTempoTime"].floatValue, 0.00001, iDeltaTime, shaderUniforms[getUniformNameForIndex(anim)].minValue, shaderUniforms[getUniformNameForIndex(anim)].maxValue));
+					setFloatUniformValueByIndex(anim, lmap<float>(shaderUniforms["iTempoTime"].floatValue, 0.00001, iDeltaTime, shaderUniforms[getUniformNameForIndex(anim)].minValue, shaderUniforms[getUniformNameForIndex(anim)].maxValue));
 				}
 			}
 		}
@@ -719,7 +673,7 @@ void VDAnimation::update() {
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{
-			changeBoolValue(48, (modulo < 0.1) ? 1.0 : 0.0);
+			setBoolUniformValueByIndex(48, (modulo < 0.1) ? 1.0 : 0.0);
 		}
 
 		if (mVDSettings->tEyePointZ)
