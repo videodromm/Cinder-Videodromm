@@ -45,7 +45,7 @@ namespace VideoDromm {
 		mCurrentBlend = 0;
 		for (size_t i = 0; i < mVDAnimation->getBlendModesCount(); i++)
 		{
-			mBlendFbos.push_back(gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, fboFmt));
+			mBlendFbos[i] = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, fboFmt);
 		}
 
 		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
@@ -71,11 +71,11 @@ namespace VideoDromm {
 		return mBlendFbos.size();
 	}
 	ci::gl::TextureRef VDMix::getFboThumb(unsigned int aBlendIndex) {
-		if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = mBlendFbos.size() - 1;
+		//if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = mBlendFbos.size() - 1;
 		return mBlendFbos[aBlendIndex]->getColorTexture();
 	}
 	void VDMix::useBlendmode(unsigned int aBlendIndex) {
-		if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = 0;
+		//if (aBlendIndex > mBlendFbos.size() - 1) aBlendIndex = 0;
 		mVDSettings->iBlendmode = aBlendIndex;
 	}
 	ci::gl::TextureRef VDMix::getMixTexture(unsigned int aMixFboIndex) {

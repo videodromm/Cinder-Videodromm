@@ -238,7 +238,7 @@ namespace VideoDromm
 		fs::path						mTexturesFilepath;
 		bool							initTextureList();
 		// blendmodes fbos
-		vector<ci::gl::FboRef>			mBlendFbos;
+		map<int, ci::gl::FboRef>		mBlendFbos;
 		int								mCurrentBlend;
 		gl::GlslProgRef					mGlslMix, mGlslBlend;
 		// render

@@ -634,7 +634,7 @@ void VDAnimation::update() {
 		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
 		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
 		{
-			if (shaderUniforms["iBeat"].intValue > shaderUniforms["iBeatsPerBar"].intValue ) shaderUniforms["iBeat"].intValue = 1;
+			if (shaderUniforms["iBeat"].intValue > shaderUniforms["iBeatsPerBar"].intValue ) shaderUniforms["iBeat"].intValue = 0;
 			shaderUniforms["iBeat"].intValue++;
 		}
 		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
