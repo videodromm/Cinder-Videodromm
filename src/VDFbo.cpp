@@ -16,10 +16,14 @@ namespace VideoDromm {
 		mVDAnimation = aVDAnimation;
 		mType = UNKNOWN;
 
-		mInputTextureIndex = mFeedbackFrames = mCurrentFeedbackIndex = 0;
+		mInputTextureIndex = mCurrentFeedbackIndex = 0; 
+		mFeedbackFrames = 4;
 		// init textures
-		mInputTextures[0] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight); 
-		mOutputTextures[0] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		for (size_t i = 0; i < 10; i++)
+		{
+			mInputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+			mOutputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		}
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		isReady = false;
@@ -28,6 +32,7 @@ namespace VideoDromm {
 		// init the fbo whatever happens next
 		fboFmt.setColorTextureFormat(fmt);
 		mFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+		mFeedbackFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mError = "";
 		// init with passthru shader
 		mShaderName = "0";
@@ -58,16 +63,19 @@ namespace VideoDromm {
 			mFboTextureFragmentShaderString = "out vec4 fragColor;\n"
 				"uniform sampler2D iChannel0;\n"
 				"uniform sampler2D iChannel1;\n"
+				"uniform sampler2D iChannel2;\n"
 				"uniform vec3 iResolution;\n"
 				"void main(void)\n"
 				"{\n"
 				"vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
 				"vec4 t0 = texture(iChannel0, uv);\n"
 				"vec4 t1 = texture(iChannel1, uv);\n"
-				"fragColor = vec4(t0.r, t1.g, t1.b, 1.0);\n"
+				"vec4 t2 = texture(iChannel2, uv);\n"
+				"fragColor = vec4(t0.r, t1.g, t2.b, 1.0);\n"
 				"}\n";
 
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
+			mFeedbackShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
 
 			CI_LOG_V("feedback.frag compiled");
 		}
@@ -205,6 +213,53 @@ namespace VideoDromm {
 				}
 			}
 		}
+		// feedback
+		auto &fbuniforms = mFeedbackShader->getActiveUniforms();
+		for (const auto &uniform : fbuniforms) {
+			//CI_LOG_V(mFboTextureShader->getLabel() + ", getShader uniform name:" + uniform.getName());
+			if (mVDAnimation->isExistingUniform(uniform.getName())) {
+				int uniformType = mVDAnimation->getUniformType(uniform.getName());
+				switch (uniformType)
+				{
+				case 0:
+					// float
+					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValueByName(uniform.getName()));
+					break;
+				case 1:
+					// sampler2D
+					mFeedbackShader->uniform(uniform.getName(), mCurrentFeedbackIndex);
+					break;
+				case 2:
+					// vec2
+					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValueByName(uniform.getName()));
+					break;
+				case 3:
+					// vec3
+					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValueByName(uniform.getName()));
+					break;
+				case 4:
+					// vec4
+					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValueByName(uniform.getName()));
+					break;
+				case 5:
+					// int
+					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValueByName(uniform.getName()));
+					break;
+				case 6:
+					// bool
+					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValueByName(uniform.getName()));
+					break;
+				default:
+					break;
+				}
+			}
+			else {
+				if (uniform.getName() != "ciModelViewProjection") {
+					mVDSettings->mMsg =  "feedback shader, uniform not found:" + uniform.getName();
+					CI_LOG_V(mVDSettings->mMsg);
+				}
+			}
+		}
 		return mFboTextureShader;
 	}
 	ci::gl::Texture2dRef VDFbo::getRenderedTexture() {
@@ -215,19 +270,40 @@ namespace VideoDromm {
 		}
 		else {
 			// feedback
-			if (mFeedbackFrames > 0 && (getElapsedFrames()%10==0) ) {
+			if (mFeedbackFrames > 0) {
 				string filename = toString(mCurrentFeedbackIndex) + ".jpg";
 				Surface s8(mRenderedTexture->createSource());
-				/*fs::path fr = getAssetPath("") / "output" / filename;
-				writeImage(writeFile(getAssetPath("") / "output" / filename), s8);*/
 
 				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
-				Surface sk8(mOutputTextures[mCurrentFeedbackIndex]->createSource());
-				fs::path fr = getAssetPath("") / "output" / filename;
-				writeImage(writeFile(getAssetPath("") / "output" / filename), sk8);
-
+				gl::ScopedFramebuffer fbScp(mFeedbackFbo);
+				gl::clear(Color::black());
+				
 				mCurrentFeedbackIndex++;
 				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
+				mOutputTextures[0]->bind(mCurrentFeedbackIndex);
+				mCurrentFeedbackIndex++;
+				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
+				mOutputTextures[1]->bind(mCurrentFeedbackIndex);
+				mCurrentFeedbackIndex++;
+				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
+				mOutputTextures[2]->bind(mCurrentFeedbackIndex);
+
+				gl::ScopedGlslProg glslScope(mFeedbackShader);
+				gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
+
+				mFeedbackTexture = mFeedbackFbo->getColorTexture();
+				if (getElapsedFrames() % 100 == 0) {
+					writeImage(writeFile(getAssetPath("") / "output" / filename), s8);
+				}
+				if (getElapsedFrames() % 104 == 0) {
+					Surface sk8(mOutputTextures[mCurrentFeedbackIndex]->createSource());
+					writeImage(writeFile(getAssetPath("") / "output" / "1" / filename), sk8);
+				}
+				if (getElapsedFrames() % 108 == 0) {
+					Surface skr8(mFeedbackTexture->createSource());
+					writeImage(writeFile(getAssetPath("") / "output" / "2" / filename), skr8);
+				}
+				return mFeedbackTexture;
 			}
 		}
 		return mRenderedTexture;
@@ -242,7 +318,7 @@ namespace VideoDromm {
 		// TODO check mTextureList size for bounds
 		// if only one texture, both use 0
 		if (mInputTextures.size() > 0) mInputTextures[0]->bind(0);
-		if (mInputTextures.size() == 1) mInputTextures[0]->bind(1); 
+		if (mInputTextures.size() == 1) mInputTextures[0]->bind(1);
 		if (mInputTextures.size() > 1) mInputTextures[1]->bind(1);
 
 		gl::ScopedGlslProg glslScope(mFboTextureShader);

@@ -92,7 +92,7 @@ namespace VideoDromm
 		//! default fragment shader
 		std::string						mFboTextureFragmentShaderString;
 		//! shader
-		gl::GlslProgRef					mFboTextureShader;
+		gl::GlslProgRef					mFboTextureShader, mFeedbackShader;
 
 		string							mError;
 	private:
@@ -102,7 +102,7 @@ namespace VideoDromm
 		VDAnimationRef					mVDAnimation;
 
 		//! Fbo
-		gl::FboRef						mFbo;
+		gl::FboRef						mFbo, mFeedbackFbo;
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;
 		//! Input textures
@@ -113,7 +113,7 @@ namespace VideoDromm
 		unsigned int					mShaderIndex;
 		string							mId;
 		// Output texture
-		ci::gl::Texture2dRef			mRenderedTexture;
+		ci::gl::Texture2dRef			mRenderedTexture, mFeedbackTexture;
 		bool							isReady;
 		// feedback
 		// 0: only last rendered 1+: number of feedback images
