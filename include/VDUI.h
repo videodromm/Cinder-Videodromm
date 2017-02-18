@@ -59,7 +59,7 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDUI>(new VDUI(aVDSettings, aVDSession));
 		}
-		~VDUI();
+
 		void    Run(const char* title, unsigned int fps);
 		void	resize();
 		bool	isReady() { return !mIsResizing; };

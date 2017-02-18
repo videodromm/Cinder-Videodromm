@@ -34,10 +34,10 @@ namespace VideoDromm
 
 	class VDFbo : public VDTexture{
 	public:
-		VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList);
+		VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation);
 		~VDFbo(void);
-		static VDFboRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList) {
-			return std::make_shared<VDFbo>(aVDSettings, aVDAnimation, aTextureList);
+		static VDFboRef create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation) {
+			return std::make_shared<VDFbo>(aVDSettings, aVDAnimation);
 		}
 		//! returns a shared pointer to this fbo
 		VDFboRef						getPtr() { return std::static_pointer_cast<VDFbo>(shared_from_this()); }
@@ -64,12 +64,19 @@ namespace VideoDromm
 		unsigned int					getShaderIndex() { return mShaderIndex; };
 		void							setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName);
 		// textures
-		void							setInputTexture(unsigned int aTextureIndex);
+		void							setInputTexture(ci::gl::Texture2dRef aTexture, unsigned int aTextureIndex = 0);
 		unsigned int					getInputTextureIndex() { return mInputTextureIndex; };
 		ci::gl::Texture2dRef			getFboTexture();
 		void							updateThumbFile();
 		gl::GlslProgRef					getShader();
 		ci::gl::Texture2dRef			getRenderedTexture();
+		// feedback get/set
+		unsigned int					getFeedbackFrames() {
+			return mFeedbackFrames;
+		};
+		void							setFeedbackFrames(unsigned int aFeedbackFrames) {
+			mFeedbackFrames = aFeedbackFrames;
+		};
 	protected:
 		std::string						mFboName;
 		bool							mFlipV;
@@ -98,15 +105,20 @@ namespace VideoDromm
 		gl::FboRef						mFbo;
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;
-		//! Textures
-		VDTextureList					mTextureList;
+		//! Input textures
+		map<int, ci::gl::Texture2dRef>	mInputTextures;
 		unsigned int					mInputTextureIndex;
 		//! Shaders
 		string							mShaderName;
 		unsigned int					mShaderIndex;
 		string							mId;
-		// texture
+		// Output texture
 		ci::gl::Texture2dRef			mRenderedTexture;
 		bool							isReady;
+		// feedback
+		// 0: only last rendered 1+: number of feedback images
+		unsigned int					mFeedbackFrames;
+		map<int, ci::gl::Texture2dRef>	mOutputTextures;
+		unsigned int					mCurrentFeedbackIndex;
 	};
 }

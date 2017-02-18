@@ -17,11 +17,7 @@ namespace VideoDromm {
 		mVDSettings = aVDSettings;
 		// Animation
 		mVDAnimation = aVDAnimation;
-		// init fbo format
-		//fmt.setWrap(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
-		//fmt.setBorderColor(Color::black());		
-		// uncomment this to enable 4x antialiasing	
-		//fboFmt.setSamples( 4 ); 
+
 		fboFmt.setColorTextureFormat(fmt);
 		// initialize the textures list with audio texture
 		mTexturesFilepath = getAssetPath("") / mVDSettings->mAssetsPath / "textures.xml";
@@ -38,8 +34,7 @@ namespace VideoDromm {
 		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 		// mix fbo to render
 		warpMixToRender = 0;
-		//mMixRenderFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
+		//mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";
 		mWarpJson = getAssetPath("") / mVDSettings->mAssetsPath / "warps.json";
 
 		mCurrentBlend = 0;
@@ -671,13 +666,7 @@ namespace VideoDromm {
 		if (isModDown) {
 			switch (event.getCode()) {
 			case KeyEvent::KEY_s:
-				/* no more xml fileWarpsName = "warps" + toString(getElapsedFrames()) + ".xml";
-				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / fileWarpsName;
-				Warp::writeSettings(mWarps, writeFile(mWarpSettings));
-				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / "warps.xml";*/
 				fileWarpsName = "warps" + toString(getElapsedFrames()) + ".json";
-				mWarpSettings = getAssetPath("") / mVDSettings->mAssetsPath / fileWarpsName;
-				Warp::save(mWarps, writeFile(mWarpSettings));
 				Warp::save(mWarps, writeFile(mWarpJson));
 				break;
 			case KeyEvent::KEY_n:
@@ -712,7 +701,7 @@ namespace VideoDromm {
 	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
-		mFboList[aFboIndex]->setInputTexture(aInputTextureIndex);
+		mFboList[aFboIndex]->setInputTexture(mTextureList[aInputTextureIndex]->getPtr()->getTexture(), aInputTextureIndex);
 	}
 	unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
@@ -1036,21 +1025,21 @@ namespace VideoDromm {
 	}
 	unsigned int VDMix::createShaderFboFromString(string aFragmentShaderString, string aShaderFilename) {
 		unsigned int rtn = 0;
-		// no slot available, create new shader
+		// create new shader
 		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aShaderFilename, "", aFragmentShaderString));
 		if (s->isValid()) {
 			mShaderList.push_back(s);
 			rtn = mShaderList.size() - 1;
 			// each shader element has a fbo
-			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation, mTextureList));
+			VDFboRef f(new VDFbo(mVDSettings, mVDAnimation));
 			// create fbo xml
 			XmlTree			fboXml;
 			fboXml.setTag(aShaderFilename);
 			fboXml.setAttribute("id", rtn);
 			fboXml.setAttribute("width", "640");
 			fboXml.setAttribute("height", "480");
-			fboXml.setAttribute("shadername", mShaderList[rtn]->getName());//aShaderFilename
-			fboXml.setAttribute("inputtextureindex", 0);
+			fboXml.setAttribute("shadername", mShaderList[rtn]->getName());
+			fboXml.setAttribute("inputtextureindex", math<int>::min(rtn, mTextureList.size() - 1));
 			f->fromXml(fboXml);
 			//f->setShaderIndex(rtn);
 			f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());

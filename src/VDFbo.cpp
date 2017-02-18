@@ -7,16 +7,19 @@ using namespace ci;
 using namespace ci::app;
 
 namespace VideoDromm {
-	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDTextureList aTextureList)
+	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation)
 		: mFilePathOrText("")
 		, mFboName("fbo")
 	{
 		CI_LOG_V("VDFbo constructor");
 		mVDSettings = aVDSettings;
 		mVDAnimation = aVDAnimation;
-		mTextureList = aTextureList;
 		mType = UNKNOWN;
-		mInputTextureIndex = 0;
+
+		mInputTextureIndex = mFeedbackFrames = mCurrentFeedbackIndex = 0;
+		// init textures
+		mInputTextures[0] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight); 
+		mOutputTextures[0] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		isReady = false;
@@ -50,28 +53,33 @@ namespace VideoDromm {
 			mError = string(e.what());
 			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
 		}
-		// load passthru fragment shader
+		// load feedback fragment shader
 		try {
-			fs::path fragFile = getAssetPath("") / "0.frag";
-			if (fs::exists(fragFile)) {
-				mFboTextureFragmentShaderString = loadString(loadAsset("0.frag"));
-			}
-			else {
-				mError = "0.frag does not exist, should quit";
-				CI_LOG_V(mError);
-			}
+			mFboTextureFragmentShaderString = "out vec4 fragColor;\n"
+				"uniform sampler2D iChannel0;\n"
+				"uniform sampler2D iChannel1;\n"
+				"uniform vec3 iResolution;\n"
+				"void main(void)\n"
+				"{\n"
+				"vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
+				"vec4 t0 = texture(iChannel0, uv);\n"
+				"vec4 t1 = texture(iChannel1, uv);\n"
+				"fragColor = vec4(t0.r, t1.g, t1.b, 1.0);\n"
+				"}\n";
+
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
-			// 20161209 problem on Mac mFboTextureShader->setLabel(mShaderName);
-			CI_LOG_V("0.frag loaded and compiled");
+
+			CI_LOG_V("feedback.frag compiled");
 		}
 		catch (gl::GlslProgCompileExc &exc) {
 			mError = string(exc.what());
-			CI_LOG_V("unable to load/compile fbotexture fragment shader:" + string(exc.what()));
+			CI_LOG_V("unable to load/compile feedback fragment shader:" + string(exc.what()));
 		}
 		catch (const std::exception &e) {
 			mError = string(e.what());
-			CI_LOG_V("unable to load fbotexture fragment shader:" + string(e.what()));
+			CI_LOG_V("unable to load feedback fragment shader:" + string(e.what()));
 		}
+		mFboName = "feedback";
 		if (mError.length() > 0) mVDSettings->mMsg = mError;
 	}
 	VDFbo::~VDFbo(void) {
@@ -140,13 +148,14 @@ namespace VideoDromm {
 	}
 
 	std::string VDFbo::getName() {
-		return mShaderName + " " + mTextureList[mInputTextureIndex]->getName() + " " + mId;
+		return mShaderName + " fb:" + toString(mCurrentFeedbackIndex) + " " + mId;
+		//return mShaderName + " " + mId;
 	}
 	std::string VDFbo::getShaderName() {
 		return mShaderName;
 	}
-	void VDFbo::setInputTexture(unsigned int aTextureIndex) {
-		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
+	void VDFbo::setInputTexture(ci::gl::Texture2dRef aTexture, unsigned int aTextureIndex) {
+		mInputTextures[aTextureIndex] = aTexture;
 		mInputTextureIndex = aTextureIndex;
 	}
 	gl::GlslProgRef VDFbo::getShader() {
@@ -204,6 +213,23 @@ namespace VideoDromm {
 			getFboTexture();
 			isReady = true;
 		}
+		else {
+			// feedback
+			if (mFeedbackFrames > 0 && (getElapsedFrames()%10==0) ) {
+				string filename = toString(mCurrentFeedbackIndex) + ".jpg";
+				Surface s8(mRenderedTexture->createSource());
+				/*fs::path fr = getAssetPath("") / "output" / filename;
+				writeImage(writeFile(getAssetPath("") / "output" / filename), s8);*/
+
+				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
+				Surface sk8(mOutputTextures[mCurrentFeedbackIndex]->createSource());
+				fs::path fr = getAssetPath("") / "output" / filename;
+				writeImage(writeFile(getAssetPath("") / "output" / filename), sk8);
+
+				mCurrentFeedbackIndex++;
+				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
+			}
+		}
 		return mRenderedTexture;
 	}
 
@@ -214,22 +240,14 @@ namespace VideoDromm {
 		gl::ScopedFramebuffer fbScp(mFbo);
 		gl::clear(Color::black());
 		// TODO check mTextureList size for bounds
-		// 20161129 gl::ScopedTextureBind tex(mTextureList[mInputTextureIndex]->getTexture());
-		mTextureList[mInputTextureIndex]->getTexture()->bind(0);
-		// setup the viewport to match the dimensions of the FBO
-		// 20161129 gl::ScopedViewport scpVp(ivec2(0), mFbo->getSize());
-
-		// 20161129 mFboTextureShader->bind();
+		// if only one texture, both use 0
+		if (mInputTextures.size() > 0) mInputTextures[0]->bind(0);
+		if (mInputTextures.size() == 1) mInputTextures[0]->bind(1); 
+		if (mInputTextures.size() > 1) mInputTextures[1]->bind(1);
 
 		gl::ScopedGlslProg glslScope(mFboTextureShader);
-		//if (mFlipV) {
-		//gl::drawSolidRoundedRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), 150, 20);
-		// CHECK gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight), vec2(1.0f, 1.0f), vec2(0.0f, 0.0f));
-		//}
-		//else {
-		// 20161129 why is it cut!?! gl::drawSolidRect(Rectf(0, 0, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight));
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-		//}
+
 		mRenderedTexture = mFbo->getColorTexture();
 		return mRenderedTexture;
 	}

@@ -180,7 +180,7 @@ bool VDSettings::save()
 	settings.push_back(AssetsPath);
 
 	XmlTree UseLineIn("UseLineIn", "");
-	UseLineIn.setAttribute("value", toString(mUseLineIn));
+	UseLineIn.setAttribute("value", mUseLineIn);
 	settings.push_back(UseLineIn);
 
 	XmlTree SplitWarpH("SplitWarpH", "");

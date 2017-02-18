@@ -57,9 +57,7 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mIsResizing = true;
 
 }
-VDUI::~VDUI() {
 
-}
 void VDUI::resize() {
 	mIsResizing = true;
 	// disconnect ui window and io events callbacks

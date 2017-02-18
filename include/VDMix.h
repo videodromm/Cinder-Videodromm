@@ -150,9 +150,17 @@ namespace VideoDromm
 		bool							isFboFlipV(unsigned int aFboIndex);
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
+		// feedback get/set
+		unsigned int					getFeedbackFrames(unsigned int aFboIndex) {
+			if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+			return mFboList[aFboIndex]->getFeedbackFrames();
+		};
+		void							setFeedbackFrames(unsigned int aFboIndex, unsigned int aFeedbackFrames) {
+			if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
+			mFboList[aFboIndex]->setFeedbackFrames(aFeedbackFrames);
+		};
 		// textures
 		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex);
-		//ci::gl::TextureRef				getRenderTexture();
 		string							getInputTextureName(unsigned int aTextureIndex);
 		unsigned int					getInputTexturesCount();
 
@@ -246,7 +254,7 @@ namespace VideoDromm
 		void							renderBlend();
 		// warping
 		string							fileWarpsName;
-		fs::path						mWarpSettings;
+		//fs::path						mWarpSettings;
 		fs::path						mWarpJson;
 		WarpList						mWarps;
 		gl::FboRef						mRenderFbo;

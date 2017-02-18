@@ -204,6 +204,13 @@ namespace VideoDromm {
 		//int								getFboTextureHeight(unsigned int aFboIndex);
 		unsigned int					getFboListSize() { return mVDMix->getFboListSize(); };
 		//string							getFboFragmentShaderText(unsigned int aFboIndex);
+		// feedback get/set
+		unsigned int					getFeedbackFrames(unsigned int aFboIndex) {
+			return mVDMix->getFeedbackFrames(aFboIndex);
+		};
+		void							setFeedbackFrames(unsigned int aFboIndex, unsigned int aFeedbackFrames) {
+			mVDMix->setFeedbackFrames(aFboIndex, aFeedbackFrames);
+		};
 		string							getMixFboName(unsigned int aMixFboIndex);
 		ci::gl::TextureRef				getMixTexture(unsigned int aMixFboIndex = 0);
 		unsigned int					getMixFbosCount();
