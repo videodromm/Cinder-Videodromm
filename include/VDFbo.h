@@ -64,7 +64,7 @@ namespace VideoDromm
 		unsigned int					getShaderIndex() { return mShaderIndex; };
 		void							setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName);
 		// textures
-		void							setInputTexture(ci::gl::Texture2dRef aTexture, unsigned int aTextureIndex = 0);
+		void							setInputTexture(VDTextureList aTextureList, unsigned int aTextureIndex = 0);
 		unsigned int					getInputTextureIndex() { return mInputTextureIndex; };
 		ci::gl::Texture2dRef			getFboTexture();
 		void							updateThumbFile();
@@ -106,7 +106,8 @@ namespace VideoDromm
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;
 		//! Input textures
-		map<int, ci::gl::Texture2dRef>	mInputTextures;
+		//map<int, ci::gl::Texture2dRef>	mInputTextures;
+		VDTextureList					mTextureList;
 		unsigned int					mInputTextureIndex;
 		//! Shaders
 		string							mShaderName;

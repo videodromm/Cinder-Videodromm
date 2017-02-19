@@ -21,7 +21,6 @@ namespace VideoDromm {
 		// init textures
 		for (size_t i = 0; i < 10; i++)
 		{
-			mInputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 			mOutputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		}
 		mPosX = mPosY = 0.0f;
@@ -64,14 +63,28 @@ namespace VideoDromm {
 				"uniform sampler2D iChannel0;\n"
 				"uniform sampler2D iChannel1;\n"
 				"uniform sampler2D iChannel2;\n"
+				"uniform sampler2D iChannel3;\n"
+				"uniform sampler2D iChannel4;\n"
+				"uniform sampler2D iChannel5;\n"
+				"uniform sampler2D iChannel6;\n"
+				"uniform sampler2D iChannel7;\n"
+				"uniform sampler2D iChannel8;\n"
+				"uniform sampler2D iChannel9;\n"
 				"uniform vec3 iResolution;\n"
 				"void main(void)\n"
 				"{\n"
 				"vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
-				"vec4 t0 = texture(iChannel0, uv);\n"
-				"vec4 t1 = texture(iChannel1, uv);\n"
-				"vec4 t2 = texture(iChannel2, uv);\n"
-				"fragColor = vec4(t0.r, t1.g, t2.b, 1.0);\n"
+				"vec3 t0 = texture(iChannel0, uv).rgb;\n"
+				"vec3 t1 = texture(iChannel1, uv).rgb;\n"
+				"vec3 t2 = texture(iChannel2, uv).rgb;\n"
+				"vec3 t3 = texture(iChannel3, uv).rgb;\n"
+				"vec3 t4 = texture(iChannel4, uv).rgb;\n"
+				"vec3 t5 = texture(iChannel5, uv).rgb;\n"
+				"vec3 t6 = texture(iChannel6, uv).rgb;\n"
+				"vec3 t7 = texture(iChannel7, uv).rgb;\n"
+				"vec3 t8 = texture(iChannel8, uv).rgb;\n"
+				"vec3 t9 = texture(iChannel9, uv).rgb;\n"
+				"fragColor = vec4(t0 + t1 + t2, 1.0);\n"
 				"}\n";
 
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
@@ -162,8 +175,9 @@ namespace VideoDromm {
 	std::string VDFbo::getShaderName() {
 		return mShaderName;
 	}
-	void VDFbo::setInputTexture(ci::gl::Texture2dRef aTexture, unsigned int aTextureIndex) {
-		mInputTextures[aTextureIndex] = aTexture;
+	void VDFbo::setInputTexture(VDTextureList aTextureList, unsigned int aTextureIndex) {
+		mTextureList = aTextureList;
+		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mInputTextureIndex = aTextureIndex;
 	}
 	gl::GlslProgRef VDFbo::getShader() {
@@ -274,15 +288,16 @@ namespace VideoDromm {
 				mCurrentFeedbackIndex++;
 				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;				
 				string filename = toString(mCurrentFeedbackIndex) + ".jpg";
+				// save rendered texture at mCurrentFeedbackIndex
 				Surface s8(mRenderedTexture->createSource());
+				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
+
 				mFeedbackShader->uniform("iChannel0", 0);
 				mFeedbackShader->uniform("iChannel1", 1);
 				mFeedbackShader->uniform("iChannel2", 2);
 
-				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
 				gl::ScopedFramebuffer fbScp(mFeedbackFbo);
-				gl::clear(Color::black());
-				
+				gl::clear(Color::black());			
 				
 				mOutputTextures[0]->bind(0);
 				mOutputTextures[1]->bind(1);
@@ -316,10 +331,8 @@ namespace VideoDromm {
 		gl::ScopedFramebuffer fbScp(mFbo);
 		gl::clear(Color::black());
 		// TODO check mTextureList size for bounds
-		// if only one texture, both use 0
-		if (mInputTextures.size() > 0) mInputTextures[0]->bind(0);
-		if (mInputTextures.size() == 1) mInputTextures[0]->bind(1);
-		if (mInputTextures.size() > 1) mInputTextures[1]->bind(1);
+		if (mInputTextureIndex > mTextureList.size() - 1) mInputTextureIndex = 0;
+		mTextureList[mInputTextureIndex]->getTexture()->bind(0);
 
 		gl::ScopedGlslProg glslScope(mFboTextureShader);
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));

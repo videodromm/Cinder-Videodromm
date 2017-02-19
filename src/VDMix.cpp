@@ -489,6 +489,7 @@ namespace VideoDromm {
 	void VDMix::update() {
 		// update audio texture
 		mTextureList[0]->getTexture();
+
 		// check if xFade changed
 		if (mVDSettings->xFadeChanged) {
 			mVDSettings->xFadeChanged = false;
@@ -701,7 +702,7 @@ namespace VideoDromm {
 	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
 		if (aInputTextureIndex > mTextureList.size() - 1) aInputTextureIndex = mTextureList.size() - 1;
-		mFboList[aFboIndex]->setInputTexture(mTextureList[aInputTextureIndex]->getPtr()->getTexture(), aInputTextureIndex);
+		mFboList[aFboIndex]->setInputTexture(mTextureList, aInputTextureIndex);
 	}
 	unsigned int VDMix::getFboInputTextureIndex(unsigned int aFboIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
@@ -1044,6 +1045,7 @@ namespace VideoDromm {
 			//f->setShaderIndex(rtn);
 			f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 			mFboList.push_back(f);
+			setFboInputTexture(mFboList.size() - 1, math<int>::min(rtn, mTextureList.size() - 1));
 		}
 		return rtn;
 	}
