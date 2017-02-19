@@ -1128,7 +1128,6 @@ namespace VideoDromm {
 						{
 							if (!mShaderList[i]->isActive()) rtn = i;
 						}
-
 					}
 				}
 				// if we found an available slot
