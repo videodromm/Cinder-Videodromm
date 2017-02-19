@@ -24,7 +24,6 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDUIChannels>(new VDUIChannels(aVDSettings, aVDSession));
 		}
-		~VDUIChannels();
 		void    Run(const char* title);
 	private:
 		// Settings

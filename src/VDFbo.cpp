@@ -17,7 +17,7 @@ namespace VideoDromm {
 		mType = UNKNOWN;
 
 		mInputTextureIndex = mCurrentFeedbackIndex = 0; 
-		mFeedbackFrames = 4;
+		mFeedbackFrames = 0;
 		// init textures
 		for (size_t i = 0; i < 10; i++)
 		{
@@ -271,22 +271,22 @@ namespace VideoDromm {
 		else {
 			// feedback
 			if (mFeedbackFrames > 0) {
+				mCurrentFeedbackIndex++;
+				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;				
 				string filename = toString(mCurrentFeedbackIndex) + ".jpg";
 				Surface s8(mRenderedTexture->createSource());
+				mFeedbackShader->uniform("iChannel0", 0);
+				mFeedbackShader->uniform("iChannel1", 1);
+				mFeedbackShader->uniform("iChannel2", 2);
 
 				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
 				gl::ScopedFramebuffer fbScp(mFeedbackFbo);
 				gl::clear(Color::black());
 				
-				mCurrentFeedbackIndex++;
-				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
-				mOutputTextures[0]->bind(mCurrentFeedbackIndex);
-				mCurrentFeedbackIndex++;
-				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
-				mOutputTextures[1]->bind(mCurrentFeedbackIndex);
-				mCurrentFeedbackIndex++;
-				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
-				mOutputTextures[2]->bind(mCurrentFeedbackIndex);
+				
+				mOutputTextures[0]->bind(0);
+				mOutputTextures[1]->bind(1);
+				mOutputTextures[2]->bind(2);
 
 				gl::ScopedGlslProg glslScope(mFeedbackShader);
 				gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));

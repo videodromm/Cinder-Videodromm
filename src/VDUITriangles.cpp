@@ -25,7 +25,7 @@ void VDUITriangles::Run(const char* title) {
 			ui::Image((void*)mVDSession->getTriangleTexture(w)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
 			if (ui::IsItemHovered()) ui::SetTooltip(mVDSession->getTriangleName(w).c_str());
 			// loop on the fbos
-			for (unsigned int a = 0; a < mVDSession->getFboListSize(); a++) {
+			/* heap problem for (unsigned int a = 0; a < mVDSession->getFboListSize(); a++) {
 				if (a > 0 && (a%6 != 0)) ui::SameLine();
 				if (mVDSession->getTriangleAFboIndex(w) == a) {
 					ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(a / 7.0f, 1.0f, 1.0f));
@@ -59,7 +59,7 @@ void VDUITriangles::Run(const char* title) {
 				sprintf(buf, "Set input fbo B to %s", mVDSession->getShaderName(b).c_str());
 				if (ui::IsItemHovered()) ui::SetTooltip(buf);
 				ui::PopStyleColor(3);
-			}
+			}*/
 
 			// crossfade
 			float xFade = mVDSession->getTriangleCrossfade(w);

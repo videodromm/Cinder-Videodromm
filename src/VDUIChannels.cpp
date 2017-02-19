@@ -6,9 +6,6 @@ VDUIChannels::VDUIChannels(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
 }
-VDUIChannels::~VDUIChannels() {
-	
-}
 
 void VDUIChannels::Run(const char* title) {
 	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
@@ -32,7 +29,7 @@ void VDUIChannels::Run(const char* title) {
 			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
 			ui::Text("c%d", i);
 			ui::NextColumn();
-			sprintf(buf, "%d", i);
+			sprintf(buf, "%d##chn%d", i, i);
 			if (ui::SliderInt(buf, &mVDSettings->iChannels[i], 0, mVDSettings->MAX - 1)) {
 			}
 			ui::NextColumn();

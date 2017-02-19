@@ -71,10 +71,10 @@ namespace VideoDromm
 		gl::GlslProgRef					getShader();
 		ci::gl::Texture2dRef			getRenderedTexture();
 		// feedback get/set
-		unsigned int					getFeedbackFrames() {
+		int								getFeedbackFrames() {
 			return mFeedbackFrames;
 		};
-		void							setFeedbackFrames(unsigned int aFeedbackFrames) {
+		void							setFeedbackFrames(int aFeedbackFrames) {
 			mFeedbackFrames = aFeedbackFrames;
 		};
 	protected:

@@ -89,7 +89,7 @@ void VDUITextures::Run(const char* title) {
 			}
 			if (mVDSession->isSequence(t)) {
 				ui::SameLine();
-				sprintf(buf, "b##s%d", t);
+				sprintf(buf, "b##sqs%d", t);
 				if (ui::Button(buf))
 				{
 					mVDSession->syncToBeat(t);
@@ -97,7 +97,7 @@ void VDUITextures::Run(const char* title) {
 				if (ui::IsItemHovered()) ui::SetTooltip("Sync to beat");
 
 				ui::SameLine();
-				sprintf(buf, "r##s%d", t);
+				sprintf(buf, "r##rs%d", t);
 				if (ui::Button(buf))
 				{
 					mVDSession->reverse(t);
@@ -106,7 +106,7 @@ void VDUITextures::Run(const char* title) {
 
 				if (mVDSession->isLoadingFromDisk(t)) {
 					ui::SameLine();
-					sprintf(buf, "l##s%d", t);
+					sprintf(buf, "l##ts%d", t);
 					if (ui::Button(buf))
 					{
 						mVDSession->toggleLoadingFromDisk(t);
@@ -114,14 +114,15 @@ void VDUITextures::Run(const char* title) {
 					if (ui::IsItemHovered()) ui::SetTooltip("Pause loading from disk");
 				}
 				speeds[t] = mVDSession->getSpeed(t);
-				if (ui::SliderFloat("speed", &speeds[t], 0.0f, 1.0f))
+				sprintf(buf, "speed##spd%d", t);
+				if (ui::SliderFloat(buf, &speeds[t], 0.0f, 1.0f))
 				{
 					mVDSession->setSpeed(t, speeds[t]);
 				}
 
 				playheadPositions[t] = mVDSession->getPlayheadPosition(t);
-
-				if (ui::SliderInt("scrub", &playheadPositions[t], 0, mVDSession->getMaxFrame(t)))
+				sprintf(buf, "scrub##srb%d", t);
+				if (ui::SliderInt(buf, &playheadPositions[t], 0, mVDSession->getMaxFrame(t)))
 				{
 					mVDSession->setPlayheadPosition(t, playheadPositions[t]);
 				}

@@ -95,8 +95,8 @@ namespace VideoDromm
 		void							crossfadeWarp(unsigned int aWarpIndex, float aValue) { timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f); };
 		bool							isWarpActive(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isActive(); };
 		void							toggleWarpActive(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleWarpActive(); };
-		bool							isWarpSolo(unsigned int aWarpIndex) { CI_LOG_V(toString((mSolo == aWarpIndex))); return (mSolo == aWarpIndex); };
-		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; CI_LOG_V(toString(mSolo) + " " + toString(aWarpIndex)); };
+		bool							isWarpSolo(unsigned int aWarpIndex) { return (mSolo == aWarpIndex); };
+		void							toggleWarpSolo(unsigned int aWarpIndex) { mSolo = (aWarpIndex == mSolo) ? -1 : aWarpIndex; };
 		bool							isWarpDeleted(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isDeleted(); };
 		void							toggleDeleteWarp(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleDeleteWarp(); };
 		bool							isWarpAnimationActive() { return mWarpAnimationActive; };
@@ -151,11 +151,11 @@ namespace VideoDromm
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
 		// feedback get/set
-		unsigned int					getFeedbackFrames(unsigned int aFboIndex) {
+		int								getFeedbackFrames(unsigned int aFboIndex) {
 			if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 			return mFboList[aFboIndex]->getFeedbackFrames();
 		};
-		void							setFeedbackFrames(unsigned int aFboIndex, unsigned int aFeedbackFrames) {
+		void							setFeedbackFrames(unsigned int aFboIndex, int aFeedbackFrames) {
 			if (aFboIndex > mFboList.size() - 1) aFboIndex = 0;
 			mFboList[aFboIndex]->setFeedbackFrames(aFeedbackFrames);
 		};
