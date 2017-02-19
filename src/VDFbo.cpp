@@ -75,16 +75,16 @@ namespace VideoDromm {
 				"{\n"
 				"vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
 				"vec3 t0 = texture(iChannel0, uv).rgb;\n"
-				"vec3 t1 = texture(iChannel1, uv).rgb;\n"
-				"vec3 t2 = texture(iChannel2, uv).rgb;\n"
-				"vec3 t3 = texture(iChannel3, uv).rgb;\n"
-				"vec3 t4 = texture(iChannel4, uv).rgb;\n"
-				"vec3 t5 = texture(iChannel5, uv).rgb;\n"
-				"vec3 t6 = texture(iChannel6, uv).rgb;\n"
-				"vec3 t7 = texture(iChannel7, uv).rgb;\n"
-				"vec3 t8 = texture(iChannel8, uv).rgb;\n"
-				"vec3 t9 = texture(iChannel9, uv).rgb;\n"
-				"fragColor = vec4(t0 + t1 + t2, 1.0);\n"
+				"vec3 t1 = 0.9*texture(iChannel1, uv).rgb;\n"
+				"vec3 t2 = 0.8*texture(iChannel2, uv).rgb;\n"
+				"vec3 t3 = 0.7*texture(iChannel3, uv).rgb;\n"
+				"vec3 t4 = 0.6*texture(iChannel4, uv).rgb;\n"
+				"vec3 t5 = 0.5*texture(iChannel5, uv).rgb;\n"
+				"vec3 t6 = 0.4*texture(iChannel6, uv).rgb;\n"
+				"vec3 t7 = 0.3*texture(iChannel7, uv).rgb;\n"
+				"vec3 t8 = 0.2*texture(iChannel8, uv).rgb;\n"
+				"vec3 t9 = 0.1*texture(iChannel9, uv).rgb;\n"
+				"fragColor = vec4(t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + t8 + t9, 1.0);\n"
 				"}\n";
 
 			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
@@ -287,7 +287,6 @@ namespace VideoDromm {
 			if (mFeedbackFrames > 0) {
 				mCurrentFeedbackIndex++;
 				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;				
-				string filename = toString(mCurrentFeedbackIndex) + ".jpg";
 				// save rendered texture at mCurrentFeedbackIndex
 				Surface s8(mRenderedTexture->createSource());
 				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
@@ -295,6 +294,13 @@ namespace VideoDromm {
 				mFeedbackShader->uniform("iChannel0", 0);
 				mFeedbackShader->uniform("iChannel1", 1);
 				mFeedbackShader->uniform("iChannel2", 2);
+				mFeedbackShader->uniform("iChannel3", 3);
+				mFeedbackShader->uniform("iChannel4", 4);
+				mFeedbackShader->uniform("iChannel5", 5);
+				mFeedbackShader->uniform("iChannel6", 6);
+				mFeedbackShader->uniform("iChannel7", 7);
+				mFeedbackShader->uniform("iChannel8", 8);
+				mFeedbackShader->uniform("iChannel9", 9);
 
 				gl::ScopedFramebuffer fbScp(mFeedbackFbo);
 				gl::clear(Color::black());			
@@ -302,11 +308,19 @@ namespace VideoDromm {
 				mOutputTextures[0]->bind(0);
 				mOutputTextures[1]->bind(1);
 				mOutputTextures[2]->bind(2);
+				mOutputTextures[3]->bind(3);
+				mOutputTextures[4]->bind(4);
+				mOutputTextures[5]->bind(5);
+				mOutputTextures[6]->bind(6);
+				mOutputTextures[7]->bind(7);
+				mOutputTextures[8]->bind(8);
+				mOutputTextures[9]->bind(9);
 
 				gl::ScopedGlslProg glslScope(mFeedbackShader);
 				gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 
 				mFeedbackTexture = mFeedbackFbo->getColorTexture();
+				/*string filename = toString(mCurrentFeedbackIndex) + ".jpg";
 				if (getElapsedFrames() % 100 == 0) {
 					writeImage(writeFile(getAssetPath("") / "output" / filename), s8);
 				}
@@ -317,7 +331,7 @@ namespace VideoDromm {
 				if (getElapsedFrames() % 108 == 0) {
 					Surface skr8(mFeedbackTexture->createSource());
 					writeImage(writeFile(getAssetPath("") / "output" / "2" / filename), skr8);
-				}
+				}*/
 				return mFeedbackTexture;
 			}
 		}

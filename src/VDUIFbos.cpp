@@ -56,7 +56,7 @@ void VDUIFbos::Run(const char* title) {
 			ui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(f)->getWidth(), mVDSession->getFboRenderedTexture(f)->getHeight());
 			static int fb = mVDSession->getFeedbackFrames(f);
 			sprintf(buf, "feedback##fbofbk%d", f);
-			if (ui::SliderInt(buf, &fb, 0, 4))
+			if (ui::SliderInt(buf, &fb, 0, 9))
 			{
 				mVDSession->setFeedbackFrames(f, fb);
 			}
