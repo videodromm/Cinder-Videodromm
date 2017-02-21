@@ -26,7 +26,6 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDUIRender>(new VDUIRender(aVDSettings, aVDSession));
 		}
-		~VDUIRender();
 		void    Run(const char* title);
 	private:
 		// Settings

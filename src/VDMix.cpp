@@ -47,7 +47,17 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
-		mGlslFeedback = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("feedback.frag"));
+		// feedback
+		mGlslFeedback = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getDefaultFragmentShaderString());
+		mCurrentFeedbackIndex = 0;
+		mFeedbackFrames = 0;
+		mFeedbackFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
+
+		// init textures
+		for (size_t i = 0; i < 10; i++)
+		{
+			mOutputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		}
 		// shared output
 		mSharedOutputActive = false;
 		mSharedFboIndex = 0;
@@ -430,6 +440,58 @@ namespace VideoDromm {
 				}
 			}
 		}
+		// feedback
+		if (mFeedbackFrames > 0) {
+			mCurrentFeedbackIndex++;
+			if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
+			// save rendered texture at mCurrentFeedbackIndex
+			Surface s8(mRenderedTexture->createSource());
+			mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
+			mGlslFeedback->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
+			mGlslFeedback->uniform("iChannel0", 0);
+			mGlslFeedback->uniform("iChannel1", 1);
+			mGlslFeedback->uniform("iChannel2", 2);
+			mGlslFeedback->uniform("iChannel3", 3);
+			mGlslFeedback->uniform("iChannel4", 4);
+			mGlslFeedback->uniform("iChannel5", 5);
+			mGlslFeedback->uniform("iChannel6", 6);
+			mGlslFeedback->uniform("iChannel7", 7);
+			mGlslFeedback->uniform("iChannel8", 8);
+			mGlslFeedback->uniform("iChannel9", 9);
+
+			gl::ScopedFramebuffer fbScp(mFeedbackFbo);
+			gl::clear(Color::black());
+
+			mOutputTextures[0]->bind(0);
+			mOutputTextures[1]->bind(1);
+			mOutputTextures[2]->bind(2);
+			mOutputTextures[3]->bind(3);
+			mOutputTextures[4]->bind(4);
+			mOutputTextures[5]->bind(5);
+			mOutputTextures[6]->bind(6);
+			mOutputTextures[7]->bind(7);
+			mOutputTextures[8]->bind(8);
+			mOutputTextures[9]->bind(9);
+
+			gl::ScopedGlslProg glslScope(mGlslFeedback);
+			gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
+
+			mFeedbackTexture = mFeedbackFbo->getColorTexture();
+			/*string filename = toString(mCurrentFeedbackIndex) + ".jpg";
+			if (getElapsedFrames() % 100 == 0) {
+			writeImage(writeFile(getAssetPath("") / "output" / filename), s8);
+			}
+			if (getElapsedFrames() % 104 == 0) {
+			Surface sk8(mOutputTextures[mCurrentFeedbackIndex]->createSource());
+			writeImage(writeFile(getAssetPath("") / "output" / "1" / filename), sk8);
+			}
+			if (getElapsedFrames() % 108 == 0) {
+			Surface skr8(mFeedbackTexture->createSource());
+			writeImage(writeFile(getAssetPath("") / "output" / "2" / filename), skr8);
+			}*/
+			return mFeedbackTexture;
+		}
+
 		mRenderedTexture = mRenderFbo->getColorTexture();
 		return mRenderedTexture;
 	}

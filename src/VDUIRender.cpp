@@ -13,9 +13,6 @@ VDUIRender::VDUIRender(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	iResolutionY = (int)getValueByName("iResolutionY");
 
 }
-VDUIRender::~VDUIRender() {
-
-}
 float VDUIRender::getValueByName(string aCtrlName) {
 	return mVDSession->getFloatUniformValueByName(aCtrlName);
 }
@@ -157,7 +154,12 @@ void VDUIRender::Run(const char* title) {
 
 		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 		ui::Text("solo %d", mVDSession->getSolo());
-
+		// feedback
+		static int fb = mVDSession->getFeedbackFrames();
+		if (ui::SliderInt("feedback", &fb, 0, 9))
+		{
+			mVDSession->setFeedbackFrames(fb);
+		}
 		ui::PopItemWidth();
 	}
 	ui::End();

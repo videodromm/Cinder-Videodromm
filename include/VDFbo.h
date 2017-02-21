@@ -70,13 +70,7 @@ namespace VideoDromm
 		void							updateThumbFile();
 		gl::GlslProgRef					getShader();
 		ci::gl::Texture2dRef			getRenderedTexture();
-		// feedback get/set
-		int								getFeedbackFrames() {
-			return mFeedbackFrames;
-		};
-		void							setFeedbackFrames(int aFeedbackFrames) {
-			mFeedbackFrames = aFeedbackFrames;
-		};
+
 	protected:
 		std::string						mFboName;
 		bool							mFlipV;
@@ -87,12 +81,10 @@ namespace VideoDromm
 		float							mPosX;
 		float							mPosY;
 		float							mZoom;
-		//! default vertex shader
-		//std::string						mPassthruVextexShaderString;
 		//! default fragment shader
 		std::string						mFboTextureFragmentShaderString;
 		//! shader
-		gl::GlslProgRef					mFboTextureShader, mFeedbackShader;
+		gl::GlslProgRef					mFboTextureShader;
 
 		string							mError;
 	private:
@@ -102,7 +94,7 @@ namespace VideoDromm
 		VDAnimationRef					mVDAnimation;
 
 		//! Fbo
-		gl::FboRef						mFbo, mFeedbackFbo;
+		gl::FboRef						mFbo;
 		gl::Texture::Format				fmt;
 		gl::Fbo::Format					fboFmt;
 		//! Input textures
@@ -114,12 +106,7 @@ namespace VideoDromm
 		unsigned int					mShaderIndex;
 		string							mId;
 		// Output texture
-		ci::gl::Texture2dRef			mRenderedTexture, mFeedbackTexture;
+		ci::gl::Texture2dRef			mRenderedTexture;
 		bool							isReady;
-		// feedback
-		// 0: only last rendered 1+: number of feedback images
-		unsigned int					mFeedbackFrames;
-		map<int, ci::gl::Texture2dRef>	mOutputTextures;
-		unsigned int					mCurrentFeedbackIndex;
 	};
 }

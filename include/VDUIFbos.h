@@ -26,7 +26,6 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDUIFbos>(new VDUIFbos(aVDSettings, aVDSession));
 		}
-		~VDUIFbos();
 		void    Run(const char* title);
 	private:
 		// Settings

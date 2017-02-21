@@ -16,13 +16,9 @@ namespace VideoDromm {
 		mVDAnimation = aVDAnimation;
 		mType = UNKNOWN;
 
-		mInputTextureIndex = mCurrentFeedbackIndex = 0; 
-		mFeedbackFrames = 0;
-		// init textures
-		for (size_t i = 0; i < 10; i++)
-		{
-			mOutputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		}
+		mInputTextureIndex = 0; 
+
+
 		mPosX = mPosY = 0.0f;
 		mZoom = 1.0f;
 		isReady = false;
@@ -31,55 +27,24 @@ namespace VideoDromm {
 		// init the fbo whatever happens next
 		fboFmt.setColorTextureFormat(fmt);
 		mFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
-		mFeedbackFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 		mError = "";
 		// init with passthru shader
 		mShaderName = "0";
 
 		// load feedback fragment shader
 		try {
-			mFboTextureFragmentShaderString = "out vec4 fragColor;\n"
-				"uniform sampler2D iChannel0;\n"
-				"uniform sampler2D iChannel1;\n"
-				"uniform sampler2D iChannel2;\n"
-				"uniform sampler2D iChannel3;\n"
-				"uniform sampler2D iChannel4;\n"
-				"uniform sampler2D iChannel5;\n"
-				"uniform sampler2D iChannel6;\n"
-				"uniform sampler2D iChannel7;\n"
-				"uniform sampler2D iChannel8;\n"
-				"uniform sampler2D iChannel9;\n"
-				"uniform vec3 iResolution;\n"
-				"void main(void)\n"
-				"{\n"
-				"vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
-				"vec3 t0 = texture(iChannel0, uv).rgb;\n"
-				"vec3 t1 = 0.9*texture(iChannel1, uv).rgb;\n"
-				"vec3 t2 = 0.8*texture(iChannel2, uv).rgb;\n"
-				"vec3 t3 = 0.7*texture(iChannel3, uv).rgb;\n"
-				"vec3 t4 = 0.6*texture(iChannel4, uv).rgb;\n"
-				"vec3 t5 = 0.5*texture(iChannel5, uv).rgb;\n"
-				"vec3 t6 = 0.4*texture(iChannel6, uv).rgb;\n"
-				"vec3 t7 = 0.3*texture(iChannel7, uv).rgb;\n"
-				"vec3 t8 = 0.2*texture(iChannel8, uv).rgb;\n"
-				"vec3 t9 = 0.1*texture(iChannel9, uv).rgb;\n"
-				"fragColor = vec4(t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + t8 + t9, 1.0);\n"
-				"}\n";
-
-			mFboTextureShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mFboTextureFragmentShaderString);
-			mFeedbackShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mFboTextureFragmentShaderString);
-
-			CI_LOG_V("feedback.frag compiled");
+			mFboTextureShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getDefaultFragmentShaderString());
+			CI_LOG_V("fbo default vtx-frag compiled");
 		}
 		catch (gl::GlslProgCompileExc &exc) {
 			mError = string(exc.what());
-			CI_LOG_V("unable to load/compile feedback fragment shader:" + string(exc.what()));
+			CI_LOG_V("fbo unable to load/compile vtx-frag shader:" + string(exc.what()));
 		}
 		catch (const std::exception &e) {
 			mError = string(e.what());
-			CI_LOG_V("unable to load feedback fragment shader:" + string(e.what()));
+			CI_LOG_V("fbo unable to load vtx-frag shader:" + string(e.what()));
 		}
-		mFboName = "feedback";
+		mFboName = "default";
 		if (mError.length() > 0) mVDSettings->mMsg = mError;
 	}
 	VDFbo::~VDFbo(void) {
@@ -148,7 +113,7 @@ namespace VideoDromm {
 	}
 
 	std::string VDFbo::getName() {
-		return mShaderName + " fb:" + toString(mCurrentFeedbackIndex) + " " + mId;
+		return mShaderName + " fb:" + mId;
 		//return mShaderName + " " + mId;
 	}
 	std::string VDFbo::getShaderName() {
@@ -207,7 +172,7 @@ namespace VideoDromm {
 			}
 		}
 		// feedback
-		auto &fbuniforms = mFeedbackShader->getActiveUniforms();
+		/*auto &fbuniforms = mFeedbackShader->getActiveUniforms();
 		for (const auto &uniform : fbuniforms) {
 			//CI_LOG_V(mFboTextureShader->getLabel() + ", getShader uniform name:" + uniform.getName());
 			if (mVDAnimation->isExistingUniform(uniform.getName())) {
@@ -252,7 +217,7 @@ namespace VideoDromm {
 					CI_LOG_V(mVDSettings->mMsg);
 				}
 			}
-		}
+		}*/
 		return mFboTextureShader;
 	}
 	ci::gl::Texture2dRef VDFbo::getRenderedTexture() {
@@ -260,59 +225,6 @@ namespace VideoDromm {
 			// render once for init
 			getFboTexture();
 			isReady = true;
-		}
-		else {
-			// feedback
-			if (mFeedbackFrames > 0) {
-				mCurrentFeedbackIndex++;
-				if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;				
-				// save rendered texture at mCurrentFeedbackIndex
-				Surface s8(mRenderedTexture->createSource());
-				mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
-
-				mFeedbackShader->uniform("iChannel0", 0);
-				mFeedbackShader->uniform("iChannel1", 1);
-				mFeedbackShader->uniform("iChannel2", 2);
-				mFeedbackShader->uniform("iChannel3", 3);
-				mFeedbackShader->uniform("iChannel4", 4);
-				mFeedbackShader->uniform("iChannel5", 5);
-				mFeedbackShader->uniform("iChannel6", 6);
-				mFeedbackShader->uniform("iChannel7", 7);
-				mFeedbackShader->uniform("iChannel8", 8);
-				mFeedbackShader->uniform("iChannel9", 9);
-
-				gl::ScopedFramebuffer fbScp(mFeedbackFbo);
-				gl::clear(Color::black());			
-				
-				mOutputTextures[0]->bind(0);
-				mOutputTextures[1]->bind(1);
-				mOutputTextures[2]->bind(2);
-				mOutputTextures[3]->bind(3);
-				mOutputTextures[4]->bind(4);
-				mOutputTextures[5]->bind(5);
-				mOutputTextures[6]->bind(6);
-				mOutputTextures[7]->bind(7);
-				mOutputTextures[8]->bind(8);
-				mOutputTextures[9]->bind(9);
-
-				gl::ScopedGlslProg glslScope(mFeedbackShader);
-				gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-
-				mFeedbackTexture = mFeedbackFbo->getColorTexture();
-				/*string filename = toString(mCurrentFeedbackIndex) + ".jpg";
-				if (getElapsedFrames() % 100 == 0) {
-					writeImage(writeFile(getAssetPath("") / "output" / filename), s8);
-				}
-				if (getElapsedFrames() % 104 == 0) {
-					Surface sk8(mOutputTextures[mCurrentFeedbackIndex]->createSource());
-					writeImage(writeFile(getAssetPath("") / "output" / "1" / filename), sk8);
-				}
-				if (getElapsedFrames() % 108 == 0) {
-					Surface skr8(mFeedbackTexture->createSource());
-					writeImage(writeFile(getAssetPath("") / "output" / "2" / filename), skr8);
-				}*/
-				return mFeedbackTexture;
-			}
 		}
 		return mRenderedTexture;
 	}

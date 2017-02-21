@@ -232,10 +232,12 @@ namespace VideoDromm {
 		int							uiLargePreviewH;
 		int							uiPreviewH;
 		std::string					getDefaultVextexShaderString() { return mDefaultVextexShaderString; };
+		std::string					getDefaultFragmentShaderString() { return mDefaultFragmentShaderString; };
 	private:
 		const string settingsFileName = "VDSettings.xml";
 		//! default vertex shader
 		std::string						mDefaultVextexShaderString;
+		std::string						mDefaultFragmentShaderString;
 
 	};
 

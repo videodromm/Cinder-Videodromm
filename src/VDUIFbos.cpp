@@ -6,9 +6,6 @@ VDUIFbos::VDUIFbos(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
 }
-VDUIFbos::~VDUIFbos() {
-
-}
 
 void VDUIFbos::Run(const char* title) {
 	// fbos
@@ -54,12 +51,6 @@ void VDUIFbos::Run(const char* title) {
 			sprintf(buf, "T##fboupd%d", f);
 			if (ui::Button(buf)) mVDSession->updateShaderThumbFile(f);
 			ui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(f)->getWidth(), mVDSession->getFboRenderedTexture(f)->getHeight());
-			static int fb = mVDSession->getFeedbackFrames(f);
-			sprintf(buf, "feedback##fbofbk%d", f);
-			if (ui::SliderInt(buf, &fb, 0, 9))
-			{
-				mVDSession->setFeedbackFrames(f, fb);
-			}
 			// next UI position		
 			xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 
