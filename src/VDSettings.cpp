@@ -412,7 +412,7 @@ void VDSettings::resetSomeParams() {
 	mTransitionDuration = 2.0f;
 	mTransitionTime = 1.0f;
 
-	iZoomLeft = iZoomRight = 1.0f;
+	//iZoomLeft = iZoomRight = 1.0f;
 	autoInvert = false;
 	// imgui
 	uiXPos = uiMargin = 3;
@@ -467,9 +467,9 @@ void VDSettings::reset()
 	mCodeEditorWidth = 800;
 	mCodeEditorHeight = 600;
 
-	mWindowToCreate = NONE;
+	//mWindowToCreate = NONE;
 
-	mMode = mPreviousMode = mNewMode = 0; // Mix mode by default
+	//mMode = mPreviousMode = mNewMode = 0; // Mix mode by default
 	mCurrentFilePath = "currentMix.frag";
 	mAssetsPath = "";
 	mMarginSmall = 2;
@@ -495,7 +495,7 @@ void VDSettings::reset()
 	sFps = "60";
 	iShowFps = true;
 
-	multFactor = 126.0;
+	//multFactor = 126.0;
 	currentSelectedIndex = 0;
 	selectedWarp = 0;
 
@@ -507,7 +507,7 @@ void VDSettings::reset()
 	selectedChannel = 0;
 	// fbo indexes for warp (should be constants)
 	mFboResolution = 2048;
-	mMixFboIndex = 0;
+	/*mMixFboIndex = 0;
 	mLeftFboIndex = 1;
 	mRightFboIndex = 2;
 	mWarp1FboIndex = 3;
@@ -526,7 +526,7 @@ void VDSettings::reset()
 	mRightFragIndex = 1;
 	mWarp1FragIndex = 2;
 	mWarp2FragIndex = 3;
-	mLiveFragIndex = 7;
+	mLiveFragIndex = 7;*/
 	mWarpCount = 3;
 	FPSColor = ColorA(0.0f, 1.0f, 0.0f, 1.0f);
 	ColorGreen = ColorA(0.0f, 1.0f, 0.0f, 1.0f);
@@ -586,6 +586,18 @@ void VDSettings::reset()
 	iBlendmode = 0;
 	// abp
 	mBend = 1.0f;
-
+	mDefaultVextexShaderString = "#version 150\n"
+		"uniform mat4 ciModelViewProjection;\n"
+		"in vec4 ciPosition;\n"
+		"in vec4 ciColor;\n"
+		"in vec2 ciTexCoord0;\n"
+		"out vec4 vertColor;\n"
+		"out vec2 vertTexCoord0;\n"
+		"void main()\n"
+		"{\n"
+		"vertColor = ciColor;\n"
+		"vertTexCoord0 = ciTexCoord0;\n"
+		"gl_Position = ciModelViewProjection * ciPosition;\n"
+		"}\n";
 	resetSomeParams();
 }

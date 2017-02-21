@@ -88,7 +88,7 @@ namespace VideoDromm
 		float							mPosY;
 		float							mZoom;
 		//! default vertex shader
-		std::string						mPassthruVextexShaderString;
+		//std::string						mPassthruVextexShaderString;
 		//! default fragment shader
 		std::string						mFboTextureFragmentShaderString;
 		//! shader

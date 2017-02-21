@@ -2,9 +2,8 @@
 
 using namespace VideoDromm;
 
-VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath, string aFragmentShaderString) {
+VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString) {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
-	mVertexShaderFilePath = aVextexShaderFilePath;
 	mFragmentShaderString = aFragmentShaderString;
 	mValid = false;
 	mActive = true;
@@ -18,7 +17,6 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 		mValid = setFragmentString(mFragmentShaderString, mFragmentShaderFilePath);
 	}
 	else {
-		loadVertexStringFromFile(mVertexShaderFilePath);
 		loadFragmentStringFromFile(mFragmentShaderFilePath);
 	}
 	if (mValid) {
@@ -28,29 +26,7 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 		CI_LOG_V("VDShaders constructor failed, do not use");
 	}
 }
-void VDShader::loadVertexStringFromFile(string aFileName) {
-	// load vertex shader
-	try {
-		if (aFileName.length() == 0) {
-			mVertexFile = getAssetPath("") / "passthru.vert";
-		}
-		else {
-			mVertexFile = aFileName;
-		}
-		if (!fs::exists(mVertexFile)) {
-			mError = mVertexFile.string() + " does not exist";
-			CI_LOG_V(mError);
-			mVertexFile = getAssetPath("") / "passthru.vert";
-		}
-		mVertexShaderString = loadString(loadFile(mVertexFile));
-		mVertexShaderFilePath = mVertexFile.string();
-		CI_LOG_V("successfully loaded " + mVertexFile.string());
-	}
-	catch (const std::exception &e) {
-		mError = "unable to load vertex shader:" + string(e.what());
-		CI_LOG_V(string(e.what()));
-	}
-}
+
 bool VDShader::loadFragmentStringFromFile(string aFileName) {
 	mValid = false;
 	// load fragment shader
@@ -184,7 +160,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		CI_LOG_V("file saved:" + receivedFile.string());
 
 		// try to compile a first time to get active uniforms
-		mShader = gl::GlslProg::create(mVertexShaderString, aFragmentShaderString);
+		mShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), aFragmentShaderString);
 		// update only if success
 		mFragmentShaderString = aFragmentShaderString;
 		mVDSettings->mMsg = aName + " loaded and compiled";
@@ -264,7 +240,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		CI_LOG_V("processed file saved:" + processedFile.string());
 		// 20161209 problem on Mac mShader->setLabel(mName);
 		// try to compile a second time 
-		mShader = gl::GlslProg::create(mVertexShaderString, mProcessedShaderString);
+		mShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mProcessedShaderString);
 		mFragmentShaderString = mProcessedShaderString;
 		// update only if success
 		mVDSettings->mMsg = aName + " loaded and compiled";

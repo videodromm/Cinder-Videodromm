@@ -128,7 +128,7 @@ namespace VideoDromm {
 		string							getShaderName(unsigned int aShaderIndex) { return mVDMix->getShaderName(aShaderIndex); };
 		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex) { return mVDMix->getShaderThumb(aShaderIndex); };
 		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "") { mVDMix->setFragmentShaderString(aShaderIndex, aFragmentShaderString, aName); };
-		string							getVertexShaderString(unsigned int aShaderIndex) { return mVDMix->getVertexShaderString(aShaderIndex); };
+		//string							getVertexShaderString(unsigned int aShaderIndex) { return mVDMix->getVertexShaderString(aShaderIndex); };
 		string							getFragmentShaderString(unsigned int aShaderIndex) { return mVDMix->getFragmentShaderString(aShaderIndex); };
 		void							updateShaderThumbFile(unsigned int aShaderIndex) { mVDMix->updateShaderThumbFile(aShaderIndex); };
 		void							removeShader(unsigned int aShaderIndex) { mVDMix->removeShader(aShaderIndex); };

@@ -34,19 +34,17 @@ namespace VideoDromm
 
 	class VDShader {
 	public:
-		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath, string aFragmentShaderString = "");
+		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString = "");
 		//void update();
-		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aVextexShaderFilePath, string aFragmentShaderString = "")
+		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString = "")
 		{
-			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFragmentShaderFilePath, aVextexShaderFilePath, aFragmentShaderString));
+			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFragmentShaderFilePath, aFragmentShaderString));
 		}
 		//void fromXml(const XmlTree &xml);
 		gl::GlslProgRef					getShader();
 		string							getName();
-		void							loadVertexStringFromFile(string aFileName);
 		bool							loadFragmentStringFromFile(string aFileName);
 		string							getFragmentString() { return mFragmentShaderString; };
-		string							getVertexString() { return mVertexShaderString; };
 		bool							setFragmentString(string aFragmentShaderString, string aName = "");
 		// thumb image
 		//ci::gl::Texture2dRef			getThumb();
@@ -68,10 +66,6 @@ namespace VideoDromm
 		int								mMicroSeconds;
 		string							mError;
         bool							mValid;
-		//! vertex shader
-		std::string						mVertexShaderString;
-		std::string						mVertexShaderFilePath;
-		fs::path						mVertexFile;
 		//! fragment shader
 		std::string						mFragmentShaderString;
 		std::string						mFragmentShaderFilePath;

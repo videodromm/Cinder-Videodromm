@@ -205,7 +205,7 @@ namespace VideoDromm
 		void							updateShaderThumbFile(unsigned int aShaderIndex);
 		void							removeShader(unsigned int aShaderIndex);
 		void							setFragmentShaderString(unsigned int aShaderIndex, string aFragmentShaderString, string aName = "");
-		string							getVertexShaderString(unsigned int aShaderIndex);
+		//string							getVertexShaderString(unsigned int aShaderIndex);
 		string							getFragmentShaderString(unsigned int aShaderIndex);
 		unsigned int					getShadersCount() { return mShaderList.size(); };
 		string							getShaderName(unsigned int aShaderIndex);
@@ -248,7 +248,7 @@ namespace VideoDromm
 		// blendmodes fbos
 		map<int, ci::gl::FboRef>		mBlendFbos;
 		int								mCurrentBlend;
-		gl::GlslProgRef					mGlslMix, mGlslBlend;
+		gl::GlslProgRef					mGlslMix, mGlslBlend, mGlslFeedback;
 		// render
 		void							renderMix();
 		void							renderBlend();

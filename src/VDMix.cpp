@@ -47,6 +47,7 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
+		mGlslFeedback = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("feedback.frag"));
 		// shared output
 		mSharedOutputActive = false;
 		mSharedFboIndex = 0;
@@ -1027,7 +1028,7 @@ namespace VideoDromm {
 	unsigned int VDMix::createShaderFboFromString(string aFragmentShaderString, string aShaderFilename) {
 		unsigned int rtn = 0;
 		// create new shader
-		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aShaderFilename, "", aFragmentShaderString));
+		VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aShaderFilename, aFragmentShaderString));
 		if (s->isValid()) {
 			mShaderList.push_back(s);
 			rtn = mShaderList.size() - 1;
@@ -1053,10 +1054,10 @@ namespace VideoDromm {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getFragmentString();
 	}
-	string VDMix::getVertexShaderString(unsigned int aShaderIndex) {
+	/*string VDMix::getVertexShaderString(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getVertexString();
-	}
+	}*/
 	string VDMix::getShaderName(unsigned int aShaderIndex) {
 		if (aShaderIndex > mShaderList.size() - 1) aShaderIndex = mShaderList.size() - 1;
 		return mShaderList[aShaderIndex]->getName();

@@ -14,17 +14,6 @@ using namespace std;
 namespace VideoDromm {
 
 	typedef std::shared_ptr<class VDSettings> VDSettingsRef;
-	//! struct for textures 
-	/* obsolete
-	//! struct to keep track of the texture names for spout senders and shader fbo-rendered textures 
-	struct Sender
-	{
-		char						SenderName[256];
-		unsigned int				width, height;
-		ci::gl::TextureRef			texture;
-		bool						active;
-	};
-	*/
 
 	class VDSettings
 	{
@@ -53,10 +42,8 @@ namespace VideoDromm {
 		void						reset();
 		void						resetSomeParams();
 
-		std::string mParamString;
-
 		// params
-		int							mMode, mPreviousMode, mNewMode;
+		//int							mMode, mPreviousMode, mNewMode;
 		int							mPreviewWidth, mPreviewHeight, mPreviewFboWidth, mPreviewFboHeight;
 		float						mAspectRatio;
 		int							mMainWindowX, mMainWindowY, mMarginSmall, mMainWindowWidth, mMainWindowHeight, mFboWidth, mFboHeight;
@@ -98,11 +85,8 @@ namespace VideoDromm {
 		string						mImageFile;
 
 		// shader uniforms	
-		//float						iGlobalTime;        // shader playback time (in seconds)
 		float						iSpeedMultiplier;        // speed multiplier
 		float						iChannelTime[4];
-		//vec3						iResolution;        // viewport resolution (in pixels)
-		//vec3						iChannelResolution[MAX];	// channel resolution (in pixels)
 		bool						iFade;
 		bool						iRepeat;
 		bool						iLight;
@@ -127,7 +111,7 @@ namespace VideoDromm {
 		//! Time in seconds at which the transition to the next shader starts.
 		double						mTransitionTime;
 
-		int							multFactor;
+		//int							multFactor;
 		// windows and params
 		int							mRenderX;
 		int							mRenderY;
@@ -139,7 +123,7 @@ namespace VideoDromm {
 		int							currentSelectedIndex;
 
 		// modes, should be the same in App
-		static const int			MODE_MIX = 0;
+		/*static const int			MODE_MIX = 0;
 		static const int			MODE_WARP = 1;
 		static const int			MODE_AUDIO = 2;
 		static const int			MODE_SPHERE = 3;
@@ -151,7 +135,7 @@ namespace VideoDromm {
 		static const int			NONE = 0;
 		static const int			RENDER_1 = 1;
 		static const int			RENDER_DELETE = 5;
-		static const int			MIDI_IN = 6;
+		static const int			MIDI_IN = 6;*/
 
 		int							mWindowToCreate;
 		ColorA						FPSColor;
@@ -194,10 +178,10 @@ namespace VideoDromm {
 		bool						mSplitWarpV;
 		int							mUIZoom;
 		int							mCurrentPreviewFboIndex;
-		int							mSphereFboIndex, mMeshFboIndex, mLiveFboIndex, mMixFboIndex, mAudioFboIndex;
+		/*int							mSphereFboIndex, mMeshFboIndex, mLiveFboIndex, mMixFboIndex, mAudioFboIndex;
 		int							mLeftFboIndex, mRightFboIndex, mVertexSphereFboIndex, mWarp1FboIndex, mWarp2FboIndex, mABPFboIndex;
 		int							mLeftFragIndex, mRightFragIndex, mPreviewFragIndex, mPreviousFragIndex, mWarp1FragIndex, mWarp2FragIndex, mLiveFragIndex;
-		float						iZoomLeft, iZoomRight;
+		float						iZoomLeft, iZoomRight;*/
 		int							iTrack;
 		// meshes
 		int							mMeshIndex;
@@ -247,8 +231,12 @@ namespace VideoDromm {
 		int							uiLargePreviewW;
 		int							uiLargePreviewH;
 		int							uiPreviewH;
+		std::string					getDefaultVextexShaderString() { return mDefaultVextexShaderString; };
 	private:
 		const string settingsFileName = "VDSettings.xml";
+		//! default vertex shader
+		std::string						mDefaultVextexShaderString;
+
 	};
 
 }

@@ -460,17 +460,17 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		if (iarg0 == 51) {
 			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/prev/cue", 0); // previous cue	
 			// left assign
-			mVDSettings->mLeftFragIndex = mVDSettings->iTrack;
+			//mVDSettings->mLeftFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 52) {
 			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/next/cue", 0); // next cue 
 			// right assign
-			mVDSettings->mRightFragIndex = mVDSettings->iTrack;
+			//mVDSettings->mRightFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 53) {
 			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/stop", 0); // stop
 			// preview assign
-			mVDSettings->mPreviewFragIndex = mVDSettings->iTrack;
+			//mVDSettings->mPreviewFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 54) {
 			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/play", 0); // play

@@ -35,28 +35,7 @@ namespace VideoDromm {
 		mError = "";
 		// init with passthru shader
 		mShaderName = "0";
-		try
-		{
-			fs::path vertexFile = getAssetPath("") / "passthru.vert";
-			if (fs::exists(vertexFile)) {
-				mPassthruVextexShaderString = loadString(loadAsset("passthru.vert"));
-				CI_LOG_V("passthru.vert loaded");
-			}
-			else
-			{
-				CI_LOG_V("passthru.vert does not exist, should quit");
-			}
-		}
-		catch (gl::GlslProgCompileExc &exc)
-		{
-			mError = string(exc.what());
-			CI_LOG_V("unable to load/compile passthru vertex shader:" + string(exc.what()));
-		}
-		catch (const std::exception &e)
-		{
-			mError = string(e.what());
-			CI_LOG_V("unable to load passthru vertex shader:" + string(e.what()));
-		}
+
 		// load feedback fragment shader
 		try {
 			mFboTextureFragmentShaderString = "out vec4 fragColor;\n"
@@ -87,8 +66,8 @@ namespace VideoDromm {
 				"fragColor = vec4(t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + t8 + t9, 1.0);\n"
 				"}\n";
 
-			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
-			mFeedbackShader = gl::GlslProg::create(mPassthruVextexShaderString, mFboTextureFragmentShaderString);
+			mFboTextureShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mFboTextureFragmentShaderString);
+			mFeedbackShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mFboTextureFragmentShaderString);
 
 			CI_LOG_V("feedback.frag compiled");
 		}
@@ -130,7 +109,7 @@ namespace VideoDromm {
 	}
 	void VDFbo::setFragmentShader(unsigned int aShaderIndex, string aFragmentShaderString, string aName) {
 		try {
-			mFboTextureShader = gl::GlslProg::create(mPassthruVextexShaderString, aFragmentShaderString);
+			mFboTextureShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), aFragmentShaderString);
 			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
 			// 20161209 problem on Mac mFboTextureShader->setLabel(aName);
 			mFboName = aName;
