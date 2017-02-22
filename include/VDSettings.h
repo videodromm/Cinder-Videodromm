@@ -89,8 +89,6 @@ namespace VideoDromm {
 		float						iChannelTime[4];
 		bool						iFade;
 		bool						iRepeat;
-		bool						iLight;
-		bool						iLightAuto;
 		int							iBlendmode;
 		float						iParam1;
 		float						iParam2;
@@ -233,11 +231,13 @@ namespace VideoDromm {
 		int							uiPreviewH;
 		std::string					getDefaultVextexShaderString() { return mDefaultVextexShaderString; };
 		std::string					getDefaultFragmentShaderString() { return mDefaultFragmentShaderString; };
+		std::string					getMixFragmentShaderString() { return mMixFragmentShaderString; };
 	private:
 		const string settingsFileName = "VDSettings.xml";
 		//! default vertex shader
 		std::string						mDefaultVextexShaderString;
 		std::string						mDefaultFragmentShaderString;
+		std::string						mMixFragmentShaderString;
 
 	};
 

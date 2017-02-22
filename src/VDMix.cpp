@@ -581,8 +581,6 @@ namespace VideoDromm {
 		mGlslMix->uniform("iPixelate", mVDAnimation->getFloatUniformValueByIndex(15));
 		mGlslMix->uniform("iExposure", mVDAnimation->getFloatUniformValueByIndex(14));
 		mGlslMix->uniform("iToggle", (int)mVDAnimation->getBoolUniformValueByIndex(46));
-		mGlslMix->uniform("iLight", (int)mVDSettings->iLight);
-		mGlslMix->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
 		mGlslMix->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
 		mGlslMix->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));// vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
 		mGlslMix->uniform("iVignette", (int)mVDAnimation->getBoolUniformValueByIndex(47));
@@ -642,8 +640,6 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 			mGlslBlend->uniform("iFade", (int)mVDSettings->iFade);
 			mGlslBlend->uniform("iToggle", (int)mVDAnimation->getBoolUniformValueByIndex(46));
-			mGlslBlend->uniform("iLight", (int)mVDSettings->iLight);
-			mGlslBlend->uniform("iLightAuto", (int)mVDSettings->iLightAuto);
 			mGlslBlend->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
 			mGlslBlend->uniform("iTransition", mVDSettings->iTransition);
 			mGlslBlend->uniform("iAnim", mVDSettings->iAnim.value());
