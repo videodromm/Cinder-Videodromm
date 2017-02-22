@@ -43,9 +43,9 @@ namespace VideoDromm {
 			mBlendFbos[i] = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, fboFmt);
 		}
 
-		mGlslMix = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
+		mGlslMix = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getMixFragmentShaderString());
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
-		mGlslBlend = gl::GlslProg::create(loadAsset("passthru.vert"), loadAsset("mixfbo.frag"));
+		mGlslBlend = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getMixFragmentShaderString());
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
 		// feedback
 		mGlslFeedback = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getDefaultFragmentShaderString());
