@@ -6,9 +6,6 @@ VDUIWarps::VDUIWarps(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
 }
-VDUIWarps::~VDUIWarps() {
-
-}
 
 void VDUIWarps::Run(const char* title) {
 	static int currentNode = 0;

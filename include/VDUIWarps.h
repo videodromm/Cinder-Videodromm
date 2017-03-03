@@ -27,7 +27,6 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDUIWarps>(new VDUIWarps(aVDSettings, aVDSession));
 		}
-		~VDUIWarps();
 		void    Run(const char* title);
 	private:
 		// Settings

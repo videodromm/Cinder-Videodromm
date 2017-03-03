@@ -13,7 +13,7 @@
 // hap codec movie
 #include "MovieHap.h"
 // spout
-#include "spout.h"
+#include "CiSpoutIn.h"
 #endif
 
 #if defined( CINDER_MAC )
@@ -325,17 +325,12 @@ namespace VideoDromm
 	private:
 #if defined( CINDER_MSW )
 		// -------- SPOUT -------------
-		SpoutReceiver spoutreceiver;                // Create a Spout receiver object
-		bool initialized;							// true if a sender initializes OK
-		bool bDoneOnce;                             // only try to initialize once
-		bool bMemoryMode;                           // tells us if texture share compatible
-		unsigned int g_Width, g_Height;             // size of the texture being sent out
-		char SenderName[256];                       // sender name 
+		SpoutIn							mSpoutIn;
 #endif
 #if defined( CINDER_MAC )
-		syphonClient                mClientSyphon;
+		syphonClient					mClientSyphon;
 #endif
-		ci::gl::Texture2dRef		mTexture;
+		ci::gl::Texture2dRef			mTexture;
 	};
 #endif
 	/*

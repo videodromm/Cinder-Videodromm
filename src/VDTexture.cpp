@@ -788,12 +788,6 @@ namespace VideoDromm {
 #if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	TextureShared::TextureShared() {
 		mType = SHARED;
-#if defined( CINDER_MSW )
-		initialized = false;
-		g_Width = 320; // set global width and height to something
-		g_Height = 240; // they need to be reset when the receiver connects to a sender
-
-#endif
 #if defined( CINDER_MAC )
 		mClientSyphon.setup();
 		mClientSyphon.setServerName("Videodromm client");
@@ -823,67 +817,11 @@ namespace VideoDromm {
 
 	ci::gl::Texture2dRef TextureShared::getTexture() {
 #if defined( CINDER_MSW )
-		unsigned int width, height;
 
-		// -------- SPOUT -------------
-		if (!initialized) {
-
-			// This is a receiver, so the initialization is a little more complex than a sender
-			// The receiver will attempt to connect to the name it is sent.
-			// Alternatively set the optional bUseActive flag to attempt to connect to the active sender. 
-			// If the sender name is not initialized it will attempt to find the active sender
-			// If the receiver does not find any senders the initialization will fail
-			// and "CreateReceiver" can be called repeatedly until a sender is found.
-			// "CreateReceiver" will update the passed name, and dimensions.
-			SenderName[0] = NULL; // the name will be filled when the receiver connects to a sender
-			width = g_Width; // pass the initial width and height (they will be adjusted if necessary)
-			height = g_Height;
-
-			// Optionally set for DirectX 9 instead of default DirectX 11 functions
-			// spoutreceiver.SetDX9(true);  
-
-			// Initialize a receiver
-			if (spoutreceiver.CreateReceiver(SenderName, width, height, true)) { // true to find the active sender
-				// Optionally test for texture share compatibility
-				// bMemoryMode informs us whether Spout initialized for texture share or memory share
-				bMemoryMode = spoutreceiver.GetMemoryShareMode();
-				// set name for UI
-				mName = SenderName;
-				// Is the size of the detected sender different from the current texture size ?
-				// This is detected for both texture share and memoryshare
-				if (width != g_Width || height != g_Height) {
-					// Reset the global width and height
-					g_Width = width;
-					g_Height = height;
-					// Reset the local receiving texture size
-					mTexture = gl::Texture::create(g_Width, g_Height);
-					mWidth = g_Width;
-					mHeight = g_Height;
-				}
-				initialized = true;
-			}
-			else {
-				// Receiver initialization will fail if no senders are running
-				// Keep trying until one starts
-			}
-		} // endif not initialized
-		// ----------------------------
-		if (initialized) {
-			if (spoutreceiver.ReceiveTexture(SenderName, width, height, mTexture->getId(), mTexture->getTarget())) {
-				//  Width and height are changed for sender change so the local texture has to be resized.
-				if (width != g_Width || height != g_Height) {
-					// The sender dimensions have changed - update the global width and height
-					g_Width = width;
-					g_Height = height;
-					// Update the local texture to receive the new dimensions
-					mTexture = gl::Texture::create(g_Width, g_Height);
-					mWidth = g_Width;
-					mHeight = g_Height;
-					return mTexture; // quit for next round
-				}
-				// received OK
-			}
-		}
+		mTexture = mSpoutIn.receiveTexture();	
+		// set name for UI
+		mName = mSpoutIn.getSenderName();
+		
 #endif
 #if defined( CINDER_MAC )
 		mClientSyphon.draw(vec2(0.f, 0.f));
@@ -892,7 +830,7 @@ namespace VideoDromm {
 	}
 	TextureShared::~TextureShared(void) {
 #if defined( CINDER_MSW )
-		spoutreceiver.ReleaseReceiver();
+		mSpoutIn.getSpoutReceiver().ReleaseReceiver();
 #endif
 
 	}
