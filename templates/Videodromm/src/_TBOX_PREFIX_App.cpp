@@ -89,8 +89,6 @@ void _TBOX_PREFIX_App::setup()
 
 }
 void _TBOX_PREFIX_App::positionRenderWindow() {
-	mVDSettings->iResolution.x = mVDSettings->mRenderWidth;
-	mVDSettings->iResolution.y = mVDSettings->mRenderHeight;
 	mVDSettings->mRenderPosXY = ivec2(mVDSettings->mRenderX, mVDSettings->mRenderY);//20141214 was 0
 	setWindowPos(mVDSettings->mRenderX, mVDSettings->mRenderY);
 	setWindowSize(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
@@ -112,7 +110,7 @@ void _TBOX_PREFIX_App::fileDrop(FileDropEvent event)
 }
 void _TBOX_PREFIX_App::update()
 {
-	mVDSession->setControlValue(mVDSettings->IFPS, getAverageFps());
+	mVDSession->setFloatUniformValueByIndex(mVDSettings->IFPS, getAverageFps());
 	mVDSession->update();
 }
 void _TBOX_PREFIX_App::cleanup()
