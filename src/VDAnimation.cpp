@@ -9,6 +9,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mFlipV = false;
 	mBlendRender = false;
 	//audio
+	mAudioBuffered = false;
 	//setUseLineIn(true);
 	maxVolume = 0.0f;
 	for (int i = 0; i < 7; i++)

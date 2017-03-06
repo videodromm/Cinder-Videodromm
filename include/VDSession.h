@@ -122,6 +122,8 @@ namespace VideoDromm {
 		int								getFreqIndex(unsigned int aFreqIndex) { return mVDAnimation->getFreqIndex(aFreqIndex); };
 		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { mVDAnimation->setFreqIndex(aFreqIndex, aFreq); };
 		int								getWindowSize() { return mVDAnimation->mWindowSize; };
+		bool							isAudioBuffered() { return mVDAnimation->isAudioBuffered(); };
+		void							toggleAudioBuffered() { mVDAnimation->toggleAudioBuffered(); };
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 

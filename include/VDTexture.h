@@ -372,6 +372,7 @@ namespace VideoDromm
 		audio::SamplePlayerNodeRef		mSamplePlayerNode;
 		audio::SourceFileRef			mSourceFile;
 		audio::MonitorSpectralNodeRef	mScopeLineInFmt;
+		audio::BufferPlayerNodeRef		mBufferPlayerNode;
 
 		vector<float>					mMagSpectrum;
 

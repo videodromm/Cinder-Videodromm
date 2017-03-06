@@ -38,7 +38,14 @@ void VDUIAudio::Run(const char* title) {
 		ui::PlotLines("Volume", &timeValues.front(), (int)timeValues.size(), timeValues_offset, toString(int(mVDSession->getMaxVolume())).c_str(), 0.0f, 255.0f, ImVec2(0, 30));
 		if (mVDSession->getMaxVolume() > 240.0) ui::PopStyleColor();
 
-		
+		(mVDSession->isAudioBuffered()) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(3.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(3.0f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(3.0f, 0.8f, 0.8f));
+		if (ui::Button("Audio Buffered")) {
+			mVDSession->toggleAudioBuffered();
+		}
+		ui::PopStyleColor(3);
+
 		static int iFreq0 = mVDSession->getFreqIndex(0);
 		if (ui::InputInt("iFreq0", &iFreq0)) mVDSession->setFreqIndex(0, iFreq0);
 

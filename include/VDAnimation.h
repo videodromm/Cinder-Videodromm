@@ -89,6 +89,10 @@ namespace VideoDromm
 		void							saveLineIn();
 		bool							getUseLineIn();
 		void							setUseLineIn(bool useLineIn);
+		// audio
+		bool							isAudioBuffered() { return mAudioBuffered; };
+		void							toggleAudioBuffered() { mAudioBuffered = !mAudioBuffered; };
+
 		// shaders
 		bool							isExistingUniform(string aName);
 		int								getUniformType(string aName);
@@ -182,6 +186,7 @@ namespace VideoDromm
 		// Settings
 		VDSettingsRef					mVDSettings;
 		map<int, int>					freqIndexes;
+		bool							mAudioBuffered;
 		// Live json params
 		fs::path						mJsonFilePath;
 		Parameter<Color>				mBackgroundColor;

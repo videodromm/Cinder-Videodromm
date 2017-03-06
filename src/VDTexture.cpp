@@ -882,20 +882,31 @@ namespace VideoDromm {
 
 				auto ctx = audio::Context::master(); // was audio::master(); !?!
 				mSourceFile = audio::load(loadFile(aPath), audio::master()->getSampleRate());
-				mSamplePlayerNode = ctx->makeNode(new audio::FilePlayerNode(mSourceFile, false));
-				mSamplePlayerNode->setLoopEnabled(false);
-				mSamplePlayerNode >> mMonitorWaveSpectralNode >> ctx->getOutput();
-				mSamplePlayerNode->enable();
+				if (mVDAnimation->isAudioBuffered()) {
+					mBufferPlayerNode = ctx->makeNode(new audio::BufferPlayerNode());
+					mBufferPlayerNode->loadBuffer(mSourceFile);
+					mWaveformPlot.load(mBufferPlayerNode->getBuffer(), getWindowBounds());
+					mBufferPlayerNode->start();
+					mBufferPlayerNode >> ctx->getOutput();
+					ctx->enable();
+				}
+				else {
+					mSamplePlayerNode = ctx->makeNode(new audio::FilePlayerNode(mSourceFile, false));
+					mSamplePlayerNode->setLoopEnabled(false);
+					mSamplePlayerNode >> mMonitorWaveSpectralNode >> ctx->getOutput();
+					mSamplePlayerNode->enable();
 
-				mSamplePlayerNode->seek(0);
+					mSamplePlayerNode->seek(0);
+					auto filePlayer = dynamic_pointer_cast<audio::FilePlayerNode>(mSamplePlayerNode);
+					CI_ASSERT_MSG(filePlayer, "expected sample player to be either BufferPlayerNode or FilePlayerNode");
+					// in case another wave is playing
+				
+					filePlayer->setSourceFile(mSourceFile);
+				
+					mSamplePlayerNode->start();
 
-				auto filePlayer = dynamic_pointer_cast<audio::FilePlayerNode>(mSamplePlayerNode);
-				CI_ASSERT_MSG(filePlayer, "expected sample player to be either BufferPlayerNode or FilePlayerNode");
-				// in case another wave is playing
-				
-				filePlayer->setSourceFile(mSourceFile);
-				
-				mSamplePlayerNode->start();
+				}
+
 				mVDAnimation->setUseLineIn(false);
 			}
 		}
@@ -939,7 +950,20 @@ namespace VideoDromm {
 		}
 		else {
 #endif
-			if (mSamplePlayerNode) mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+			if (mVDAnimation->isAudioBuffered()) {
+				if (mBufferPlayerNode) {
+					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+					mWaveformPlot.draw();
+
+					// draw the current play position
+					float readPos = (float)getWindowWidth() * mBufferPlayerNode->getReadPosition() / mBufferPlayerNode->getNumFrames();
+					gl::color(ColorA(0, 1, 0, 0.7f));
+					gl::drawSolidRect(Rectf(readPos - 2, 0, readPos + 2, (float)getWindowHeight()));
+				}
+			}
+			else {
+				if (mSamplePlayerNode) mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+			}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		}
 #endif
