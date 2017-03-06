@@ -11,7 +11,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	CI_LOG_V("VDSession ctor");
 	mVDSettings = aVDSettings;
 	// allow log to file
-	mVDLog = VDLog::create();	
+	mVDLog = VDLog::create();
 	// Utils
 	mVDUtils = VDUtils::create(mVDSettings);
 	// Animation
@@ -129,33 +129,41 @@ float VDSession::getMaxUniformValueByIndex(unsigned int aIndex) {
 void VDSession::resize() {
 	mVDMix->resize();
 }
-void VDSession::update() {
-	// fps calculated in main app
-	mVDSettings->sFps = toString(floor(getFloatUniformValueByIndex(mVDSettings->IFPS)));
-	if (mVDWebsocket->hasReceivedStream() && (getElapsedFrames() % 100 == 0)) {
-		updateStream(mVDWebsocket->getBase64Image());
-	}
-	if (mVDWebsocket->hasReceivedShader()) {
-		if (mVDMix->getWarpCrossfade(0) < 0.5) {
-			setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
-			mVDMix->crossfadeWarp(0, 1.0f);
+void VDSession::update(unsigned int aClassIndex) {
+
+	if (aClassIndex == 0) {
+		if (mVDWebsocket->hasReceivedStream() && (getElapsedFrames() % 100 == 0)) {
+			updateStream(mVDWebsocket->getBase64Image());
 		}
-		else {
-			setFragmentShaderString(1, mVDWebsocket->getReceivedShader());
-			mVDMix->crossfadeWarp(0, 0.0f);
+		if (mVDWebsocket->hasReceivedShader()) {
+			if (mVDMix->getWarpCrossfade(0) < 0.5) {
+				setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
+				mVDMix->crossfadeWarp(0, 1.0f);
+			}
+			else {
+				setFragmentShaderString(1, mVDWebsocket->getReceivedShader());
+				mVDMix->crossfadeWarp(0, 0.0f);
+			}
 		}
+		if (mVDSettings->iGreyScale)
+		{
+			mVDWebsocket->changeFloatValue(1, mVDAnimation->getFloatUniformValueByIndex(3));
+			mVDWebsocket->changeFloatValue(2, mVDAnimation->getFloatUniformValueByIndex(3));
+			mVDWebsocket->changeFloatValue(5, mVDAnimation->getFloatUniformValueByIndex(7));
+			mVDWebsocket->changeFloatValue(6, mVDAnimation->getFloatUniformValueByIndex(7));
+		}
+
+		// fps calculated in main app
+		mVDSettings->sFps = toString(floor(getFloatUniformValueByIndex(mVDSettings->IFPS)));
+		mVDMix->update();
+		mVDAnimation->update();
+		mVDWebsocket->update();
+
 	}
-	if (mVDSettings->iGreyScale)
-	{
-		mVDWebsocket->changeFloatValue(1, mVDAnimation->getFloatUniformValueByIndex(3));
-		mVDWebsocket->changeFloatValue(2, mVDAnimation->getFloatUniformValueByIndex(3));
-		mVDWebsocket->changeFloatValue(5, mVDAnimation->getFloatUniformValueByIndex(7));
-		mVDWebsocket->changeFloatValue(6, mVDAnimation->getFloatUniformValueByIndex(7));
+	else {
+		// aClassIndex == 1 (audio analysis only)
+		mVDMix->updateAudio();
 	}
-	mVDAnimation->update();
-	mVDRouter->update();
-	mVDWebsocket->update();
-	mVDMix->update();
 }
 bool VDSession::save()
 {
@@ -225,7 +233,7 @@ void VDSession::restore()
 			if (mVDAnimation->getIntUniformValueByName("iBeatsPerBar") < 1) mVDAnimation->setIntUniformValueByName("iBeatsPerBar", 4);
 			if (settings.hasChild("fadeindelay")) mFadeInDelay = settings.getValueForKey<int>("fadeindelay");
 			if (settings.hasChild("fadeoutdelay")) mFadeOutDelay = settings.getValueForKey<int>("fadeoutdelay");
-			if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");			
+			if (settings.hasChild("endframe")) mVDAnimation->mEndFrame = settings.getValueForKey<int>("endframe");
 			mTargetFps = mVDAnimation->getBpm() / 60.0f * mFpb;
 		}
 
@@ -480,14 +488,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				// zoom
 				mVDWebsocket->changeFloatValue(12, mVDAnimation->getFloatUniformValueByIndex(12) - 0.05f);
 				break;
-			/* removed temp for Sky Project case KeyEvent::KEY_LEFT:
-				//mVDTextures->rewindMovie();				
-				if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) - 0.1f);
-				break;
-			case KeyEvent::KEY_RIGHT:
-				//mVDTextures->fastforwardMovie();
-				if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1f);
-				break;*/
+				/* removed temp for Sky Project case KeyEvent::KEY_LEFT:
+					//mVDTextures->rewindMovie();
+					if (mVDAnimation->getFloatUniformValueByIndex(21) > 0.1f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) - 0.1f);
+					break;
+				case KeyEvent::KEY_RIGHT:
+					//mVDTextures->fastforwardMovie();
+					if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1f);
+					break;*/
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
 				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1f);
@@ -503,8 +511,8 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 			}
 		}
 	}
-    event.setHandled(handled);
-    return event.isHandled();
+	event.setHandled(handled);
+	return event.isHandled();
 }
 bool VDSession::handleKeyUp(KeyEvent &event) {
 	bool handled = true;
@@ -548,8 +556,8 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 			}
 		}
 	}
-    event.setHandled(handled);
-    return event.isHandled();
+	event.setHandled(handled);
+	return event.isHandled();
 }
 #pragma endregion events
 
@@ -621,8 +629,8 @@ ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 int VDSession::loadFragmentShader(string aFilePath) {
 	int rtn = -1;
 	CI_LOG_V("loadFragmentShader " + aFilePath);
-	mVDMix->createShaderFbo(aFilePath); 
-	
+	mVDMix->createShaderFbo(aFilePath);
+
 	return rtn;
 }
 

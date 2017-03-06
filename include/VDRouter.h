@@ -60,7 +60,7 @@ namespace VideoDromm
 		{
 			return shared_ptr<VDRouter>(new VDRouter(aVDSettings, aVDAnimation, aVDWebsocket));
 		}
-		void						update();
+		//void						update();
 		void						shutdown();
 		// messages
 		void						updateParams(int iarg0, float farg1);

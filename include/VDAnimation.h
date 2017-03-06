@@ -82,8 +82,9 @@ namespace VideoDromm
 		bool							handleKeyDown(KeyEvent &event);
 		bool							handleKeyUp(KeyEvent &event);
 		// audio
-		float							maxVolume;
-		float							iFreqs[7];
+		float							maxVolume;		
+		static const int				mWindowSize = 128; // fft window size
+		float							iFreqs[mWindowSize];
 		void							preventLineInCrash(); // at next launch
 		void							saveLineIn();
 		bool							getUseLineIn();
@@ -172,9 +173,15 @@ namespace VideoDromm
 		// timed animation
 		int								mEndFrame;
 		//int								iBeatsPerBar;
+		int								getFreqIndexSize() { return freqIndexes.size(); };
+		int								getFreqIndex(unsigned int aFreqIndex) { return freqIndexes[aFreqIndex]; };
+		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { freqIndexes[aFreqIndex] = aFreq; };
+		float							getFreq(unsigned int aFreqIndex) { return iFreqs[freqIndexes[aFreqIndex]]; };
+
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
+		map<int, int>					freqIndexes;
 		// Live json params
 		fs::path						mJsonFilePath;
 		Parameter<Color>				mBackgroundColor;

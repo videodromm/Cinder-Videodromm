@@ -51,7 +51,7 @@ namespace VideoDromm {
 		bool							handleKeyDown(KeyEvent &event);
 		bool							handleKeyUp(KeyEvent &event);
 		void							resize();
-		void							update();
+		void							update(unsigned int aClassIndex = 0);
 		bool							save();
 		void							restore();
 		void							reset();
@@ -117,6 +117,11 @@ namespace VideoDromm {
 		// audio
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
 		float *							getFreqs() { return mVDAnimation->iFreqs; };
+		int								getFreqIndexSize() { return mVDAnimation->getFreqIndexSize(); };
+		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFreq(aFreqIndex); };
+		int								getFreqIndex(unsigned int aFreqIndex) { return mVDAnimation->getFreqIndex(aFreqIndex); };
+		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { mVDAnimation->setFreqIndex(aFreqIndex, aFreq); };
+		int								getWindowSize() { return mVDAnimation->mWindowSize; };
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 

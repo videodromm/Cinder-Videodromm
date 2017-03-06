@@ -13,10 +13,10 @@ VDUIAudio::~VDUIAudio() {
 void VDUIAudio::Run(const char* title) {
 	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
-
-	ui::Begin("Audio");
+	sprintf(buf, "%s##inpt", mVDSession->getInputTextureName(0).c_str());
+	ui::Begin(buf);
 	{
-		ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+		ui::PushItemWidth(mVDSettings->mPreviewFboWidth*2);
 		static ImVector<float> timeValues; if (timeValues.empty()) { timeValues.resize(40); memset(&timeValues.front(), 0, timeValues.size() * sizeof(float)); }
 		static int timeValues_offset = 0;
 		// audio maxVolume
@@ -32,11 +32,28 @@ void VDUIAudio::Run(const char* title) {
 			mVDSession->setFloatUniformValueByIndex(13, multx);
 		}
 
-		ui::PlotHistogram("Histogram", mVDSession->getFreqs(), 7, 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
+		ui::PlotHistogram("Histogram", mVDSession->getFreqs(), mVDSession->getWindowSize(), 0, NULL, 0.0f, 255.0f, ImVec2(0, 30));
 
 		if (mVDSession->getMaxVolume() > 240.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 		ui::PlotLines("Volume", &timeValues.front(), (int)timeValues.size(), timeValues_offset, toString(int(mVDSession->getMaxVolume())).c_str(), 0.0f, 255.0f, ImVec2(0, 30));
 		if (mVDSession->getMaxVolume() > 240.0) ui::PopStyleColor();
+
+		
+		static int iFreq0 = mVDSession->getFreqIndex(0);
+		if (ui::InputInt("iFreq0", &iFreq0)) mVDSession->setFreqIndex(0, iFreq0);
+
+		static int iFreq1 = mVDSession->getFreqIndex(1);
+		if (ui::InputInt("iFreq1", &iFreq1)) mVDSession->setFreqIndex(1, iFreq1);
+
+		static int iFreq2 = mVDSession->getFreqIndex(2);
+		if (ui::InputInt("iFreq2", &iFreq2)) mVDSession->setFreqIndex(2, iFreq2);
+
+		static int iFreq3 = mVDSession->getFreqIndex(3);
+		if (ui::InputInt("iFreq3", &iFreq3)) mVDSession->setFreqIndex(3, iFreq3);
+
+
+
+
 		ui::PopItemWidth();
 	}
 	ui::End();

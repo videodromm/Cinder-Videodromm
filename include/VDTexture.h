@@ -376,10 +376,10 @@ namespace VideoDromm
 		vector<float>					mMagSpectrum;
 
 		// number of frequency bands of our spectrum
-		static const int				kBands = 1024;
+		static const int				kBands = 16;
 
 		// textures
-		unsigned char					dTexture[1024];
+		unsigned char					dTexture[16];// MUST be < mVDAnimation->mWindowSize
 		ci::gl::Texture2dRef			mTexture;
 
 	};

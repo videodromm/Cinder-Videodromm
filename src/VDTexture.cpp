@@ -845,8 +845,8 @@ namespace VideoDromm {
 		mName = "audio";
 
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
-		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
+		for (int i = 0; i < 16; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+		mTexture = gl::Texture::create(dTexture, GL_RED, 8, 2, fmt);
 	}
 	XmlTree	TextureAudio::toXml() const {
 		XmlTree xml = VDTexture::toXml();
@@ -869,8 +869,8 @@ namespace VideoDromm {
 		// prevent linein not present crash mVDAnimation->setUseLineIn(xml.getAttributeValue<bool>("uselinein", "true"));
 		mName = (mVDAnimation->getUseLineIn()) ? "line in" : "wave";
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
-		for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-		mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
+		for (int i = 0; i < 16; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+		mTexture = gl::Texture::create(dTexture, GL_RED, 8, 2, fmt);
 		return true;
 	}
 	bool TextureAudio::loadFromFullPath(string aPath)
@@ -879,7 +879,8 @@ namespace VideoDromm {
 		try {
 			if (fs::exists(aPath)) {
 				mName = aPath;
-				auto ctx = audio::master();
+
+				auto ctx = audio::Context::master(); // was audio::master(); !?!
 				mSourceFile = audio::load(loadFile(aPath), audio::master()->getSampleRate());
 				mSamplePlayerNode = ctx->makeNode(new audio::FilePlayerNode(mSourceFile, false));
 				mSamplePlayerNode->setLoopEnabled(false);
@@ -890,9 +891,10 @@ namespace VideoDromm {
 
 				auto filePlayer = dynamic_pointer_cast<audio::FilePlayerNode>(mSamplePlayerNode);
 				CI_ASSERT_MSG(filePlayer, "expected sample player to be either BufferPlayerNode or FilePlayerNode");
-
+				// in case another wave is playing
+				
 				filePlayer->setSourceFile(mSourceFile);
-
+				
 				mSamplePlayerNode->start();
 				mVDAnimation->setUseLineIn(false);
 			}
@@ -917,15 +919,15 @@ namespace VideoDromm {
 				mLineIn = ctx->createInputDeviceNode(); //crashes if linein is present but disabled, doesn't go to catch block
 				CI_LOG_V("mic/line in opened");
 				mVDAnimation->saveLineIn();
-
-				auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(512).windowSize(512);
+				mName = mLineIn->getDevice()->getName();
+				auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize*2).windowSize(mVDAnimation->mWindowSize);// CHECK is * 2 needed
 				mMonitorLineInSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeLineInFmt));
 				mLineIn >> mMonitorLineInSpectralNode;
 				mLineIn->enable();
 			}
 #endif
 			// also initialize wave monitor
-			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(2048).windowSize(1024);
+			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize*2).windowSize(mVDAnimation->mWindowSize);
 			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
 
 			ctx->enable();
@@ -946,53 +948,30 @@ namespace VideoDromm {
 			unsigned char signal[kBands];
 			mVDAnimation->maxVolume = 0.0f;//mIntensity
 			size_t mDataSize = mMagSpectrum.size();
-			if (mDataSize > 0 && mDataSize < 2048) {
+			if (mDataSize > 0 && mDataSize < mVDAnimation->mWindowSize + 1) {
 				float db;
 				for (size_t i = 0; i < mDataSize; i++) {
 					float f = mMagSpectrum[i];
 					db = audio::linearToDecibel(f);
-					f = db *mVDAnimation->getFloatUniformValueByIndex(13);// audioMultFactor;
+					f = db * mVDAnimation->getFloatUniformValueByName("iAudioMult");
 					if (f > mVDAnimation->maxVolume)
 					{
 						mVDAnimation->maxVolume = f;
 					}
-					//mData[i] = f;
-					int ger = f;
-					signal[i] = static_cast<unsigned char>(ger);
-					switch (i) {
-					case 11:
-						mVDAnimation->iFreqs[0] = f;
-						break;
-					case 13:
-						mVDAnimation->iFreqs[1] = f;
-						break;
-					case 15:
-						mVDAnimation->iFreqs[2] = f;
-						break;
-					case 18:
-						mVDAnimation->iFreqs[3] = f;
-						break;
-					case 25:
-						mVDAnimation->iFreqs[4] = f;
-						break;
-					case 30:
-						mVDAnimation->iFreqs[5] = f;
-						break;
-					case 35:
-						mVDAnimation->iFreqs[6] = f;
-						break;
-					default:
-						break;
-					}
+					mVDAnimation->iFreqs[i] = f;
+					if ( i < 16) {
+						int ger = f;
+						signal[i] = static_cast<unsigned char>(ger);
+					}					
 				}
 				// store it as a 512x2 texture
-				mTexture = gl::Texture::create(signal, GL_RED, 512, 2, fmt);
+				mTexture = gl::Texture::create(signal, GL_RED, 8, 2, fmt);
 			}
 		}
 		else {
 			// generate random values
-			for (int i = 0; i < 1024; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-			mTexture = gl::Texture::create(dTexture, GL_RED, 512, 2, fmt);
+			for (int i = 0; i < 16; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+			mTexture = gl::Texture::create(dTexture, GL_RED, 8, 2, fmt);
 		}
 
 		return mTexture;

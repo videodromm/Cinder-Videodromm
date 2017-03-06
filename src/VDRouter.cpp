@@ -593,9 +593,8 @@ void VDRouter::colorWrite()
 #endif
 }
 
-void VDRouter::update() {
+/*void VDRouter::update() {
 
-	/*
 	// check for mouse moved message
 	if(m.getAddress() == "/mouse/position"){
 	// both the arguments are int32's
@@ -762,5 +761,5 @@ void VDRouter::update() {
 	ss << std::endl;
 	mVDSettings->mWebSocketsNewMsg = true;
 	mVDSettings->mWebSocketsMsg = ss.str();
-	*/
-}
+	
+}*/

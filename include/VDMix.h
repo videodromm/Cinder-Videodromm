@@ -53,6 +53,7 @@ namespace VideoDromm
 			return shared_ptr<VDMix>(new VDMix(aVDSettings, aVDAnimation));
 		}
 		void							update();
+		void							updateAudio();
 		void							resize();
 		bool							handleMouseMove(MouseEvent &event);
 		bool							handleMouseDown(MouseEvent &event);

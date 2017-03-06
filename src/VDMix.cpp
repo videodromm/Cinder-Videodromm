@@ -549,9 +549,12 @@ namespace VideoDromm {
 		// tell the warps our window has been resized, so they properly scale up or down
 		Warp::handleResize(mWarps);
 	}
+	void VDMix::updateAudio() {
+		mTextureList[0]->getTexture();
+	}
 	void VDMix::update() {
 		// update audio texture
-		mTextureList[0]->getTexture();
+		updateAudio();	
 
 		// check if xFade changed
 		if (mVDSettings->xFadeChanged) {
@@ -618,10 +621,10 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iChannel0", 0);
 			mGlslBlend->uniform("iChannel1", 1);
 			mGlslBlend->uniform("iAudio0", 0);
-			mGlslBlend->uniform("iFreq0", mVDAnimation->iFreqs[0]);
-			mGlslBlend->uniform("iFreq1", mVDAnimation->iFreqs[1]);
-			mGlslBlend->uniform("iFreq2", mVDAnimation->iFreqs[2]);
-			mGlslBlend->uniform("iFreq3", mVDAnimation->iFreqs[3]);
+			mGlslBlend->uniform("iFreq0", mVDAnimation->getFreq(0));
+			mGlslBlend->uniform("iFreq1", mVDAnimation->getFreq(1));
+			mGlslBlend->uniform("iFreq2", mVDAnimation->getFreq(2));
+			mGlslBlend->uniform("iFreq3", mVDAnimation->getFreq(3));
 			mGlslBlend->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
 			mGlslBlend->uniform("iColor", vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
 			mGlslBlend->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));//vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));

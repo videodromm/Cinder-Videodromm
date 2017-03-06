@@ -13,6 +13,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	maxVolume = 0.0f;
 	for (int i = 0; i < 7; i++)
 	{
+		freqIndexes[i] = i * 7;
+	}
+	for (int i = 0; i < mWindowSize; i++)
+	{
 		iFreqs[i] = i;
 	}
 	// live json params

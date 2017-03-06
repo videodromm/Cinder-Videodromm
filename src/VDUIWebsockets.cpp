@@ -59,7 +59,10 @@ void VDUIWebsockets::Run(const char* title) {
 		std::copy(mVDSettings->mWebSocketsHost.begin(), (mVDSettings->mWebSocketsHost.size() >= 128 ? mVDSettings->mWebSocketsHost.begin() + 128 : mVDSettings->mWebSocketsHost.end()), host);
 
 		static int port = mVDSettings->mWebSocketsPort;
-		ui::InputText("address", host, IM_ARRAYSIZE(host));
+		if (ui::InputText("address", host, IM_ARRAYSIZE(host)))
+		{
+			mVDSettings->mWebSocketsHost = host; // CHECK if ok
+		}
 		if (ui::InputInt("port", &port)) mVDSettings->mWebSocketsPort = port;
 		//ui::PushItemWidth(mVDSettings->uiLargeW/3); // useless?
 		ui::TextWrapped(">%s", mVDSettings->mWebSocketsMsg.c_str());
