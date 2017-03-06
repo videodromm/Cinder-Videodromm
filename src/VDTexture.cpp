@@ -885,9 +885,9 @@ namespace VideoDromm {
 				if (mVDAnimation->isAudioBuffered()) {
 					mBufferPlayerNode = ctx->makeNode(new audio::BufferPlayerNode());
 					mBufferPlayerNode->loadBuffer(mSourceFile);
-					mWaveformPlot.load(mBufferPlayerNode->getBuffer(), getWindowBounds());
+					//mWaveformPlot.load(mBufferPlayerNode->getBuffer(), getWindowBounds());
 					mBufferPlayerNode->start();
-					mBufferPlayerNode >> ctx->getOutput();
+					mBufferPlayerNode >> mMonitorWaveSpectralNode >> ctx->getOutput();
 					ctx->enable();
 				}
 				else {
@@ -953,7 +953,7 @@ namespace VideoDromm {
 			if (mVDAnimation->isAudioBuffered()) {
 				if (mBufferPlayerNode) {
 					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
-					mWaveformPlot.draw();
+					//mWaveformPlot.draw();
 
 					// draw the current play position
 					float readPos = (float)getWindowWidth() * mBufferPlayerNode->getReadPosition() / mBufferPlayerNode->getNumFrames();
