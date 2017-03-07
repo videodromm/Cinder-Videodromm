@@ -621,10 +621,10 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iChannel0", 0);
 			mGlslBlend->uniform("iChannel1", 1);
 			mGlslBlend->uniform("iAudio0", 0);
-			mGlslBlend->uniform("iFreq0", mVDAnimation->getFreq(0));
-			mGlslBlend->uniform("iFreq1", mVDAnimation->getFreq(1));
-			mGlslBlend->uniform("iFreq2", mVDAnimation->getFreq(2));
-			mGlslBlend->uniform("iFreq3", mVDAnimation->getFreq(3));
+			mGlslBlend->uniform("iFreq0", mVDAnimation->getFloatUniformValueByName("iFreq0"));
+			mGlslBlend->uniform("iFreq1", mVDAnimation->getFloatUniformValueByName("iFreq1"));
+			mGlslBlend->uniform("iFreq2", mVDAnimation->getFloatUniformValueByName("iFreq2"));
+			mGlslBlend->uniform("iFreq3", mVDAnimation->getFloatUniformValueByName("iFreq3"));
 			mGlslBlend->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
 			mGlslBlend->uniform("iColor", vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
 			mGlslBlend->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));//vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));

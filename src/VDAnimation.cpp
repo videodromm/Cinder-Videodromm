@@ -110,7 +110,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iBA", 23, 0.2f);
 		// tempo time
 		createFloatUniform("iTempoTime", 24, 0.1f);
-		// fps
+		// fps 25
 		createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
 		// contour
 		createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
@@ -123,6 +123,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// iResolutionY (should be fboheight)  
 		createFloatUniform("iResolutionY", 30, mVDSettings->mFboHeight, 0.01f, 800.0f);
 		// nanokontrol middle row 31 to 38, bottom row 41 to 88
+		// iFreq0  
+		createFloatUniform("iFreq0", 31, 0.0f, 0.01f, 256.0f);
+		// iFreq1  
+		createFloatUniform("iFreq1", 32, 0.0f, 0.01f, 256.0f);
+		// iFreq2  
+		createFloatUniform("iFreq2", 33, 0.0f, 0.01f, 256.0f);
+		// iFreq3  
+		createFloatUniform("iFreq3", 34, 0.0f, 0.01f, 256.0f);
+
 		// int
 		// blend mode 
 		createIntUniform("iBlendmode", 50, 0);

@@ -60,20 +60,40 @@ void VDUIAudio::Run(const char* title) {
 		ui::Text("Position %d", mVDSession->getPosition(0));
 
 		static int iFreq0 = mVDSession->getFreqIndex(0);
-		if (ui::InputInt("iFreq0", &iFreq0)) mVDSession->setFreqIndex(0, iFreq0);
-
+		sprintf(buf, "f0 %d##f0", mVDSession->getFreq(0));
+		if (ui::SliderInt(buf, &iFreq0, 0, mVDSession->getWindowSize()))
+		{
+			mVDSession->setFreqIndex(0, iFreq0);
+		}
 		static int iFreq1 = mVDSession->getFreqIndex(1);
-		if (ui::InputInt("iFreq1", &iFreq1)) mVDSession->setFreqIndex(1, iFreq1);
+		sprintf(buf, "f1 %d##f1", mVDSession->getFreq(1));
+		if (ui::SliderInt(buf, &iFreq1, 0, mVDSession->getWindowSize()))
+		{
+			mVDSession->setFreqIndex(1, iFreq1);
+		} 
 
 		static int iFreq2 = mVDSession->getFreqIndex(2);
-		if (ui::InputInt("iFreq2", &iFreq2)) mVDSession->setFreqIndex(2, iFreq2);
+		sprintf(buf, "f2 %d##f2", mVDSession->getFreq(2));
+		if (ui::SliderInt(buf, &iFreq2, 0, mVDSession->getWindowSize()))
+		{
+			mVDSession->setFreqIndex(2, iFreq2);
+		}
 
 		static int iFreq3 = mVDSession->getFreqIndex(3);
-		if (ui::InputInt("iFreq3", &iFreq3)) mVDSession->setFreqIndex(3, iFreq3);
+		sprintf(buf, "f3 %d##f3", mVDSession->getFreq(3));
+		if (ui::SliderInt(buf, &iFreq3, 0, mVDSession->getWindowSize()))
+		{
+			mVDSession->setFreqIndex(3, iFreq3);
+		}
 
-
-
-
+		(mVDSession->getFreqWSSend()) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(4.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(4.0f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(4.0f, 0.8f, 0.8f));
+		if (ui::Button("Send WS Freqs")) {
+			mVDSession->toggleFreqWSSend();
+		}
+		ui::PopStyleColor(3);
+		
 		ui::PopItemWidth();
 	}
 	ui::End();

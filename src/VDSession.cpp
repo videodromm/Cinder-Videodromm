@@ -64,6 +64,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		mVDMix->createTriangle("default", 1, 1, 2, 2, 1.0f);
 	}
 	cmd = -1;
+	mFreqWSSend = false;
 	mEnabledAlphaBlending = true;
 }
 
@@ -165,6 +166,12 @@ void VDSession::update(unsigned int aClassIndex) {
 	}
 	// all cases
 	mVDWebsocket->update();
+	if (mFreqWSSend) {
+		setFloatUniformValueByIndex(31, getFreq(0));
+		setFloatUniformValueByIndex(32, getFreq(1));
+		setFloatUniformValueByIndex(33, getFreq(2));
+		setFloatUniformValueByIndex(34, getFreq(3));
+	}
 }
 bool VDSession::save()
 {
