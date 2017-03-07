@@ -124,6 +124,9 @@ namespace VideoDromm {
 		int								getWindowSize() { return mVDAnimation->mWindowSize; };
 		bool							isAudioBuffered() { return mVDAnimation->isAudioBuffered(); };
 		void							toggleAudioBuffered() { mVDAnimation->toggleAudioBuffered(); };
+		bool							getUseLineIn() { return mVDAnimation->getUseLineIn(); };
+		void							setUseLineIn(bool useLineIn) {  mVDAnimation->setUseLineIn(useLineIn); };
+		void							toggleUseLineIn() { mVDAnimation->toggleUseLineIn(); };
 		// uniforms
 		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
 
@@ -276,7 +279,7 @@ namespace VideoDromm {
 		void							reverse(unsigned int aTextureIndex) { return mVDMix->reverse(aTextureIndex); };
 		float							getSpeed(unsigned int aTextureIndex) { return mVDMix->getSpeed(aTextureIndex); };
 		void							setSpeed(unsigned int aTextureIndex, float aSpeed) { mVDMix->setSpeed(aTextureIndex, aSpeed); };
-		int								getPlayheadPosition(unsigned int aTextureIndex) { return mVDMix->getPlayheadPosition(aTextureIndex); };
+		int								getPosition(unsigned int aTextureIndex) { return mVDMix->getPosition(aTextureIndex); };
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition) { mVDMix->setPlayheadPosition(aTextureIndex, aPosition); };
 		int								getMaxFrame(unsigned int aTextureIndex) { return mVDMix->getMaxFrame(aTextureIndex); };
 		// websockets

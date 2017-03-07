@@ -71,67 +71,51 @@ namespace VideoDromm
 		// Console
 		VDConsoleRef				mUIConsole;
 		bool						showConsole;
-		void						showVDConsole(bool* opened);
 		// UITextures
 		VDUITexturesRef				mUITextures;
 		bool						showUITextures;
-		void						showVDUITextures();
 		// UIFbos
 		VDUIFbosRef					mUIFbos;
 		bool						showUIFbos;
-		void						showVDUIFbos();
 		// UIAnimation
 		VDUIAnimationRef			mUIAnimation;
 		bool						showUIAnimation;
-		void						showVDUIAnimation();
 		// UIMidi
 		VDUIMidiRef					mUIMidi;
 		bool						showUIMidi;
-		void						showVDUIMidi();
 		// UIAudio
 		VDUIAudioRef				mUIAudio;
 		bool						showUIAudio;
-		void						showVDUIAudio();
 		// UIColor
 		VDUIColorRef				mUIColor;
 		bool						showUIColor;
-		void						showVDUIColor();
 		// UITempo
 		VDUITempoRef				mUITempo;
 		bool						showUITempo;
-		void						showVDUITempo();
 		// UIBlend
 		VDUIBlendRef				mUIBlend;
 		bool						showUIBlend;
-		void						showVDUIBlend();
 		// UIMouse
 		VDUIMouseRef				mUIMouse;
 		bool						showUIMouse;
-		void						showVDUIMouse();
 		// UIOsc
 		VDUIOscRef					mUIOsc;
 		bool						showUIOsc;
-		void						showVDUIOsc();
 		// UIWebsockets
 		VDUIWebsocketsRef			mUIWebsockets;
 		bool						showUIWebsockets;
-		void						showVDUIWebsockets();
 		// UIShaders
 		VDUIShadersRef				mUIShaders;
 		bool						showUIShaders;
-		void						showVDUIShaders();
 		// UIWarps
 		VDUIWarpsRef				mUIWarps;
 		bool						showUIWarps;
-		void						showVDUIWarps();
 		// UITriangles
 		VDUITrianglesRef			mUITriangles;
 		bool						showUITriangles;
-		void						showVDUITriangles();
 		// UIRender
 		VDUIRenderRef				mUIRender;
 		bool						showUIRender;
-		void						showVDUIRender();
 		
 		char						buf[64];
 		bool						mIsResizing;

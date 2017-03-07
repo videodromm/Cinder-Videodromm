@@ -114,7 +114,8 @@ namespace VideoDromm
 		virtual void					reverse();
 		virtual float					getSpeed();
 		virtual void					setSpeed(float speed);
-		virtual int						getPlayheadPosition();
+		//virtual int						getPlayheadPosition();
+		int								getPosition() { return mPosition; };
 		virtual void					setPlayheadPosition(int position);
 		virtual int						getMaxFrame();
 
@@ -129,6 +130,7 @@ namespace VideoDromm
 		unsigned int					mHeight;
 		unsigned int 					mAreaWidth;
 		unsigned int					mAreaHeight;
+		int								mPosition;
 		std::string						mStatus;
 		//! Texture
 		ci::gl::Texture2dRef			mTexture;
@@ -193,7 +195,7 @@ namespace VideoDromm
 		void						toggleLoadingFromDisk() override;
 		bool						isLoadingFromDisk() override;
 		//void						stopLoading();
-		int							getPlayheadPosition() override;
+		//int							getPlayheadPosition() override;
 		void						setPlayheadPosition(int position) override;
 
 		float						getSpeed() override;
@@ -221,7 +223,7 @@ namespace VideoDromm
 		int							mNextIndexFrameToTry;
 		int							mCurrentLoadedFrame;
 		int							mFramesLoaded;
-		int							mPlayheadPosition;
+		//int							mPlayheadPosition;
 		bool						mLoadingPaused;
 		bool						mLoadingFilesComplete;
 		float						mSpeed;
@@ -364,7 +366,9 @@ namespace VideoDromm
 		// Animation
 		VDAnimationRef					mVDAnimation;
 		// init
-		bool							initialized;
+		bool							mLineInInitialized;
+		//void							initializeLineIn();
+		//audio::Context*					audioContext;
 		// audio
 		audio::InputDeviceNodeRef		mLineIn;
 		audio::MonitorSpectralNodeRef	mMonitorLineInSpectralNode;

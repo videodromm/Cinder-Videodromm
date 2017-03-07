@@ -46,6 +46,19 @@ void VDUIAudio::Run(const char* title) {
 		}
 		ui::PopStyleColor(3);
 
+
+		/*
+		ui::SameLine();
+		(mVDSession->getUseLineIn()) ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(4.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(4.0f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(4.0f, 0.8f, 0.8f));
+		if (ui::Button("Use Line In")) {
+			mVDSession->toggleUseLineIn();
+		}
+		ui::PopStyleColor(3);*/
+
+		ui::Text("Position %d", mVDSession->getPosition(0));
+
 		static int iFreq0 = mVDSession->getFreqIndex(0);
 		if (ui::InputInt("iFreq0", &iFreq0)) mVDSession->setFreqIndex(0, iFreq0);
 

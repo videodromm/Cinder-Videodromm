@@ -120,7 +120,7 @@ void VDUITextures::Run(const char* title) {
 					mVDSession->setSpeed(t, speeds[t]);
 				}
 
-				playheadPositions[t] = mVDSession->getPlayheadPosition(t);
+				playheadPositions[t] = mVDSession->getPosition(t);
 				sprintf(buf, "scrub##srb%d", t);
 				if (ui::SliderInt(buf, &playheadPositions[t], 0, mVDSession->getMaxFrame(t)))
 				{

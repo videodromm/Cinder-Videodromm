@@ -1053,9 +1053,9 @@ namespace VideoDromm {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mTextureList[aTextureIndex]->setSpeed(aSpeed);
 	}
-	int VDMix::getPlayheadPosition(unsigned int aTextureIndex) {
+	int VDMix::getPosition(unsigned int aTextureIndex) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
-		return mTextureList[aTextureIndex]->getPlayheadPosition();
+		return mTextureList[aTextureIndex]->getPosition();
 	}
 	void VDMix::setPlayheadPosition(unsigned int aTextureIndex, int aPosition) {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;

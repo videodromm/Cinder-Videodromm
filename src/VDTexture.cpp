@@ -18,6 +18,7 @@ namespace VideoDromm {
 		mBoundsLocked = true;
 		mXLeft = 0;
 		mYTop = 0;
+		mPosition = 1;
 		mXRight = mOriginalWidth = mWidth;
 		mYBottom = mOriginalHeight = mHeight;
 		mAreaWidth = mWidth;
@@ -224,9 +225,7 @@ namespace VideoDromm {
 	}
 	void VDTexture::setSpeed(float speed) {
 	}
-	int VDTexture::getPlayheadPosition() {
-		return 1;
-	}
+
 	void VDTexture::setPlayheadPosition(int position) {
 	}
 	int VDTexture::getMaxFrame() {
@@ -388,7 +387,7 @@ namespace VideoDromm {
 		mExt = "png";
 		mPrefix = "none";
 		mNextIndexFrameToTry = 0;
-		mPlayheadPosition = 0;
+		mPosition = 0;
 		mNumberOfDigits = 4;
 	}
 	bool TextureImageSequence::loadFromFullPath(string aPath)
@@ -554,7 +553,7 @@ namespace VideoDromm {
 			// Call on each frame to update the playhead
 			if (mPlaying) {
 				playheadFrameInc += mSpeed;
-				newPosition = mPlayheadPosition + (int)playheadFrameInc;
+				newPosition = mPosition + (int)playheadFrameInc;
 				if (playheadFrameInc > 1.0f) playheadFrameInc = 0.0f;
 				if (newPosition < 0) newPosition = mSequenceTextures.size() - 1;
 				if (newPosition > mSequenceTextures.size() - 1) newPosition = 0;
@@ -566,10 +565,10 @@ namespace VideoDromm {
 					newPosition = (int)(mVDAnimation->getIntUniformValueByName("iBeat") % mSequenceTextures.size());
 				}
 				else {
-					newPosition = mPlayheadPosition;
+					newPosition = mPosition;
 				}
 			}
-			mPlayheadPosition = max(0, min(newPosition, (int)mSequenceTextures.size() - 1));
+			mPosition = max(0, min(newPosition, (int)mSequenceTextures.size() - 1));
 		}
 	}
 
@@ -577,16 +576,16 @@ namespace VideoDromm {
 
 		if (mSequenceTextures.size() > 0) {
 
-			if (mPlayheadPosition > mFramesLoaded) {
+			if (mPosition > mFramesLoaded) {
 				//error
-				mPlayheadPosition = 0;
+				mPosition = 0;
 			}
 			if (!mLoadingFilesComplete) loadNextImageFromDisk();
 
 			if (mPlaying)  {
 				updateSequence();
 			}
-			mTexture = mSequenceTextures[mPlayheadPosition];
+			mTexture = mSequenceTextures[mPosition];
 		}
 		return mTexture;
 	}
@@ -595,21 +594,18 @@ namespace VideoDromm {
 	void TextureImageSequence::stopSequence() {
 
 		mPlaying = false;
-		mPlayheadPosition = 0;
+		mPosition = 0;
 	}
 
 	int TextureImageSequence::getMaxFrame() {
 
 		return mFramesLoaded;
 	}
-	int TextureImageSequence::getPlayheadPosition() {
 
-		return mPlayheadPosition;
-	}
 	// Seek to a new position in the sequence
 	void TextureImageSequence::setPlayheadPosition(int position) {
 
-		mPlayheadPosition = max(0, min(position, (int)mSequenceTextures.size() - 1));
+		mPosition = max(0, min(position, (int)mSequenceTextures.size() - 1));
 		if (!mLoadingFilesComplete) {
 			loadNextImageFromDisk();
 		}
@@ -841,7 +837,7 @@ namespace VideoDromm {
 	TextureAudio::TextureAudio(VDAnimationRef aVDAnimation) {
 		mVDAnimation = aVDAnimation;
 		mType = AUDIO;
-		initialized = false;
+		mLineInInitialized = false;
 		mName = "audio";
 
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
@@ -919,7 +915,7 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef TextureAudio::getTexture() {
 
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
-		if (!initialized) {
+		if (!mLineInInitialized) {
 			CI_LOG_V("TextureAudio::getTexture() init");
 			auto ctx = audio::Context::master();
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
@@ -942,7 +938,7 @@ namespace VideoDromm {
 			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
 
 			ctx->enable();
-			initialized = true;
+			mLineInInitialized = true;
 		}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		if (mVDAnimation->getUseLineIn()) {
@@ -956,13 +952,17 @@ namespace VideoDromm {
 					//mWaveformPlot.draw();
 
 					// draw the current play position
-					float readPos = (float)getWindowWidth() * mBufferPlayerNode->getReadPosition() / mBufferPlayerNode->getNumFrames();
+					mPosition = mBufferPlayerNode->getReadPosition();
+					float readPos = (float)getWindowWidth() * mPosition / mBufferPlayerNode->getNumFrames();
 					gl::color(ColorA(0, 1, 0, 0.7f));
 					gl::drawSolidRect(Rectf(readPos - 2, 0, readPos + 2, (float)getWindowHeight()));
 				}
 			}
 			else {
-				if (mSamplePlayerNode) mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+				if (mSamplePlayerNode) {
+					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+					mPosition = mSamplePlayerNode->getReadPosition();
+				}
 			}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		}

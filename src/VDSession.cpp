@@ -157,13 +157,14 @@ void VDSession::update(unsigned int aClassIndex) {
 		mVDSettings->sFps = toString(floor(getFloatUniformValueByIndex(mVDSettings->IFPS)));
 		mVDMix->update();
 		mVDAnimation->update();
-		mVDWebsocket->update();
 
 	}
 	else {
 		// aClassIndex == 1 (audio analysis only)
 		mVDMix->updateAudio();
 	}
+	// all cases
+	mVDWebsocket->update();
 }
 bool VDSession::save()
 {

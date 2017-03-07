@@ -87,8 +87,14 @@ namespace VideoDromm
 		float							iFreqs[mWindowSize];
 		void							preventLineInCrash(); // at next launch
 		void							saveLineIn();
-		bool							getUseLineIn();
-		void							setUseLineIn(bool useLineIn);
+		bool							getUseLineIn() {
+			return mVDSettings->mUseLineIn;
+		};
+		void							setUseLineIn(bool useLineIn) {
+			mVDSettings->mUseLineIn = useLineIn;
+		};
+		void							toggleUseLineIn() { mVDSettings->mUseLineIn =  !mVDSettings->mUseLineIn; };
+
 		// audio
 		bool							isAudioBuffered() { return mAudioBuffered; };
 		void							toggleAudioBuffered() { mAudioBuffered = !mAudioBuffered; };

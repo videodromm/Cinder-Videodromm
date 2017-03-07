@@ -197,7 +197,7 @@ namespace VideoDromm
 		void							reverse(unsigned int aTextureIndex);
 		float							getSpeed(unsigned int aTextureIndex);
 		void							setSpeed(unsigned int aTextureIndex, float aSpeed);
-		int								getPlayheadPosition(unsigned int aTextureIndex);
+		int								getPosition(unsigned int aTextureIndex);
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition);
 		int								getMaxFrame(unsigned int aTextureIndex);
 		// shaders

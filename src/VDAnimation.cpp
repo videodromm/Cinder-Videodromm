@@ -764,12 +764,6 @@ void VDAnimation::setTimeFactor(const int &aTimeFactor)
 		break;
 	}
 }
-bool VDAnimation::getUseLineIn() {
-	return mVDSettings->mUseLineIn;
-}
-void VDAnimation::setUseLineIn(bool useLineIn) {
-	mVDSettings->mUseLineIn = useLineIn;
-}
 void VDAnimation::preventLineInCrash() {
 	setUseLineIn(false);
 	mVDSettings->save();
