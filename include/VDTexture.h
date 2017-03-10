@@ -37,6 +37,7 @@
 #include "cinder/audio/SampleRecorderNode.h"
 #include "cinder/audio/NodeEffects.h"
 #include "cinder/Rand.h"
+#include "../../../../cinder/samples/_audio/common/AudioDrawUtils.h"
 // base64 for stream
 #include "cinder/Base64.h"
 
@@ -386,7 +387,7 @@ namespace VideoDromm
 		// textures
 		unsigned char					dTexture[16];// MUST be < mVDAnimation->mWindowSize
 		ci::gl::Texture2dRef			mTexture;
-
+		WaveformPlot					mWaveformPlot;
 	};
 
 	/*

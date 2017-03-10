@@ -302,7 +302,7 @@ namespace VideoDromm {
 		return mTexture->getId();
 	}
 
-	std::string VDTexture::getName(){
+	std::string VDTexture::getName() {
 		return mName;
 	}
 
@@ -582,7 +582,7 @@ namespace VideoDromm {
 			}
 			if (!mLoadingFilesComplete) loadNextImageFromDisk();
 
-			if (mPlaying)  {
+			if (mPlaying) {
 				updateSequence();
 			}
 			mTexture = mSequenceTextures[mPosition];
@@ -814,10 +814,10 @@ namespace VideoDromm {
 	ci::gl::Texture2dRef TextureShared::getTexture() {
 #if defined( CINDER_MSW )
 
-		mTexture = mSpoutIn.receiveTexture();	
+		mTexture = mSpoutIn.receiveTexture();
 		// set name for UI
 		mName = mSpoutIn.getSenderName();
-		
+
 #endif
 #if defined( CINDER_MAC )
 		mClientSyphon.draw(vec2(0.f, 0.f));
@@ -881,7 +881,7 @@ namespace VideoDromm {
 				if (mVDAnimation->isAudioBuffered()) {
 					mBufferPlayerNode = ctx->makeNode(new audio::BufferPlayerNode());
 					mBufferPlayerNode->loadBuffer(mSourceFile);
-					//mWaveformPlot.load(mBufferPlayerNode->getBuffer(), getWindowBounds());
+					mWaveformPlot.load(mBufferPlayerNode->getBuffer(), getWindowBounds());
 					mBufferPlayerNode->start();
 					mBufferPlayerNode >> mMonitorWaveSpectralNode >> ctx->getOutput();
 					ctx->enable();
@@ -896,9 +896,9 @@ namespace VideoDromm {
 					auto filePlayer = dynamic_pointer_cast<audio::FilePlayerNode>(mSamplePlayerNode);
 					CI_ASSERT_MSG(filePlayer, "expected sample player to be either BufferPlayerNode or FilePlayerNode");
 					// in case another wave is playing
-				
+
 					filePlayer->setSourceFile(mSourceFile);
-				
+
 					mSamplePlayerNode->start();
 
 				}
@@ -927,14 +927,14 @@ namespace VideoDromm {
 				CI_LOG_V("mic/line in opened");
 				mVDAnimation->saveLineIn();
 				mName = mLineIn->getDevice()->getName();
-				auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize*2).windowSize(mVDAnimation->mWindowSize);// CHECK is * 2 needed
+				auto scopeLineInFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize * 2).windowSize(mVDAnimation->mWindowSize);// CHECK is * 2 needed
 				mMonitorLineInSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeLineInFmt));
 				mLineIn >> mMonitorLineInSpectralNode;
 				mLineIn->enable();
 			}
 #endif
 			// also initialize wave monitor
-			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize*2).windowSize(mVDAnimation->mWindowSize);
+			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize * 2).windowSize(mVDAnimation->mWindowSize);
 			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
 
 			ctx->enable();
@@ -949,7 +949,6 @@ namespace VideoDromm {
 			if (mVDAnimation->isAudioBuffered()) {
 				if (mBufferPlayerNode) {
 					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
-					//mWaveformPlot.draw();
 
 					// draw the current play position
 					mPosition = mBufferPlayerNode->getReadPosition();
@@ -969,11 +968,11 @@ namespace VideoDromm {
 #endif
 		if (!mMagSpectrum.empty()) {
 
-			unsigned char signal[kBands];
 			mVDAnimation->maxVolume = 0.0f;//mIntensity
 			size_t mDataSize = mMagSpectrum.size();
 			if (mDataSize > 0 && mDataSize < mVDAnimation->mWindowSize + 1) {
 				float db;
+				unsigned char signal[kBands];
 				for (size_t i = 0; i < mDataSize; i++) {
 					float f = mMagSpectrum[i];
 					db = audio::linearToDecibel(f);
@@ -983,17 +982,23 @@ namespace VideoDromm {
 						mVDAnimation->maxVolume = f;
 					}
 					mVDAnimation->iFreqs[i] = f;
-					 
+					// update iFreq uniforms 
 					if (i == mVDAnimation->getFreqIndex(0)) mVDAnimation->setFloatUniformValueByIndex(31, f);
 					if (i == mVDAnimation->getFreqIndex(1)) mVDAnimation->setFloatUniformValueByIndex(32, f);
 					if (i == mVDAnimation->getFreqIndex(2)) mVDAnimation->setFloatUniformValueByIndex(33, f);
 					if (i == mVDAnimation->getFreqIndex(3)) mVDAnimation->setFloatUniformValueByIndex(34, f);
-					
-					if ( i < 16) {
+
+					if (i < 16) {
 						int ger = f;
 						signal[i] = static_cast<unsigned char>(ger);
-					}					
+					}
 				}
+				if (mVDAnimation->isAudioBuffered() && mBufferPlayerNode) {
+					mWaveformPlot.draw();
+				}
+				else {
+				}
+
 				// store it as a 512x2 texture
 				mTexture = gl::Texture::create(signal, GL_RED, 8, 2, fmt);
 			}
