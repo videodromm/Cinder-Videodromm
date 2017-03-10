@@ -142,6 +142,12 @@ namespace VideoDromm
 		bool							mBoundsLocked;
 		bool							mSyncToBeat;
 		bool							mPlaying;
+		//! Fbo for audio only for now
+		gl::FboRef						mFbo;
+		gl::Texture::Format				fmt;
+		gl::Fbo::Format					fboFmt;
+		ci::gl::Texture2dRef			mRenderedTexture;
+
 	private:
 	};
 	/*

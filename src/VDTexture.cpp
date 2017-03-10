@@ -38,6 +38,9 @@ namespace VideoDromm {
 			mTexture = ci::gl::Texture::create(mWidth, mHeight, ci::gl::Texture::Format().loadTopDown(mFlipV));
 			mInputSurface = Surface(mWidth, mHeight, true);
 		}
+		fboFmt.setColorTextureFormat(fmt);
+		mFbo = gl::Fbo::create(mWidth, mHeight, fboFmt);
+
 	}
 	VDTexture::~VDTexture(void) {
 
@@ -881,7 +884,7 @@ namespace VideoDromm {
 				if (mVDAnimation->isAudioBuffered()) {
 					mBufferPlayerNode = ctx->makeNode(new audio::BufferPlayerNode());
 					mBufferPlayerNode->loadBuffer(mSourceFile);
-					mWaveformPlot.load(mBufferPlayerNode->getBuffer(), getWindowBounds());
+					mWaveformPlot.load(mBufferPlayerNode->getBuffer(), mFbo->getBounds());
 					mBufferPlayerNode->start();
 					mBufferPlayerNode >> mMonitorWaveSpectralNode >> ctx->getOutput();
 					ctx->enable();
@@ -949,12 +952,6 @@ namespace VideoDromm {
 			if (mVDAnimation->isAudioBuffered()) {
 				if (mBufferPlayerNode) {
 					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
-
-					// draw the current play position
-					mPosition = mBufferPlayerNode->getReadPosition();
-					float readPos = (float)getWindowWidth() * mPosition / mBufferPlayerNode->getNumFrames();
-					gl::color(ColorA(0, 1, 0, 0.7f));
-					gl::drawSolidRect(Rectf(readPos - 2, 0, readPos + 2, (float)getWindowHeight()));
 				}
 			}
 			else {
@@ -993,14 +990,23 @@ namespace VideoDromm {
 						signal[i] = static_cast<unsigned char>(ger);
 					}
 				}
-				if (mVDAnimation->isAudioBuffered() && mBufferPlayerNode) {
-					mWaveformPlot.draw();
-				}
-				else {
-				}
-
 				// store it as a 512x2 texture
 				mTexture = gl::Texture::create(signal, GL_RED, 8, 2, fmt);
+				if (mVDAnimation->isAudioBuffered() && mBufferPlayerNode) {
+					gl::ScopedFramebuffer fbScp(mFbo);
+					gl::clear(Color::black());
+					
+					mTexture->bind(0);
+
+					mWaveformPlot.draw();
+					// draw the current play position
+					mPosition = mBufferPlayerNode->getReadPosition();
+					float readPos = (float)mWidth * mPosition / mBufferPlayerNode->getNumFrames();
+					gl::color(ColorA(0, 1, 0, 0.7f));
+					gl::drawSolidRect(Rectf(readPos - 2, 0, readPos + 2, (float)mHeight));
+					mRenderedTexture = mFbo->getColorTexture();
+					return mRenderedTexture;					
+				}
 			}
 		}
 		else {
