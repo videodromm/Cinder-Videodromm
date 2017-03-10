@@ -983,11 +983,12 @@ namespace VideoDromm {
 						mVDAnimation->maxVolume = f;
 					}
 					mVDAnimation->iFreqs[i] = f;
-					/* not updating ws */
+					 
 					if (i == mVDAnimation->getFreqIndex(0)) mVDAnimation->setFloatUniformValueByIndex(31, f);
 					if (i == mVDAnimation->getFreqIndex(1)) mVDAnimation->setFloatUniformValueByIndex(32, f);
 					if (i == mVDAnimation->getFreqIndex(2)) mVDAnimation->setFloatUniformValueByIndex(33, f);
 					if (i == mVDAnimation->getFreqIndex(3)) mVDAnimation->setFloatUniformValueByIndex(34, f);
+					
 					if ( i < 16) {
 						int ger = f;
 						signal[i] = static_cast<unsigned char>(ger);

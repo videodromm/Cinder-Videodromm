@@ -44,7 +44,7 @@ namespace VideoDromm
 		void						wsPing();
 		//bool						isWsClientConnected() { return clientConnected; };
 		// change a control value and update network clients
-		void						changeFloatValue(unsigned int aControl, float aValue);
+		void						changeFloatValue(unsigned int aControl, float aValue, bool forceSend = false);
 		void						changeBoolValue(unsigned int aControl, bool aValue);
 		void						toggleAuto(unsigned int aIndex);
 		void						toggleValue(unsigned int aIndex);

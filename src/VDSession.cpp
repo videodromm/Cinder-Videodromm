@@ -167,10 +167,10 @@ void VDSession::update(unsigned int aClassIndex) {
 	// all cases
 	mVDWebsocket->update();
 	if (mFreqWSSend) {
-		setFloatUniformValueByIndex(31, getFreq(0));
-		setFloatUniformValueByIndex(32, getFreq(1));
-		setFloatUniformValueByIndex(33, getFreq(2));
-		setFloatUniformValueByIndex(34, getFreq(3));
+		mVDWebsocket->changeFloatValue(31, getFreq(0), true);
+		mVDWebsocket->changeFloatValue(32, getFreq(1), true);
+		mVDWebsocket->changeFloatValue(33, getFreq(2), true);
+		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
 	}
 }
 bool VDSession::save()

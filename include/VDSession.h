@@ -109,7 +109,7 @@ namespace VideoDromm {
 			// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
 			mVDWebsocket->changeFloatValue(aCtrl, aValue);
 		};
-		
+
 		// tempo
 		float							getBpm() { return mVDAnimation->getBpm(); };
 		void							setBpm(float aBpm) { mVDAnimation->setBpm(aBpm); };
@@ -118,14 +118,14 @@ namespace VideoDromm {
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
 		float *							getFreqs() { return mVDAnimation->iFreqs; };
 		int								getFreqIndexSize() { return mVDAnimation->getFreqIndexSize(); };
-		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFloatUniformValueByIndex(31+aFreqIndex); };
+		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFloatUniformValueByIndex(31 + aFreqIndex); };
 		int								getFreqIndex(unsigned int aFreqIndex) { return mVDAnimation->getFreqIndex(aFreqIndex); };
 		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { mVDAnimation->setFreqIndex(aFreqIndex, aFreq); };
 		int								getWindowSize() { return mVDAnimation->mWindowSize; };
 		bool							isAudioBuffered() { return mVDAnimation->isAudioBuffered(); };
 		void							toggleAudioBuffered() { mVDAnimation->toggleAudioBuffered(); };
 		bool							getUseLineIn() { return mVDAnimation->getUseLineIn(); };
-		void							setUseLineIn(bool useLineIn) {  mVDAnimation->setUseLineIn(useLineIn); };
+		void							setUseLineIn(bool useLineIn) { mVDAnimation->setUseLineIn(useLineIn); };
 		void							toggleUseLineIn() { mVDAnimation->toggleUseLineIn(); };
 		bool							getFreqWSSend() { return mFreqWSSend; };
 		void							toggleFreqWSSend() { mFreqWSSend = !mFreqWSSend; };
@@ -248,8 +248,8 @@ namespace VideoDromm {
 		void							loadAudioFile(string aFile) { mVDMix->loadAudioFile(aFile); };
 		void							loadMovie(string aFile, unsigned int aTextureIndex) { mVDMix->loadMovie(aFile, aTextureIndex); };
 		bool							loadImageSequence(string aFolder, unsigned int aTextureIndex) { return mVDMix->loadImageSequence(aFolder, aTextureIndex); };
-		void							toggleSharedOutput(unsigned int aMixFboIndex = 0) { mVDMix->toggleSharedOutput(aMixFboIndex);  };
-		bool							isSharedOutputActive() {return mVDMix->isSharedOutputActive();};
+		void							toggleSharedOutput(unsigned int aMixFboIndex = 0) { mVDMix->toggleSharedOutput(aMixFboIndex); };
+		bool							isSharedOutputActive() { return mVDMix->isSharedOutputActive(); };
 		unsigned int					getSharedMixIndex() { return mVDMix->getSharedMixIndex(); };
 		// move, rotate, zoom methods
 		//void							setPosition(int x, int y);
@@ -291,7 +291,7 @@ namespace VideoDromm {
 		void							sendFragmentShader(unsigned int aShaderIndex);
 		// midi
 		void							midiSetup() { mVDRouter->midiSetup(); };
-		void							midiOutSendNoteOn(int i, int channel, int pitch, int velocity) { mVDRouter->midiOutSendNoteOn( i, channel, pitch, velocity); };
+		void							midiOutSendNoteOn(int i, int channel, int pitch, int velocity) { mVDRouter->midiOutSendNoteOn(i, channel, pitch, velocity); };
 
 		int								getMidiInPortsCount() { return mVDRouter->getMidiInPortsCount(); };
 		string							getMidiInPortName(int i) { return mVDRouter->getMidiInPortName(i); };
@@ -307,6 +307,9 @@ namespace VideoDromm {
 		void							createWindow() { cmd = 0; };
 		void							deleteWindow() { cmd = 1; };
 		int								getCmd() { int rtn = cmd; cmd = -1; return rtn; };
+		// utils
+		float							formatFloat(float f) { return mVDUtils->formatFloat(f); };
+
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;

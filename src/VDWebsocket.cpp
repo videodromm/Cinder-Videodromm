@@ -445,9 +445,12 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 	sendJSON(strParams);
 }
 
-void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue) {
+void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool forceSend) {
+	/*if (aControl == 31) {
+		CI_LOG_V("old value " + toString(mVDAnimation->getFloatUniformValueByIndex(aControl)) + " newvalue " + toString(aValue));
+	}*/
 	// check if changed
-	if (mVDAnimation->setFloatUniformValueByIndex(aControl, aValue) && aControl != mVDSettings->IFPS) {
+	if ( (mVDAnimation->setFloatUniformValueByIndex(aControl, aValue) && aControl != mVDSettings->IFPS) || forceSend) {
 		stringstream sParams;
 		// update color vec3
 		if (aControl > 0 && aControl < 4) {
