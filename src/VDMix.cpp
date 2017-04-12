@@ -750,7 +750,7 @@ namespace VideoDromm {
 		event.setHandled(handled);
 		return event.isHandled();
 	}
-	bool VDMix::handleKeyUp(KeyEvent &event)
+	/*bool VDMix::handleKeyUp(KeyEvent &event)
 	{
 		bool handled = true;
 		// pass this key event to the warp editor first
@@ -759,7 +759,7 @@ namespace VideoDromm {
 		}
 		event.setHandled(handled);
 		return event.isHandled();
-	}
+	}*/
 #pragma endregion events
 	void VDMix::setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex) {
 		if (aFboIndex > mFboList.size() - 1) aFboIndex = mFboList.size() - 1;
