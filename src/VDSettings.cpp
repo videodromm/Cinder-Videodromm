@@ -336,10 +336,10 @@ bool VDSettings::restore()
 			if (mAutoLayout)
 			{
 				// init, overriden by GetWindowsResolution
-				mMainWindowWidth = 1024;
-				mMainWindowHeight = 768;
-				mRenderWidth = 1024;
-				mRenderHeight = 768;
+				mMainWindowWidth = 1280;
+				mMainWindowHeight = 720;
+				mRenderWidth = 1280;
+				mRenderHeight = 720;
 				mRenderX = 1024;
 				mRenderY = 0;
 			}
@@ -439,7 +439,7 @@ void VDSettings::reset()
 	// parameters exposed in XML
 	mMIDIOpenAllInputPorts = mAutoLayout = mShowUI = mCursorVisible = true;
 	mRenderThumbs = mStandalone = mSplitWarpH = mSplitWarpV = false;
-	mOutputVideoResolution = 1024;
+	//mOutputVideoResolution = 1024;
 	mInfo = "";
 	mTrackName = "";
 	iTrack = 0;
@@ -447,8 +447,8 @@ void VDSettings::reset()
 	mMainWindowY = mRenderY = 0;
 	mMainWindowWidth = 1280;
 	mMainWindowHeight = 720;
-	mRenderWidth = 1024;
-	mRenderHeight = 768;
+	mRenderWidth = 1280;
+	mRenderHeight = 720;
 	// parameters not exposed in XML
 	mRenderXY = mLeftRenderXY = mRightRenderXY = mPreviewRenderXY = mWarp1RenderXY = mWarp2RenderXY = vec2(0.0f);
 	mRenderPosXY = vec2(0.0, 320.0);
@@ -540,7 +540,7 @@ void VDSettings::reset()
 
 	mOptimizeUI = false;
 	// spout
-	mOutputResolution = vec2(640, 480);
+	//mOutputResolution = vec2(640, 480);
 	// meshes
 	mMeshIndex = 0;
 	// vertex sphere

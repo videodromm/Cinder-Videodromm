@@ -247,13 +247,13 @@ namespace VideoDromm {
 	}
 
 	void VDFbo::updateThumbFile() {
-		if (mRenderedTexture) {
+		/*if (mRenderedTexture) {
 			string filename = getShaderName() + ".jpg";
 			fs::path fr = getAssetPath("") / "thumbs" / filename;
 			getFboTexture();
 			Surface s8(mRenderedTexture->createSource());
 			writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
-		}
+		}*/
 	}
 
 } // namespace VideoDromm

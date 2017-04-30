@@ -164,8 +164,8 @@ namespace VideoDromm {
 
 		// spout
 		int							mFboResolution;
-		int							mOutputVideoResolution;
-		vec2						mOutputResolution;
+		//int							mOutputVideoResolution;
+		//vec2						mOutputResolution;
 		// indexes for textures
 		map<int, int>				iChannels;
 		int							selectedChannel;

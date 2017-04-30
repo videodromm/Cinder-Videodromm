@@ -548,6 +548,7 @@ namespace VideoDromm {
 	void VDMix::resize() {
 		// tell the warps our window has been resized, so they properly scale up or down
 		Warp::handleResize(mWarps);
+		mRenderFbo = gl::Fbo::create(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, fboFmt);
 	}
 	void VDMix::updateAudio() {
 		mTextureList[0]->getTexture();

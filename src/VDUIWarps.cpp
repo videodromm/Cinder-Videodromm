@@ -10,7 +10,7 @@ VDUIWarps::VDUIWarps(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 void VDUIWarps::Run(const char* title) {
 	static int currentNode = 0;
 	xPos = mVDSettings->uiMargin;
-	yPos = mVDSettings->uiYPosRow3 - mVDSettings->uiLargePreviewH;
+	yPos = mVDSettings->uiYPosRow3;// - mVDSettings->uiLargePreviewH
 	for (int w = 0; w < mVDSession->getWarpCount(); w++) {
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
