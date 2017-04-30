@@ -146,12 +146,15 @@ void VDUIShaders::Run(const char* title) {
 					"}\n";
 				// check if shader text needs to be loaded in the editor
 				if (mVDSettings->shaderEditIndex != shaderToEdit) {
+					/* ptr error
+					
 					mFboTextureFragmentShaderString = mVDSession->getFragmentShaderString(shaderToEdit);
 					mVDSettings->shaderEditIndex = shaderToEdit;
 					// delete content
 					memset(&mShaderText[0], 0, sizeof(mShaderText));
 					// copy content from string
 					std::copy(mFboTextureFragmentShaderString.begin(), (mFboTextureFragmentShaderString.size() >= MAX ? mFboTextureFragmentShaderString.begin() + MAX : mFboTextureFragmentShaderString.end()), mShaderText);
+				*/
 				}
 
 				ui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));

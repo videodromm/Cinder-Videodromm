@@ -44,7 +44,11 @@ namespace VideoDromm
 		gl::GlslProgRef					getShader();
 		string							getName();
 		bool							loadFragmentStringFromFile(string aFileName);
-		string							getFragmentString() { return mFragmentShaderString; };
+		string							getFragmentString() {
+			if (mFragmentShaderString.empty()) mFragmentShaderString = "void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;fragColor = texture(iChannel0, uv);}";
+			if (mFragmentShaderString.size() < 1 || mFragmentShaderString.size() > 256000) mFragmentShaderString = "void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;fragColor = texture(iChannel0, uv);}";
+			return mFragmentShaderString;
+		};
 		bool							setFragmentString(string aFragmentShaderString, string aName = "");
 		// thumb image
 		//ci::gl::Texture2dRef			getThumb();

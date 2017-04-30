@@ -391,7 +391,7 @@ namespace VideoDromm
 		static const int				kBands = 16;
 
 		// textures
-		unsigned char					dTexture[16];// MUST be < mVDAnimation->mWindowSize
+		unsigned char					dTexture[256];// MUST be < mVDAnimation->mWindowSize
 		ci::gl::Texture2dRef			mTexture;
 		WaveformPlot					mWaveformPlot;
 	};

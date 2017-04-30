@@ -844,8 +844,8 @@ namespace VideoDromm {
 		mName = "audio";
 
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
-		for (int i = 0; i < 16; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-		mTexture = gl::Texture::create(dTexture, GL_RED, 8, 2, fmt);
+		for (int i = 0; i < 128; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+		mTexture = gl::Texture::create(dTexture, GL_RED, 64, 2, fmt);
 	}
 	XmlTree	TextureAudio::toXml() const {
 		XmlTree xml = VDTexture::toXml();
@@ -868,8 +868,8 @@ namespace VideoDromm {
 		// prevent linein not present crash mVDAnimation->setUseLineIn(xml.getAttributeValue<bool>("uselinein", "true"));
 		mName = (mVDAnimation->getUseLineIn()) ? "line in" : "wave";
 		auto fmt = gl::Texture2d::Format().swizzleMask(GL_RED, GL_RED, GL_RED, GL_ONE).internalFormat(GL_RED);
-		for (int i = 0; i < 16; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-		mTexture = gl::Texture::create(dTexture, GL_RED, 8, 2, fmt);
+		for (int i = 0; i < 128; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+		mTexture = gl::Texture::create(dTexture, GL_RED, 64, 2, fmt);
 		return true;
 	}
 	bool TextureAudio::loadFromFullPath(string aPath)
@@ -991,7 +991,7 @@ namespace VideoDromm {
 					}
 				}
 				// store it as a 512x2 texture
-				mTexture = gl::Texture::create(signal, GL_RED, 8, 2, fmt);
+				mTexture = gl::Texture::create(signal, GL_RED, 64, 2, fmt);
 				if (mVDAnimation->isAudioBuffered() && mBufferPlayerNode) {
 					gl::ScopedFramebuffer fbScp(mFbo);
 					gl::clear(Color::black());
@@ -1011,8 +1011,8 @@ namespace VideoDromm {
 		}
 		else {
 			// generate random values
-			for (int i = 0; i < 16; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
-			mTexture = gl::Texture::create(dTexture, GL_RED, 8, 2, fmt);
+			for (int i = 0; i < 128; ++i) dTexture[i] = (unsigned char)(Rand::randUint() & 0xFF);
+			mTexture = gl::Texture::create(dTexture, GL_RED, 64, 2, fmt);
 		}
 
 		return mTexture;
