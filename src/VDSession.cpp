@@ -526,7 +526,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 	bool handled = true;
 
 	// pass this key event to the warp editor first
-	if (!mVDMix->handleKeyUp(event)) {
+	//if (!mVDMix->handleKeyUp(event)) {
 		if (!mVDAnimation->handleKeyUp(event)) {
 			// Animation did not handle the key, so handle it here
 			switch (event.getCode()) {
@@ -563,7 +563,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				break;
 			}
 		}
-	}
+	//}
 	event.setHandled(handled);
 	return event.isHandled();
 }
