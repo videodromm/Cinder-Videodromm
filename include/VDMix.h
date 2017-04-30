@@ -60,7 +60,7 @@ namespace VideoDromm
 		bool							handleMouseDrag(MouseEvent &event);
 		bool							handleMouseUp(MouseEvent &event);
 		bool							handleKeyDown(KeyEvent &event);
-		//bool							handleKeyUp(KeyEvent &event);
+		bool							handleKeyUp(KeyEvent &event);
 		bool							isFlipH() { return mFlipH; };
 		bool							isFlipV() { return mFlipV; };
 
