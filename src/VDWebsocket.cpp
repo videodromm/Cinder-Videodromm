@@ -91,6 +91,7 @@ void VDWebsocket::parseMessage(string msg) {
 			JsonTree json;
 			try {
 				json = JsonTree(msg);
+				// web controller
 				if (json.hasChild("params")) {
 					JsonTree jsonParams = json.getChild("params");
 					for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
@@ -116,6 +117,7 @@ void VDWebsocket::parseMessage(string msg) {
 							for (JsonTree::ConstIter jsonElement = jsonParams.begin(); jsonElement != jsonParams.end(); ++jsonElement) {
 								int name = jsonElement->getChild("name").getValue<int>();
 								float value = jsonElement->getChild("value").getValue<float>();
+								CI_LOG_V("VDWebsocket jsonParams.mValue:" + toString(name) );
 								// basic name value 
 								mVDAnimation->setFloatUniformValueByIndex(name, value);
 							}
