@@ -26,6 +26,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 	fboFmt.setColorTextureFormat(fmt);
 	mPosX = mPosY = 0.0f;
 	mZoom = 1.0f;
+	mSelectedWarp = 0;
 
 	// Mix
 	mVDMix = VDMix::create(mVDSettings, mVDAnimation);
@@ -172,6 +173,9 @@ void VDSession::update(unsigned int aClassIndex) {
 		mVDWebsocket->changeFloatValue(33, getFreq(2), true);
 		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
 	}
+	mSelectedWarp = mVDRouter->selectedWarp();
+	setWarpAFboIndex(mSelectedWarp, mVDRouter->selectedFboA());
+	setWarpBFboIndex(mSelectedWarp, mVDRouter->selectedFboB());
 }
 bool VDSession::save()
 {

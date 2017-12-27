@@ -25,7 +25,9 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWeb
 
 	// midi
 	if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
-
+	mSelectedWarp = 0;
+	mSelectedFboA = 1;
+	mSelectedFboB = 2;
 }
 void VDRouter::setupOSCSender() {
 	// OSC sender with broadcast
@@ -423,11 +425,24 @@ void VDRouter::midiListener(midi::Message msg) {
 		midiControl = msg.control;
 		midiValue = msg.value;
 		midiNormalizedValue = lmap<float>(midiValue, 0.0, 127.0, 0.0, 1.0);
-		if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
-			updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
+		if (midiControl > 20 && midiControl < 49) {
+			if (midiControl > 20 && midiControl < 29) {
+				mSelectedWarp = midiControl - 21;
+			}
+			if (midiControl > 30 && midiControl < 39) {
+				mSelectedFboA = midiControl - 31;
+			}
+			if (midiControl > 40 && midiControl < 49) {
+				mSelectedFboB = midiControl - 41;
+			}
 		}
 		else {
-			updateParams(midiControl, midiNormalizedValue);
+			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
+				updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
+			}
+			else {
+				updateParams(midiControl, midiNormalizedValue);
+			}
 		}
 		//mWebSockets->write("{\"params\" :[{" + controlType);
 		break;

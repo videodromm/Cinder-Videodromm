@@ -88,6 +88,9 @@ namespace VideoDromm
 		void						sendOSCStringMessage(string controlType, int iarg0 = 0, string sarg1 = "", string sarg2 = "", string sarg3 = "", string sarg4 = "", string sarg5 = "");
 		ivec4						skeleton[20];
 		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
+		int							selectedWarp() { return mSelectedWarp; };
+		int							selectedFboA() { return mSelectedFboA; };
+		int							selectedFboB() { return mSelectedFboB; };
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;
@@ -119,6 +122,9 @@ namespace VideoDromm
 		int							midiValue;
 		int							midiChannel;
 
+		int							mSelectedWarp;
+		int							mSelectedFboA;
+		int							mSelectedFboB;
 		// osc
 		ReceiverRef					mOSCReceiver;
 

@@ -358,6 +358,8 @@ namespace VideoDromm {
 		gl::Fbo::Format					fboFmt;
 		bool							mEnabledAlphaBlending;
 		bool							mRenderTexture;
+		//! Warps
+		int								mSelectedWarp;
 		//! Shaders
 		string							mShaderLeft;
 		string							mShaderRight;
