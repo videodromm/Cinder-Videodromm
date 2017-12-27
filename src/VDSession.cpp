@@ -173,9 +173,9 @@ void VDSession::update(unsigned int aClassIndex) {
 		mVDWebsocket->changeFloatValue(33, getFreq(2), true);
 		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
 	}
-	mSelectedWarp = mVDRouter->selectedWarp();
-	setWarpAFboIndex(mSelectedWarp, mVDRouter->selectedFboA());
-	setWarpBFboIndex(mSelectedWarp, mVDRouter->selectedFboB());
+	/*mSelectedWarp = mVDRouter->selectedWarp();
+	setFboFragmentShaderIndex(0, mVDRouter->selectedFboA());
+	setFboFragmentShaderIndex(1, mVDRouter->selectedFboB());*/
 }
 bool VDSession::save()
 {
