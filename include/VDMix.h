@@ -16,8 +16,6 @@
 #include "VDAnimation.h"
 // Fbos
 #include "VDFbo.h"
-// Triangles
-#include "VDTriangle.h"
 // Warping
 #include "Warp.h"
 
@@ -90,10 +88,17 @@ namespace VideoDromm
 		void							setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex);
 		void							setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
 		void							setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex);
-		float							getWarpCrossfade(unsigned int aWarpIndex) { if (aWarpIndex > mWarps.size() - 1) aWarpIndex = 0; return mWarps[aWarpIndex]->ABCrossfade; };
-		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) { if (aWarpIndex < mWarps.size()) mWarps[aWarpIndex]->ABCrossfade = aCrossfade; };
+		float							getWarpCrossfade(unsigned int aWarpIndex) { 
+			//if (aWarpIndex > mWarps.size() - 1) aWarpIndex = 0; 
+			//return mWarps[aWarpIndex]->ABCrossfade;
+			return mVDAnimation->getFloatUniformValueByIndex(18);
+		};
+		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) { 
+			//if (aWarpIndex < mWarps.size()) mWarps[aWarpIndex]->ABCrossfade = aCrossfade; 
+			mVDAnimation->setFloatUniformValueByIndex(18, aCrossfade);
+		};
 		void							updateWarpName(unsigned int aWarpIndex);
-		void							crossfadeWarp(unsigned int aWarpIndex, float aValue) { timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f); };
+		//void							crossfadeWarp(unsigned int aWarpIndex, float aValue) { timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f); };
 		bool							isWarpActive(unsigned int aWarpIndex) { return mWarps[aWarpIndex]->isActive(); };
 		void							toggleWarpActive(unsigned int aWarpIndex) { mWarps[aWarpIndex]->toggleWarpActive(); };
 		bool							isWarpSolo(unsigned int aWarpIndex) { return (mSolo == aWarpIndex); };
@@ -103,39 +108,10 @@ namespace VideoDromm
 		bool							isWarpAnimationActive() { return mWarpAnimationActive; };
 		void							toggleWarpAnimationActive();
 		// common to warps and triangles
-		bool							isWarpTriangle();
-		void							toggleWarpTriangle();
 		int								getSolo() { return mSolo; };
 		unsigned int					getSoloOrActiveIndex();
 		unsigned int					getCurrentEditIndex() { return mCurrentEditIndex; };
 		void							setCurrentEditIndex(unsigned int aIndex);
-
-		// triangles
-		void							createTriangle(string wName = "triangle", unsigned int aFboIndex = 0, unsigned int aShaderIndex = 0, unsigned int bFboIndex = 0, unsigned int bShaderIndex = 0, float xFade = 1.0f);
-		void							updateTriangleName(unsigned int aTriangleIndex);
-		string							getTriangleName(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->getName(); };
-		unsigned int					getTriangleCount() { return mVDTriangles.size(); };
-		unsigned int					getTriangleAFboIndex(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->getAFboIndex(); };
-		unsigned int					getTriangleBFboIndex(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->getBFboIndex(); };
-		void							setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex);
-		void							setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex);
-		bool							isTriangleActive(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->isActive(); };
-		void							toggleTriangleActive(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleTriangleActive(); };
-		bool							isTriangleSolo(unsigned int aTriangleIndex) { return (mSolo == aTriangleIndex); };
-		void							toggleTriangleSolo(unsigned int aTriangleIndex) {
-			mSolo = (aTriangleIndex == mSolo) ? -1 : aTriangleIndex; CI_LOG_V(toString(mSolo) + " " + toString(aTriangleIndex));
-		};
-		bool							isTriangleDeleted(unsigned int aTriangleIndex) { return mVDTriangles[aTriangleIndex]->isDeleted(); };
-		void							toggleDeleteTriangle(unsigned int aTriangleIndex) { mVDTriangles[aTriangleIndex]->toggleDeleteTriangle(); };
-		float							getTriangleCrossfade(unsigned int aTriangleIndex) { if (aTriangleIndex > mVDTriangles.size() - 1) aTriangleIndex = 0; return mVDTriangles[aTriangleIndex]->ABCrossfade; };
-		void							setTriangleCrossfade(unsigned int aTriangleIndex, float aCrossfade) { if (aTriangleIndex < mVDTriangles.size()) mVDTriangles[aTriangleIndex]->ABCrossfade = aCrossfade; };
-		ci::gl::TextureRef				getTriangleTexture(unsigned int aTriangleFboIndex);
-		unsigned int					getTriangleFbosCount() { return mTriangleFbos.size(); };
-		string							getTriangleFboName(unsigned int aTriangleFboIndex);
-		int								getTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDTriangles[aTriangleIndex]->getControlPoint(aPointIndex).x; };
-		int								getTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDTriangles[aTriangleIndex]->getControlPoint(aPointIndex).y; };
-		void							setTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDTriangles[aTriangleIndex]->setControlPoint(aTriangleIndex, vec2(aValue, getTrianglePointY(aTriangleIndex, aPointIndex))); };
-		void							setTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDTriangles[aTriangleIndex]->setControlPoint(aTriangleIndex, vec2(getTrianglePointX(aTriangleIndex, aPointIndex), aValue)); };
 
 		// RTE in release mode ci::gl::Texture2dRef			getRenderedTexture(bool reDraw = true);
 		ci::gl::Texture2dRef			getRenderTexture();
@@ -232,7 +208,6 @@ namespace VideoDromm
 
 		//! Fbos
 		map<int, VDMixFbo>				mMixFbos;
-		map<int, VDMixFbo>				mTriangleFbos;
 		// maintain a list of fbos specific to this mix
 		VDFboList						mFboList;
 		fs::path						mMixesFilepath;
@@ -263,12 +238,7 @@ namespace VideoDromm
 		unsigned int					mWarpActiveIndex;
 		// warp rendered texture
 		ci::gl::Texture2dRef			mRenderedTexture;
-		// triangles
-		VDTriangleList					mVDTriangles;
-		fs::path						mTrianglesJson;
-		void							renderTriangles();
-		bool							mUseTriangles;
-		int								triangleMixToRender;
+		
 		// common to warps and triangles
 		unsigned int					mCurrentEditIndex;
 		// old to refactor:

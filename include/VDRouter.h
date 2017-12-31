@@ -91,6 +91,9 @@ namespace VideoDromm
 		int							selectedWarp() { return mSelectedWarp; };
 		int							selectedFboA() { return mSelectedFboA; };
 		int							selectedFboB() { return mSelectedFboB; };
+		void						setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) { mSelectedFboA = aWarpFboIndex; }
+		void						setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) { mSelectedFboB = aWarpFboIndex; }
+
 	private:
 		// Settings
 		VDSettingsRef				mVDSettings;

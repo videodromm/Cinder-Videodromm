@@ -57,22 +57,7 @@ void VDUIRender::Run(const char* title) {
 		{
 			setValue(ctrl, (float)iResolutionY);
 		}
-		// use triangles
-		if (mVDSession->isWarpTriangle()) {
-			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
-		}
-		else {
-			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
-		}
-		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
-		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
-
-		if (ui::Button("Triangles")) {
-			mVDSession->toggleWarpTriangle();
-		}
-		ui::PopStyleColor(3);
-		if (ui::IsItemHovered()) ui::SetTooltip("Use Triangle");
-
+		
 		// iContour
 		ctrl = 26;
 		if (ui::Button("a##contour")) { toggleAuto(ctrl); }
@@ -100,10 +85,7 @@ void VDUIRender::Run(const char* title) {
 		if (ui::Button("Create Warp")) {
 			mVDSession->createWarpMix();
 		}
-		ui::SameLine();
-		if (ui::Button("Create Triangle")) {
-			mVDSession->createTriangleMix();
-		}
+		
 
 		// alpha blending
 		/*if (mVDSession->isEnabledAlphaBlending()) {

@@ -54,7 +54,7 @@ void VDUIFbos::Run(const char* title) {
 			// next UI position		
 			xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 
-			if (xPos > mVDSettings->mRenderWidth - mVDSettings->uiXPosCol1)
+			if (xPos > mVDSettings->mMainWindowWidth - mVDSettings->uiXPosCol1)
 			{
 				xPos = mVDSettings->uiMargin + mVDSettings->uiXPosCol1;
 				yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;

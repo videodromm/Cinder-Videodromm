@@ -59,11 +59,7 @@ VDSession::VDSession(VDSettingsRef aVDSettings)
 		// init for received shaders from websockets for warp 0
 		mVDMix->createWarp("default", 1, 1, 2, 2, 1.0f);
 	}
-	// check if something went wrong, if so, create a default warp
-	if (mVDMix->getTriangleCount() == 0) {
-		// init for received shaders from websockets for warp 0
-		mVDMix->createTriangle("default", 1, 1, 2, 2, 1.0f);
-	}
+	
 	cmd = -1;
 	mFreqWSSend = false;
 	mEnabledAlphaBlending = true;
@@ -140,11 +136,11 @@ void VDSession::update(unsigned int aClassIndex) {
 		if (mVDWebsocket->hasReceivedShader()) {
 			if (mVDMix->getWarpCrossfade(0) < 0.5) {
 				setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
-				mVDMix->crossfadeWarp(0, 1.0f);
+				mVDAnimation->setFloatUniformValueByIndex(18, 1.0f);
 			}
 			else {
 				setFragmentShaderString(1, mVDWebsocket->getReceivedShader());
-				mVDMix->crossfadeWarp(0, 0.0f);
+				mVDAnimation->setFloatUniformValueByIndex(18, 0.0f);
 			}
 		}
 		if (mVDSettings->iGreyScale)
@@ -173,9 +169,9 @@ void VDSession::update(unsigned int aClassIndex) {
 		mVDWebsocket->changeFloatValue(33, getFreq(2), true);
 		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
 	}
-	/*mSelectedWarp = mVDRouter->selectedWarp();
-	setFboFragmentShaderIndex(0, mVDRouter->selectedFboA());
-	setFboFragmentShaderIndex(1, mVDRouter->selectedFboB());*/
+	//mSelectedWarp = mVDRouter->selectedWarp();
+	//setWarpAFboIndex(0, mVDRouter->selectedFboA());
+	//setWarpBFboIndex(0, mVDRouter->selectedFboB());
 }
 bool VDSession::save()
 {
@@ -510,11 +506,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 					break;*/
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
-				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) + 0.1f);
+				CI_LOG_V("KEY_PAGEDOWN" + toString( mVDAnimation->getFloatUniformValueByIndex(18)));
+				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) + 0.03f);
 				break;
 			case KeyEvent::KEY_PAGEUP:
 				// crossfade left
-				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(18) - 0.1f);
+				CI_LOG_V("KEY_PAGEUP" + toString(mVDAnimation->getFloatUniformValueByIndex(18)));
+
+				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) - 0.03f);
 				break;
 
 			default:
@@ -582,12 +581,6 @@ unsigned int VDSession::getWarpBShaderIndex(unsigned int aWarpIndex) {
 	return mVDMix->getWarpBShaderIndex(aWarpIndex);
 }
 
-bool VDSession::isWarpTriangle() {
-	return mVDMix->isWarpTriangle();
-}
-void VDSession::toggleWarpTriangle() {
-	mVDMix->toggleWarpTriangle();
-}
 void VDSession::setWarpAShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex) {
 	mVDMix->setWarpAShaderIndex(aWarpIndex, aWarpShaderIndex);
 	mVDWebsocket->changeShaderIndex(aWarpIndex, aWarpShaderIndex, 0);
@@ -598,28 +591,19 @@ void VDSession::setWarpBShaderIndex(unsigned int aWarpIndex, unsigned int aWarpS
 }
 void VDSession::setWarpAFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 	mVDMix->setWarpAFboIndex(aWarpIndex, aWarpFboIndex);
+	mVDRouter->setWarpAFboIndex(aWarpIndex, aWarpFboIndex);
 	mVDWebsocket->changeWarpFboIndex(aWarpIndex, aWarpFboIndex, 0);
 }
 void VDSession::setWarpBFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex) {
 	mVDMix->setWarpBFboIndex(aWarpIndex, aWarpFboIndex);
+	mVDRouter->setWarpBFboIndex(aWarpIndex, aWarpFboIndex);
 	mVDWebsocket->changeWarpFboIndex(aWarpIndex, aWarpFboIndex, 1);
 }
 void VDSession::updateWarpName(unsigned int aWarpIndex) {
 	mVDMix->updateWarpName(aWarpIndex);
 }
 #pragma endregion warps
-// triangles
-#pragma region triangles
-void VDSession::setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
-	mVDMix->setTriangleAFboIndex(aTriangleIndex, aTriangleFboIndex);
-	// TODO mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 0);
-}
-void VDSession::setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex) {
-	mVDMix->setTriangleBFboIndex(aTriangleIndex, aTriangleFboIndex);
-	// TODO mVDWebsocket->changeTriangleFboIndex(aTriangleIndex, aTriangleFboIndex, 1);
-}
 
-#pragma endregion triangles
 // fbos
 #pragma region fbos
 bool VDSession::isFlipH() {

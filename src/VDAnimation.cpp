@@ -461,9 +461,9 @@ bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue)
 	bool rtn = false;
 	// we can't change iGlobalTime at index 0
 	if (aIndex > 0) {
-		/*if (aIndex == 31) {
-			CI_LOG_V("old value " + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue) + " newvalue " + toString(aValue));
-		}*/
+		if (aIndex == 18) {
+			CI_LOG_V("v18 old value " + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue) + " newvalue " + toString(aValue));
+		}
 		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
 			if (aValue >= shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue <= shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
 				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;

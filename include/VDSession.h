@@ -176,33 +176,10 @@ namespace VideoDromm {
 		bool							isWarpAnimationActive() { return mVDMix->isWarpAnimationActive(); };
 		void							toggleWarpAnimationActive() { mVDMix->toggleWarpAnimationActive(); };
 		// common to warps and triangles
-		bool							isWarpTriangle();
-		void							toggleWarpTriangle();
 		int								getSolo() { return mVDMix->getSolo(); };
 		unsigned int					getSoloOrActiveIndex() { return mVDMix->getSoloOrActiveIndex(); };
 		void							setCurrentEditIndex(unsigned int aIndex) { mVDMix->setCurrentEditIndex(aIndex); };
 		unsigned int					getCurrentEditIndex() { return mVDMix->getCurrentEditIndex(); };
-		// triangles
-		string							getTriangleName(unsigned int aTriangleIndex) { return mVDMix->getTriangleName(aTriangleIndex); };
-		unsigned int					getTriangleCount() { return mVDMix->getTriangleCount(); };
-		unsigned int					getTriangleAFboIndex(unsigned int aWarpIndex) { return mVDMix->getTriangleAFboIndex(aWarpIndex); };
-		unsigned int					getTriangleBFboIndex(unsigned int aWarpIndex) { return mVDMix->getTriangleBFboIndex(aWarpIndex); };
-		void							setTriangleAFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex);
-		void							setTriangleBFboIndex(unsigned int aTriangleIndex, unsigned int aTriangleFboIndex);
-		bool							isTriangleActive(unsigned int aTriangleIndex) { return mVDMix->isTriangleActive(aTriangleIndex); };
-		void							toggleTriangleActive(unsigned int aTriangleIndex) { mVDMix->toggleTriangleActive(aTriangleIndex); };
-		bool							isTriangleSolo(unsigned int aTriangleIndex) { return mVDMix->isTriangleSolo(aTriangleIndex); };
-		void							toggleTriangleSolo(unsigned int aTriangleIndex) { mVDMix->toggleTriangleSolo(aTriangleIndex); };
-		bool							isTriangleDeleted(unsigned int aTriangleIndex) { return mVDMix->isTriangleDeleted(aTriangleIndex); };
-		void							toggleDeleteTriangle(unsigned int aTriangleIndex) { mVDMix->toggleDeleteTriangle(aTriangleIndex); };
-		void							setTriangleCrossfade(unsigned int aTriangleIndex, float aCrossfade) { mVDMix->setTriangleCrossfade(aTriangleIndex, aCrossfade); };
-		float							getTriangleCrossfade(unsigned int aTriangleIndex) { return mVDMix->getTriangleCrossfade(aTriangleIndex); };
-		ci::gl::TextureRef				getTriangleTexture(unsigned int aTriangleFboIndex) { return mVDMix->getTriangleTexture(aTriangleFboIndex); }
-		void							createTriangleMix() { mVDMix->createTriangle(); };
-		int								getTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDMix->getTrianglePointX(aTriangleIndex, aPointIndex); };
-		int								getTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex) { return mVDMix->getTrianglePointY(aTriangleIndex, aPointIndex); };
-		void							setTrianglePointX(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDMix->setTrianglePointX(aTriangleIndex, aPointIndex, aValue); };
-		void							setTrianglePointY(unsigned int aTriangleIndex, unsigned int aPointIndex, unsigned int aValue) { mVDMix->setTrianglePointY(aTriangleIndex, aPointIndex, aValue); };
 		// fbos
 		void							fboFlipV(unsigned int aFboIndex) { mVDMix->fboFlipV(aFboIndex); };
 		bool							isFboFlipV(unsigned int aFboIndex) { return mVDMix->isFboFlipV(aFboIndex); };
