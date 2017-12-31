@@ -448,9 +448,9 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 }
 
 void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool forceSend) {
-	if (aControl == 18) {
+	/*if (aControl == 18) {
 		CI_LOG_V("18 old value " + toString(mVDAnimation->getFloatUniformValueByIndex(aControl)) + " newvalue " + toString(aValue));
-	}
+	}*/
 	// check if changed
 	if ( (mVDAnimation->setFloatUniformValueByIndex(aControl, aValue) && aControl != mVDSettings->IFPS) || forceSend) {
 		stringstream sParams;

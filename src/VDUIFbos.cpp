@@ -9,10 +9,12 @@ VDUIFbos::VDUIFbos(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 
 void VDUIFbos::Run(const char* title) {
 	// fbos
-	xPos = mVDSettings->uiMargin + mVDSettings->uiXPosCol1;
-	yPos = mVDSettings->uiYPosRow2;
 
 	for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
+		xPos = mVDSettings->uiMargin + mVDSettings->uiXPosCol1 + ((mVDSettings->uiLargePreviewW + mVDSettings->uiMargin) * f);
+		//xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
+		//xPos = (mVDSettings->uiMargin + mVDSettings->uiXPosCol1) * (f + 2);
+		yPos = mVDSettings->uiYPosRow2;
 		ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
 		ui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		sprintf(buf, "%s##fbolbl%d", mVDSession->getFboName(f).c_str(), f);
@@ -52,13 +54,12 @@ void VDUIFbos::Run(const char* title) {
 			if (ui::Button(buf)) mVDSession->updateShaderThumbFile(f);
 			ui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(f)->getWidth(), mVDSession->getFboRenderedTexture(f)->getHeight());
 			// next UI position		
-			xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
-
-			if (xPos > mVDSettings->mMainWindowWidth - mVDSettings->uiXPosCol1)
+			// bug values are soooo big!
+			/*if (xPos > mVDSettings->mMainWindowWidth - mVDSettings->uiXPosCol1)
 			{
 				xPos = mVDSettings->uiMargin + mVDSettings->uiXPosCol1;
-				yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;
-			}
+				//yPos += mVDSettings->uiLargePreviewH + mVDSettings->uiMargin;
+			}*/
 			ui::PopID();
 		}
 		ui::End();

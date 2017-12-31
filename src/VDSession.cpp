@@ -170,8 +170,8 @@ void VDSession::update(unsigned int aClassIndex) {
 		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
 	}
 	//mSelectedWarp = mVDRouter->selectedWarp();
-	//setWarpAFboIndex(0, mVDRouter->selectedFboA());
-	//setWarpBFboIndex(0, mVDRouter->selectedFboB());
+	setWarpAFboIndex(0, mVDRouter->selectedFboA());
+	setWarpBFboIndex(0, mVDRouter->selectedFboB());
 }
 bool VDSession::save()
 {
@@ -506,12 +506,12 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 					break;*/
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
-				CI_LOG_V("KEY_PAGEDOWN" + toString( mVDAnimation->getFloatUniformValueByIndex(18)));
+				//CI_LOG_V("KEY_PAGEDOWN" + toString( mVDAnimation->getFloatUniformValueByIndex(18)));
 				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) + 0.03f);
 				break;
 			case KeyEvent::KEY_PAGEUP:
 				// crossfade left
-				CI_LOG_V("KEY_PAGEUP" + toString(mVDAnimation->getFloatUniformValueByIndex(18)));
+				//CI_LOG_V("KEY_PAGEUP" + toString(mVDAnimation->getFloatUniformValueByIndex(18)));
 
 				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) - 0.03f);
 				break;
