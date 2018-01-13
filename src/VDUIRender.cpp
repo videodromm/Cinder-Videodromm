@@ -75,6 +75,39 @@ void VDUIRender::Run(const char* title) {
 		ui::SameLine();
 		ui::DragFloat("maxcr", &maxContour, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl));
         // windows
+		ui::Text("render window %dx%d", mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
+		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(0.9f, 0.7f, 0.7f));
+		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(0.9f, 0.8f, 0.8f));
+
+		if (ui::Button("Auto Layout")) {
+			mVDSession->toggleAutoLayout();
+		}
+		if (ui::IsItemHovered()) ui::SetTooltip("Auto Layout for render window");
+
+		// Auto Layout for render window
+		if (mVDSession->isAutoLayout()) {
+			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.9f, 1.0f, 0.5f));
+		}
+		else {
+			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(0.0f, 0.1f, 0.1f));
+			// render window width
+			static int rw = mVDSettings->mRenderWidth;
+			if (ui::SliderInt("rdr w", &rw, 640, 4080))
+			{
+				//mVDSession->setRenderWidth(rw);
+				mVDSettings->mRenderWidth = rw;
+			}
+			ui::SameLine();
+			// render window height
+			static int rh = mVDSettings->mRenderHeight;
+			if (ui::SliderInt("rdr h", &rh, 480, 1024))
+			{
+				//mVDSession->setRenderHeight(rh);
+				mVDSettings->mRenderHeight = rh;
+			}
+		}
+		ui::PopStyleColor(3);
+
 		if (ui::Button("Create Window")) {
 			mVDSession->createWindow();
 		}
@@ -82,10 +115,10 @@ void VDUIRender::Run(const char* title) {
 		if (ui::Button("Delete Window")) {
 			mVDSession->deleteWindow();
 		}
+
 		if (ui::Button("Create Warp")) {
 			mVDSession->createWarpMix();
 		}
-		
 
 		// alpha blending
 		/*if (mVDSession->isEnabledAlphaBlending()) {
@@ -134,7 +167,8 @@ void VDUIRender::Run(const char* title) {
 		ui::PopStyleColor(3);
 		if (ui::IsItemHovered()) ui::SetTooltip("Activate Warp Animation");
 
-		ui::Text("fp %dx%d f %dx%d r %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight, mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
+		ui::Text("fp %dx%d f %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+		ui::Text("main %dx%d", mVDSettings->mMainWindowWidth, mVDSettings->mMainWindowHeight);
 		ui::Text("solo %d", mVDSession->getSolo());
 		// feedback
 		static int fb = mVDSession->getFeedbackFrames();

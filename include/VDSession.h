@@ -209,6 +209,8 @@ namespace VideoDromm {
 		void							toggleEnabledAlphaBlending() { mEnabledAlphaBlending = !mEnabledAlphaBlending; }
 		bool							isRenderTexture() { return mRenderTexture; };
 		void							toggleRenderTexture() { mRenderTexture = !mRenderTexture; }
+		bool							isAutoLayout() { return mVDSettings->mAutoLayout; };
+		void							toggleAutoLayout() { mVDSettings->mAutoLayout = !mVDSettings->mAutoLayout; }
 		bool							isFlipH();
 		bool							isFlipV();
 		void							flipH();
