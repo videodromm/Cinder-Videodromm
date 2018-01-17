@@ -8,7 +8,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWeb
 	mVDWebsocket = aVDWebsocket;
 	CI_LOG_V("VDRouter constructor");
 	// kinect
-	for (int i = 0; i < 20; i++) {
+	/* for (int i = 0; i < 20; i++) {
 		skeleton[i] = ivec4(0);
 	}
 	// OSC
@@ -21,7 +21,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWeb
 			// OSC receiver
 			setupOSCReceiver();
 		}
-	}
+	} */
 
 	// midi
 	if (mVDSettings->mMIDIOpenAllInputPorts) midiSetup();
@@ -29,7 +29,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWeb
 	mSelectedFboA = 1;
 	mSelectedFboB = 2;
 }
-void VDRouter::setupOSCSender() {
+/* void VDRouter::setupOSCSender() {
 	// OSC sender with broadcast
 	osc::UdpSocketRef mSocket(new udp::socket(App::get()->io_service(), udp::endpoint(udp::v4(), 9999)));
 	mSocket->set_option(asio::socket_base::broadcast(true));
@@ -50,13 +50,13 @@ void VDRouter::setupOSCReceiver() {
 #else
 	mOSCReceiver = shared_ptr<osc::ReceiverTcp>(new osc::ReceiverTcp(mVDSettings->mOSCReceiverPort));
 #endif
-	/* TODO
-	Load addresses from json file
-	for (auto & address : jsonList["addresses"]) {
-	mOSCReceiver->setListener(address.getValue(), myFuncForLayerClips);
-	}
-	TODO use pattern matching
-	mOSCReceiver->setListener("/layer1/clip*", myFuncForLayerClips);*/
+	// TODO
+	//Load addresses from json file
+	//for (auto & address : jsonList["addresses"]) {
+	//mOSCReceiver->setListener(address.getValue(), myFuncForLayerClips);
+	//}
+	//TODO use pattern matching
+	//mOSCReceiver->setListener("/layer1/clip*", myFuncForLayerClips);
 	mOSCReceiver->setListener("/cc",
 		[&](const osc::Message &msg) {
 		mVDSettings->mOSCMsg = "/cc";
@@ -94,20 +94,20 @@ void VDRouter::setupOSCReceiver() {
 		mVDSettings->iBeat = msg[0].int32();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
-	/*mOSCReceiver->setListener("/live/tempo",
-		[&](const osc::Message &msg) {
-		mVDAnimation->setAutoBeatAnimation(false);
+	//mOSCReceiver->setListener("/live/tempo",
+	//	[&](const osc::Message &msg) {
+	//	mVDAnimation->setAutoBeatAnimation(false);
 		// Animation
-		mVDSession->setBpm(msg[0].flt());
-		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-		});
+	//	mVDSession->setBpm(msg[0].flt());
+	//	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
+	//	});
 		// artcraft
-		mOSCReceiver->setListener("/tempo",
-		[&](const osc::Message &msg) {
+	//	mOSCReceiver->setListener("/tempo",
+	//	[&](const osc::Message &msg) {
 		// Animation
-		mVDSession->setBpm(msg[0].flt());
-		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
-		});*/
+	//	mVDSession->setBpm(msg[0].flt());
+	//	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
+	//	});
 	mOSCReceiver->setListener("/live/track/meter",
 		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
@@ -202,14 +202,14 @@ void VDRouter::setupOSCReceiver() {
 		}
 	});
 	// json
-	/*mOSCReceiver->setListener("/json/params",
-		[&](const osc::Message &msg) {
-		mVDSettings->mOSCMsg = "/json/params:" + msg[0].string();
-		mVDSettings->mOSCNewMsg = true;
+	//mOSCReceiver->setListener("/json/params",
+	//	[&](const osc::Message &msg) {
+	//	mVDSettings->mOSCMsg = "/json/params:" + msg[0].string();
+	//	mVDSettings->mOSCNewMsg = true;
 
-		parseMessage(msg[0].string());
+	//	parseMessage(msg[0].string());
 
-	});*/
+	//});
 
 	mOSCReceiver->bind();
 	mOSCReceiver->listen([](asio::error_code error, protocol::endpoint endpoint) -> bool {
@@ -220,7 +220,7 @@ void VDRouter::setupOSCReceiver() {
 		else
 			return true;
 	});
-}
+} */
 void VDRouter::shutdown() {
 
 	mMidiIn0.closePort();
@@ -437,12 +437,12 @@ void VDRouter::midiListener(midi::Message msg) {
 			}
 		}
 		else {
-			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
-				updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
-			}
-			else {
+			//if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
+			//	updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
+			//}
+			//else {
 				updateParams(midiControl, midiNormalizedValue);
-			}
+			//}
 		}
 		//mWebSockets->write("{\"params\" :[{" + controlType);
 		break;
@@ -473,22 +473,22 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	if (farg1 > 0.1) {
 		//avoid to send twice
 		if (iarg0 == 51) {
-			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/prev/cue", 0); // previous cue	
+			//if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/prev/cue", 0); // previous cue	
 			// left assign
 			//mVDSettings->mLeftFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 52) {
-			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/next/cue", 0); // next cue 
+			//if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/next/cue", 0); // next cue 
 			// right assign
 			//mVDSettings->mRightFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 53) {
-			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/stop", 0); // stop
+			//if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/stop", 0); // stop
 			// preview assign
 			//mVDSettings->mPreviewFragIndex = mVDSettings->iTrack;
 		}
 		if (iarg0 == 54) {
-			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/play", 0); // play
+			//if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) sendOSCIntMessage("/live/play", 0); // play
 		}
 		if (iarg0 == 58) {
 			// track left		
@@ -549,7 +549,7 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
 }
-void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {
+/*void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {
 	osc::Message m(controlType);
 	m.append(iarg0);
 	m.append(iarg1);
@@ -588,15 +588,15 @@ void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float
 	updateParams(iarg0, farg1);
 	sendOSCFloatMessage(controlType, iarg0, farg1, farg2);
 }
-
+*/
 void VDRouter::colorWrite()
 {
-	if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
+	/*if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
 		sendOSCColorMessage("/fr", mVDAnimation->getFloatUniformValueByIndex(1));
 		sendOSCColorMessage("/fg", mVDAnimation->getFloatUniformValueByIndex(2));
 		sendOSCColorMessage("/fb", mVDAnimation->getFloatUniformValueByIndex(3));
 		sendOSCColorMessage("/fa", mVDAnimation->getFloatUniformValueByIndex(4));
-	}
+	}*/
 #if defined( CINDER_MSW )
 	// lights4events
 	char col[8];

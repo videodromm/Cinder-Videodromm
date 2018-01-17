@@ -12,8 +12,8 @@
 // Midi
 #include "MidiIn.h"
 // OSC
-#include "Osc.h"
-#define USE_UDP 1
+// #include "Osc.h"
+// #define USE_UDP 1
 
 
 using namespace ci;
@@ -22,11 +22,11 @@ using namespace std;
 using namespace asio;
 using namespace asio::ip; 
 using namespace VideoDromm;
-#if USE_UDP
+/* #if USE_UDP
 using protocol = asio::ip::udp;
 #else
 using protocol = asio::ip::tcp;
-#endif
+#endif */
 namespace VideoDromm
 {
 	// stores the pointer to the VDRouter instance
@@ -34,13 +34,13 @@ namespace VideoDromm
 	// midi
 	typedef std::shared_ptr<class MIDI> MIDIRef;
 	// stores the pointer to the ReceiverUdp or ReceiverTcp instance
-#if USE_UDP
+/* #if USE_UDP
 	typedef std::shared_ptr<class osc::ReceiverUdp> ReceiverRef;
 #else
 	typedef std::shared_ptr<class osc::ReceiverTcp> ReceiverRef;
 #endif
 	// stores the pointer to the SenderUdp instance
-	typedef std::shared_ptr<class osc::SenderUdp> SenderRef;
+	typedef std::shared_ptr<class osc::SenderUdp> SenderRef; */
 
 	struct midiInput
 	{
@@ -79,7 +79,7 @@ namespace VideoDromm
 		void						openMidiOutPort(int i);
 		void						closeMidiOutPort(int i);
 		// OSC
-		void						setupOSCSender();
+		/*void						setupOSCSender();
 		void						setupOSCReceiver();
 		void						sendOSCIntMessage(string controlType, int iarg0 = 0, int iarg1 = 0, int iarg2 = 0, int iarg3 = 0, int iarg4 = 0, int iarg5 = 0);
 		void						sendOSCColorMessage(string controlType, float val);
@@ -87,7 +87,7 @@ namespace VideoDromm
 		void						updateAndSendOSCFloatMessage(string controlType, int iarg0 = 0, float farg1 = 0.0, float farg2 = 0.0, float farg3 = 0.0, float farg4 = 0.0, float farg5 = 0.0);
 		void						sendOSCStringMessage(string controlType, int iarg0 = 0, string sarg1 = "", string sarg2 = "", string sarg3 = "", string sarg4 = "", string sarg5 = "");
 		ivec4						skeleton[20];
-		string						getTrack(int i) { return tracks[min(i, MAX)]; };//TODO
+		string						getTrack(int i) { return tracks[min(i, MAX)]; }; */ //TODO
 		int							selectedWarp() { return mSelectedWarp; };
 		int							selectedFboA() { return mSelectedFboA; };
 		int							selectedFboB() { return mSelectedFboB; };
@@ -129,9 +129,9 @@ namespace VideoDromm
 		int							mSelectedFboA;
 		int							mSelectedFboB;
 		// osc
-		ReceiverRef					mOSCReceiver;
+		// ReceiverRef					mOSCReceiver;
 
-		SenderRef					mOSCSender;
+		// SenderRef					mOSCSender;
 		static const int			MAX = 16;
 		// ableton liveOSC
 		string						tracks[MAX];
