@@ -14,8 +14,8 @@
   	<supports os="macosx" />
     <supports os="ios" />
 	<requires>ocornut.imgui</requires>
-	<requires>org.libcinder.osc</requires>
 	<requires>com.wk.websocketpp</requires>
+	<requires>org.libcinder.ndi</requires>
 	<includePath>include</includePath>
 	<includePath>src</includePath>
 	<headerPattern>include/*.h</headerPattern>

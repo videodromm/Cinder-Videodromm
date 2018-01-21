@@ -49,6 +49,7 @@ int VDUtils::getWindowsResolution()
 			mVDSettings->mRenderWidth = display->getWidth();
 			mVDSettings->mRenderHeight = display->getHeight();
 		}
+		mVDSettings->mRenderY = 0;
 	}
 	else
 	{
@@ -58,7 +59,6 @@ int VDUtils::getWindowsResolution()
 			mVDSettings->mDisplayCount++;
 		}
 	}
-	mVDSettings->mRenderY = 0;
 
 	//CI_LOG_V("VDUtils mMainDisplayWidth:" + toString(mVDSettings->mMainWindowWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainWindowHeight));
 	//CI_LOG_V("VDUtils mRenderWidth:" + toString(mVDSettings->mRenderWidth) + " mRenderHeight:" + toString(mVDSettings->mRenderHeight));
