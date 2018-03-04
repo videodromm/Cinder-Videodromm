@@ -170,8 +170,8 @@ void VDSession::update(unsigned int aClassIndex) {
 		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
 	}
 	//mSelectedWarp = mVDRouter->selectedWarp();
-	setWarpAFboIndex(0, mVDRouter->selectedFboA());
-	setWarpBFboIndex(0, mVDRouter->selectedFboB());
+	/* TODO CHECK if needed? send a lot of ws msgs setWarpAFboIndex(0, mVDRouter->selectedFboA());
+	setWarpBFboIndex(0, mVDRouter->selectedFboB());*/
 }
 bool VDSession::save()
 {

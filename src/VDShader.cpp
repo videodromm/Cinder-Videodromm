@@ -232,7 +232,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		}
 		mCurrentUniformsString += "// active uniforms end\n";
 		// save .frag file to migrate old shaders
-		mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
+		// doubles iGlobalTime 20180304 mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
+		mProcessedShaderString = mNotFoundUniformsString + mOriginalFragmentString;
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;
 		ofstream mFragProcessed(processedFile.string(), std::ofstream::binary);
 		mFragProcessed << mProcessedShaderString;

@@ -82,16 +82,16 @@ namespace VideoDromm
 		int							receivedSlot;
 
 		WebSocketClient				mClient;
-		void						onWsConnect();
+		/*void						onWsConnect();
 		void						onWsDisconnect();
 		void						onWsError(std::string err);
 		void						onWsInterrupt();
 		void						onWsPing(std::string msg);
-		void						onWsRead(std::string msg);
+		void						onWsRead(std::string msg);*/
 		// Web socket  server
 		WebSocketServer				mServer;
-		void						serverConnect();
-		void						serverDisconnect();
+		/*void						serverConnect();
+		void						serverDisconnect();*/
 		double						mPingTime;
 
 		// received shaders
