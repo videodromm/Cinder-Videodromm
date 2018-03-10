@@ -166,7 +166,6 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mVDSettings->mMsg = aName + " loaded and compiled";
 		// name of the shader
 		mName = aName;
-
 		mValid = true;
 
 		auto &uniforms = mShader->getActiveUniforms();
@@ -241,13 +240,12 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		CI_LOG_V("processed file saved:" + processedFile.string());
 		// 20161209 problem on Mac mShader->setLabel(mName);
 		// try to compile a second time 
-		mShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mProcessedShaderString);
-		mFragmentShaderString = mProcessedShaderString;
+		// 20180310 avoid errors mShader = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mProcessedShaderString);
+		// 20180310 avoid errors mFragmentShaderString = mProcessedShaderString;
 		// update only if success
-		mVDSettings->mMsg = aName + " loaded and compiled";
-		CI_LOG_V(mVDSettings->mMsg);
-		// 20161209 problem on Mac mShader->setLabel(mName);
-		mValid = true;
+		// 20180310 avoid errors mVDSettings->mMsg = aName + " loaded and compiled";
+		// 20180310 avoid errors CI_LOG_V(mVDSettings->mMsg);
+		// 20180310 avoid errors mValid = true;
 	}
 	catch (gl::GlslProgCompileExc &exc)
 	{
