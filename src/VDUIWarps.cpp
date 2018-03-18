@@ -210,6 +210,8 @@ void VDUIWarps::Run(const char* title) {
 
 			// B (right)
 			t++;
+			fboIndex = mVDSession->getWarpBFboIndex(currentNode);
+			inputTexture = mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode));
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 			sprintf(buf, "%s##fbob", mVDSession->getFboName(fboIndex).c_str());
@@ -224,8 +226,6 @@ void VDUIWarps::Run(const char* title) {
 			ui::End();
 
 			t++;
-			fboIndex = mVDSession->getWarpBFboIndex(currentNode);
-			inputTexture = mVDSession->getFboInputTextureIndex(mVDSession->getWarpBFboIndex(currentNode));
 
 			ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
 			ui::SetNextWindowPos(ImVec2((t * (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin)) + mVDSettings->uiMargin + mVDSettings->uiLargeW, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);

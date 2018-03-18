@@ -386,7 +386,7 @@ namespace VideoDromm {
 		mCurrentLoadedFrame = 0;
 		mNextIndexFrameToTry = 0;
 		mPlaying = false;
-		mSpeed = 1.0f;
+		mSpeed = 0.032f;
 		mExt = "png";
 		mPrefix = "none";
 		mNextIndexFrameToTry = 0;
