@@ -33,10 +33,15 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Session
 		VDSessionRef				mVDSession;
+		float						getValue(unsigned int aCtrl);
+		void						setValue(unsigned int aCtrl, float aValue);
+
 		// imgui
 		float						f = 0.0f;
 		char						buf[64];
 		bool						mouseGlobal;
-
+		int							ctrl;
+		float						mouseX, mouseY;
+		bool						mouseZ;
 	};
 }

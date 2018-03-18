@@ -9,7 +9,12 @@ VDUIMouse::VDUIMouse(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 VDUIMouse::~VDUIMouse() {
 	
 }
-
+float VDUIMouse::getValue(unsigned int aCtrl) {
+	return mVDSession->getFloatUniformValueByIndex(aCtrl);
+}
+void VDUIMouse::setValue(unsigned int aCtrl, float aValue) {
+	mVDSession->setFloatUniformValueByIndex(aCtrl, aValue);
+}
 void VDUIMouse::Run(const char* title) {
 	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
 	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
@@ -25,14 +30,27 @@ void VDUIMouse::Run(const char* title) {
 		{
 			mVDSettings->mRenderPosXY.x = ui::GetIO().MousePos.x; ui::SameLine();
 			mVDSettings->mRenderPosXY.y = ui::GetIO().MousePos.y;
-			//mVDSettings->iMouse.z = ui::GetIO().MouseDown[0];
+		}
+		// mouse
+		mouseX = getValue(35);
+		if (ui::SliderFloat("MouseX", &mouseX, 0.0f, mVDSettings->mFboWidth))
+		{
+			setValue(35, mouseX);
+		}
+		mouseY = getValue(36);
+		if (ui::SliderFloat("MouseY", &mouseY, 0.0f, mVDSettings->mFboHeight))
+		{
+			setValue(36, mouseY);
+		}
+		mouseZ ^= ui::Button("mouse click");
+		if (mouseZ)
+		{
+			setValue(37, 1.0f);
 		}
 		else
 		{
-			//mVDSettings->iMouse.z = ui::Button("mouse click");
+			setValue(37, 0.0f);
 		}
-		ui::SliderFloat("MouseX", &mVDSettings->mRenderPosXY.x, 0, mVDSettings->mFboWidth);
-		ui::SliderFloat("MouseY", &mVDSettings->mRenderPosXY.y, 0, mVDSettings->mFboHeight);
 	}
 	ui::End();
 #pragma endregion mouse

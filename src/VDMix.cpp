@@ -414,7 +414,8 @@ namespace VideoDromm {
 		// was vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0)):
 		mGlslMix->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-		mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+		// 20180318 mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mGlslMix->uniform("iChannel0", 0);
 		mGlslMix->uniform("iChannel1", 1);
@@ -455,7 +456,8 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
-			mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+			// 20180318 mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+			mGlslBlend->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 			mGlslBlend->uniform("iChannel0", 0);
 			mGlslBlend->uniform("iChannel1", 1);

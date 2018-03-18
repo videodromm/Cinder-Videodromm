@@ -131,7 +131,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iFreq2", 33, 0.0f, 0.01f, 256.0f);
 		// iFreq3  
 		createFloatUniform("iFreq3", 34, 0.0f, 0.01f, 256.0f);
-
+		// iMouseX  
+		createFloatUniform("iMouseX", 35, 320.0f, 0.0f, 640.0f);
+		// iMouseY  
+		createFloatUniform("iMouseY", 36, 240.0f, 0.0f, 480.0f);
+		// iMouseZ  
+		createFloatUniform("iMouseZ", 37, 0.0f, 0.0f, 1.0f);
 		// int
 		// blend mode 
 		createIntUniform("iBlendmode", 50, 0);
@@ -684,9 +689,10 @@ void VDAnimation::update() {
 
 		// foreground color vec3 update
 		shaderUniforms["iColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue, shaderUniforms[getUniformNameForIndex(2)].floatValue, shaderUniforms[getUniformNameForIndex(3)].floatValue);
-
 		// background color vec3 update
 		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(19)].floatValue, shaderUniforms[getUniformNameForIndex(20)].floatValue, shaderUniforms[getUniformNameForIndex(21)].floatValue);
+		// mouse vec4 update
+		shaderUniforms["iMouse"].vec4Value = vec4(shaderUniforms[getUniformNameForIndex(35)].floatValue, shaderUniforms[getUniformNameForIndex(36)].floatValue, shaderUniforms[getUniformNameForIndex(37)].floatValue, 0.0f);
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{

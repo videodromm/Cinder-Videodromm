@@ -358,7 +358,7 @@ void VDSession::fileDrop(FileDropEvent event) {
 bool VDSession::handleMouseMove(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	// 20180318 handled in VDUIMouse mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseMove(event)) {
 		// let your application perform its mouseMove handling here
@@ -371,7 +371,7 @@ bool VDSession::handleMouseMove(MouseEvent &event)
 bool VDSession::handleMouseDown(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	// 20180318 handled in VDUIMouse mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseDown(event)) {
 		// let your application perform its mouseDown handling here
@@ -385,7 +385,7 @@ bool VDSession::handleMouseDown(MouseEvent &event)
 bool VDSession::handleMouseDrag(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	// 20180318 handled in VDUIMouse mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseDrag(event)) {
 		// let your application perform its mouseDrag handling here
@@ -398,7 +398,7 @@ bool VDSession::handleMouseDrag(MouseEvent &event)
 bool VDSession::handleMouseUp(MouseEvent &event)
 {
 	bool handled = true;
-	mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
+	// 20180318 handled in VDUIMouse mVDAnimation->setVec4UniformValueByIndex(70, vec4(event.getX(), event.getY(), event.isLeftDown(), event.isRightDown()));
 	// pass this mouse event to the warp editor first
 	if (!mVDMix->handleMouseUp(event)) {
 		// let your application perform its mouseUp handling here
