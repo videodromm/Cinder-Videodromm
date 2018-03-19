@@ -9,8 +9,6 @@
 // Session
 #include "VDSession.h"
 
-// Console
-#include "VDConsole.h"
 // UITextures
 #include "VDUITextures.h"
 // UIFbos
@@ -66,9 +64,7 @@ namespace VideoDromm
 		VDSettingsRef				mVDSettings;
 		// Session
 		VDSessionRef				mVDSession;
-		// Console
-		VDConsoleRef				mUIConsole;
-		bool						showConsole;
+
 		// UITextures
 		VDUITexturesRef				mUITextures;
 		bool						showUITextures;

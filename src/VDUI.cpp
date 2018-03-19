@@ -5,8 +5,6 @@ using namespace VideoDromm;
 VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
 	mVDSession = aVDSession;
-	// Console
-	mUIConsole = VDConsole::create(mVDSettings, mVDSession);
 	// UITextures
 	mUITextures = VDUITextures::create(mVDSettings, mVDSession);
 	// UIFbos
@@ -59,20 +57,20 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 void VDUI::resize() {
 	mIsResizing = true;
 	// disconnect ui window and io events callbacks
-	ui::disconnectWindow(getWindow());
+	ImGui::disconnectWindow(getWindow());
 }
 void VDUI::Run(const char* title, unsigned int fps) {
 	static int currentWindowRow1 = 2;
 	static int currentWindowRow2 = 5;
 
-	ImGuiStyle& style = ui::GetStyle();
+	ImGuiStyle& style = ImGui::GetStyle();
 
 	if (mIsResizing) {
 		mIsResizing = false;
 
 		// set ui window and io events callbacks 
-		ui::connectWindow(getWindow());
-		ui::initialize();
+		ImGui::connectWindow(getWindow());
+		ImGui::initialize();
 
 #pragma region style
 		// our theme variables
@@ -95,7 +93,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
 		style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.26f, 0.26f, 0.26f, 1.00f);
 		style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.26f, 0.26f, 0.26f, 1.00f);
-		style.Colors[ImGuiCol_ComboBg] = ImVec4(0.13f, 0.13f, 0.13f, 1.00f);
+		// style.Colors[ImGuiCol_ComboBg] = ImVec4(0.13f, 0.13f, 0.13f, 1.00f);
 		style.Colors[ImGuiCol_CheckMark] = ImVec4(0.99f, 0.22f, 0.22f, 0.50f);
 		style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.65f, 0.25f, 0.25f, 1.00f);
 		style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.8f, 0.35f, 0.35f, 1.00f);
@@ -134,75 +132,75 @@ void VDUI::Run(const char* title, unsigned int fps) {
 
 #pragma endregion menu
 	mVDSettings->uiXPos = mVDSettings->uiMargin;
-	//ui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth - 20, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
-	ui::SetNextWindowSize(ImVec2(800, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
-	ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPos, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
-	sprintf(buf, "Videodromm Fps %c %d###fps", "|/-\\"[(int)(ui::GetTime() / 0.25f) & 3], fps);
-	ui::Begin(buf);
+	//ImGui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth - 20, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(800, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiXPos, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
+	sprintf(buf, "Videodromm Fps %c %d###fps", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], fps);
+	ImGui::Begin(buf);
 	{
-		ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 		// fps
 		static ImVector<float> values; if (values.empty()) { values.resize(100); memset(&values.front(), 0, values.size() * sizeof(float)); }
 		static int values_offset = 0;
 		static float refresh_time = -1.0f;
-		if (ui::GetTime() > refresh_time + 1.0f / 6.0f)
+		if (ImGui::GetTime() > refresh_time + 1.0f / 6.0f)
 		{
-			refresh_time = ui::GetTime();
+			refresh_time = ImGui::GetTime();
 			values[values_offset] = mVDSession->getFloatUniformValueByIndex(mVDSettings->IFPS);
 			values_offset = (values_offset + 1) % values.size();
 		}
-		if (mVDSession->getFloatUniformValueByIndex(mVDSettings->IFPS) < 12.0) ui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-		ui::PlotLines("FPS ", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
-		if (mVDSession->getFloatUniformValueByIndex(mVDSettings->IFPS) < 12.0) ui::PopStyleColor();
-		ui::SameLine();
-		ui::Text("(Target FPS %.2f) ", mVDSession->getTargetFps());
+		if (mVDSession->getFloatUniformValueByIndex(mVDSettings->IFPS) < 12.0) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+		ImGui::PlotLines("FPS ", &values.front(), (int)values.size(), values_offset, mVDSettings->sFps.c_str(), 0.0f, mVDSession->getTargetFps(), ImVec2(0, 30));
+		if (mVDSession->getFloatUniformValueByIndex(mVDSettings->IFPS) < 12.0) ImGui::PopStyleColor();
+		ImGui::SameLine();
+		ImGui::Text("(Target FPS %.2f) ", mVDSession->getTargetFps());
 
-		ui::RadioButton("Audio", &currentWindowRow1, 0); ui::SameLine();
-		ui::RadioButton("Midi", &currentWindowRow1, 1); ui::SameLine();
-		ui::RadioButton("Anim", &currentWindowRow1, 2); ui::SameLine();
-		ui::RadioButton("Color", &currentWindowRow1, 3); ui::SameLine();
-		ui::RadioButton("Tempo", &currentWindowRow1, 4); ui::SameLine();
-		ui::RadioButton("Mouse", &currentWindowRow1, 5); ui::SameLine();
-		ui::RadioButton("Osc", &currentWindowRow1, 6);  ui::SameLine();
-		ui::RadioButton("WS", &currentWindowRow1, 7);  ui::SameLine();
-		ui::RadioButton("Render", &currentWindowRow1, 8);  ui::SameLine();
+		ImGui::RadioButton("Audio", &currentWindowRow1, 0); ImGui::SameLine();
+		ImGui::RadioButton("Midi", &currentWindowRow1, 1); ImGui::SameLine();
+		ImGui::RadioButton("Anim", &currentWindowRow1, 2); ImGui::SameLine();
+		ImGui::RadioButton("Color", &currentWindowRow1, 3); ImGui::SameLine();
+		ImGui::RadioButton("Tempo", &currentWindowRow1, 4); ImGui::SameLine();
+		ImGui::RadioButton("Mouse", &currentWindowRow1, 5); ImGui::SameLine();
+		ImGui::RadioButton("Osc", &currentWindowRow1, 6);  ImGui::SameLine();
+		ImGui::RadioButton("WS", &currentWindowRow1, 7);  ImGui::SameLine();
+		ImGui::RadioButton("Render", &currentWindowRow1, 8);  ImGui::SameLine();
 		// flip vertically
 		int hue = 0;
-		mVDSession->isFlipV() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
-		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
-		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-		if (ui::Button("FlipV")) {
+		mVDSession->isFlipV() ? ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
+		if (ImGui::Button("FlipV")) {
 			mVDSession->flipV();
 		}
-		ui::PopStyleColor(3);
+		ImGui::PopStyleColor(3);
 		hue++;
-		ui::SameLine();
+		ImGui::SameLine();
 		// flip horizontally
-		mVDSession->isFlipH() ? ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1.0f, 0.1f, 0.1f));
-		ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
-		ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
-		if (ui::Button("FlipH")) {
+		mVDSession->isFlipH() ? ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
+		if (ImGui::Button("FlipH")) {
 			mVDSession->flipH();
 		}
-		ui::PopStyleColor(3);
+		ImGui::PopStyleColor(3);
 		hue++;
 
-		ui::RadioButton("Textures", &currentWindowRow2, 0); ui::SameLine();
-		ui::RadioButton("Fbos", &currentWindowRow2, 1); ui::SameLine();
-		ui::RadioButton("Shaders", &currentWindowRow2, 2); ui::SameLine();
-		ui::RadioButton("Blend", &currentWindowRow2, 3); ui::SameLine();
-		ui::RadioButton("Console", &currentWindowRow2, 4); ui::SameLine();
-		ui::RadioButton("Warps", &currentWindowRow2, 5); 
+		ImGui::RadioButton("Textures", &currentWindowRow2, 0); ImGui::SameLine();
+		ImGui::RadioButton("Fbos", &currentWindowRow2, 1); ImGui::SameLine();
+		ImGui::RadioButton("Shaders", &currentWindowRow2, 2); ImGui::SameLine();
+		ImGui::RadioButton("Blend", &currentWindowRow2, 3); ImGui::SameLine();
+		ImGui::RadioButton("Console", &currentWindowRow2, 4); ImGui::SameLine();
+		ImGui::RadioButton("Warps", &currentWindowRow2, 5); 
 
 #pragma region Info
-		ui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
-		ui::TextWrapped("WS Msg: %s", mVDSettings->mWebSocketsMsg.c_str());
-		ui::TextWrapped("OSC Msg: %s", mVDSettings->mOSCMsg.c_str());
+		ImGui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
+		ImGui::TextWrapped("WS Msg: %s", mVDSettings->mWebSocketsMsg.c_str());
+		ImGui::TextWrapped("OSC Msg: %s", mVDSettings->mOSCMsg.c_str());
 
 #pragma endregion Info	
-		ui::PopItemWidth();
+		ImGui::PopItemWidth();
 	}
-	ui::End();
+	ImGui::End();
 
 
 	switch (currentWindowRow1) {
@@ -261,10 +259,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		mUIBlend->Run("Blend");
 		break;
 	case 4:
-		// Console
-		mUIConsole->Run("Console");
-		break;
-	case 5:
 		// Warps
 		mUIWarps->Run("Warps");
 		break;

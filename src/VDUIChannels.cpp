@@ -8,38 +8,38 @@ VDUIChannels::VDUIChannels(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 }
 
 void VDUIChannels::Run(const char* title) {
-	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
-	ui::SetNextWindowPos(ImVec2(mVDSettings->uiXPosCol1, mVDSettings->uiMargin), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargePreviewH), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiXPosCol1, mVDSettings->uiMargin), ImGuiSetCond_Once);
 
 #pragma region channels
-	ui::Begin("Channels");
+	ImGui::Begin("Channels");
 	{
-		ui::Columns(3);
-		ui::SetColumnOffset(0, 4.0f);// int column_index, float offset)
-		ui::SetColumnOffset(1, 20.0f);// int column_index, float offset)
-		//ui::SetColumnOffset(2, 24.0f);// int column_index, float offset)
-		ui::Text("Chn"); ui::NextColumn();
-		ui::Text("Tex"); ui::NextColumn();
-		ui::Text("Name"); ui::NextColumn();
-		ui::Separator();
+		ImGui::Columns(3);
+		ImGui::SetColumnOffset(0, 4.0f);// int column_index, float offset)
+		ImGui::SetColumnOffset(1, 20.0f);// int column_index, float offset)
+		//ImGui::SetColumnOffset(2, 24.0f);// int column_index, float offset)
+		ImGui::Text("Chn"); ImGui::NextColumn();
+		ImGui::Text("Tex"); ImGui::NextColumn();
+		ImGui::Text("Name"); ImGui::NextColumn();
+		ImGui::Separator();
 		for (int i = 0; i < mVDSettings->MAX - 1; i++)
 		{
-			ui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
-			ui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
-			ui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
-			ui::Text("c%d", i);
-			ui::NextColumn();
+			ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(i / 7.0f, 0.6f, 0.6f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, 0.7f, 0.7f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, 0.8f, 0.8f));
+			ImGui::Text("c%d", i);
+			ImGui::NextColumn();
 			sprintf(buf, "%d##chn%d", i, i);
-			if (ui::SliderInt(buf, &mVDSettings->iChannels[i], 0, mVDSettings->MAX - 1)) {
+			if (ImGui::SliderInt(buf, &mVDSettings->iChannels[i], 0, mVDSettings->MAX - 1)) {
 			}
-			ui::NextColumn();
-			ui::PopStyleColor(3);
-			ui::Text("%s", mVDSession->getInputTextureName(mVDSettings->iChannels[i]).c_str());
-			ui::NextColumn();
+			ImGui::NextColumn();
+			ImGui::PopStyleColor(3);
+			ImGui::Text("%s", mVDSession->getInputTextureName(mVDSettings->iChannels[i]).c_str());
+			ImGui::NextColumn();
 		}
-		ui::Columns(1);
+		ImGui::Columns(1);
 	}
-	ui::End();
+	ImGui::End();
 
 
 #pragma endregion channels

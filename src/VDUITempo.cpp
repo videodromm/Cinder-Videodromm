@@ -13,45 +13,45 @@ void VDUITempo::Run(const char* title) {
 
 	// Tempo
 #pragma region Tempo
-	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
-	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 
-	ui::Begin("Tempo");
+	ImGui::Begin("Tempo");
 	{
-		ui::PushItemWidth(mVDSettings->mPreviewFboWidth);
-		if (ui::Button("x##spdx")) { mVDSettings->iSpeedMultiplier = 1.0; }
-		ui::SameLine();
-		ui::SliderFloat("speed x", &mVDSettings->iSpeedMultiplier, 0.01f, 5.0f, "%.1f");
+		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+		if (ImGui::Button("x##spdx")) { mVDSettings->iSpeedMultiplier = 1.0; }
+		ImGui::SameLine();
+		ImGui::SliderFloat("speed x", &mVDSettings->iSpeedMultiplier, 0.01f, 5.0f, "%.1f");
 		/* TODO
-		ui::Text("Beat %d ", mVDSettings->iBeat);
-		ui::SameLine();
-		ui::Text("Beat Idx %d ", mVDAnimation->iBeatIndex);
-		//ui::SameLine();
-		//ui::Text("Bar %d ", mVDAnimation->iBar);
-		if (ui::Button("x##bpbx")) { mVDSession->setControlValue("iBeat", 1); }
-		ui::SameLine();
+		ImGui::Text("Beat %d ", mVDSettings->iBeat);
+		ImGui::SameLine();
+		ImGui::Text("Beat Idx %d ", mVDAnimation->iBeatIndex);
+		//ImGui::SameLine();
+		//ImGui::Text("Bar %d ", mVDAnimation->iBar);
+		if (ImGui::Button("x##bpbx")) { mVDSession->setControlValue("iBeat", 1); }
+		ImGui::SameLine();
  */
-		ui::Text("beat %d ", mVDSession->getIntUniformValueByName("iBeat"));
-		ui::SameLine();
-		ui::Text("beats/bar %d ", mVDSession->getIntUniformValueByName("iBeatsPerBar"));
+		ImGui::Text("beat %d ", mVDSession->getIntUniformValueByName("iBeat"));
+		ImGui::SameLine();
+		ImGui::Text("beats/bar %d ", mVDSession->getIntUniformValueByName("iBeatsPerBar"));
 
-		ui::Text("Time %.2f", mVDSession->getFloatUniformValueByName("iGlobalTime"));
-		ui::SameLine();
-		ui::Text("Tempo Time %.2f", mVDSession->getFloatUniformValueByName("iTempoTime"));
+		ImGui::Text("Time %.2f", mVDSession->getFloatUniformValueByName("iGlobalTime"));
+		ImGui::SameLine();
+		ImGui::Text("Tempo Time %.2f", mVDSession->getFloatUniformValueByName("iTempoTime"));
 
-		ui::Text("Trk %s %.2f", mVDSettings->mTrackName.c_str(), mVDSettings->liveMeter);
-		ui::SameLine();
-		//			ui::Checkbox("Playing", &mVDSettings->mIsPlaying);
-		ui::Text("Tempo %.2f ", mVDSession->getBpm());
+		ImGui::Text("Trk %s %.2f", mVDSettings->mTrackName.c_str(), mVDSettings->liveMeter);
+		ImGui::SameLine();
+		//			ImGui::Checkbox("Playing", &mVDSettings->mIsPlaying);
+		ImGui::Text("Tempo %.2f ", mVDSession->getBpm());
 
-		if (ui::Button("Tap tempo")) { mVDSession->tapTempo(); }
-		// TODO if (ui::Button("Time tempo")) { mVDAnimation->mUseTimeWithTempo = !mVDAnimation->mUseTimeWithTempo; }
+		if (ImGui::Button("Tap tempo")) { mVDSession->tapTempo(); }
+		// TODO if (ImGui::Button("Time tempo")) { mVDAnimation->mUseTimeWithTempo = !mVDAnimation->mUseTimeWithTempo; }
 
-		// TODO ui::SliderFloat("time x", &mVDAnimation->iTimeFactor, 0.0001f, 1.0f, "%.01f");
-		ui::SameLine();
-		ui::PopItemWidth();
+		// TODO ImGui::SliderFloat("time x", &mVDAnimation->iTimeFactor, 0.0001f, 1.0f, "%.01f");
+		ImGui::SameLine();
+		ImGui::PopItemWidth();
 	}
-	ui::End();
+	ImGui::End();
 
 #pragma endregion Tempo	
 

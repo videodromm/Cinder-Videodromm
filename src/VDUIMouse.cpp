@@ -16,33 +16,33 @@ void VDUIMouse::setValue(unsigned int aCtrl, float aValue) {
 	mVDSession->setFloatUniformValueByIndex(aCtrl, aValue);
 }
 void VDUIMouse::Run(const char* title) {
-	ui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
-	ui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 	// Mouse
 #pragma region mouse
 
-	ui::Begin("Mouse");
+	ImGui::Begin("Mouse");
 	{
-		ui::Text("Position: %.1f,%.1f", ui::GetIO().MousePos.x, ui::GetIO().MousePos.y);
-		ui::Text("Clic %d", ui::GetIO().MouseDown[0]);
-		mouseGlobal ^= ui::Button("mouse gbl");
+		ImGui::Text("Position: %.1f,%.1f", ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
+		ImGui::Text("Clic %d", ImGui::GetIO().MouseDown[0]);
+		mouseGlobal ^= ImGui::Button("mouse gbl");
 		if (mouseGlobal)
 		{
-			mVDSettings->mRenderPosXY.x = ui::GetIO().MousePos.x; ui::SameLine();
-			mVDSettings->mRenderPosXY.y = ui::GetIO().MousePos.y;
+			mVDSettings->mRenderPosXY.x = ImGui::GetIO().MousePos.x; ImGui::SameLine();
+			mVDSettings->mRenderPosXY.y = ImGui::GetIO().MousePos.y;
 		}
 		// mouse
 		mouseX = getValue(35);
-		if (ui::SliderFloat("MouseX", &mouseX, 0.0f, mVDSettings->mFboWidth))
+		if (ImGui::SliderFloat("MouseX", &mouseX, 0.0f, mVDSettings->mFboWidth))
 		{
 			setValue(35, mouseX);
 		}
 		mouseY = getValue(36);
-		if (ui::SliderFloat("MouseY", &mouseY, 0.0f, mVDSettings->mFboHeight))
+		if (ImGui::SliderFloat("MouseY", &mouseY, 0.0f, mVDSettings->mFboHeight))
 		{
 			setValue(36, mouseY);
 		}
-		mouseZ ^= ui::Button("mouse click");
+		mouseZ ^= ImGui::Button("mouse click");
 		if (mouseZ)
 		{
 			setValue(37, 1.0f);
@@ -52,6 +52,6 @@ void VDUIMouse::Run(const char* title) {
 			setValue(37, 0.0f);
 		}
 	}
-	ui::End();
+	ImGui::End();
 #pragma endregion mouse
 }
