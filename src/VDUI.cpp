@@ -61,7 +61,7 @@ void VDUI::resize() {
 }
 void VDUI::Run(const char* title, unsigned int fps) {
 	static int currentWindowRow1 = 2;
-	static int currentWindowRow2 = 5;
+	static int currentWindowRow2 = 4;
 
 	ImGuiStyle& style = ImGui::GetStyle();
 
@@ -189,8 +189,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ImGui::RadioButton("Fbos", &currentWindowRow2, 1); ImGui::SameLine();
 		ImGui::RadioButton("Shaders", &currentWindowRow2, 2); ImGui::SameLine();
 		ImGui::RadioButton("Blend", &currentWindowRow2, 3); ImGui::SameLine();
-		ImGui::RadioButton("Console", &currentWindowRow2, 4); ImGui::SameLine();
-		ImGui::RadioButton("Warps", &currentWindowRow2, 5); 
+		ImGui::RadioButton("Warps", &currentWindowRow2, 4); 
 
 #pragma region Info
 		ImGui::TextWrapped("Msg: %s", mVDSettings->mMsg.c_str());
