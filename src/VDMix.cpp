@@ -956,7 +956,8 @@ namespace VideoDromm {
 			//f->setShaderIndex(rtn);
 			f->setFragmentShader(rtn, mShaderList[rtn]->getFragmentString(), mShaderList[rtn]->getName());
 			mFboList.push_back(f);
-			setFboInputTexture(mFboList.size() - 1, math<int>::min(rtn, mTextureList.size() - 1));
+			// 20180322 setFboInputTexture(mFboList.size() - 1, math<int>::min(rtn, mTextureList.size() - 1));
+			setFboInputTexture(mFboList.size() - 1, 0);
 		}
 		return rtn;
 	}
