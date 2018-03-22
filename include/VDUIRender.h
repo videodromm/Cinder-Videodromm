@@ -37,6 +37,7 @@ namespace VideoDromm
 		void							setValue(unsigned int aCtrl, float aValue);
 		void							toggleAuto(unsigned int aCtrl);
 		void							toggleTempo(unsigned int aCtrl);
+		void							toggleSpoutSender();
 		void							resetAutoAnimation(unsigned int aCtrl);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);

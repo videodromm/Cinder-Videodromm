@@ -28,6 +28,9 @@ void VDUIRender::toggleAuto(unsigned int aCtrl) {
 void VDUIRender::toggleTempo(unsigned int aCtrl) {
 	mVDSession->toggleTempo(aCtrl);
 }
+void VDUIRender::toggleSpoutSender() {
+	mVDSettings->mSpoutSender = !mVDSettings->mSpoutSender;
+}
 void VDUIRender::resetAutoAnimation(unsigned int aCtrl) {
 	mVDSession->resetAutoAnimation(aCtrl);
 }
@@ -119,7 +122,8 @@ void VDUIRender::Run(const char* title) {
 		if (ImGui::Button("Create Warp")) {
 			mVDSession->createWarpMix();
 		}
-
+		ImGui::SameLine();
+		if (ImGui::Button("Spout Send")) { toggleSpoutSender(); }
 		// alpha blending
 		/*if (mVDSession->isEnabledAlphaBlending()) {
 			ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.9f, 1.0f, 0.5f));

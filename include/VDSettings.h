@@ -73,6 +73,7 @@ namespace VideoDromm {
 		//vec2						mRenderResoXY;
 		bool						mAutoLayout;
 		bool						mStandalone;
+		bool						mSpoutSender;
 
 		// code editor
 		vec2						mRenderCodeEditorXY;

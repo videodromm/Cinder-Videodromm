@@ -183,6 +183,10 @@ bool VDSettings::save()
 	UseLineIn.setAttribute("value", mUseLineIn);
 	settings.push_back(UseLineIn);
 
+	/* XmlTree SpoutSender("SpoutSender", "");
+	SpoutSender.setAttribute("value", mSpoutSender);
+	settings.push_back(SpoutSender); */
+
 	XmlTree SplitWarpH("SplitWarpH", "");
 	SplitWarpH.setAttribute("value", toString(mSplitWarpH));
 	settings.push_back(SplitWarpH);
@@ -324,6 +328,10 @@ bool VDSettings::restore()
 				XmlTree UseLineIn = settings.getChild("UseLineIn");
 				mUseLineIn = UseLineIn.getAttributeValue<bool>("value");
 			}
+			/* if (settings.hasChild("SpoutSender")) {
+				XmlTree SpoutSender = settings.getChild("SpoutSender");
+				mSpoutSender = SpoutSender.getAttributeValue<bool>("value");
+			} */
 			if (settings.hasChild("SplitWarpH")) {
 				XmlTree SplitWarpH = settings.getChild("SplitWarpH");
 				mSplitWarpH = SplitWarpH.getAttributeValue<bool>("value");
@@ -438,7 +446,7 @@ void VDSettings::reset()
 {
 	// parameters exposed in XML
 	mMIDIOpenAllInputPorts = mAutoLayout = mShowUI = mCursorVisible = true;
-	mRenderThumbs = mStandalone = mSplitWarpH = mSplitWarpV = false;
+	mRenderThumbs = mStandalone = mSplitWarpH = mSplitWarpV = mSpoutSender = false;
 	//mOutputVideoResolution = 1024;
 	mInfo = "";
 	mTrackName = "";
