@@ -33,12 +33,12 @@ void VDUIMouse::Run(const char* title) {
 		}
 		// mouse
 		mouseX = getValue(35);
-		if (ImGui::SliderFloat("MouseX", &mouseX, 0.0f, mVDSettings->mFboWidth))
+		if (ImGui::SliderFloat("MouseX", &mouseX, 0.0f, mVDSettings->mFboWidth, "%.4f", 3.0f))
 		{
 			setValue(35, mouseX);
 		}
 		mouseY = getValue(36);
-		if (ImGui::SliderFloat("MouseY", &mouseY, 0.0f, mVDSettings->mFboHeight))
+		if (ImGui::SliderFloat("MouseY", &mouseY, 0.0f, mVDSettings->mFboHeight, "%.4f", 0.3f))
 		{
 			setValue(36, mouseY);
 		}
