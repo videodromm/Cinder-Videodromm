@@ -515,6 +515,22 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 
 				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) - 0.03f);
 				break;
+case KeyEvent::KEY_u:
+				// mouseX
+				mVDWebsocket->changeFloatValue(35, mVDAnimation->getFloatUniformValueByIndex(35) + 0.05f);
+				break;
+case KeyEvent::KEY_j:
+				// mouseX
+				mVDWebsocket->changeFloatValue(35, mVDAnimation->getFloatUniformValueByIndex(35) - 0.05f);
+				break;
+case KeyEvent::KEY_y:
+				// mouseY
+				mVDWebsocket->changeFloatValue(36, mVDAnimation->getFloatUniformValueByIndex(36) + 0.05f);
+				break;
+case KeyEvent::KEY_h:
+				// mouseY
+				mVDWebsocket->changeFloatValue(36, mVDAnimation->getFloatUniformValueByIndex(36) - 0.05f);
+				break;
 
 			default:
 				handled = false;
