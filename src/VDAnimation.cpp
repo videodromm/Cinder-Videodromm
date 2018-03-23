@@ -82,7 +82,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// ratio
 		createFloatUniform("iRatio", 11, 1.0f, 0.01f, 1.0f);
 		// zoom
-		createFloatUniform("iZoom", 12, 1.0f, -3.0f, 3.0f);
+		createFloatUniform("iZoom", 12, 1.0f, 0.3f, 1.0f);
 		// Audio multfactor 
 		createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 		// exposure
