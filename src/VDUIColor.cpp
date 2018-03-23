@@ -41,7 +41,7 @@ void VDUIColor::Run(const char* title) {
 
 	ImGui::Begin("Color");
 	{
-		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
+		ImGui::PushItemWidth(200.0f);
 		// foreground color
 		color[0] = getValue(1);
 		color[1] = getValue(2);
@@ -55,7 +55,7 @@ void VDUIColor::Run(const char* title) {
 				setValue(i + 1, color[i]);
 			}
 		}
-
+	
 		// background color
 		backcolor[0] = getValue(19);
 		backcolor[1] = getValue(20);
@@ -69,6 +69,8 @@ void VDUIColor::Run(const char* title) {
 			}
 
 		}
+		ImGui::PopItemWidth();
+		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 		// color multipliers
 		// red x
 		ctrl = 5;
@@ -109,15 +111,6 @@ void VDUIColor::Run(const char* title) {
 		{
 			setValue(ctrl, localValues[ctrl]);
 		}
-		// iContour
-		ctrl = 26;
-		if (ImGui::Button("a##contour")) { toggleAuto(ctrl); }
-		ImGui::SameLine();
-		if (ImGui::Button("t##contour")) { toggleTempo(ctrl); }
-		ImGui::SameLine();
-		if (ImGui::Button("x##contour")) { resetAutoAnimation(ctrl); }
-		ImGui::SameLine();
-		localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 
 		ImGui::PopItemWidth();
 	}
