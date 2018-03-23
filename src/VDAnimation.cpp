@@ -137,6 +137,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iMouseY", 36, 240.0f, 0.0f, 480.0f);
 		// iMouseZ  
 		createFloatUniform("iMouseZ", 37, 0.0f, 0.0f, 1.0f);
+		// vignette amount
+		createFloatUniform("iVAmount", 38, 0.91f, 0.0f, 1.0f);
+		// vignette falloff
+		createFloatUniform("iVFallOff", 39, 0.31f, 0.0f, 1.0f);
 		// int
 		// blend mode 
 		createIntUniform("iBlendmode", 50, 0);

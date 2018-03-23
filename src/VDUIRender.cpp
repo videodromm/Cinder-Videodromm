@@ -31,6 +31,12 @@ void VDUIRender::toggleTempo(unsigned int aCtrl) {
 void VDUIRender::toggleSpoutSender() {
 	mVDSettings->mSpoutSender = !mVDSettings->mSpoutSender;
 }
+bool VDUIRender::getBoolValue(unsigned int aCtrl) {
+	return mVDSession->getBoolUniformValueByIndex(aCtrl);
+}
+void VDUIRender::toggleValue(unsigned int aCtrl) {
+	mVDSession->toggleValue(aCtrl);
+}
 void VDUIRender::resetAutoAnimation(unsigned int aCtrl) {
 	mVDSession->resetAutoAnimation(aCtrl);
 }
@@ -46,6 +52,7 @@ void VDUIRender::Run(const char* title) {
 
 	ImGui::Begin("Render");
 	{
+		int hue = 0;
 		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 		// iResolution
 		ctrl = 29;
@@ -60,7 +67,30 @@ void VDUIRender::Run(const char* title) {
 		{
 			setValue(ctrl, (float)iResolutionY);
 		}
-		
+
+		// iVignette
+		ctrl = 47;
+		(getBoolValue(ctrl)) ? ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.0f, 0.1f, 0.1f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
+		if (ImGui::Button("vignette")) {
+			toggleValue(ctrl);
+		}
+		ImGui::PopStyleColor(3);
+		hue++;
+		ctrl = 38;
+		iVAmount = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("Amount", &iVAmount, 0.001f, 0.0f, 1.0f))
+		{
+			setValue(ctrl, iVAmount);
+		}
+		ctrl = 39;
+		iVFallOff = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("FallOff", &iVFallOff, 0.001f, 0.0f, 0.99f))
+		{
+			setValue(ctrl, iVFallOff);
+		}
+
 		// iContour
 		ctrl = 26;
 		if (ImGui::Button("a##contour")) { toggleAuto(ctrl); }

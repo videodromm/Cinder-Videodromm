@@ -38,13 +38,15 @@ namespace VideoDromm
 		void							toggleAuto(unsigned int aCtrl);
 		void							toggleTempo(unsigned int aCtrl);
 		void							toggleSpoutSender();
+		bool							getBoolValue(unsigned int aCtrl);
+		void							toggleValue(unsigned int aCtrl);
 		void							resetAutoAnimation(unsigned int aCtrl);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
 
 		// imgui
 		int								ctrl;
-		float							contour;
+		float							contour, iVAmount, iVFallOff;
 		int								iResolutionX, iResolutionY;
 		// contour
 		float							minContour;

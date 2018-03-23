@@ -652,6 +652,8 @@ void VDSettings::reset()
 		"uniform int       iTransition;\n"
 		"uniform int       iRepeat;\n"
 		"uniform int       iVignette;\n"
+		"uniform float     iVAmount;\n"
+		"uniform float     iVFallOff;\n"
 		"uniform int       iInvert;\n"
 		"uniform float     iRatio;\n"
 		"uniform float     iZoom;\n"
@@ -1163,7 +1165,7 @@ void VDSettings::reset()
 		"		c += 1. * cos(iGlobalTime + uv.y);\n"
 		"	}\n"
 
-		"	//vignetting\n"
+		"	// vignette \n"
 		"	c *= sin(uv.x*3.15);\n"
 		"	c *= sin(uv.y*3.);\n"
 		"	c *= .9;\n"
@@ -1199,7 +1201,15 @@ void VDSettings::reset()
 		"	if (uv.x < iContour)\n"
 		"		col = iBackgroundColor;\n"
 		"}\n"
+
+		"// vignette \n"
+		"if (iVignette> 0.01) {\n"
+		"	float dist = distance(uv, vec2(0.5));\n"
+		"	col *= smoothstep(0.8, iVFallOff * 0.8, dist * (iVAmount + iVFallOff));\n"
+		"}\n"
+
 		"oColor = iAlpha * vec4(col, 1.0);\n"
 		"}\n";
 	resetSomeParams();
+
 }
