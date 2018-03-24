@@ -211,7 +211,7 @@ void VDUIAnimation::Run(const char* title) {
 
 			// steps
 			ctrl = 10;
-			if (ImGui::Button("x##steps")) { localValues[ctrl] = 16.0f; }
+			if (ImGui::Button("x##steps")) { localValues[ctrl] = 16.0f; setValue(ctrl, localValues[ctrl]);}
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 			if (ImGui::SliderFloat("steps", &localValues[ctrl], 1.0f, 128.0f))
@@ -220,7 +220,7 @@ void VDUIAnimation::Run(const char* title) {
 			}
 			// pixelate
 			ctrl = 15;
-			if (ImGui::Button("x##pixelate")) { localValues[ctrl] = 1.0f; }
+			if (ImGui::Button("x##pixelate")) { localValues[ctrl] = 1.0f; setValue(ctrl, localValues[ctrl]);}
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 			if (ImGui::SliderFloat("pixelate", &localValues[ctrl], 0.01f, 1.0f))
@@ -229,7 +229,7 @@ void VDUIAnimation::Run(const char* title) {
 			}
 			// trixels
 			ctrl = 16;
-			if (ImGui::Button("x##trixels")) { localValues[ctrl] = 0.0f; }
+			if (ImGui::Button("x##trixels")) { localValues[ctrl] = 0.0f; setValue(ctrl, localValues[ctrl]);}
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 			if (ImGui::SliderFloat("trixels", &localValues[ctrl], 0.00f, 1.0f))
