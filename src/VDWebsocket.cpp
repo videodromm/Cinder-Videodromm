@@ -456,7 +456,7 @@ void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool for
 		stringstream sParams;
 		// update color vec3
 		if (aControl > 0 && aControl < 4) {
-			mVDAnimation->setVec3UniformValueByIndex(61, vec3(mVDAnimation->getFloatUniformValueByIndex(1), mVDAnimation->getFloatUniformValueByIndex(2), mVDAnimation->getFloatUniformValueByIndex(3)));
+			mVDAnimation->setVec3UniformValueByIndex(61, vec3(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB)));
 			colorWrite(); //lights4events
 		}
 		if (aControl == mVDSettings->IRESX || aControl == mVDSettings->IRESY) {
@@ -493,9 +493,9 @@ void VDWebsocket::colorWrite()
 
 	// lights4events
 	char col[8];
-	int r = (int)(mVDAnimation->getFloatUniformValueByIndex(1) * 255);
-	int g = (int)(mVDAnimation->getFloatUniformValueByIndex(2) * 255);
-	int b = (int)(mVDAnimation->getFloatUniformValueByIndex(3) * 255);
+	int r = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) * 255);
+	int g = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) * 255);
+	int b = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) * 255);
 	sprintf(col, "#%02X%02X%02X", r, g, b);
 	wsWrite(col);
 

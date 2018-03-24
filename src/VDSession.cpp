@@ -145,10 +145,10 @@ void VDSession::update(unsigned int aClassIndex) {
 		}
 		if (mVDSettings->iGreyScale)
 		{
-			mVDWebsocket->changeFloatValue(1, mVDAnimation->getFloatUniformValueByIndex(3));
-			mVDWebsocket->changeFloatValue(2, mVDAnimation->getFloatUniformValueByIndex(3));
-			mVDWebsocket->changeFloatValue(5, mVDAnimation->getFloatUniformValueByIndex(7));
-			mVDWebsocket->changeFloatValue(6, mVDAnimation->getFloatUniformValueByIndex(7));
+			mVDWebsocket->changeFloatValue(mVDSettings->IFR, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB));
+			mVDWebsocket->changeFloatValue(mVDSettings->IFG, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB));
+			mVDWebsocket->changeFloatValue(mVDSettings->IBR, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IBB));
+			mVDWebsocket->changeFloatValue(mVDSettings->IBG, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IBB));
 		}
 
 		// fps calculated in main app
@@ -443,34 +443,34 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				mVDWebsocket->changeFloatValue(16, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
 				break;
 			case KeyEvent::KEY_r:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(1) + 0.1f;
+				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) + 0.1f;
 				if (newValue > 1.0f) newValue = 0.0f;
-				mVDWebsocket->changeFloatValue(1, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFR, newValue);
 				break;
 			case KeyEvent::KEY_g:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(2) + 0.1f;
+				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) + 0.1f;
 				if (newValue > 1.0f) newValue = 0.0f;
-				mVDWebsocket->changeFloatValue(2, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFG, newValue);
 				break;
 			case KeyEvent::KEY_b:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(3) + 0.1f;
+				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) + 0.1f;
 				if (newValue > 1.0f) newValue = 0.0f;
-				mVDWebsocket->changeFloatValue(3, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFB, newValue);
 				break;
 			case KeyEvent::KEY_e:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(1) - 0.1f;
+				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) - 0.1f;
 				if (newValue < 0.0f) newValue = 1.0;
-				mVDWebsocket->changeFloatValue(1, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFR, newValue);
 				break;
 			case KeyEvent::KEY_f:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(2) - 0.1f;
+				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) - 0.1f;
 				if (newValue < 0.0f) newValue = 1.0;
-				mVDWebsocket->changeFloatValue(2, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFG, newValue);
 				break;
 			case KeyEvent::KEY_v:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(3) - 0.1f;
+				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) - 0.1f;
 				if (newValue < 0.0f) newValue = 1.0;
-				mVDWebsocket->changeFloatValue(3, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFB, newValue);
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic

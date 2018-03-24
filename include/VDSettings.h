@@ -23,6 +23,13 @@ namespace VideoDromm {
 
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
+		static const int			IFR = 1;
+		static const int			IFG = 2;
+		static const int			IFB = 3;
+		static const int			IFA = 4;
+		static const int			IBR = 19;
+		static const int			IBG = 20;
+		static const int			IBB = 21;
 		static const int			IFPS = 25;
 		static const int			IRESX = 29;
 		static const int			IRESY = 30;

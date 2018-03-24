@@ -43,29 +43,29 @@ void VDUIColor::Run(const char* title) {
 	{
 		ImGui::PushItemWidth(200.0f);
 		// foreground color
-		color[0] = getValue(1);
-		color[1] = getValue(2);
-		color[2] = getValue(3);
-		color[3] = getValue(4);
+		color[0] = getValue(mVDSettings->IFR);
+		color[1] = getValue(mVDSettings->IFG);
+		color[2] = getValue(mVDSettings->IFB);
+		color[3] = getValue(mVDSettings->IFA);
 		ImGui::ColorEdit4("f", color);
 		for (int i = 0; i < 4; i++)
 		{
-			if (getValue(i + 1) != color[i])
+			if (getValue(i + mVDSettings->IFR) != color[i])
 			{
-				setValue(i + 1, color[i]);
+				setValue(i + mVDSettings->IFR, color[i]);
 			}
 		}
 	
 		// background color
-		backcolor[0] = getValue(19);
-		backcolor[1] = getValue(20);
-		backcolor[2] = getValue(21);
+		backcolor[0] = getValue(mVDSettings->IBR);
+		backcolor[1] = getValue(mVDSettings->IBG);
+		backcolor[2] = getValue(mVDSettings->IBB);
 		ImGui::ColorEdit3("g", backcolor);
 		for (int i = 0; i < 3; i++)
 		{
-			if (getValue(i + 19) != backcolor[i])
+			if (getValue(i + mVDSettings->IBR) != backcolor[i])
 			{
-				setValue(i + 19, backcolor[i]);
+				setValue(i + mVDSettings->IBR, backcolor[i]);
 			}
 
 		}

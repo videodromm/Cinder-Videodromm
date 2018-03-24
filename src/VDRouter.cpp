@@ -599,10 +599,10 @@ void VDRouter::updateAndSendOSCFloatMessage(string controlType, int iarg0, float
 void VDRouter::colorWrite()
 {
 	/*if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
-		sendOSCColorMessage("/fr", mVDAnimation->getFloatUniformValueByIndex(1));
-		sendOSCColorMessage("/fg", mVDAnimation->getFloatUniformValueByIndex(2));
-		sendOSCColorMessage("/fb", mVDAnimation->getFloatUniformValueByIndex(3));
-		sendOSCColorMessage("/fa", mVDAnimation->getFloatUniformValueByIndex(4));
+		sendOSCColorMessage("/fr", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR));
+		sendOSCColorMessage("/fg", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG));
+		sendOSCColorMessage("/fb", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB));
+		sendOSCColorMessage("/fa", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFA));
 	}*/
 #if defined( CINDER_MSW )
 	// lights4events

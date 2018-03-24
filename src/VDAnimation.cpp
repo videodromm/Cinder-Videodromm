@@ -57,13 +57,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iGlobalTime", 0, 0.0f);
 		// sliders
 		// red
-		createFloatUniform("iFR", 1, 1.0f);
+		createFloatUniform("iFR", mVDSettings->IFR, 1.0f);
 		// green
-		createFloatUniform("iFG", 2, 0.3f);
+		createFloatUniform("iFG", mVDSettings->IFG, 0.3f);
 		// blue
-		createFloatUniform("iFB", 3, 0.0f);
+		createFloatUniform("iFB", mVDSettings->IFB, 0.0f);
 		// Alpha 
-		createFloatUniform("iAlpha", 4, 1.0f);
+		createFloatUniform("iAlpha", mVDSettings->IFA, 1.0f);
 		// red multiplier 
 		createFloatUniform("iRedMultiplier", 5, 1.0f, 0.0f, 3.0f);
 		// green multiplier 
@@ -97,11 +97,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iCrossfade", 18, 1.0f);
 		// akai faders, from 19 to 26
 		// background red
-		createFloatUniform("iBR", 19, 0.1f);
+		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);
 		// background green
-		createFloatUniform("iBG", 20, 0.5f);
+		createFloatUniform("iBG", mVDSettings->IBG, 0.5f);
 		// background blue
-		createFloatUniform("iBB", 21, 0.1f);
+		createFloatUniform("iBB", mVDSettings->IBB, 0.1f);
 
 		// top row 21 to 28
 		// Speed 
@@ -688,9 +688,9 @@ void VDAnimation::update() {
 		}
 
 		// foreground color vec3 update
-		shaderUniforms["iColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(1)].floatValue, shaderUniforms[getUniformNameForIndex(2)].floatValue, shaderUniforms[getUniformNameForIndex(3)].floatValue);
+		shaderUniforms["iColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(mVDSettings->IFR)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IFG)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IFB)].floatValue);
 		// background color vec3 update
-		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(19)].floatValue, shaderUniforms[getUniformNameForIndex(20)].floatValue, shaderUniforms[getUniformNameForIndex(21)].floatValue);
+		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(mVDSettings->IBR)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IBG)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IBB)].floatValue);
 		// mouse vec4 update
 		shaderUniforms["iMouse"].vec4Value = vec4(shaderUniforms[getUniformNameForIndex(35)].floatValue, shaderUniforms[getUniformNameForIndex(36)].floatValue, shaderUniforms[getUniformNameForIndex(37)].floatValue, 0.0f);
 		// TODO migrate:
