@@ -82,7 +82,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// ratio
 		createFloatUniform("iRatio", 11, 1.0f, 0.01f, 1.0f);
 		// zoom
-		createFloatUniform("iZoom", 12, 1.0f, 0.3f, 1.0f);
+		createFloatUniform("iZoom", 12, 1.0f, 0.95f, 1.0f);
 		// Audio multfactor 
 		createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 		// exposure
@@ -162,17 +162,17 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createVec4Uniform("iDate", 71, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
 
 		// boolean
-		// invert
-		createBoolUniform("iInvert", 48);
-		createBoolUniform("iFlipH", 81);
-		createBoolUniform("iFlipV", 82);
-		createBoolUniform("iXorY", 83);
 		// glitch
-		createBoolUniform("iGlitch", 45);
+		createBoolUniform("iGlitch", 81); // was 45
 		// toggle
-		createBoolUniform("iToggle", 46);
+		createBoolUniform("iToggle", 83); // was 46
 		// vignette
-		createBoolUniform("iVignette", 47);
+		createBoolUniform("iVignette", 84); // was 47
+		// invert
+		createBoolUniform("iInvert", 86); // was 48
+		createBoolUniform("iXorY", 87); // was 83
+		createBoolUniform("iFlipH", 90); // was 81
+		createBoolUniform("iFlipV", 92); // was 82
 	}
 	// textures
 	for (size_t i = 0; i < 8; i++)
@@ -700,7 +700,7 @@ void VDAnimation::update() {
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{
-			setBoolUniformValueByIndex(48, (modulo < 0.1) ? 1.0 : 0.0);
+			setBoolUniformValueByIndex(86, (modulo < 0.1) ? 1.0 : 0.0);
 		}
 
 		if (mVDSettings->tEyePointZ)

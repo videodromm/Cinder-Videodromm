@@ -482,15 +482,15 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_t:
 				// glitch
-				mVDWebsocket->changeBoolValue(45, true);
+				mVDWebsocket->changeBoolValue(81, true);
 				break;
 			case KeyEvent::KEY_i:
 				// invert
-				mVDWebsocket->changeBoolValue(48, true);
+				mVDWebsocket->changeBoolValue(86, true);
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDWebsocket->toggleValue(46);
+				mVDWebsocket->toggleValue(83);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
@@ -551,7 +551,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 			switch (event.getCode()) {
 			case KeyEvent::KEY_g:
 				// glitch
-				mVDWebsocket->changeBoolValue(45, false);
+				mVDWebsocket->changeBoolValue(81, false);
 				break;
 			case KeyEvent::KEY_t:
 				// trixels
@@ -559,7 +559,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				break;
 			case KeyEvent::KEY_i:
 				// invert
-				mVDWebsocket->changeBoolValue(48, false);
+				mVDWebsocket->changeBoolValue(86, false);
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic
@@ -571,7 +571,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDWebsocket->changeBoolValue(46, false);
+				mVDWebsocket->changeBoolValue(83, false);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom

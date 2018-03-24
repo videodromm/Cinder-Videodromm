@@ -168,12 +168,12 @@ void VDRouter::setupOSCReceiver() {
 		if (handsHeadHeight > 0.3)
 		{
 			// glitch
-			mVDAnimation->setFloatUniformValueByIndex(45, 1.0f);
+			mVDAnimation->setFloatUniformValueByIndex(, 1.0f);
 		}
 		else
 		{
 			// glitch
-			mVDAnimation->setFloatUniformValueByIndex(45, 0.0f);
+			mVDAnimation->setFloatUniformValueByIndex(, 0.0f);
 		}
 		// background red
 		mVDAnimation->setFloatUniformValueByIndex(5, handsHeadHeight*3.0);
@@ -293,14 +293,14 @@ void VDRouter::midiSetup() {
 	else {
 		ss << "No MIDI Out Ports found!!!!" << std::endl;
 	}
-	midiControlType = "none";
+	// was for OSC midiControlType = "none";
 	midiControl = midiPitch = midiVelocity = midiNormalizedValue = midiValue = midiChannel = 0;
 }
 
 void VDRouter::openMidiInPort(int i) {
 
 	// HACK Push2 has 2 midi ports, we keep the internal one not useable 
-	if (mMidiIn0.getPortName(i) != "Ableton Push 2 1") {
+	// Push2 sold if (mMidiIn0.getPortName(i) != "Ableton Push 2 1") {
 
 		stringstream ss;
 		if (i < mMidiIn0.getNumPorts()) {
@@ -321,7 +321,7 @@ void VDRouter::openMidiInPort(int i) {
 		ss << "Opening MIDI in port " << i << " " << mMidiInputs[i].portName << std::endl;
 		mVDSettings->mMsg = ss.str();
 		mVDSettings->mNewMsg = true;
-	}
+	// }
 
 }
 void VDRouter::closeMidiInPort(int i) {
@@ -421,7 +421,7 @@ void VDRouter::midiListener(midi::Message msg) {
 	switch (msg.status)
 	{
 	case MIDI_CONTROL_CHANGE:
-		midiControlType = "/cc";
+		// was for OSC midiControlType = "/cc";
 		midiControl = msg.control;
 		midiValue = msg.value;
 		midiNormalizedValue = lmap<float>(midiValue, 0.0, 127.0, 0.0, 1.0);
@@ -445,26 +445,33 @@ void VDRouter::midiListener(midi::Message msg) {
 			//}
 		}
 		//mWebSockets->write("{\"params\" :[{" + controlType);
+		ss << "MIDI cc Chn: " << midiChannel << " CC: " << midiControl << " Val: " << midiValue << " NVal: " << midiNormalizedValue << std::endl;
+		CI_LOG_V("Midi: " + ss.str());
 		break;
 	case MIDI_NOTE_ON:
-		midiControlType = "/on";
+		// only used for akai midimix
+		// was for OSC midiControlType = "/on";
 		midiPitch = msg.pitch;
-		midiVelocity = msg.velocity;
-		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
-		// quick hack!
-		mVDAnimation->setFloatUniformValueByIndex(14, 1.0f + midiNormalizedValue);
+		//midiVelocity = msg.velocity;
+		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
+		mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, true);
+		ss << "MIDI noteon Chn: " << midiChannel << " Pitch: " << midiPitch << std::endl;
+		CI_LOG_V("Midi: " + ss.str());
 		break;
 	case MIDI_NOTE_OFF:
-		midiControlType = "/off";
+		// only used for akai midimix
+		// was for OSC midiControlType = "/off";
 		midiPitch = msg.pitch;
-		midiVelocity = msg.velocity;
-		midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
+		//midiVelocity = msg.velocity;
+		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
+		mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, false);
+		ss << "MIDI noteoff Chn: " << midiChannel << " Pitch: " << midiPitch << std::endl;
+		CI_LOG_V("Midi: " + ss.str());
 		break;
 	default:
+		CI_LOG_V("Midi unknown");
 		break;
 	}
-	ss << "MIDI Chn: " << midiChannel << " type: " << midiControlType << " CC: " << midiControl << " Pitch: " << midiPitch << " Vel: " << midiVelocity << " Val: " << midiValue << " NVal: " << midiNormalizedValue << std::endl;
-	CI_LOG_V("Midi: " + ss.str());
 
 	mVDSettings->mMidiMsg = ss.str();
 }

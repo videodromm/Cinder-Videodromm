@@ -117,7 +117,7 @@ namespace VideoDromm
 		midi::MidiOut				mMidiOut2;
 		midi::MidiOut				mMidiOut3;
 		vector<midiOutput>			mMidiOutputs;
-		string						midiControlType;
+		// was for OSC string						midiControlType;
 		int							midiControl;
 		int							midiPitch;
 		int							midiVelocity;
