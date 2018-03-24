@@ -55,13 +55,13 @@ void VDUIRender::Run(const char* title) {
 		int hue = 0;
 		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 		// iResolution
-		ctrl = 29;
+		ctrl = mVDSettings->IRESX;
 		//iResolutionX = getValueByName("iResolutionX");
 		if (ImGui::DragInt("iResolutionX", &iResolutionX, 1.0f, (int)getMinUniformValueByIndex(ctrl), (int)getMaxUniformValueByIndex(ctrl)))
 		{
 			setValue(ctrl, (float)iResolutionX);
 		}
-		ctrl = 30;
+		ctrl = mVDSettings->IRESY;
 		//iResolutionY = getValueByName("iResolutionY");
 		if (ImGui::DragInt("iResolutionY", &iResolutionY, 1.0f, (int)getMinUniformValueByIndex(ctrl), (int)getMaxUniformValueByIndex(ctrl)))
 		{

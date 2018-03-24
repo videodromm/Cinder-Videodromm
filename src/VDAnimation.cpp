@@ -95,13 +95,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iChromatic", 17, 0.0f, 0.000000001f);
 		// iCrossfade
 		createFloatUniform("iCrossfade", 18, 1.0f);
+		// akai faders, from 19 to 26
 		// background red
 		createFloatUniform("iBR", 19, 0.1f);
 		// background green
 		createFloatUniform("iBG", 20, 0.5f);
 		// background blue
 		createFloatUniform("iBB", 21, 0.1f);
-
 
 		// top row 21 to 28
 		// Speed 
@@ -119,9 +119,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// slitscan (or other) Param2 
 		createFloatUniform("iParam2", 28, 1.0f, 0.01f, 100.0f);
 		// iResolutionX (should be fbowidth) 
-		createFloatUniform("iResolutionX", 29, mVDSettings->mFboWidth, 0.01f, 1280.0f);
+		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f);
 		// iResolutionY (should be fboheight)  
-		createFloatUniform("iResolutionY", 30, mVDSettings->mFboHeight, 0.01f, 800.0f);
+		createFloatUniform("iResolutionY", mVDSettings->IRESY, mVDSettings->mFboHeight, 0.01f, 800.0f);
 		// nanokontrol middle row 31 to 38, bottom row 41 to 88
 		// iFreq0  
 		createFloatUniform("iFreq0", 31, 0.0f, 0.01f, 256.0f);
@@ -181,12 +181,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	}
 	load();
 	loadAnimation();
-	CI_LOG_V("VDAnimation, iResX:" + toString(getFloatUniformValueByIndex(29)));
-	CI_LOG_V("VDAnimation, iResY:" + toString(getFloatUniformValueByIndex(30)));
 
-	setVec3UniformValueByIndex(60, vec3(getFloatUniformValueByIndex(29), getFloatUniformValueByIndex(30), 1.0));
-	CI_LOG_V("VDAnimation, iResolution:" + toString(shaderUniforms[getUniformNameForIndex(60)].vec3Value));
-
+	setVec3UniformValueByIndex(60, vec3(getFloatUniformValueByIndex(mVDSettings->IRESX), getFloatUniformValueByIndex(mVDSettings->IRESY), 1.0));
 }
 void VDAnimation::loadUniforms(const ci::DataSourceRef &source) {
 

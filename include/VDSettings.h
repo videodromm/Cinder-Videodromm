@@ -24,6 +24,8 @@ namespace VideoDromm {
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
 		static const int			IFPS = 25;
+		static const int			IRESX = 29;
+		static const int			IRESY = 30;
 		// texture modes
 		static const int			TEXTUREMODEMIX = 0;				// mix two shaders
 		static const int			TEXTUREMODEAUDIO = 1;			// audio spectrum
