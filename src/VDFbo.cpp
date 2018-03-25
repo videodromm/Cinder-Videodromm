@@ -124,6 +124,9 @@ namespace VideoDromm {
 		if (aTextureIndex > mTextureList.size() - 1) aTextureIndex = mTextureList.size() - 1;
 		mInputTextureIndex = aTextureIndex;
 	}
+	void VDFbo::setInputTextureIndex(unsigned int aTextureIndex) {
+		mInputTextureIndex = aTextureIndex;
+	}
 	gl::GlslProgRef VDFbo::getShader() {
 		auto &uniforms = mFboTextureShader->getActiveUniforms();
 		for (const auto &uniform : uniforms) {

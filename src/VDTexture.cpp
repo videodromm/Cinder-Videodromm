@@ -683,7 +683,7 @@ namespace VideoDromm {
 			mMovie = qtime::MovieGl::create(aPath);
 #endif
 			if (mName.length() > 0) mName = aPath;
-			mLoopVideo = (mMovie->getDuration() < 30.0f);
+			mLoopVideo = true;// Mars aux musees (mMovie->getDuration() < 30.0f);
 			mMovie->setLoop(mLoopVideo);
 			mMovie->play();
 			mWidth = mMovie->getWidth();
