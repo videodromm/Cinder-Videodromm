@@ -241,8 +241,18 @@ namespace VideoDromm {
 		// TODO check mTextureList size for bounds
 		if (mInputTextureIndex > mTextureList.size() - 1) mInputTextureIndex = 0;
 		mTextureList[mInputTextureIndex]->getTexture()->bind(0);
-
+		if (mTextureList[mInputTextureIndex]->getType() == SHARED) {
+			// TODO investigate SPout
+			CI_LOG_V("SPout" + mInputTextureIndex);
+		}
 		gl::ScopedGlslProg glslScope(mFboTextureShader);
+		mFboTextureShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
+		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
+		mFboTextureShader->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
+		mFboTextureShader->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
+		mFboTextureShader->uniform("iChannel0", 0);
+		mFboTextureShader->uniform("iChannel1", 1);
+
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 
 		mRenderedTexture = mFbo->getColorTexture();

@@ -289,7 +289,10 @@ namespace VideoDromm {
 				int i = 0;
 				for (auto &warp : mWarps) {
 					//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
-					if (warp->isActive()) warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
+					// if (warp->isActive()) warp->draw(getMixTexture(i), Area(-30, 44, 640, 480));
+					// before 20180326: if (warp->isActive()) warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
+					// 20180326: 
+					if (warp->isActive()) warp->draw(getMixTexture(i));
 					i++;
 				}
 			}
