@@ -141,6 +141,7 @@ void VDSession::update(unsigned int aClassIndex) {
 			else {
 				setFragmentShaderString(1, mVDWebsocket->getReceivedShader());
 				mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IXFADE, 0.0f);
+				// TODO timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, 0.0f, 2.0f); };
 			}
 		}
 		if (mVDSettings->iGreyScale)

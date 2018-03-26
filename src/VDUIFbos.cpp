@@ -19,7 +19,7 @@ void VDUIFbos::Run(const char* title) {
 		{
 			ImGui::PushID(f);
 			ImGui::Image((void*)mVDSession->getFboRenderedTexture(f)->getId(), ivec2(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight));
-			if (ImGui::IsItemHovered()) mVDSession->getFboTexture(f);
+			// causes loss of resolution if (ImGui::IsItemHovered()) mVDSession->getFboTexture(f);
 			for (unsigned int t = 0; t < mVDSession->getInputTexturesCount(); t++) {
 				if (t > 0 && (t % 6 != 0)) ImGui::SameLine();
 				if (mVDSession->getFboInputTextureIndex(f) == t) {
