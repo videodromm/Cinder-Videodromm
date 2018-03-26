@@ -95,19 +95,19 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iChromatic", mVDSettings->ICHROMATIC, 0.0f, 0.000000001f);
 		// iCrossfade
 		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f);
-		// akai faders, from 19 to 26
-		// background red
-		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);
-		// background green
-		createFloatUniform("iBG", mVDSettings->IBG, 0.5f);
-		// background blue
-		createFloatUniform("iBB", mVDSettings->IBB, 0.1f);
+		// akai faders,  19 ,23,27, 31 49
+		// weight mix fbo texture 0
+		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
+		// weight texture 1
+		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.3f); // 23
+		// weight texture 2
+		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.5f); // 27
+		// weight texture 3
+		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.1f); // 31
 
 		// top row 21 to 28
 		// Speed 
 		createFloatUniform("iSpeed", 22, 12.0f, 0.01f, 12.0f);
-		// background alpha
-		createFloatUniform("iBA", 23, 0.2f);
 		// tempo time
 		createFloatUniform("iTempoTime", 24, 0.1f);
 		// fps 25
@@ -115,9 +115,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// contour
 		createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
 		// slitscan (or other) Param1 
-		createFloatUniform("iParam1", 27, 1.0f, 0.01f, 100.0f);
+		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f);
 		// slitscan (or other) Param2 
-		createFloatUniform("iParam2", 28, 1.0f, 0.01f, 100.0f);
+		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f);
 		// iResolutionX (should be fbowidth) 
 		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f);
 		// iResolutionY (should be fboheight)  
@@ -141,6 +141,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iVAmount", 38, 0.91f, 0.0f, 1.0f);
 		// vignette falloff
 		createFloatUniform("iVFallOff", 39, 0.31f, 0.0f, 1.0f);
+		// background red
+		createFloatUniform("iBR", mVDSettings->IBR, 0.1f); // 40 was 19
+														   // background green
+		createFloatUniform("iBG", mVDSettings->IBG, 0.5f); // 41 was 20
+														   // background blue
+		createFloatUniform("iBB", mVDSettings->IBB, 0.1f); // 42 was 21
+
 		// int
 		// blend mode 
 		createIntUniform("iBlendmode", 50, 0);

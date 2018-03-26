@@ -195,16 +195,22 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// param1
-			if (ImGui::Button("x##param1")) { mVDSettings->iParam1 = 1.0f; }
+			ctrl = mVDSettings->IPARAM1;
+			if (ImGui::Button("x##param1")) { resetAutoAnimation(ctrl); }
 			ImGui::SameLine();
-			if (ImGui::SliderFloat("param1/min/max", &mVDSettings->iParam1, 0.01f, 100.0f))
+			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
+			if (ImGui::SliderFloat("param1/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
+				setValue(ctrl, localValues[ctrl]);
 			}
 			// param2
-			if (ImGui::Button("x##param2")) { mVDSettings->iParam2 = 1.0f; }
+			ctrl = mVDSettings->IPARAM2;
+			if (ImGui::Button("x##param2")) { resetAutoAnimation(ctrl); }
 			ImGui::SameLine();
-			if (ImGui::SliderFloat("param2/min/max", &mVDSettings->iParam2, 0.01f, 100.0f))
+			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
+			if (ImGui::SliderFloat("param2/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
+				setValue(ctrl, localValues[ctrl]);
 			}
 			sprintf(buf, "XorY");
 			mVDSettings->iXorY ^= ImGui::Button(buf);

@@ -408,7 +408,7 @@ void VDSettings::resetSomeParams() {
 	// unicorns
 	//iBadTv = 0.0f;
 	iAlpha = 1.0f;
-	iParam1 = iParam2 = 1.0f;
+
 	iSpeedMultiplier = 1.0f;
 
 	iGreyScale = false;
@@ -515,26 +515,7 @@ void VDSettings::reset()
 	selectedChannel = 0;
 	// fbo indexes for warp (should be constants)
 	mFboResolution = 2048;
-	/*mMixFboIndex = 0;
-	mLeftFboIndex = 1;
-	mRightFboIndex = 2;
-	mWarp1FboIndex = 3;
-	mWarp2FboIndex = 4;
-	mCurrentPreviewFboIndex = 5;
-	mABPFboIndex = 6;
-	mLiveFboIndex = 7;
-	mSphereFboIndex = 8;
-	mMeshFboIndex = 9;
-	mAudioFboIndex = 10;
-	mVertexSphereFboIndex = 11;
 
-	mPreviewFragIndex = 0;
-	mPreviousFragIndex = 1;
-	mLeftFragIndex = 0;
-	mRightFragIndex = 1;
-	mWarp1FragIndex = 2;
-	mWarp2FragIndex = 3;
-	mLiveFragIndex = 7;*/
 	mWarpCount = 3;
 	FPSColor = ColorA(0.0f, 1.0f, 0.0f, 1.0f);
 	ColorGreen = ColorA(0.0f, 1.0f, 0.0f, 1.0f);
@@ -638,6 +619,13 @@ void VDSettings::reset()
 		"uniform vec3 iResolution;\n"
 		"uniform sampler2D iChannel0;\n"
 		"uniform sampler2D iChannel1;\n"
+		"uniform sampler2D iChannel2;\n"
+		"uniform sampler2D iChannel3;\n"
+		"uniform sampler2D iChannel4;\n"
+		"uniform float     iWeight0;\n"
+		"uniform float     iWeight1;\n"
+		"uniform float     iWeight2;\n"
+		"uniform float     iWeight3;\n"
 		"uniform vec4      iMouse;\n"
 		"uniform float     iGlobalTime;\n"
 		"uniform vec3      iBackgroundColor;\n"
@@ -1151,6 +1139,7 @@ void VDSettings::reset()
 		"}\n"
 		"float BadTVResoRand(in float a, in float b) { return fract((cos(dot(vec2(a, b), vec2(12.9898, 78.233))) * 43758.5453)); }\n"
 		"out vec4 oColor;\n"
+
 		"void main(void)\n"
 		"{\n"
 		"vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
@@ -1172,19 +1161,24 @@ void VDSettings::reset()
 		"vec3 col;\n"
 		"if (iCrossfade > 0.99)\n"
 		"{\n"
-		"	col = shaderRight(uv - cZ);\n"
+		"	col = shaderRight(uv - cZ) * iWeight0;\n"
 		"}\n"
 		"else\n"
 		"{\n"
 		"	if (iCrossfade < 0.01)\n"
 		"	{\n"
-		"		col = shaderLeft(uv - cZ);\n"
+		"		col = shaderLeft(uv - cZ) * iWeight0;\n"
 		"	}\n"
 		"	else\n"
 		"	{\n"
-		"		col = mainFunction(uv - cZ);\n"
+		"		col = mainFunction(uv - cZ) * iWeight0;\n"
 		"	}\n"
 		"}\n"
+
+		"	col += texture(iChannel2, uv).xyz * iWeight1;\n"
+		"	col += texture(iChannel3, uv).xyz * iWeight2;\n"
+		"	col += texture(iChannel4, uv).xyz * iWeight3;\n"
+
 		"if (iToggle == 1)\n"
 		"{\n"
 		"	col.rgb = col.gbr;\n"

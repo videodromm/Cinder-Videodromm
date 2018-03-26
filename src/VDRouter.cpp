@@ -425,7 +425,7 @@ void VDRouter::midiListener(midi::Message msg) {
 		midiControl = msg.control;
 		midiValue = msg.value;
 		midiNormalizedValue = lmap<float>(midiValue, 0.0, 127.0, 0.0, 1.0);
-		if (midiControl > 20 && midiControl < 49) {
+		/*if (midiControl > 20 && midiControl < 49) {
 			if (midiControl > 20 && midiControl < 29) {
 				mSelectedWarp = midiControl - 21;
 			}
@@ -437,13 +437,13 @@ void VDRouter::midiListener(midi::Message msg) {
 			}
 		}
 		else {
-			//if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
+			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
 			//	updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
 			//}
-			//else {
+			//else { */
 				updateParams(midiControl, midiNormalizedValue);
-			//}
-		}
+
+		//}
 		//mWebSockets->write("{\"params\" :[{" + controlType);
 		ss << "MIDI cc Chn: " << midiChannel << " CC: " << midiControl << " Val: " << midiValue << " NVal: " << midiNormalizedValue << std::endl;
 		CI_LOG_V("Midi: " + ss.str());
@@ -532,7 +532,7 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		// audio multfactor
 		if (iarg0 == 13) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == mVDSettings->IEXPOSURE) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
+		if (iarg0 == mVDSettings->IEXPOSURE) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(mVDSettings->IEXPOSURE));
 		// xfade
 		if (iarg0 == mVDSettings->IXFADE) {
 			mVDSettings->xFade = farg1;

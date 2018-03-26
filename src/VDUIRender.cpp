@@ -204,12 +204,7 @@ void VDUIRender::Run(const char* title) {
 		ImGui::Text("fp %dx%d f %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		ImGui::Text("main %dx%d", mVDSettings->mMainWindowWidth, mVDSettings->mMainWindowHeight);
 		ImGui::Text("solo %d", mVDSession->getSolo());
-		// feedback
-		static int fb = mVDSession->getFeedbackFrames();
-		if (ImGui::SliderInt("feedback", &fb, 0, 9))
-		{
-			mVDSession->setFeedbackFrames(fb);
-		}
+		
 		ImGui::PopItemWidth();
 	}
 	ImGui::End();

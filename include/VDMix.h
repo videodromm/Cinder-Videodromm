@@ -127,13 +127,7 @@ namespace VideoDromm
 		bool							isFboFlipV(unsigned int aFboIndex);
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex);
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex);
-		// feedback get/set
-		int								getFeedbackFrames() {
-			return mFeedbackFrames;
-		};
-		void							setFeedbackFrames(int aFeedbackFrames) {
-			mFeedbackFrames = aFeedbackFrames;
-		};
+		
 		// textures
 		ci::gl::TextureRef				getInputTexture(unsigned int aTextureIndex);
 		string							getInputTextureName(unsigned int aTextureIndex);
@@ -241,17 +235,6 @@ namespace VideoDromm
 		
 		// common to warps and triangles
 		unsigned int					mCurrentEditIndex;
-		// old to refactor:
-		//ci::vec2						mStartPt, mVertices[3];
-		// feedback
-		// 0: only last rendered 1+: number of feedback images
-		unsigned int					mFeedbackFrames;
-		map<int, ci::gl::Texture2dRef>	mOutputTextures;
-		unsigned int					mCurrentFeedbackIndex;
-		gl::FboRef						mFeedbackFbo;
-
-		// Output texture
-		ci::gl::Texture2dRef			mFeedbackTexture;
 		// shared texture output
 		bool							mSharedOutputActive;
 		unsigned int					mSharedFboIndex;

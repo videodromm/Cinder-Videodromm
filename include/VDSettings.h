@@ -34,12 +34,18 @@ namespace VideoDromm {
 		static const int			ITRIXELS = 16;
 		static const int			ICHROMATIC = 17;
 		static const int			IXFADE = 18;
-		static const int			IBR = 19;
-		static const int			IBG = 20;
-		static const int			IBB = 21;
+		static const int			IWEIGHT0 = 19;
+		static const int			IPARAM1 = 20;
+		static const int			IPARAM2 = 21;
+		static const int			IWEIGHT1 = 23;
+		static const int			IWEIGHT2 = 27;
+		static const int			IWEIGHT3 = 31;// 31 49
 		static const int			IFPS = 25;
 		static const int			IRESX = 29;
 		static const int			IRESY = 30;
+		static const int			IBR = 40;
+		static const int			IBG = 41;
+		static const int			IBB = 42;
 		static const int			IGLITCH = 81;
 		static const int			ITOGGLE = 83;
 		static const int			IINVERT = 86;
@@ -110,8 +116,8 @@ namespace VideoDromm {
 		bool						iFade;
 		bool						iRepeat;
 		int							iBlendmode;
-		float						iParam1;
-		float						iParam2;
+		//float						iParam1;
+		//float						iParam2;
 		bool						iXorY;
 		//ci::Anim<float> 			iBadTv;
 		ci::Anim<float> 			iAlpha;

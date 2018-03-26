@@ -47,22 +47,12 @@ namespace VideoDromm {
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getMixFragmentShaderString());
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
-		// feedback
-		mGlslFeedback = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getDefaultFragmentShaderString());
-		mCurrentFeedbackIndex = 0;
-		mFeedbackFrames = 0;
-		mFeedbackFbo = gl::Fbo::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight, fboFmt);
 
-		// init textures
-		for (size_t i = 0; i < 10; i++)
-		{
-			mOutputTextures[i] = ci::gl::Texture::create(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-		}
 		// shared output
 		mSharedOutputActive = false;
 		mSharedFboIndex = 0;
 		mSpoutInitialized = false;
-		strcpy(mSenderName, "Videodromm Spout Sender"); // we have to set a sender name first
+		strcpy(mSenderName, "Videodromm Sender"); // we have to set a sender name first
 		mWarpAnimationActive = false;
 		mWarpActiveIndex = 0;
 		mSolo = -1;
@@ -274,81 +264,28 @@ namespace VideoDromm {
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
 		
-			// animate
-			if (mWarpAnimationActive) {
-				mWarpActiveIndex++;
-				if (mWarpActiveIndex > mWarps.size() - 1) mWarpActiveIndex = 0;
-				mSolo = mWarpActiveIndex;
+		// animate
+		if (mWarpAnimationActive) {
+			mWarpActiveIndex++;
+			if (mWarpActiveIndex > mWarps.size() - 1) mWarpActiveIndex = 0;
+			mSolo = mWarpActiveIndex;
+		}
+		// if solo then only render this solo warp
+		if (mSolo > -1) {
+			mWarps[mSolo]->draw(getMixTexture(mSolo), getMixTexture(mSolo)->getBounds());
+		}
+		else {
+			// iterate over the warps and draw their content
+			int i = 0;
+			for (auto &warp : mWarps) {
+				//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
+				// if (warp->isActive()) warp->draw(getMixTexture(i), Area(-30, 44, 640, 480));
+				// before 20180326: if (warp->isActive()) warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
+				// 20180326: 
+				if (warp->isActive()) warp->draw(getMixTexture(i));
+				i++;
 			}
-			// if solo then only render this solo warp
-			if (mSolo > -1) {
-				mWarps[mSolo]->draw(getMixTexture(mSolo), getMixTexture(mSolo)->getBounds());
-			}
-			else {
-				// iterate over the warps and draw their content
-				int i = 0;
-				for (auto &warp : mWarps) {
-					//warp->draw(mMixes[0]->getMixTexture(mWarpFboIndex), Area(0, 0, mMixes[0]->getFboTextureWidth(mWarpFboIndex), mMixes[0]->getFboTextureHeight(mWarpFboIndex)));
-					// if (warp->isActive()) warp->draw(getMixTexture(i), Area(-30, 44, 640, 480));
-					// before 20180326: if (warp->isActive()) warp->draw(getMixTexture(i), getMixTexture(i)->getBounds());
-					// 20180326: 
-					if (warp->isActive()) warp->draw(getMixTexture(i));
-					i++;
-				}
-			}
-		
-		// feedback
-		/*if (mFeedbackFrames > 0) {
-			mCurrentFeedbackIndex++;
-			if (mCurrentFeedbackIndex > mFeedbackFrames) mCurrentFeedbackIndex = 0;
-			// save rendered texture at mCurrentFeedbackIndex
-			Surface s8(mRenderedTexture->createSource());
-			mOutputTextures[mCurrentFeedbackIndex] = ci::gl::Texture::create(s8);
-			mGlslFeedback->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
-			mGlslFeedback->uniform("iChannel0", 0);
-			mGlslFeedback->uniform("iChannel1", 1);
-			mGlslFeedback->uniform("iChannel2", 2);
-			mGlslFeedback->uniform("iChannel3", 3);
-			mGlslFeedback->uniform("iChannel4", 4);
-			mGlslFeedback->uniform("iChannel5", 5);
-			mGlslFeedback->uniform("iChannel6", 6);
-			mGlslFeedback->uniform("iChannel7", 7);
-			mGlslFeedback->uniform("iChannel8", 8);
-			mGlslFeedback->uniform("iChannel9", 9);
-
-			gl::ScopedFramebuffer fbScp(mFeedbackFbo);
-			gl::clear(Color::black());
-
-			mOutputTextures[0]->bind(0);
-			mOutputTextures[1]->bind(1);
-			mOutputTextures[2]->bind(2);
-			mOutputTextures[3]->bind(3);
-			mOutputTextures[4]->bind(4);
-			mOutputTextures[5]->bind(5);
-			mOutputTextures[6]->bind(6);
-			mOutputTextures[7]->bind(7);
-			mOutputTextures[8]->bind(8);
-			mOutputTextures[9]->bind(9);
-
-			gl::ScopedGlslProg glslScope(mGlslFeedback);
-			gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
-
-			mFeedbackTexture = mFeedbackFbo->getColorTexture();*/
-			/*string filename = toString(mCurrentFeedbackIndex) + ".jpg";
-			if (getElapsedFrames() % 100 == 0) {
-			writeImage(writeFile(getAssetPath("") / "output" / filename), s8);
-			}
-			if (getElapsedFrames() % 104 == 0) {
-			Surface sk8(mOutputTextures[mCurrentFeedbackIndex]->createSource());
-			writeImage(writeFile(getAssetPath("") / "output" / "1" / filename), sk8);
-			}
-			if (getElapsedFrames() % 108 == 0) {
-			Surface skr8(mFeedbackTexture->createSource());
-			writeImage(writeFile(getAssetPath("") / "output" / "2" / filename), skr8);
-			}*/
-			/*return mFeedbackTexture;
-		}*/
-
+		}
 		mRenderedTexture = mRenderFbo->getColorTexture();
 		return mRenderedTexture;
 	}
@@ -368,6 +305,9 @@ namespace VideoDromm {
 		// texture binding must be before ScopedGlslProg
 		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
+		mTextureList[2]->getTexture()->bind(2);
+		mTextureList[3]->getTexture()->bind(3);
+		mTextureList[4]->getTexture()->bind(4);
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)); // mWarps[warpMixToRender]->ABCrossfade);
 
@@ -418,10 +358,17 @@ namespace VideoDromm {
 		mGlslMix->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 		// 20180318 mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+		mGlslMix->uniform("iWeight0", mVDAnimation->getFloatUniformValueByName("iWeight0")); // fbo mix
+		mGlslMix->uniform("iWeight1", mVDAnimation->getFloatUniformValueByName("iWeight1")); // texture
+		mGlslMix->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2")); // texture
+		mGlslMix->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3")); // texture
 		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
-		mGlslMix->uniform("iChannel0", 0);
-		mGlslMix->uniform("iChannel1", 1);
+		mGlslMix->uniform("iChannel0", 0); // fbo shader 
+		mGlslMix->uniform("iChannel1", 1); // fbo shader
+		mGlslMix->uniform("iChannel2", 2); // texture 1
+		mGlslMix->uniform("iChannel3", 3); // texture 2
+		mGlslMix->uniform("iChannel4", 4); // texture 3
 		mGlslMix->uniform("iRatio", mVDAnimation->getFloatUniformValueByIndex(11));//check if needed: +1;//mVDSettings->iRatio);
 		mGlslMix->uniform("iRenderXY", mVDSettings->mRenderXY);
 		mGlslMix->uniform("iZoom", mVDAnimation->getFloatUniformValueByName("iZoom"));
@@ -446,8 +393,8 @@ namespace VideoDromm {
 		mGlslMix->uniform("iBlueMultiplier", mVDAnimation->getFloatUniformValueByName("iBlueMultiplier"));
 		mGlslMix->uniform("iFlipV", mVDAnimation->isFlipV());
 		mGlslMix->uniform("iFlipH", mVDAnimation->isFlipH());
-		mGlslMix->uniform("iParam1", mVDSettings->iParam1);
-		mGlslMix->uniform("iParam2", mVDSettings->iParam2);
+		mGlslMix->uniform("iParam1", mVDAnimation->getFloatUniformValueByName("iParam1"));
+		mGlslMix->uniform("iParam2", mVDAnimation->getFloatUniformValueByName("iParam2"));
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
 		mGlslMix->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
 		mGlslMix->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFPS));
@@ -462,10 +409,16 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 			// 20180318 mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+			mGlslBlend->uniform("iWeight1", mVDAnimation->getFloatUniformValueByName("iWeight1"));
+			mGlslBlend->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2"));
+			mGlslBlend->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3"));
 			mGlslBlend->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
-			mGlslBlend->uniform("iChannel0", 0);
-			mGlslBlend->uniform("iChannel1", 1);
+			mGlslBlend->uniform("iChannel0", 0); // fbo shader 
+			mGlslBlend->uniform("iChannel1", 1); // fbo shader
+			mGlslBlend->uniform("iChannel2", 2); // texture 1
+			mGlslBlend->uniform("iChannel3", 3); // texture 2
+			mGlslBlend->uniform("iChannel4", 4); // texture 3
 			mGlslBlend->uniform("iAudio0", 0);
 			mGlslBlend->uniform("iFreq0", mVDAnimation->getFloatUniformValueByName("iFreq0"));
 			mGlslBlend->uniform("iFreq1", mVDAnimation->getFloatUniformValueByName("iFreq1"));
@@ -510,8 +463,8 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iBlueMultiplier", mVDAnimation->getFloatUniformValueByName("iBlueMultiplier"));
 			mGlslBlend->uniform("iFlipH", 0);
 			mGlslBlend->uniform("iFlipV", 0);
-			mGlslBlend->uniform("iParam1", mVDSettings->iParam1);
-			mGlslBlend->uniform("iParam2", mVDSettings->iParam2);
+			mGlslBlend->uniform("iParam1", mVDAnimation->getFloatUniformValueByName("iParam1"));
+			mGlslBlend->uniform("iParam2", mVDAnimation->getFloatUniformValueByName("iParam2"));
 			mGlslBlend->uniform("iXorY", mVDSettings->iXorY);
 			mGlslBlend->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
 			mGlslBlend->uniform("iContour", mVDAnimation->getFloatUniformValueByName("iContour"));
