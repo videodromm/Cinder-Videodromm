@@ -150,7 +150,7 @@ void VDRouter::setupOSCReceiver() {
 		[&](const osc::Message &msg) {
 		float sumMovement = msg[0].flt();
 		//exposure
-		mVDAnimation->setFloatUniformValueByIndex(14, sumMovement);
+		mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IEXPOSURE, sumMovement);
 		//greyScale
 		if (sumMovement < 0.1)
 		{
@@ -532,9 +532,9 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 		// audio multfactor
 		if (iarg0 == 13) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == 14) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
+		if (iarg0 == mVDSettings->IEXPOSURE) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
 		// xfade
-		if (iarg0 == 18) {
+		if (iarg0 == mVDSettings->IXFADE) {
 			mVDSettings->xFade = farg1;
 			mVDSettings->xFadeChanged = true;
 		}

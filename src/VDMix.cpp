@@ -366,7 +366,7 @@ namespace VideoDromm {
 		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
 		gl::ScopedGlslProg glslScope(mGlslMix);
-		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(18)); // mWarps[warpMixToRender]->ABCrossfade);
+		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)); // mWarps[warpMixToRender]->ABCrossfade);
 
 		gl::drawSolidRect(Rectf(0, 0, mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getWidth(), mMixFbos[mWarps[warpMixToRender]->getMixFboIndex()].fbo->getHeight()));
 
@@ -410,7 +410,7 @@ namespace VideoDromm {
 		}*/
 
 		mGlslMix->uniform("iBlendmode", mVDSettings->iBlendmode);
-		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
+		mGlslMix->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
 		// was vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0)):
 		mGlslMix->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
@@ -421,13 +421,13 @@ namespace VideoDromm {
 		mGlslMix->uniform("iChannel1", 1);
 		mGlslMix->uniform("iRatio", mVDAnimation->getFloatUniformValueByIndex(11));//check if needed: +1;//mVDSettings->iRatio);
 		mGlslMix->uniform("iRenderXY", mVDSettings->mRenderXY);
-		mGlslMix->uniform("iZoom", mVDAnimation->getFloatUniformValueByIndex(12));
+		mGlslMix->uniform("iZoom", mVDAnimation->getFloatUniformValueByName("iZoom"));
 		mGlslMix->uniform("iAlpha", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFA) * mVDSettings->iAlpha);
-		mGlslMix->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(17));
+		mGlslMix->uniform("iChromatic", mVDAnimation->getFloatUniformValueByName("iChromatic"));
 		mGlslMix->uniform("iRotationSpeed", mVDAnimation->getFloatUniformValueByIndex(9));
-		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(18)); //mWarps[warpMixToRender]->ABCrossfade);
-		mGlslMix->uniform("iPixelate", mVDAnimation->getFloatUniformValueByIndex(15));
-		mGlslMix->uniform("iExposure", mVDAnimation->getFloatUniformValueByIndex(14));
+		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByName("iCrossfade")); //mWarps[warpMixToRender]->ABCrossfade);
+		mGlslMix->uniform("iPixelate", mVDAnimation->getFloatUniformValueByName("iPixelate"));
+		mGlslMix->uniform("iExposure", mVDAnimation->getFloatUniformValueByName("iExposure"));
 		mGlslMix->uniform("iToggle", (int)mVDAnimation->getBoolUniformValueByName("iToggle"));
 		mGlslMix->uniform("iGreyScale", (int)mVDSettings->iGreyScale);
 		mGlslMix->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));// vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
@@ -437,7 +437,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iInvert", (int)mVDAnimation->getBoolUniformValueByName("iInvert"));
 		mGlslMix->uniform("iTempoTime", mVDAnimation->getFloatUniformValueByName("iTempoTime"));
 		mGlslMix->uniform("iGlitch", (int)mVDAnimation->getBoolUniformValueByName("iGlitch"));
-		mGlslMix->uniform("iTrixels", mVDAnimation->getFloatUniformValueByIndex(16));
+		mGlslMix->uniform("iTrixels", mVDAnimation->getFloatUniformValueByName("iTrixels"));
 		mGlslMix->uniform("iRedMultiplier", mVDAnimation->getFloatUniformValueByName("iRedMultiplier"));
 		mGlslMix->uniform("iGreenMultiplier", mVDAnimation->getFloatUniformValueByName("iGreenMultiplier"));
 		mGlslMix->uniform("iBlueMultiplier", mVDAnimation->getFloatUniformValueByName("iBlueMultiplier"));
@@ -455,7 +455,7 @@ namespace VideoDromm {
 		if (mVDAnimation->renderBlend()) {
 			mCurrentBlend = getElapsedFrames() % mVDAnimation->getBlendModesCount();
 			mGlslBlend->uniform("iBlendmode", mCurrentBlend);
-			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(0));
+			mGlslBlend->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 			// 20180318 mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
@@ -471,18 +471,18 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iChannelTime", mVDSettings->iChannelTime, 4);
 			mGlslBlend->uniform("iColor", vec3(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB)));
 			mGlslBlend->uniform("iBackgroundColor", mVDAnimation->getVec3UniformValueByName("iBackgroundColor"));//vec3(mVDAnimation->getFloatUniformValueByIndex(5), mVDAnimation->getFloatUniformValueByIndex(6), mVDAnimation->getFloatUniformValueByIndex(7)));
-			mGlslBlend->uniform("iSteps", (int)mVDAnimation->getFloatUniformValueByIndex(10));
-			mGlslBlend->uniform("iRatio", mVDAnimation->getFloatUniformValueByIndex(11));
+			mGlslBlend->uniform("iSteps", (int)mVDAnimation->getFloatUniformValueByName("iSteps"));
+			mGlslBlend->uniform("iRatio", mVDAnimation->getFloatUniformValueByName("iRatio"));
 			mGlslBlend->uniform("width", 1);
 			mGlslBlend->uniform("height", 1);
 			mGlslBlend->uniform("iRenderXY", mVDSettings->mRenderXY);
 			mGlslBlend->uniform("iZoom", mVDAnimation->getFloatUniformValueByIndex(12));
 			mGlslBlend->uniform("iAlpha", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFA) * mVDSettings->iAlpha);
-			mGlslBlend->uniform("iChromatic", mVDAnimation->getFloatUniformValueByIndex(17));
+			mGlslBlend->uniform("iChromatic", mVDAnimation->getFloatUniformValueByName("iChromatic"));
 			mGlslBlend->uniform("iRotationSpeed", mVDAnimation->getFloatUniformValueByIndex(9));
-			mGlslBlend->uniform("iCrossfade", 0.5f);// blendmode only work if different than 0 or 1.0 mVDAnimation->getFloatUniformValueByIndex(18]);
-			mGlslBlend->uniform("iPixelate", mVDAnimation->getFloatUniformValueByIndex(15));
-			mGlslBlend->uniform("iExposure", mVDAnimation->getFloatUniformValueByIndex(14));
+			mGlslBlend->uniform("iCrossfade", 0.5f);// blendmode only work if different than 0 or 1.0 mVDAnimation->getFloatUniformValueByIndex( mVDSettings->IXFADE]);
+			mGlslBlend->uniform("iPixelate", mVDAnimation->getFloatUniformValueByName("iPixelate"));
+			mGlslBlend->uniform("iExposure", mVDAnimation->getFloatUniformValueByName("iExposure"));
 			mGlslBlend->uniform("iDeltaTime", mVDAnimation->iDeltaTime);
 			mGlslBlend->uniform("iFade", (int)mVDSettings->iFade);
 			mGlslBlend->uniform("iToggle", (int)mVDAnimation->getBoolUniformValueByName("iToggle"));
@@ -499,7 +499,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFPS));
 			mGlslBlend->uniform("iTempoTime", mVDAnimation->getFloatUniformValueByName("iTempoTime"));
 			mGlslBlend->uniform("iGlitch", (int)mVDAnimation->getBoolUniformValueByName("iGlitch"));
-			mGlslBlend->uniform("iTrixels", mVDAnimation->getFloatUniformValueByIndex(16));
+			mGlslBlend->uniform("iTrixels", mVDAnimation->getFloatUniformValueByName("iTrixels"));
 			mGlslBlend->uniform("iBeat", mVDSettings->iBeat);
 			mGlslBlend->uniform("iSeed", mVDSettings->iSeed);
 			mGlslBlend->uniform("iRedMultiplier", mVDAnimation->getFloatUniformValueByName("iRedMultiplier"));

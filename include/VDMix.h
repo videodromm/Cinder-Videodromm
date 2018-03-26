@@ -91,11 +91,11 @@ namespace VideoDromm
 		float							getWarpCrossfade(unsigned int aWarpIndex) { 
 			//if (aWarpIndex > mWarps.size() - 1) aWarpIndex = 0; 
 			//return mWarps[aWarpIndex]->ABCrossfade;
-			return mVDAnimation->getFloatUniformValueByIndex(18);
+			return mVDAnimation->getFloatUniformValueByIndex( mVDSettings->IXFADE);
 		};
 		void							setWarpCrossfade(unsigned int aWarpIndex, float aCrossfade) { 
 			//if (aWarpIndex < mWarps.size()) mWarps[aWarpIndex]->ABCrossfade = aCrossfade; 
-			mVDAnimation->setFloatUniformValueByIndex(18, aCrossfade);
+			mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IXFADE, aCrossfade);
 		};
 		void							updateWarpName(unsigned int aWarpIndex);
 		//void							crossfadeWarp(unsigned int aWarpIndex, float aValue) { timeline().apply(&mWarps[aWarpIndex]->ABCrossfade, aValue, 2.0f); };

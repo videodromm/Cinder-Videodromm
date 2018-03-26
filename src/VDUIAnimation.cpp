@@ -54,7 +54,7 @@ void VDUIAnimation::Run(const char* title) {
 		{
 			int hue = 0;
 
-			ctrl = 81;
+			ctrl = mVDSettings->IGLITCH;
 			(getBoolValue(ctrl)) ? ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
@@ -65,7 +65,7 @@ void VDUIAnimation::Run(const char* title) {
 			hue++;
 			ImGui::SameLine();
 
-			ctrl = 83;
+			ctrl = mVDSettings->ITOGGLE;
 			(getBoolValue(ctrl)) ? ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
@@ -76,7 +76,7 @@ void VDUIAnimation::Run(const char* title) {
 			hue++;
 			ImGui::SameLine();
 
-			ctrl = 86;
+			ctrl = mVDSettings->IINVERT;
 			(getBoolValue(ctrl)) ? ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hue / 7.0f, 1.0f, 0.5f)) : ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.0f, 0.1f, 0.1f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hue / 7.0f, 0.7f, 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hue / 7.0f, 0.8f, 0.8f));
@@ -105,7 +105,7 @@ void VDUIAnimation::Run(const char* title) {
 		if (ImGui::CollapsingHeader("Animation", NULL, true, true))
 		{
 			// iChromatic
-			ctrl = 17;
+			ctrl = mVDSettings->ICHROMATIC;
 			if (ImGui::Button("a##chromatic")) {
 				toggleAuto(ctrl);
 			}
@@ -136,7 +136,7 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// exposure
-			ctrl = 14;
+			ctrl = mVDSettings->IEXPOSURE;
 			if (ImGui::Button("a##exposure")) { toggleAuto(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("t##exposure")) { toggleTempo(ctrl); }
@@ -210,7 +210,7 @@ void VDUIAnimation::Run(const char* title) {
 			mVDSettings->iXorY ^= ImGui::Button(buf);
 
 			// steps
-			ctrl = 10;
+			ctrl = mVDSettings->ISTEPS;
 			if (ImGui::Button("x##steps")) { localValues[ctrl] = 16.0f; setValue(ctrl, localValues[ctrl]);}
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);

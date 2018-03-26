@@ -43,7 +43,7 @@ void VDWebsocket::updateParams(int iarg0, float farg1) {
 		// audio multfactor
 		if (iarg0 == 13) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == 14) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
+		if (iarg0 == mVDSettings->IEXPOSURE) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
 
 		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 
@@ -448,8 +448,8 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 }
 
 void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool forceSend) {
-	/*if (aControl == 18) {
-		CI_LOG_V("18 old value " + toString(mVDAnimation->getFloatUniformValueByIndex(aControl)) + " newvalue " + toString(aValue));
+	/*if (aControl == mVDSettings->IXFADE) {
+		CI_LOG_V("mVDSettings->IXFADE old value " + toString(mVDAnimation->getFloatUniformValueByIndex(aControl)) + " newvalue " + toString(aValue));
 	}*/
 	// check if changed
 	if ( (mVDAnimation->setFloatUniformValueByIndex(aControl, aValue) && aControl != mVDSettings->IFPS) || forceSend) {

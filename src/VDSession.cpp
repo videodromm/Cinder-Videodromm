@@ -136,11 +136,11 @@ void VDSession::update(unsigned int aClassIndex) {
 		if (mVDWebsocket->hasReceivedShader()) {
 			if (mVDMix->getWarpCrossfade(0) < 0.5) {
 				setFragmentShaderString(2, mVDWebsocket->getReceivedShader());
-				mVDAnimation->setFloatUniformValueByIndex(18, 1.0f);
+				mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IXFADE, 1.0f);
 			}
 			else {
 				setFragmentShaderString(1, mVDWebsocket->getReceivedShader());
-				mVDAnimation->setFloatUniformValueByIndex(18, 0.0f);
+				mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IXFADE, 0.0f);
 			}
 		}
 		if (mVDSettings->iGreyScale)
@@ -440,7 +440,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_x:
 				// trixels
-				mVDWebsocket->changeFloatValue(16, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
+				mVDWebsocket->changeFloatValue(mVDSettings->ITRIXELS, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
 				break;
 			case KeyEvent::KEY_r:
 				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) + 0.1f;
@@ -474,23 +474,23 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic
-				mVDWebsocket->changeFloatValue(10, mVDAnimation->getFloatUniformValueByIndex(10) + 0.05f);
+				mVDWebsocket->changeFloatValue(mVDSettings->ICHROMATIC, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ICHROMATIC) + 0.05f);
 				break;
 			case KeyEvent::KEY_p:
 				// pixelate
-				mVDWebsocket->changeFloatValue(15, mVDAnimation->getFloatUniformValueByIndex(15) + 0.05f);
+				mVDWebsocket->changeFloatValue(mVDSettings->IPIXELATE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IPIXELATE) + 0.05f);
 				break;
 			case KeyEvent::KEY_t:
 				// glitch
-				mVDWebsocket->changeBoolValue(81, true);
+				mVDWebsocket->changeBoolValue(mVDSettings->IGLITCH, true);
 				break;
 			case KeyEvent::KEY_i:
 				// invert
-				mVDWebsocket->changeBoolValue(86, true);
+				mVDWebsocket->changeBoolValue(mVDSettings->IINVERT, true);
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDWebsocket->toggleValue(83);
+				mVDWebsocket->toggleValue(mVDSettings->ITOGGLE);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
@@ -506,14 +506,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 					break;*/
 			case KeyEvent::KEY_PAGEDOWN:
 				// crossfade right
-				//CI_LOG_V("KEY_PAGEDOWN" + toString( mVDAnimation->getFloatUniformValueByIndex(18)));
-				if (mVDAnimation->getFloatUniformValueByIndex(18) < 1.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) + 0.03f);
+				//CI_LOG_V("KEY_PAGEDOWN" + toString( mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)));
+				if (mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) < 1.0f) mVDWebsocket->changeFloatValue(mVDSettings->IXFADE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) + 0.03f);
 				break;
 			case KeyEvent::KEY_PAGEUP:
 				// crossfade left
-				//CI_LOG_V("KEY_PAGEUP" + toString(mVDAnimation->getFloatUniformValueByIndex(18)));
+				//CI_LOG_V("KEY_PAGEUP" + toString(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)));
 
-				if (mVDAnimation->getFloatUniformValueByIndex(18) > 0.0f) mVDWebsocket->changeFloatValue(18, mVDAnimation->getFloatUniformValueByIndex(18) - 0.03f);
+				if (mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) > 0.0f) mVDWebsocket->changeFloatValue(mVDSettings->IXFADE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) - 0.03f);
 				break;
 case KeyEvent::KEY_u:
 				// mouseX
@@ -551,27 +551,27 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 			switch (event.getCode()) {
 			case KeyEvent::KEY_g:
 				// glitch
-				mVDWebsocket->changeBoolValue(81, false);
+				mVDWebsocket->changeBoolValue(mVDSettings->IGLITCH, false);
 				break;
 			case KeyEvent::KEY_t:
 				// trixels
-				mVDWebsocket->changeFloatValue(16, 0.0f);
+				mVDWebsocket->changeFloatValue(mVDSettings->ITRIXELS, 0.0f);
 				break;
 			case KeyEvent::KEY_i:
 				// invert
-				mVDWebsocket->changeBoolValue(86, false);
+				mVDWebsocket->changeBoolValue(mVDSettings->IINVERT, false);
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic
-				mVDWebsocket->changeFloatValue(10, 0.0f);
+				mVDWebsocket->changeFloatValue(mVDSettings->ICHROMATIC, 0.0f);
 				break;
 			case KeyEvent::KEY_p:
 				// pixelate
-				mVDWebsocket->changeFloatValue(15, 1.0f);
+				mVDWebsocket->changeFloatValue(mVDSettings->IPIXELATE, 1.0f);
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDWebsocket->changeBoolValue(83, false);
+				mVDWebsocket->changeBoolValue(mVDSettings->ITOGGLE, false);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom

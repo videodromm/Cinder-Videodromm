@@ -54,7 +54,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	}
 	else {
 		// global time in seconds
-		createFloatUniform("iGlobalTime", 0, 0.0f);
+		createFloatUniform("iGlobalTime", mVDSettings->ITIME, 0.0f);
 		// sliders
 		// red
 		createFloatUniform("iFR", mVDSettings->IFR, 1.0f);
@@ -76,7 +76,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// RotationSpeed
 		createFloatUniform("iRotationSpeed", 9, 0.0f, -2.0f, 2.0f);
 		// Steps
-		createFloatUniform("iSteps", 10, 16.0f, 1.0f, 128.0f);
+		createFloatUniform("iSteps", mVDSettings->ISTEPS, 16.0f, 1.0f, 128.0f);
 
 		// rotary
 		// ratio
@@ -86,15 +86,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// Audio multfactor 
 		createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 		// exposure
-		createFloatUniform("iExposure", 14, 1.0f, 0.0f, 3.0f);
+		createFloatUniform("iExposure", mVDSettings->IEXPOSURE, 1.0f, 0.0f, 3.0f);
 		// Pixelate
-		createFloatUniform("iPixelate", 15, 1.0f, 0.01f);
+		createFloatUniform("iPixelate", mVDSettings->IPIXELATE, 1.0f, 0.01f);
 		// Trixels
-		createFloatUniform("iTrixels", 16, 0.0f);
+		createFloatUniform("iTrixels", mVDSettings->ITRIXELS, 0.0f);
 		// iChromatic
-		createFloatUniform("iChromatic", 17, 0.0f, 0.000000001f);
+		createFloatUniform("iChromatic", mVDSettings->ICHROMATIC, 0.0f, 0.000000001f);
 		// iCrossfade
-		createFloatUniform("iCrossfade", 18, 1.0f);
+		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f);
 		// akai faders, from 19 to 26
 		// background red
 		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);
@@ -163,13 +163,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 
 		// boolean
 		// glitch
-		createBoolUniform("iGlitch", 81); // was 45
+		createBoolUniform("iGlitch", mVDSettings->IGLITCH); // was 45
 		// toggle
-		createBoolUniform("iToggle", 83); // was 46
+		createBoolUniform("iToggle", mVDSettings->ITOGGLE); // was 46
 		// vignette
 		createBoolUniform("iVignette", 84); // was 47
 		// invert
-		createBoolUniform("iInvert", 86); // was 48
+		createBoolUniform("iInvert", mVDSettings->IINVERT); // 86 was 48
 		createBoolUniform("iXorY", 87); // was 83
 		createBoolUniform("iFlipH", 90); // was 81
 		createBoolUniform("iFlipV", 92); // was 82
@@ -466,7 +466,7 @@ bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue)
 	bool rtn = false;
 	// we can't change iGlobalTime at index 0
 	if (aIndex > 0) {
-		/*if (aIndex == 18) {
+		/*if (aIndex ==  mVDSettings->IXFADE) {
 			CI_LOG_V("v18 old value " + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue) + " newvalue " + toString(aValue));
 		}*/
 		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
@@ -696,7 +696,7 @@ void VDAnimation::update() {
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{
-			setBoolUniformValueByIndex(86, (modulo < 0.1) ? 1.0 : 0.0);
+			setBoolUniformValueByIndex(mVDSettings->IINVERT, (modulo < 0.1) ? 1.0 : 0.0);
 		}
 
 		if (mVDSettings->tEyePointZ)

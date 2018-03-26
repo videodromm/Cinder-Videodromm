@@ -23,16 +23,26 @@ namespace VideoDromm {
 
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
+		static const int			ITIME = 0;
 		static const int			IFR = 1;
 		static const int			IFG = 2;
 		static const int			IFB = 3;
 		static const int			IFA = 4;
+		static const int			ISTEPS = 10;
+		static const int			IEXPOSURE = 14;
+		static const int			IPIXELATE = 15;
+		static const int			ITRIXELS = 16;
+		static const int			ICHROMATIC = 17;
+		static const int			IXFADE = 18;
 		static const int			IBR = 19;
 		static const int			IBG = 20;
 		static const int			IBB = 21;
 		static const int			IFPS = 25;
 		static const int			IRESX = 29;
 		static const int			IRESY = 30;
+		static const int			IGLITCH = 81;
+		static const int			ITOGGLE = 83;
+		static const int			IINVERT = 86;
 		// texture modes
 		static const int			TEXTUREMODEMIX = 0;				// mix two shaders
 		static const int			TEXTUREMODEAUDIO = 1;			// audio spectrum
