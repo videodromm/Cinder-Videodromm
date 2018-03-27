@@ -409,6 +409,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iResolution", vec3(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, 1.0));
 			//mGlslBlend->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 			// 20180318 mGlslBlend->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+			mGlslBlend->uniform("iWeight0", mVDAnimation->getFloatUniformValueByName("iWeight0"));
 			mGlslBlend->uniform("iWeight1", mVDAnimation->getFloatUniformValueByName("iWeight1"));
 			mGlslBlend->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2"));
 			mGlslBlend->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3"));

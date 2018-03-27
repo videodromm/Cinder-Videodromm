@@ -5,7 +5,7 @@ using namespace VideoDromm;
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	// mix fbo flip
-	mFlipH = true;
+	mFlipH = false;
 	mFlipV = false;
 	mBlendRender = false;
 	//audio
@@ -95,7 +95,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iChromatic", mVDSettings->ICHROMATIC, 0.0f, 0.000000001f);
 		// iCrossfade
 		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f);
-		// akai faders,  19 ,23,27, 31 49
+		// akai faders: 19,23,27,31,49,...
 		// weight mix fbo texture 0
 		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
 		// weight texture 1
@@ -124,13 +124,13 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iResolutionY", mVDSettings->IRESY, mVDSettings->mFboHeight, 0.01f, 800.0f);
 		// nanokontrol middle row 31 to 38, bottom row 41 to 88
 		// iFreq0  
-		createFloatUniform("iFreq0", 31, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f);
 		// iFreq1  
-		createFloatUniform("iFreq1", 32, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f);
 		// iFreq2  
-		createFloatUniform("iFreq2", 33, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f);
 		// iFreq3  
-		createFloatUniform("iFreq3", 34, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f);
 		// iMouseX  
 		createFloatUniform("iMouseX", 35, 320.0f, 0.0f, 640.0f);
 		// iMouseY  

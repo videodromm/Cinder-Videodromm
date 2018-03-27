@@ -46,7 +46,7 @@ namespace VideoDromm
 
 		// imgui
 		int								ctrl;
-		float							contour, iVAmount, iVFallOff;
+		float							contour, iVAmount, iVFallOff, iWeight0, iWeight1, iWeight2, iWeight3;
 		int								iResolutionX, iResolutionY;
 		// contour
 		float							minContour;

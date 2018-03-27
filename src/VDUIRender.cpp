@@ -203,8 +203,32 @@ void VDUIRender::Run(const char* title) {
 
 		ImGui::Text("fp %dx%d f %dx%d", mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		ImGui::Text("main %dx%d", mVDSettings->mMainWindowWidth, mVDSettings->mMainWindowHeight);
+		ImGui::SameLine();
 		ImGui::Text("solo %d", mVDSession->getSolo());
-		
+		ctrl = mVDSettings->IWEIGHT0;
+		iWeight0 = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("Weight0", &iWeight0, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+		{
+			setValue(ctrl, iWeight0);
+		}
+		ctrl = mVDSettings->IWEIGHT1;
+		iWeight1 = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("Weight1", &iWeight1, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+		{
+			setValue(ctrl, iWeight1);
+		}
+		ctrl = mVDSettings->IWEIGHT2;
+		iWeight2 = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("Weight0", &iWeight2, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+		{
+			setValue(ctrl, iWeight2);
+		}
+		ctrl = mVDSettings->IWEIGHT3;
+		iWeight3 = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("Weight3", &iWeight3, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+		{
+			setValue(ctrl, iWeight3);
+		}
 		ImGui::PopItemWidth();
 	}
 	ImGui::End();

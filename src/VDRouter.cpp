@@ -421,6 +421,7 @@ void VDRouter::midiListener(midi::Message msg) {
 	switch (msg.status)
 	{
 	case MIDI_CONTROL_CHANGE:
+		// akai midimix faders
 		// was for OSC midiControlType = "/cc";
 		midiControl = msg.control;
 		midiValue = msg.value;
@@ -439,11 +440,9 @@ void VDRouter::midiListener(midi::Message msg) {
 		else {
 			if (mVDSettings->mOSCEnabled && mVDSettings->mIsOSCSender) {
 			//	updateAndSendOSCFloatMessage(midiControlType, midiControl, midiNormalizedValue, midiChannel);
-			//}
-			//else { */
-				updateParams(midiControl, midiNormalizedValue);
+			 */
+		updateParams(midiControl, midiNormalizedValue);
 
-		//}
 		//mWebSockets->write("{\"params\" :[{" + controlType);
 		ss << "MIDI cc Chn: " << midiChannel << " CC: " << midiControl << " Val: " << midiValue << " NVal: " << midiNormalizedValue << std::endl;
 		CI_LOG_V("Midi: " + ss.str());
@@ -542,7 +541,7 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 
 	}
 	// buttons
-	if (iarg0 > 20 && iarg0 < 29) {
+	if (iarg0 > 18 && iarg0 < 29) {
 		// top row
 		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 	}
