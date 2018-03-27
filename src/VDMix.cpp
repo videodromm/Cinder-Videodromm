@@ -305,9 +305,9 @@ namespace VideoDromm {
 		// texture binding must be before ScopedGlslProg
 		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
-		mTextureList[2]->getTexture()->bind(2);
-		mTextureList[3]->getTexture()->bind(3);
-		mTextureList[4]->getTexture()->bind(4);
+		if (mTextureList.size() > 2) mTextureList[2]->getTexture()->bind(2);
+		if (mTextureList.size() > 3) mTextureList[3]->getTexture()->bind(3);
+		if (mTextureList.size() > 4) mTextureList[4]->getTexture()->bind(4);
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)); // mWarps[warpMixToRender]->ABCrossfade);
 

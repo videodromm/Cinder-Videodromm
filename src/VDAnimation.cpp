@@ -95,15 +95,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iChromatic", mVDSettings->ICHROMATIC, 0.0f, 0.000000001f);
 		// iCrossfade
 		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f);
-		// akai faders: 19,23,27,31,49,...
+		// akai faders: 19,23,27,31,49,53,57,61,master:62
 		// weight mix fbo texture 0
 		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
 		// weight texture 1
-		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.3f); // 23
+		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
 		// weight texture 2
 		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.5f); // 27
 		// weight texture 3
-		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.1f); // 31
+		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 31
 
 		// top row 21 to 28
 		// Speed 
