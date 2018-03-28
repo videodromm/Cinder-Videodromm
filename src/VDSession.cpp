@@ -338,7 +338,9 @@ void VDSession::fileDrop(FileDropEvent event) {
 		loadImageFile(absolutePath, index);
 	}
 	else if (ext == "glsl" || ext == "frag") {
-		loadFragmentShader(absolutePath);
+		if (index < 1) index = 1;
+		if (index > getFboListSize() - 1) index = getFboListSize() - 1;
+		loadFragmentShader(absolutePath, index);
 	}
 	else if (ext == "xml") {
 	}
@@ -639,10 +641,10 @@ void VDSession::flipV() {
 ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 	return mVDMix->getMixTexture(aMixFboIndex);
 }
-int VDSession::loadFragmentShader(string aFilePath) {
+int VDSession::loadFragmentShader(string aFilePath, unsigned int aIndex) {
 	int rtn = -1;
 	CI_LOG_V("loadFragmentShader " + aFilePath);
-	rtn = mVDMix->createShaderFbo(aFilePath);
+	rtn = mVDMix->createShaderFbo(aFilePath, 0, aIndex);
 
 	return rtn;
 }
@@ -677,7 +679,7 @@ bool VDSession::loadShaderFolder(string aFolder) {
 				ext = fileName.substr(dotIndex + 1);
 				if (ext == "glsl")
 				{
-					loadFragmentShader(aFolder + "/" + fileName);
+					loadFragmentShader(aFolder + "/" + fileName, 0, 2);
 				}
 			}
 		}

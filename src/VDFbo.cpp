@@ -217,7 +217,7 @@ namespace VideoDromm {
 	}
 
 	void VDFbo::updateThumbFile() {
-		if (mRenderedTexture) {
+		if (isReady && mRenderedTexture) {
 			string filename = getShaderName() + ".jpg";
 			fs::path fr = getAssetPath("") / "thumbs" / filename;			
 			// Create thumb file if it doesn't already exist.
