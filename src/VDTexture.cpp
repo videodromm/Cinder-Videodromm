@@ -12,8 +12,8 @@ namespace VideoDromm {
 		, mName("")
 		, mFlipV(false)
 		, mFlipH(true)
-		, mWidth(640)
-		, mHeight(480)
+		, mWidth(1280)
+		, mHeight(720)
 	{
 		mBoundsLocked = true;
 		mXLeft = 0;
@@ -134,8 +134,8 @@ namespace VideoDromm {
 				XmlTree		xml;
 				xml.setTag("details");
 				xml.setAttribute("path", "0.jpg");
-				xml.setAttribute("width", 640);
-				xml.setAttribute("height", 480);
+				xml.setAttribute("width", 1280);
+				xml.setAttribute("height", 720);
 				t->fromXml(xml);
 				vdtexturelist.push_back(t);
 			}
@@ -147,8 +147,8 @@ namespace VideoDromm {
 			XmlTree		xml;
 			xml.setTag("details");
 			xml.setAttribute("path", "0.jpg");
-			xml.setAttribute("width", 640);
-			xml.setAttribute("height", 480);
+			xml.setAttribute("width", 1280);
+			xml.setAttribute("height", 720);
 			t->fromXml(xml);
 			vdtexturelist.push_back(t);
 		}

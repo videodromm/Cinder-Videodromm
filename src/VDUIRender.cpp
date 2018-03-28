@@ -133,7 +133,7 @@ void VDUIRender::Run(const char* title) {
 			ImGui::SameLine();
 			// render window height
 			static int rh = mVDSettings->mRenderHeight;
-			if (ImGui::SliderInt("rdr h", &rh, 480, 1024))
+			if (ImGui::SliderInt("rdr h", &rh, 480, 1280))
 			{
 				//mVDSession->setRenderHeight(rh);
 				mVDSettings->mRenderHeight = rh;

@@ -348,7 +348,7 @@ bool VDSettings::restore()
 				mMainWindowHeight = 720;
 				mRenderWidth = 1280;
 				mRenderHeight = 720;
-				mRenderX = 1024;
+				mRenderX = 1280;
 				mRenderY = 0;
 			}
 			else
@@ -463,8 +463,8 @@ void VDSettings::reset()
 	//mRenderResoXY = vec2(mRenderWidth, mRenderHeight);
 	//mRenderResolution = ivec2(mRenderWidth, mRenderHeight);
 	mPreviewFragXY = vec2(0.0, 0.0);
-	mAspectRatio = 0.75; // ratio 4:3 (0.75) 16:9 (0.5625)
-	mFboWidth = 640;
+	mAspectRatio = 0.5625; // ratio 4:3 (0.75) 16:9 (0.5625)
+	mFboWidth = 1280;
 	mFboHeight = mFboWidth * mAspectRatio;
 	mPreviewFboWidth = 70;
 	mPreviewFboHeight = mPreviewFboWidth* mAspectRatio;
