@@ -219,7 +219,7 @@ void VDUIRender::Run(const char* title) {
 		}
 		ctrl = mVDSettings->IWEIGHT2;
 		iWeight2 = mVDSession->getFloatUniformValueByIndex(ctrl);
-		if (ImGui::DragFloat("Weight0", &iWeight2, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+		if (ImGui::DragFloat("Weight2", &iWeight2, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 		{
 			setValue(ctrl, iWeight2);
 		}
