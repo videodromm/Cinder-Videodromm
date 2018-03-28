@@ -642,7 +642,7 @@ ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 int VDSession::loadFragmentShader(string aFilePath) {
 	int rtn = -1;
 	CI_LOG_V("loadFragmentShader " + aFilePath);
-	mVDMix->createShaderFbo(aFilePath);
+	rtn = mVDMix->createShaderFbo(aFilePath);
 
 	return rtn;
 }

@@ -119,7 +119,7 @@ namespace VideoDromm
 		void							load();
 		// fbos
 		unsigned int 					createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex = 0);
-		unsigned int					createShaderFboFromString(string aFragmentShaderString, string aShaderFilename);
+		unsigned int					createShaderFboFromString(string aFragmentShaderString, string aShaderFilename, string aName);
 		string							getFboName(unsigned int aFboIndex) { return mFboList[aFboIndex]->getName(); };
 		void							setFboInputTexture(unsigned int aFboIndex, unsigned int aInputTextureIndex);
 		unsigned int					getFboInputTextureIndex(unsigned int aFboIndex);

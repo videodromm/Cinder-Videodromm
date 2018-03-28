@@ -111,9 +111,9 @@ namespace VideoDromm {
 	GLuint VDFbo::getId() {
 		return mFbo->getId();
 	}
-
+	// only for ui display
 	std::string VDFbo::getName() {
-		return mShaderName + " fb:" + mId;
+		return mShaderName + "fbo" + mId;
 		//return mShaderName + " " + mId;
 	}
 	std::string VDFbo::getShaderName() {
@@ -246,12 +246,12 @@ namespace VideoDromm {
 			CI_LOG_V("SPout" + mInputTextureIndex);
 		}
 		gl::ScopedGlslProg glslScope(mFboTextureShader);
-		mFboTextureShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
+		/* test on 20180326, useless, no better mFboTextureShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
 		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		mFboTextureShader->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 		mFboTextureShader->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mFboTextureShader->uniform("iChannel0", 0);
-		mFboTextureShader->uniform("iChannel1", 1);
+		mFboTextureShader->uniform("iChannel1", 1); */
 
 		gl::drawSolidRect(Rectf(0, 0, mVDSettings->mFboWidth, mVDSettings->mFboHeight));
 
@@ -260,13 +260,13 @@ namespace VideoDromm {
 	}
 
 	void VDFbo::updateThumbFile() {
-		/*if (mRenderedTexture) {
+		if (mRenderedTexture) {
 			string filename = getShaderName() + ".jpg";
 			fs::path fr = getAssetPath("") / "thumbs" / filename;
 			getFboTexture();
 			Surface s8(mRenderedTexture->createSource());
 			writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
-		}*/
+		}
 	}
 
 } // namespace VideoDromm
