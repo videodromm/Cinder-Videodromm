@@ -2,9 +2,10 @@
 
 using namespace VideoDromm;
 
-VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString) {
+VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString, string aName) {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;
 	mFragmentShaderString = aFragmentShaderString;
+	mName = aName;
 	mValid = false;
 	mActive = true;
 	// shadertoy include
@@ -44,16 +45,7 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 		mFragFile = getAssetPath("") / "0.frag";
 	}
 
-	//mName = mFragFile.filename().string();
-	// get filename without extension
-	/*int dotIndex = fileName.find_last_of(".");
-
-	if (dotIndex != std::string::npos) {
-		mName = fileName.substr(0, dotIndex);
-	}
-	else {
-		mName = fileName;
-	}*/
+	mName = mFragFile.filename().string();
 
 	mFragmentShaderFilePath = mFragFile.string();
 	mFragmentShaderString = loadString(loadFile(mFragFile));

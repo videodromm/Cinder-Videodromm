@@ -135,7 +135,7 @@ namespace VideoDromm {
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) { mVDMix->setFboFragmentShaderIndex(aFboIndex, aFboShaderIndex); };
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex) { return mVDMix->getFboFragmentShaderIndex(aFboIndex); };
 		bool							loadShaderFolder(string aFolder);
-		int								loadFragmentShader(string aFilePath);
+		int								loadFragmentShader(string aFilePath, unsigned int aIndex);
 		unsigned int					getShadersCount() { return mVDMix->getShadersCount(); };
 		string							getShaderName(unsigned int aShaderIndex) { return mVDMix->getShaderName(aShaderIndex); };
 		ci::gl::TextureRef				getShaderThumb(unsigned int aShaderIndex) { return mVDMix->getShaderThumb(aShaderIndex); };
