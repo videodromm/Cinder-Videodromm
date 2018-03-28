@@ -78,6 +78,7 @@ namespace VideoDromm {
 			mFboTextureFragmentShaderString = aFragmentShaderString; // set only if compiles successfully
 			// 20161209 problem on Mac mFboTextureShader->setLabel(aName);
 			mFboName = aName;
+			mShaderName = aName;
 			mShaderIndex = aShaderIndex;
 		}
 		catch (gl::GlslProgCompileExc &exc) {
@@ -174,53 +175,8 @@ namespace VideoDromm {
 				}
 			}
 		}
-		// feedback
-		/*auto &fbuniforms = mFeedbackShader->getActiveUniforms();
-		for (const auto &uniform : fbuniforms) {
-			//CI_LOG_V(mFboTextureShader->getLabel() + ", getShader uniform name:" + uniform.getName());
-			if (mVDAnimation->isExistingUniform(uniform.getName())) {
-				int uniformType = mVDAnimation->getUniformType(uniform.getName());
-				switch (uniformType)
-				{
-				case 0:
-					// float
-					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getFloatUniformValueByName(uniform.getName()));
-					break;
-				case 1:
-					// sampler2D
-					mFeedbackShader->uniform(uniform.getName(), mCurrentFeedbackIndex);
-					break;
-				case 2:
-					// vec2
-					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getVec2UniformValueByName(uniform.getName()));
-					break;
-				case 3:
-					// vec3
-					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getVec3UniformValueByName(uniform.getName()));
-					break;
-				case 4:
-					// vec4
-					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getVec4UniformValueByName(uniform.getName()));
-					break;
-				case 5:
-					// int
-					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getIntUniformValueByName(uniform.getName()));
-					break;
-				case 6:
-					// bool
-					mFeedbackShader->uniform(uniform.getName(), mVDAnimation->getBoolUniformValueByName(uniform.getName()));
-					break;
-				default:
-					break;
-				}
-			}
-			else {
-				if (uniform.getName() != "ciModelViewProjection") {
-					mVDSettings->mMsg =  "feedback shader, uniform not found:" + uniform.getName();
-					CI_LOG_V(mVDSettings->mMsg);
-				}
-			}
-		}*/
+		// TODO feedback
+		
 		return mFboTextureShader;
 	}
 	ci::gl::Texture2dRef VDFbo::getRenderedTexture() {
@@ -228,6 +184,7 @@ namespace VideoDromm {
 			// render once for init
 			getFboTexture();
 			isReady = true;
+			updateThumbFile();
 		}
 		return mRenderedTexture;
 	}
@@ -262,10 +219,13 @@ namespace VideoDromm {
 	void VDFbo::updateThumbFile() {
 		if (mRenderedTexture) {
 			string filename = getShaderName() + ".jpg";
-			fs::path fr = getAssetPath("") / "thumbs" / filename;
-			getFboTexture();
-			Surface s8(mRenderedTexture->createSource());
-			writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
+			fs::path fr = getAssetPath("") / "thumbs" / filename;			
+			// Create thumb file if it doesn't already exist.
+			// if (!fs::exists(fr)) {
+				getFboTexture();
+				Surface s8(mRenderedTexture->createSource());
+				writeImage(writeFile(getAssetPath("") / "thumbs" / filename), s8);
+			//}
 		}
 	}
 

@@ -46,15 +46,6 @@ bool VDShader::loadFragmentStringFromFile(string aFileName) {
 	}
 
 	mName = mFragFile.filename().string();
-	// get filename without extension
-	/*int dotIndex = fileName.find_last_of(".");
-
-	if (dotIndex != std::string::npos) {
-		mName = fileName.substr(0, dotIndex);
-	}
-	else {
-		mName = fileName;
-	}*/
 
 	mFragmentShaderFilePath = mFragFile.string();
 	mFragmentShaderString = loadString(loadFile(mFragFile));

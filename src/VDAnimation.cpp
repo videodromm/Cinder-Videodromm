@@ -101,7 +101,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// weight texture 1
 		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
 		// weight texture 2
-		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.5f); // 27
+		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.0f); // 27
 		// weight texture 3
 		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 31
 

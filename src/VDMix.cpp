@@ -576,12 +576,10 @@ namespace VideoDromm {
 
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDSession::init mShaderList");
-			createShaderFboFromString("void main(void){(2.0*iZoom * gl_FragCoord.xy/iResolution.xy) - 1.0;vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).xx;float col = 0.0;uv.x += sin(iGlobalTime * 6.0 + uv.y*1.5)*spec.y;col += abs(0.8 / uv.x) * spec.y;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizVert", "SoundVizVert.glsl");
-			createShaderFboFromString("void main(void){(2.0*iZoom * gl_FragCoord.xy/iResolution.xy) - 1.0;vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).yy;float col = 0.0;uv.y += sin(iGlobalTime * 6.0 + uv.x*1.5)*spec.x;col += abs(0.8/uv.y) * spec.x;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizHoriz", "SoundVizHoriz.glsl");
+			createShaderFboFromString("void main(void){vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).xx;float col = 0.0;uv.x += sin(iGlobalTime * 6.0 + uv.y*1.5)*spec.y;col += abs(0.8 / uv.x) * spec.y;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizVert", "SoundVizVert.glsl");
+			createShaderFboFromString("void main(void){vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).yy;float col = 0.0;uv.y += sin(iGlobalTime * 6.0 + uv.x*1.5)*spec.x;col += abs(0.8/uv.y) * spec.x;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizHoriz", "SoundVizHoriz.glsl");
 			createShaderFboFromString("void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;uv = abs(2.0*(uv - 0.5));vec4 t1 = texture2D(iChannel0, vec2(uv[0], 0.1));vec4 t2 = texture2D(iChannel0, vec2(uv[1], 0.1));float fft = t1[0] * t2[0];gl_FragColor = vec4(sin(fft*3.141*2.5), sin(fft*3.141*2.0), sin(fft*3.141*1.0), 1.0);}", "fftmatrix", "fftMatrixProduct.glsl");
 			createShaderFboFromString("void main(void) {vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));float radius = length(uv);float angle = atan(uv.y, uv.x);float col = .0;col += 1.5*sin(iGlobalTime + 13.0 * angle + uv.y * 20);col += cos(.9 * uv.x * angle * 60.0 + radius * 5.0 - iGlobalTime * 2.);fragColor = (1.2 - radius) * vec4(vec3(col), 1.0);}", "hexler330", "hexler330.glsl");
-			createShaderFbo("video.glsl", 3);
-			createShaderFbo("spout.glsl", 4);
 			createShaderFbo("2.glsl", 0);
 			createShaderFbo("3.glsl", 0);
 			createShaderFbo("4.glsl", 0);
@@ -1004,7 +1002,7 @@ namespace VideoDromm {
 						{
 							if (!mShaderList[i]->isActive()) rtn = i;
 						}
-					}
+					} 
 				}
 				// if we found an available slot
 				if (rtn > 0) {
@@ -1017,7 +1015,33 @@ namespace VideoDromm {
 				}
 				else {
 					// no slot available, create new shader
-					rtn = createShaderFboFromString(loadString(loadFile(mFragFile)), aShaderFilename, fName);
+					// problem to investigate :
+					rtn = createShaderFboFromString(loadString(loadFile(mFragFile)), aShaderFilename, fName); 
+					// = :
+					/*
+					unsigned int shaderId = 0;
+					// create new shader
+					VDShaderRef s(new VDShader(mVDSettings, mVDAnimation, aShaderFilename, loadString(loadFile(mFragFile)), fName));
+					if (s->isValid()) {
+						mShaderList.push_back(s);
+						shaderId = mShaderList.size() - 1;
+						// each shader element has a fbo
+						VDFboRef f(new VDFbo(mVDSettings, mVDAnimation));
+						// create fbo xml
+						XmlTree			fboXml;
+						fboXml.setTag(aShaderFilename);
+						fboXml.setAttribute("id", shaderId);
+						fboXml.setAttribute("width", "640");
+						fboXml.setAttribute("height", "480");
+						fboXml.setAttribute("shadername", fName);
+						fboXml.setAttribute("inputtextureindex", 0);
+						f->fromXml(fboXml);
+						f->setShaderIndex(shaderId);
+						f->setFragmentShader(shaderId, mShaderList[shaderId]->getFragmentString(), fName);
+						mFboList.push_back(f);
+						rtn = mFboList.size() - 1;
+						setFboInputTexture(rtn, 0);
+					}*/
 				}
 				mFboList[rtn]->updateThumbFile();
 			}
