@@ -132,9 +132,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// iFreq3  
 		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f);
 		// iMouseX  
-		createFloatUniform("iMouseX", 35, 320.0f, 0.0f, 640.0f);
+		createFloatUniform("iMouseX", 35, (float)mVDSettings->mFboWidth / 2, 0.0f, mVDSettings->mFboWidth);
 		// iMouseY  
-		createFloatUniform("iMouseY", 36, 240.0f, 0.0f, 480.0f);
+		createFloatUniform("iMouseY", 36, (float)mVDSettings->mFboHeight / 2, 0.0f, mVDSettings->mFboHeight);
 		// iMouseZ  
 		createFloatUniform("iMouseZ", 37, 0.0f, 0.0f, 1.0f);
 		// vignette amount

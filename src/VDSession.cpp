@@ -679,7 +679,7 @@ bool VDSession::loadShaderFolder(string aFolder) {
 				ext = fileName.substr(dotIndex + 1);
 				if (ext == "glsl")
 				{
-					loadFragmentShader(aFolder + "/" + fileName, 0, 2);
+					loadFragmentShader(aFolder + "/" + fileName, 0);
 				}
 			}
 		}

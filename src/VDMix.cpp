@@ -683,8 +683,8 @@ namespace VideoDromm {
 							XmlTree		xml;
 							xml.setTag("details");
 							xml.setAttribute("path", "0.jpg");
-							xml.setAttribute("width", 640);
-							xml.setAttribute("height", 480);
+							xml.setAttribute("width", mVDSettings->mFboWidth);
+							xml.setAttribute("height", mVDSettings->mFboHeight);
 							t->fromXml(xml);
 							mTextureList.push_back(t);
 						}
@@ -916,8 +916,8 @@ namespace VideoDromm {
 			XmlTree			fboXml;
 			fboXml.setTag(aShaderFilename);
 			fboXml.setAttribute("id", shaderId);
-			fboXml.setAttribute("width", "640");
-			fboXml.setAttribute("height", "480");
+			fboXml.setAttribute("width", mVDSettings->mFboWidth);
+			fboXml.setAttribute("height", mVDSettings->mFboHeight);
 			fboXml.setAttribute("shadername", aName);
 			// 20180328 fboXml.setAttribute("inputtextureindex", math<int>::min(rtn, mTextureList.size() - 1));
 			fboXml.setAttribute("inputtextureindex", 0);
