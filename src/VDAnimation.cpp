@@ -103,7 +103,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// slitscan (or other) Param2 
 		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 21
 		// gstnsmk
-		createFloatUniform("iSobel", mVDSettings->ISOBEL, 1.0f, 0.01f, 1.0f); // 22
+		createFloatUniform("iSobel", mVDSettings->ISOBEL, 0.02f, 0.02f, 1.0f); // 22
 		// weight texture 1
 		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
 		// weight texture 2

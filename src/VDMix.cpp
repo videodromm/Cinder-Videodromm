@@ -399,6 +399,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
 		mGlslMix->uniform("iFps", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFPS));
 		mGlslMix->uniform("iContour", mVDAnimation->getFloatUniformValueByName("iContour"));
+		mGlslMix->uniform("iSobel", mVDAnimation->getFloatUniformValueByName("iSobel"));
 		renderMix();
 		
 		// blendmodes preview
@@ -469,6 +470,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iXorY", mVDSettings->iXorY);
 			mGlslBlend->uniform("iBadTv", mVDAnimation->getFloatUniformValueByName("iBadTv"));
 			mGlslBlend->uniform("iContour", mVDAnimation->getFloatUniformValueByName("iContour"));
+			mGlslBlend->uniform("iSobel", mVDAnimation->getFloatUniformValueByName("iSobel"));
 			renderBlend();
 		}
 	}
