@@ -80,7 +80,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 
 		// rotary
 		// ratio
-		createFloatUniform("iRatio", 11, 1.0f, 0.01f, 1.0f);
+		createFloatUniform("iRatio", mVDSettings->IRATIO, 1.0f, 0.01f, 1.0f); // 11
 		// zoom
 		createFloatUniform("iZoom", 12, 1.0f, 0.95f, 1.0f);
 		// Audio multfactor 
@@ -98,26 +98,28 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// akai faders: 19,23,27,31,49,53,57,61,master:62
 		// weight mix fbo texture 0
 		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
+		// slitscan (or other) Param1 
+		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 20
+		// slitscan (or other) Param2 
+		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 21
+		// gstnsmk
+		createFloatUniform("iSobel", mVDSettings->ISOBEL, 1.0f, 0.01f, 1.0f); // 22
 		// weight texture 1
 		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
 		// weight texture 2
 		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.0f); // 27
 		// weight texture 3
 		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 31
-
+		
 		// top row 21 to 28
 		// Speed 
-		createFloatUniform("iSpeed", 22, 12.0f, 0.01f, 12.0f);
+		createFloatUniform("iSpeed", mVDSettings->ISPEED, 12.0f, 0.01f, 12.0f); // 32
 		// tempo time
 		createFloatUniform("iTempoTime", 24, 0.1f);
 		// fps 25
 		createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
 		// contour
 		createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
-		// slitscan (or other) Param1 
-		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f);
-		// slitscan (or other) Param2 
-		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f);
 		// iResolutionX (should be fbowidth) 
 		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f);
 		// iResolutionY (should be fboheight)  
@@ -142,11 +144,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// vignette falloff
 		createFloatUniform("iVFallOff", 39, 0.31f, 0.0f, 1.0f);
 		// background red
-		createFloatUniform("iBR", mVDSettings->IBR, 0.1f); // 40 was 19
-														   // background green
-		createFloatUniform("iBG", mVDSettings->IBG, 0.5f); // 41 was 20
-														   // background blue
-		createFloatUniform("iBB", mVDSettings->IBB, 0.1f); // 42 was 21
+		createFloatUniform("iBR", mVDSettings->IBR, 0.1f); 
+		// background green
+		createFloatUniform("iBG", mVDSettings->IBG, 0.5f);
+		// background blue
+		createFloatUniform("iBB", mVDSettings->IBB, 0.1f);
 
 		// int
 		// blend mode 

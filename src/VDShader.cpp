@@ -65,7 +65,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 	// filename to save
 	mValid = false;
 	// load fragment shader
-	CI_LOG_V("setFragmentString, loading" + aName);
+	CI_LOG_V("setFragmentString, loading " + aName);
 	try
 	{
 		//CI_LOG_V("before regex " + mOriginalFragmentString);

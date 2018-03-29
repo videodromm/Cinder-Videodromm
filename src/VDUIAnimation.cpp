@@ -45,7 +45,7 @@ float VDUIAnimation::getMaxUniformValueByIndex(unsigned int aIndex) {
 }
 void VDUIAnimation::Run(const char* title) {
 
-	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH + 100), ImGuiSetCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 	ImGui::Begin("Animation", NULL, ImVec2(0, 0), ImGui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
 	{
@@ -123,7 +123,7 @@ void VDUIAnimation::Run(const char* title) {
 			}
 
 			// ratio
-			ctrl = 11;
+			ctrl = mVDSettings->IRATIO;
 			if (ImGui::Button("a##ratio")) { toggleAuto(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("t##ratio")) { toggleTempo(ctrl); }
@@ -132,6 +132,20 @@ void VDUIAnimation::Run(const char* title) {
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
 			if (ImGui::SliderFloat("ratio/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+			{
+				setValue(ctrl, localValues[ctrl]);
+			}
+
+			// sobel
+			ctrl = mVDSettings->ISOBEL;
+			if (ImGui::Button("a##sobel")) { toggleAuto(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("t##sobel")) { toggleTempo(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("x##sobel")) { resetAutoAnimation(ctrl); }
+			ImGui::SameLine();
+			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
+			if (ImGui::SliderFloat("sobel/min/max", &localValues[ctrl], getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
 			{
 				setValue(ctrl, localValues[ctrl]);
 			}

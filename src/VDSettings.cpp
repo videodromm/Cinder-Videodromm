@@ -430,15 +430,15 @@ void VDSettings::resetSomeParams() {
 	uiPreviewH = mPreviewHeight + uiMargin;
 	uiLargeW = (mPreviewFboWidth + uiMargin) * 3;
 	uiLargeH = (mPreviewFboHeight + uiMargin) * 7;
-	uiLargePreviewW = mPreviewFboWidth * 1.6;
-	uiLargePreviewH = mPreviewHeight * 2.2;
+	uiLargePreviewW = mPreviewFboWidth * 1.7;
+	uiLargePreviewH = mPreviewHeight * 2.8;
 	uiXPosCol1 = uiLargeW + uiMargin * 2;
 	uiXPosCol2 = uiXPosCol1 + uiMargin + uiElementWidth; //largeW + mVDSettings->uiMargin * 2;
 	uiXPosCol3 = uiXPosCol2 + uiMargin;
 	//uiYPos;
 	uiYPosRow1 = 18;
 	uiYPosRow2 = 160;
-	uiYPosRow3 = uiYPosRow2 + uiLargeH + uiMargin * 1.5;
+	uiYPosRow3 = 100 + uiYPosRow2 + uiLargeH + uiMargin * 1.5;
 	shaderEditIndex = 0;
 }
 
@@ -644,6 +644,7 @@ void VDSettings::reset()
 		"uniform float     iVFallOff;\n"
 		"uniform int       iInvert;\n"
 		"uniform float     iRatio;\n"
+		"uniform float     iSobel;\n"
 		"uniform float     iZoom;\n"
 		"uniform float     iRotationSpeed;\n"
 		"uniform float     iCrossfade;\n"
@@ -801,7 +802,7 @@ void VDSettings::reset()
 		"		left.b = mix(left.r, texture(iChannel0, vec2(xpos - noise * 0.05, uv.y)).b, 0.25);\n"
 		"	}\n"
 		"	// sobel\n"
-		"	if (iRatio < 1.0) { left = sobel0(iRatio * 3.0 /iResolution.x, iRatio * 3.0 /iResolution.y, uv); }\n"
+		"	//if (iSobel < 1.0) { left = sobel0(iSobel * 3.0 /iResolution.x, iSobel * 3.0 /iResolution.y, uv); }\n"
 		"	// Trixels\n"
 		"	if (iTrixels > 0.0) { left = trixels(uv, iChannel0); }\n"
 		"	return vec3(left.r, left.g, left.b);\n"
@@ -839,7 +840,7 @@ void VDSettings::reset()
 		"		right.b = mix(right.r, texture(iChannel1, vec2(xpos - noise * 0.05, uv.y)).b, 0.25);\n"
 		"	}\n"
 		"	// sobel\n"
-		"	if (iRatio < 1.0) { right = sobel1(iRatio * 3.0 /iResolution.x, iRatio * 3.0 /iResolution.y, uv); }\n"
+		"	//if (iSobel < 1.0) { right = sobel1(iSobel * 3.0 /iResolution.x, iSobel * 3.0 /iResolution.y, uv); }\n"
 		"	// Trixels\n"
 		"	if (iTrixels > 0.0) { right = trixels(uv, iChannel1); }\n"
 		"	return vec3(right.r, right.g, right.b);\n"
