@@ -16,7 +16,7 @@ void VDUIBlend::Run(const char* title) {
 	xPos = mVDSettings->uiMargin;
 	yPos = mVDSettings->uiYPosRow3;
 	for (int s = 0; s < mVDSession->getFboBlendCount(); s++) {
-		ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH), ImGuiSetCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH + 10.0f), ImGuiSetCond_Once);
 		ImGui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);
 		sprintf(buf, "%s", blendModes[s]);
 		ImGui::Begin(buf, NULL, ImVec2(0, 0), ImGui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
@@ -48,10 +48,10 @@ void VDUIBlend::Run(const char* title) {
 		ImGui::End();
 		xPos += mVDSettings->uiLargePreviewW + mVDSettings->uiMargin;
 		//if (xPos > (mVDSettings->mRenderWidth - mVDSettings->uiLargePreviewW))
-		if (s % 10 == 9)
+		if (s % 13 == 12)
 		{
 			xPos = mVDSettings->uiMargin;
-			yPos += mVDSettings->uiPreviewH + mVDSettings->uiMargin;
+			yPos += mVDSettings->uiPreviewH + 10.0f + mVDSettings->uiMargin;
 		}
 	}
 }
