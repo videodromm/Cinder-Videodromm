@@ -118,7 +118,7 @@ namespace VideoDromm {
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
 		float *							getFreqs() { return mVDAnimation->iFreqs; };
 		int								getFreqIndexSize() { return mVDAnimation->getFreqIndexSize(); };
-		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFloatUniformValueByIndex(31 + aFreqIndex); };
+		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFloatUniformValueByIndex(43 + aFreqIndex); };
 		int								getFreqIndex(unsigned int aFreqIndex) { return mVDAnimation->getFreqIndex(aFreqIndex); };
 		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { mVDAnimation->setFreqIndex(aFreqIndex, aFreq); };
 		int								getWindowSize() { return mVDAnimation->mWindowSize; };
