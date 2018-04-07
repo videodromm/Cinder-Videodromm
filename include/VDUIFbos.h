@@ -35,5 +35,10 @@ namespace VideoDromm
 		// imgui
 		char						buf[64];
 		int							xPos, yPos;
+		int							xStep = 1;
+		int							yStep = 1;
+		// sequence
+		int							playheadPositions[12];
+		float						speeds[12];
 	};
 }
