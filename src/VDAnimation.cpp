@@ -389,6 +389,7 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].boolValue = false;
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
+	shaderUniforms[aName].autobass = false;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].floatValue = aValue;
 	shaderUniforms[aName].uniformType = 0;
@@ -436,6 +437,7 @@ void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
 	shaderUniforms[aName].boolValue = aValue;
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
+	shaderUniforms[aName].autobass = false;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].floatValue = aValue;
 	shaderUniforms[aName].uniformType = 6;
@@ -465,9 +467,14 @@ bool VDAnimation::toggleTempo(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = !shaderUniforms[getUniformNameForIndex(aIndex)].autotime;
 	return shaderUniforms[getUniformNameForIndex(aIndex)].autotime;
 }
+bool VDAnimation::toggleBass(unsigned int aIndex) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].autobass = !shaderUniforms[getUniformNameForIndex(aIndex)].autobass;
+	return shaderUniforms[getUniformNameForIndex(aIndex)].autobass;
+}
 void VDAnimation::resetAutoAnimation(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].automatic = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = false;
+	shaderUniforms[getUniformNameForIndex(aIndex)].autobass = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
 }
 
@@ -478,9 +485,10 @@ bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue)
 		/*if (aIndex ==  mVDSettings->IXFADE) {
 			CI_LOG_V("v18 old value " + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue) + " newvalue " + toString(aValue));
 		}*/
-		if (shaderUniforms[getUniformNameForIndex(aIndex)].floatValue != aValue) {
-			if (aValue >= shaderUniforms[getUniformNameForIndex(aIndex)].minValue && aValue <= shaderUniforms[getUniformNameForIndex(aIndex)].maxValue) {
-				shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
+		string uniformName = getUniformNameForIndex(aIndex);
+		if (shaderUniforms[uniformName].floatValue != aValue) {
+			if ((aValue >= shaderUniforms[uniformName].minValue && aValue <= shaderUniforms[uniformName].maxValue) || shaderUniforms[uniformName].autobass) {
+				shaderUniforms[uniformName].floatValue = aValue;
 				rtn = true;
 			}
 		}
@@ -692,6 +700,12 @@ void VDAnimation::update() {
 			{
 				if (shaderUniforms[getUniformNameForIndex(anim)].automatic) {
 					setFloatUniformValueByIndex(anim, lmap<float>(shaderUniforms["iTempoTime"].floatValue, 0.00001, iDeltaTime, shaderUniforms[getUniformNameForIndex(anim)].minValue, shaderUniforms[getUniformNameForIndex(anim)].maxValue));
+				}
+				else
+				{
+					if (shaderUniforms[getUniformNameForIndex(anim)].autobass) {
+						setFloatUniformValueByIndex(anim, (getFloatUniformDefaultValueByIndex(anim) + 0.01f) * getFloatUniformValueByIndex(43) / 25.0f);
+					}
 				}
 			}
 		}

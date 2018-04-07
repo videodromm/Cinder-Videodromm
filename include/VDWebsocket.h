@@ -49,6 +49,7 @@ namespace VideoDromm
 		void						toggleAuto(unsigned int aIndex);
 		void						toggleValue(unsigned int aIndex);
 		void						toggleTempo(unsigned int aIndex);
+		void						toggleBass(unsigned int aIndex);
 		void						resetAutoAnimation(unsigned int aIndex);
 		void						changeShaderIndex(unsigned int aWarpIndex, unsigned int aWarpShaderIndex, unsigned int aSlot);
 		void						changeWarpFboIndex(unsigned int aWarpIndex, unsigned int aWarpFboIndex, unsigned int aSlot); //aSlot 0 = A, 1 = B,...

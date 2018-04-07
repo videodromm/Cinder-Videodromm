@@ -37,6 +37,7 @@ namespace VideoDromm
 		float							maxValue;
 		bool							autotime;
 		bool							automatic;
+		bool							autobass;
 		int								textureIndex;
 		bool							isValid;
 	};
@@ -106,6 +107,7 @@ namespace VideoDromm
 		bool							toggleAuto(unsigned int aIndex);
 		bool							toggleValue(unsigned int aIndex);
 		bool							toggleTempo(unsigned int aIndex);
+		bool							toggleBass(unsigned int aIndex);
 		void							resetAutoAnimation(unsigned int aIndex);
 		bool							setFloatUniformValueByIndex(unsigned int aIndex, float aValue);
 
@@ -152,6 +154,9 @@ namespace VideoDromm
 		}
 		float							getFloatUniformValueByIndex(unsigned int aIndex) {
 			return shaderUniforms[getUniformNameForIndex(aIndex)].floatValue;
+		}
+		float							getFloatUniformDefaultValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
 		}
 		int								getSampler2DUniformValueByName(string aName) {
 			return shaderUniforms[aName].textureIndex;

@@ -42,6 +42,7 @@ namespace VideoDromm
 		void							toggleValue(unsigned int aCtrl);
 		void							toggleAuto(unsigned int aCtrl);
 		void							toggleTempo(unsigned int aCtrl);
+		void							toggleBass(unsigned int aCtrl);
 		bool							getBoolValue(unsigned int aCtrl);
 		void							resetAutoAnimation(unsigned int aCtrl);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
