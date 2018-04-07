@@ -75,6 +75,8 @@ namespace VideoDromm {
 		void							toggleAuto(unsigned int aCtrl);
 		void							toggleTempo(unsigned int aCtrl);
 		void							toggleBass(unsigned int aCtrl);
+		void							toggleMid(unsigned int aCtrl);
+		void							toggleTreble(unsigned int aCtrl);
 
 		void							resetAutoAnimation(unsigned int aIndex);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
@@ -119,7 +121,7 @@ namespace VideoDromm {
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
 		float *							getFreqs() { return mVDAnimation->iFreqs; };
 		int								getFreqIndexSize() { return mVDAnimation->getFreqIndexSize(); };
-		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFloatUniformValueByIndex(43 + aFreqIndex); };
+		float							getFreq(unsigned int aFreqIndex) { return mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFREQ0 + aFreqIndex); };
 		int								getFreqIndex(unsigned int aFreqIndex) { return mVDAnimation->getFreqIndex(aFreqIndex); };
 		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { mVDAnimation->setFreqIndex(aFreqIndex, aFreq); };
 		int								getWindowSize() { return mVDAnimation->mWindowSize; };

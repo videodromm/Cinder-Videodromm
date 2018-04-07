@@ -117,6 +117,12 @@ void VDSession::toggleTempo(unsigned int aCtrl) {
 void VDSession::toggleBass(unsigned int aCtrl) {
 	mVDWebsocket->toggleBass(aCtrl);
 }
+void VDSession::toggleMid(unsigned int aCtrl) {
+	mVDWebsocket->toggleMid(aCtrl);
+}
+void VDSession::toggleTreble(unsigned int aCtrl) {
+	mVDWebsocket->toggleTreble(aCtrl);
+}
 void VDSession::resetAutoAnimation(unsigned int aIndex) {
 	mVDWebsocket->resetAutoAnimation(aIndex);
 }

@@ -37,6 +37,12 @@ void VDUIAnimation::toggleTempo(unsigned int aCtrl) {
 void VDUIAnimation::toggleBass(unsigned int aCtrl) {
 	mVDSession->toggleBass(aCtrl);
 }
+void VDUIAnimation::toggleMid(unsigned int aCtrl) {
+	mVDSession->toggleMid(aCtrl);
+}
+void VDUIAnimation::toggleTreble(unsigned int aCtrl) {
+	mVDSession->toggleTreble(aCtrl);
+}
 void VDUIAnimation::resetAutoAnimation(unsigned int aCtrl) {
 	mVDSession->resetAutoAnimation(aCtrl);
 }
@@ -117,6 +123,10 @@ void VDUIAnimation::Run(const char* title) {
 			ImGui::SameLine();
 			if (ImGui::Button("b##chromatic")) { toggleBass(ctrl); }
 			ImGui::SameLine();
+			if (ImGui::Button("m##chromatic")) { toggleMid(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("t##chromatic")) { toggleTreble(ctrl); }
+			ImGui::SameLine();
 			if (ImGui::Button("x##chromatic")) {
 				resetAutoAnimation(ctrl);
 			}
@@ -135,6 +145,10 @@ void VDUIAnimation::Run(const char* title) {
 			ImGui::SameLine();
 			if (ImGui::Button("b##ratio")) { toggleBass(ctrl); }
 			ImGui::SameLine();
+			if (ImGui::Button("m##ratio")) { toggleMid(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("t##ratio")) { toggleTreble(ctrl); }
+			ImGui::SameLine();
 			if (ImGui::Button("x##ratio")) { resetAutoAnimation(ctrl); }
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
@@ -151,6 +165,10 @@ void VDUIAnimation::Run(const char* title) {
 			ImGui::SameLine();
 			if (ImGui::Button("b##sobel")) { toggleBass(ctrl); }
 			ImGui::SameLine();
+			if (ImGui::Button("m##sobel")) { toggleMid(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("t##sobel")) { toggleTreble(ctrl); }
+			ImGui::SameLine();
 			if (ImGui::Button("x##sobel")) { resetAutoAnimation(ctrl); }
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
@@ -165,6 +183,10 @@ void VDUIAnimation::Run(const char* title) {
 			if (ImGui::Button("f##exposure")) { toggleTempo(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("b##exposure")) { toggleBass(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("m##exposure")) { toggleMid(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("t##exposure")) { toggleTreble(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("x##exposure")) { resetAutoAnimation(ctrl); }
 			ImGui::SameLine();
@@ -183,6 +205,10 @@ void VDUIAnimation::Run(const char* title) {
 			if (ImGui::Button("f##zoom")) { toggleTempo(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("b##zoom")) { toggleBass(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("m##zoom")) { toggleMid(ctrl); }
+			ImGui::SameLine();
+			if (ImGui::Button("t##zoom")) { toggleTreble(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("x##zoom")) { resetAutoAnimation(ctrl); }
 			ImGui::SameLine();

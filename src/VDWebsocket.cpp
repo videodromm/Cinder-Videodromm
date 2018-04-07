@@ -427,6 +427,16 @@ void VDWebsocket::toggleBass(unsigned int aIndex) {
 	mVDAnimation->toggleBass(aIndex);
 	// TODO send json	
 }
+void VDWebsocket::toggleMid(unsigned int aIndex) {
+	// toggle
+	mVDAnimation->toggleMid(aIndex);
+	// TODO send json	
+}
+void VDWebsocket::toggleTreble(unsigned int aIndex) {
+	// toggle
+	mVDAnimation->toggleTreble(aIndex);
+	// TODO send json	
+}
 
 void VDWebsocket::toggleValue(unsigned int aIndex) {
 	// toggle

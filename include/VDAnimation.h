@@ -38,6 +38,8 @@ namespace VideoDromm
 		bool							autotime;
 		bool							automatic;
 		bool							autobass;
+		bool							automid;
+		bool							autotreble;
 		int								textureIndex;
 		bool							isValid;
 	};
@@ -108,6 +110,8 @@ namespace VideoDromm
 		bool							toggleValue(unsigned int aIndex);
 		bool							toggleTempo(unsigned int aIndex);
 		bool							toggleBass(unsigned int aIndex);
+		bool							toggleMid(unsigned int aIndex);
+		bool							toggleTreble(unsigned int aIndex);
 		void							resetAutoAnimation(unsigned int aIndex);
 		bool							setFloatUniformValueByIndex(unsigned int aIndex, float aValue);
 

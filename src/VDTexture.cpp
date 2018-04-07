@@ -980,7 +980,7 @@ namespace VideoDromm {
 					}
 					mVDAnimation->iFreqs[i] = f;
 					// update iFreq uniforms 
-					if (i == mVDAnimation->getFreqIndex(0)) mVDAnimation->setFloatUniformValueByIndex(43, f);
+					if (i == mVDAnimation->getFreqIndex(0)) mVDAnimation->setFloatUniformValueByIndex(43, f); // mVDSettings->IFREQ0
 					if (i == mVDAnimation->getFreqIndex(1)) mVDAnimation->setFloatUniformValueByIndex(44, f);
 					if (i == mVDAnimation->getFreqIndex(2)) mVDAnimation->setFloatUniformValueByIndex(45, f);
 					if (i == mVDAnimation->getFreqIndex(3)) mVDAnimation->setFloatUniformValueByIndex(46, f);

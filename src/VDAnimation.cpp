@@ -390,6 +390,8 @@ void VDAnimation::createFloatUniform(string aName, int aCtrlIndex, float aValue,
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
 	shaderUniforms[aName].autobass = false;
+	shaderUniforms[aName].automid = false;
+	shaderUniforms[aName].autotreble = false;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].floatValue = aValue;
 	shaderUniforms[aName].uniformType = 0;
@@ -438,6 +440,8 @@ void VDAnimation::createBoolUniform(string aName, int aCtrlIndex, bool aValue) {
 	shaderUniforms[aName].autotime = false;
 	shaderUniforms[aName].automatic = false;
 	shaderUniforms[aName].autobass = false;
+	shaderUniforms[aName].automid = false;
+	shaderUniforms[aName].autotreble = false;
 	shaderUniforms[aName].index = aCtrlIndex;
 	shaderUniforms[aName].floatValue = aValue;
 	shaderUniforms[aName].uniformType = 6;
@@ -471,10 +475,20 @@ bool VDAnimation::toggleBass(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].autobass = !shaderUniforms[getUniformNameForIndex(aIndex)].autobass;
 	return shaderUniforms[getUniformNameForIndex(aIndex)].autobass;
 }
+bool VDAnimation::toggleMid(unsigned int aIndex) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].automid = !shaderUniforms[getUniformNameForIndex(aIndex)].automid;
+	return shaderUniforms[getUniformNameForIndex(aIndex)].automid;
+}
+bool VDAnimation::toggleTreble(unsigned int aIndex) {
+	shaderUniforms[getUniformNameForIndex(aIndex)].autotreble = !shaderUniforms[getUniformNameForIndex(aIndex)].autotreble;
+	return shaderUniforms[getUniformNameForIndex(aIndex)].autotreble;
+}
 void VDAnimation::resetAutoAnimation(unsigned int aIndex) {
 	shaderUniforms[getUniformNameForIndex(aIndex)].automatic = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].autotime = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].autobass = false;
+	shaderUniforms[getUniformNameForIndex(aIndex)].automid = false;
+	shaderUniforms[getUniformNameForIndex(aIndex)].autotreble = false;
 	shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
 }
 
@@ -487,7 +501,7 @@ bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue)
 		}*/
 		string uniformName = getUniformNameForIndex(aIndex);
 		if (shaderUniforms[uniformName].floatValue != aValue) {
-			if ((aValue >= shaderUniforms[uniformName].minValue && aValue <= shaderUniforms[uniformName].maxValue) || shaderUniforms[uniformName].autobass) {
+			if ((aValue >= shaderUniforms[uniformName].minValue && aValue <= shaderUniforms[uniformName].maxValue) || shaderUniforms[uniformName].autobass || shaderUniforms[uniformName].automid || shaderUniforms[uniformName].autotreble) {
 				shaderUniforms[uniformName].floatValue = aValue;
 				rtn = true;
 			}
@@ -704,7 +718,19 @@ void VDAnimation::update() {
 				else
 				{
 					if (shaderUniforms[getUniformNameForIndex(anim)].autobass) {
-						setFloatUniformValueByIndex(anim, (getFloatUniformDefaultValueByIndex(anim) + 0.01f) * getFloatUniformValueByIndex(43) / 25.0f);
+						setFloatUniformValueByIndex(anim, (getFloatUniformDefaultValueByIndex(anim) + 0.01f) * getFloatUniformValueByIndex(mVDSettings->IFREQ0) / 25.0f);
+					}
+					else
+					{
+						if (shaderUniforms[getUniformNameForIndex(anim)].automid) {
+							setFloatUniformValueByIndex(anim, (getFloatUniformDefaultValueByIndex(anim) + 0.01f) * getFloatUniformValueByIndex(mVDSettings->IFREQ1) / 5.0f);
+						}
+						else
+						{
+							if (shaderUniforms[getUniformNameForIndex(anim)].autotreble) {
+								setFloatUniformValueByIndex(anim, (getFloatUniformDefaultValueByIndex(anim) + 0.01f) * getFloatUniformValueByIndex(mVDSettings->IFREQ2) / 2.0f);
+							}
+						}
 					}
 				}
 			}
