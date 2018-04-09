@@ -989,7 +989,7 @@ namespace VideoDromm {
 			}
 			if (fs::exists(mFragFile)) {
 				if (aIndex < mFboList.size()) {
-					if (mShaderList[aIndex]->loadFragmentStringFromFile(aShaderFilename)) {
+					if (mShaderList[aIndex]->loadFragmentStringFromFile(mFragFile.string())) {
 						mFboList[aIndex]->setFragmentShader(aIndex, mShaderList[aIndex]->getFragmentString(), mShaderList[aIndex]->getName());
 						mFboList[aIndex]->setInputTextureIndex(aInputTextureIndex);
 						rtn = aIndex;
