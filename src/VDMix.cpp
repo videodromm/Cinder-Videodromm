@@ -107,8 +107,6 @@ namespace VideoDromm {
 			mSpoutInitialized = mSpoutSender.CreateSender(mSenderName, mVDSettings->mFboWidth, mVDSettings->mFboHeight);
 		}
 #endif
-
-
 	}
 
 	ci::gl::TextureRef VDMix::getFboTexture(unsigned int aFboIndex) {
@@ -245,8 +243,8 @@ namespace VideoDromm {
 		// ensure all indexes are valid
 		for (auto &warp : mWarps) {
 			// create the fbos and shaders
-			warp->setAShaderIndex(createShaderFbo(warp->getAShaderFilename(), 0));
-			warp->setBShaderIndex(createShaderFbo(warp->getBShaderFilename(), 1));
+			// 20180416 warp->setAShaderIndex(createShaderFbo(warp->getAShaderFilename(), 0));
+			// 20180416 warp->setBShaderIndex(createShaderFbo(warp->getBShaderFilename(), 1));
 			// ensure all indexes are valid
 			if (warp->getAFboIndex() > mFboList.size() - 1) warp->setAFboIndex(0);
 			if (warp->getBFboIndex() > mFboList.size() - 1) warp->setBFboIndex(0);
@@ -308,6 +306,7 @@ namespace VideoDromm {
 		if (mTextureList.size() > 2) mTextureList[2]->getTexture()->bind(2);
 		if (mTextureList.size() > 3) mTextureList[3]->getTexture()->bind(3);
 		if (mTextureList.size() > 4) mTextureList[4]->getTexture()->bind(4);
+		if (mTextureList.size() > 5) mTextureList[5]->getTexture()->bind(5);
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)); // mWarps[warpMixToRender]->ABCrossfade);
 
@@ -362,6 +361,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iWeight1", mVDAnimation->getFloatUniformValueByName("iWeight1")); // texture
 		mGlslMix->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2")); // texture
 		mGlslMix->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3")); // texture
+		mGlslMix->uniform("iWeight4", mVDAnimation->getFloatUniformValueByName("iWeight4")); // texture
 		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mGlslMix->uniform("iChannel0", 0); // fbo shader 
@@ -414,6 +414,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iWeight1", mVDAnimation->getFloatUniformValueByName("iWeight1"));
 			mGlslBlend->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2"));
 			mGlslBlend->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3"));
+			mGlslBlend->uniform("iWeight4", mVDAnimation->getFloatUniformValueByName("iWeight4"));
 			mGlslBlend->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 			mGlslBlend->uniform("iChannel0", 0); // fbo shader 

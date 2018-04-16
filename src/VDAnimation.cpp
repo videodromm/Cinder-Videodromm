@@ -97,7 +97,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f);
 		// akai faders: 19,23,27,31,49,53,57,61,master:62
 		// weight mix fbo texture 0
-		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
+		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 0.1f); // 19
 		// slitscan (or other) Param1 
 		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 20
 		// slitscan (or other) Param2 
@@ -105,12 +105,14 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// gstnsmk
 		createFloatUniform("iSobel", mVDSettings->ISOBEL, 0.02f, 0.02f, 1.0f); // 22
 		// weight texture 1
-		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
+		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.2f); // 23
 		// weight texture 2
-		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.0f); // 27
+		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.3f); // 27
 		// weight texture 3
-		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 31
-		
+		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.4f); // 31
+		// weight texture 4
+		createFloatUniform("iWeight4", mVDSettings->IWEIGHT4, 0.5f); // 49
+
 		// top row 21 to 28
 		// Speed 
 		createFloatUniform("iSpeed", mVDSettings->ISPEED, 12.0f, 0.01f, 12.0f); // 32

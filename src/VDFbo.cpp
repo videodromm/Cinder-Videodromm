@@ -196,6 +196,8 @@ namespace VideoDromm {
 		gl::ScopedFramebuffer fbScp(mFbo);
 		gl::clear(Color::black());
 		// TODO check mTextureList size for bounds
+		// 20180416 always use audio texture (index 0)
+		//mTextureList[0]->getTexture()->bind(0);
 		if (mInputTextureIndex > mTextureList.size() - 1) mInputTextureIndex = 0;
 		mTextureList[mInputTextureIndex]->getTexture()->bind(0);
 		if (mTextureList[mInputTextureIndex]->getType() == SHARED) {

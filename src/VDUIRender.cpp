@@ -229,6 +229,12 @@ void VDUIRender::Run(const char* title) {
 		{
 			setValue(ctrl, iWeight3);
 		}
+		ctrl = mVDSettings->IWEIGHT4;
+		iWeight4 = mVDSession->getFloatUniformValueByIndex(ctrl);
+		if (ImGui::DragFloat("Weight4", &iWeight4, 0.001f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl)))
+		{
+			setValue(ctrl, iWeight4);
+		}
 		ImGui::PopItemWidth();
 	}
 	ImGui::End();
