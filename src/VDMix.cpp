@@ -246,7 +246,7 @@ namespace VideoDromm {
 		for (auto &warp : mWarps) {
 			// create the fbos and shaders
 			warp->setAShaderIndex(createShaderFbo(warp->getAShaderFilename(), 0));
-			warp->setBShaderIndex(createShaderFbo(warp->getBShaderFilename(), 0));
+			warp->setBShaderIndex(createShaderFbo(warp->getBShaderFilename(), 1));
 			// ensure all indexes are valid
 			if (warp->getAFboIndex() > mFboList.size() - 1) warp->setAFboIndex(0);
 			if (warp->getBFboIndex() > mFboList.size() - 1) warp->setBFboIndex(0);
@@ -583,9 +583,10 @@ namespace VideoDromm {
 			createShaderFboFromString("void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;uv = abs(2.0*(uv - 0.5));vec4 t1 = texture2D(iChannel0, vec2(uv[0], 0.1));vec4 t2 = texture2D(iChannel0, vec2(uv[1], 0.1));float fft = t1[0] * t2[0];gl_FragColor = vec4(sin(fft*3.141*2.5), sin(fft*3.141*2.0), sin(fft*3.141*1.0), 1.0);}", "fftmatrix", "fftMatrixProduct.glsl");
 			createShaderFboFromString("void main(void) {vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));float radius = length(uv);float angle = atan(uv.y, uv.x);float col = .0;col += 1.5*sin(iGlobalTime + 13.0 * angle + uv.y * 20);col += cos(.9 * uv.x * angle * 60.0 + radius * 5.0 - iGlobalTime * 2.);fragColor = (1.2 - radius) * vec4(vec3(col), 1.0);}", "hexler330", "hexler330.glsl");
 			
-			createShaderFboFromString("void main(void){vec2 uv = 2 * (fragCoord.xy / iResolution.xy - vec2(0.5));float specx = texture2D( iChannel0, vec2(0.25,5.0/100.0) ).x;float specy = texture2D( iChannel0, vec2(0.5,5.0/100.0) ).x;vec2 p = vec2(sin(iGlobalTime) * 0.7, cos(iGlobalTime*0.7)) + vec2(specx,specy) * 0.1;float r = length(uv-p) * specy;float phi = atan(uv.y-p.y,uv.x-p.x)+iGlobalTime*sin(iGlobalTime)*0.3;float col = sin(100.0*r*specx+iGlobalTime)+cos(specx + phi + r * 10.5 + specy); fragColor = vec4(vec3( col * specx,col,0.0 ),1.0);}", "Hexler1", "Hexler1.glsl");
 			createShaderFboFromString("void main(void){vec2 uv = 2 * (fragCoord.xy / iResolution.xy - vec2(0.5));float specx = texture2D( iChannel0, vec2(0.25,5.0/100.0) ).x;float specy = texture2D( iChannel0, vec2(0.5,5.0/100.0) ).x;float specz = 1.0*texture2D( iChannel0, vec2(0.7,5.0/100.0) ).x;float r = length(uv); float p = atan(uv.y/uv.x); uv = abs(uv);float col = 0.0;float amp = (specx+specy+specz)/3.0;uv.y += sin(uv.y*3.0*specx-iGlobalTime/5.0*specy+r*10.);uv.x += cos((iGlobalTime/5.0)+specx*30.0*uv.x);col += abs(1.0/uv.y/30.0) * (specx+specz)*15.0;col += abs(1.0/uv.x/60.0) * specx*8. ; fragColor=vec4(vec3( col ),1.0);}", "Hexler2", "Hexler2.glsl");
-			createShaderFboFromString("#define f(a,b)sin(50.3*length(fragCoord.xy/iResolution.xy*4.-vec2(cos(a),sin(b))-3.)) \n void main(){float t=iGlobalTime;fragColor=vec4(f(t,t)*f(1.4*t,.7*t));}", "Hyper-lightweight2XOR", "Hyper-lightweight2XOR.glsl");
+			createShaderFboFromString("void main(void){vec2 uv = fragCoord.xy / iResolution.xy;vec4 tex = texture(iChannel0, uv);fragColor = vec4(vec3( tex.r, tex.g, tex.b ),1.0);}", "0", "0.glsl");
+			createShaderFboFromString("void main(void){vec2 uv = fragCoord.xy / iResolution.xy;vec4 tex = texture(iChannel0, uv);fragColor = vec4(vec3( tex.r, tex.g, tex.b ),1.0);}", "1", "1.glsl");
+			//createShaderFboFromString("#define f(a,b)sin(50.3*length(fragCoord.xy/iResolution.xy*4.-vec2(cos(a),sin(b))-3.)) \n void main(){float t=iGlobalTime;fragColor=vec4(f(t,t)*f(1.4*t,.7*t));}", "Hyper-lightweight2XOR", "Hyper-lightweight2XOR.glsl");
 			createShaderFboFromString("void main(void) {float d = pow(dot(fragCoord.xy, iResolution.xy ), 0.52); d =  d * 0.5;float x = sin(6.0+0.1*d + iGlobalTime*-6.0) * 10.0;fragColor = vec4( x, x, x, 1 );}", "WallSide", "WallSide.glsl");
 			
 			createShaderFboFromString("void main(void){float d = distance(fragCoord.xy, iResolution.xy * vec2(0.5,0.5).xy);float x = sin(5.0+0.1*d + iGlobalTime*-4.0) * 5.0;x = clamp( x, 0.0, 1.0 );fragColor = vec4(x, x, x, 1.0);}", "Circular", "Circular.glsl");
