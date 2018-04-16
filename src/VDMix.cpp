@@ -56,6 +56,16 @@ namespace VideoDromm {
 		mWarpAnimationActive = false;
 		mWarpActiveIndex = 0;
 		mSolo = -1;
+		// 20180416 
+		for (int i = 0; i < 5; i++)
+		{
+			if (i < mTextureList.size() - 1) {
+				if (i < mFboList.size() - 1) {
+					setFboInputTexture(i, i);
+				}
+			}
+		}
+
 	}
 
 #pragma region blendmodes
@@ -222,7 +232,7 @@ namespace VideoDromm {
 
 		// save warp settings
 		Warp::save(mWarps, writeFile(mWarpJson));
-		
+
 	}
 	void VDMix::load()
 	{
@@ -251,7 +261,7 @@ namespace VideoDromm {
 			if (warp->getAShaderIndex() > mShaderList.size() - 1) warp->setAShaderIndex(0);
 			if (warp->getBShaderIndex() > mShaderList.size() - 1) warp->setBShaderIndex(0);
 			if (warp->getMixFboIndex() > mMixFbos.size() - 1) warp->setMixFboIndex(0);
-		}		
+		}
 	}
 
 	// Render the scene into the FBO
@@ -261,7 +271,7 @@ namespace VideoDromm {
 		gl::clear(Color::black());
 		// setup the viewport to match the dimensions of the FBO
 		gl::ScopedViewport scpVp(ivec2(0), mRenderFbo->getSize());
-		
+
 		// animate
 		if (mWarpAnimationActive) {
 			mWarpActiveIndex++;
@@ -323,13 +333,13 @@ namespace VideoDromm {
 			CI_LOG_V(" solo " + toString(mSolo));
 		}
 	}
-	
+
 	string VDMix::getMixFboName(unsigned int aMixFboIndex) {
 		if (aMixFboIndex > mMixFbos.size() - 1) aMixFboIndex = mMixFbos.size() - 1;
 		mMixFbos[aMixFboIndex].name = mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName() + "/" + mFboList[mWarps[aMixFboIndex]->getAFboIndex()]->getShaderName();
 		return mMixFbos[aMixFboIndex].name;
 	}
-	
+
 	void VDMix::resize() {
 		// tell the warps our window has been resized, so they properly scale up or down
 		Warp::handleResize(mWarps);
@@ -340,7 +350,7 @@ namespace VideoDromm {
 	}
 	void VDMix::update() {
 		// update audio texture
-		updateAudio();	
+		updateAudio();
 
 		// check if xFade changed
 		/*if (mVDSettings->xFadeChanged) {
@@ -401,7 +411,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iContour", mVDAnimation->getFloatUniformValueByName("iContour"));
 		mGlslMix->uniform("iSobel", mVDAnimation->getFloatUniformValueByName("iSobel"));
 		renderMix();
-		
+
 		// blendmodes preview
 		if (mVDAnimation->renderBlend()) {
 			mCurrentBlend = getElapsedFrames() % mVDAnimation->getBlendModesCount();
@@ -579,17 +589,17 @@ namespace VideoDromm {
 
 		if (mShaderList.size() == 0) {
 			CI_LOG_V("VDSession::init mShaderList");
-			createShaderFboFromString("void main(void){vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).xx;float col = 0.0;uv.x += sin(iGlobalTime * 6.0 + uv.y*1.5)*spec.y;col += abs(0.8 / uv.x) * spec.y;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizVert", "SoundVizVert.glsl");
-			createShaderFboFromString("void main(void){vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).yy;float col = 0.0;uv.y += sin(iGlobalTime * 6.0 + uv.x*1.5)*spec.x;col += abs(0.8/uv.y) * spec.x;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizHoriz", "SoundVizHoriz.glsl");
 			createShaderFboFromString("void main(void){vec2 uv = gl_FragCoord.xy / iResolution.xy;uv = abs(2.0*(uv - 0.5));vec4 t1 = texture2D(iChannel0, vec2(uv[0], 0.1));vec4 t2 = texture2D(iChannel0, vec2(uv[1], 0.1));float fft = t1[0] * t2[0];gl_FragColor = vec4(sin(fft*3.141*2.5), sin(fft*3.141*2.0), sin(fft*3.141*1.0), 1.0);}", "fftmatrix", "fftMatrixProduct.glsl");
-			createShaderFboFromString("void main(void) {vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));float radius = length(uv);float angle = atan(uv.y, uv.x);float col = .0;col += 1.5*sin(iGlobalTime + 13.0 * angle + uv.y * 20);col += cos(.9 * uv.x * angle * 60.0 + radius * 5.0 - iGlobalTime * 2.);fragColor = (1.2 - radius) * vec4(vec3(col), 1.0);}", "hexler330", "hexler330.glsl");
-			
-			createShaderFboFromString("void main(void){vec2 uv = 2 * (fragCoord.xy / iResolution.xy - vec2(0.5));float specx = texture2D( iChannel0, vec2(0.25,5.0/100.0) ).x;float specy = texture2D( iChannel0, vec2(0.5,5.0/100.0) ).x;float specz = 1.0*texture2D( iChannel0, vec2(0.7,5.0/100.0) ).x;float r = length(uv); float p = atan(uv.y/uv.x); uv = abs(uv);float col = 0.0;float amp = (specx+specy+specz)/3.0;uv.y += sin(uv.y*3.0*specx-iGlobalTime/5.0*specy+r*10.);uv.x += cos((iGlobalTime/5.0)+specx*30.0*uv.x);col += abs(1.0/uv.y/30.0) * (specx+specz)*15.0;col += abs(1.0/uv.x/60.0) * specx*8. ; fragColor=vec4(vec3( col ),1.0);}", "Hexler2", "Hexler2.glsl");
 			createShaderFboFromString("void main(void){vec2 uv = fragCoord.xy / iResolution.xy;vec4 tex = texture(iChannel0, uv);fragColor = vec4(vec3( tex.r, tex.g, tex.b ),1.0);}", "0", "0.glsl");
 			createShaderFboFromString("void main(void){vec2 uv = fragCoord.xy / iResolution.xy;vec4 tex = texture(iChannel0, uv);fragColor = vec4(vec3( tex.r, tex.g, tex.b ),1.0);}", "1", "1.glsl");
+			createShaderFboFromString("void main(void) {vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));float radius = length(uv);float angle = atan(uv.y, uv.x);float col = .0;col += 1.5*sin(iGlobalTime + 13.0 * angle + uv.y * 20);col += cos(.9 * uv.x * angle * 60.0 + radius * 5.0 - iGlobalTime * 2.);fragColor = (1.2 - radius) * vec4(vec3(col), 1.0);}", "hexler330", "hexler330.glsl");
+
+			createShaderFboFromString("void main(void){vec2 uv = 2 * (fragCoord.xy / iResolution.xy - vec2(0.5));float specx = texture2D( iChannel0, vec2(0.25,5.0/100.0) ).x;float specy = texture2D( iChannel0, vec2(0.5,5.0/100.0) ).x;float specz = 1.0*texture2D( iChannel0, vec2(0.7,5.0/100.0) ).x;float r = length(uv); float p = atan(uv.y/uv.x); uv = abs(uv);float col = 0.0;float amp = (specx+specy+specz)/3.0;uv.y += sin(uv.y*3.0*specx-iGlobalTime/5.0*specy+r*10.);uv.x += cos((iGlobalTime/5.0)+specx*30.0*uv.x);col += abs(1.0/uv.y/30.0) * (specx+specz)*15.0;col += abs(1.0/uv.x/60.0) * specx*8. ; fragColor=vec4(vec3( col ),1.0);}", "Hexler2", "Hexler2.glsl");
+			createShaderFboFromString("void main(void){vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).xx;float col = 0.0;uv.x += sin(iGlobalTime * 6.0 + uv.y*1.5)*spec.y;col += abs(0.8 / uv.x) * spec.y;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizVert", "SoundVizVert.glsl");
+			createShaderFboFromString("void main(void){vec2 uv = 2 * (gl_FragCoord.xy / iResolution.xy - vec2(0.5));vec2 spec = 1.0*texture2D(iChannel0, vec2(0.25, 5.0 / 100.0)).yy;float col = 0.0;uv.y += sin(iGlobalTime * 6.0 + uv.x*1.5)*spec.x;col += abs(0.8/uv.y) * spec.x;gl_FragColor = vec4(col, col, col, 1.0);}", "SoundVizHoriz", "SoundVizHoriz.glsl");
 			//createShaderFboFromString("#define f(a,b)sin(50.3*length(fragCoord.xy/iResolution.xy*4.-vec2(cos(a),sin(b))-3.)) \n void main(){float t=iGlobalTime;fragColor=vec4(f(t,t)*f(1.4*t,.7*t));}", "Hyper-lightweight2XOR", "Hyper-lightweight2XOR.glsl");
 			createShaderFboFromString("void main(void) {float d = pow(dot(fragCoord.xy, iResolution.xy ), 0.52); d =  d * 0.5;float x = sin(6.0+0.1*d + iGlobalTime*-6.0) * 10.0;fragColor = vec4( x, x, x, 1 );}", "WallSide", "WallSide.glsl");
-			
+
 			createShaderFboFromString("void main(void){float d = distance(fragCoord.xy, iResolution.xy * vec2(0.5,0.5).xy);float x = sin(5.0+0.1*d + iGlobalTime*-4.0) * 5.0;x = clamp( x, 0.0, 1.0 );fragColor = vec4(x, x, x, 1.0);}", "Circular", "Circular.glsl");
 			createShaderFboFromString("void main(void){vec4 p = vec4(fragCoord.xy,0.,1.)/iResolution.y - vec4(.9,.5,0,0), c=p-p;float t=iGlobalTime,r=length(p.xy+=sin(t+sin(t*.8))*.4),a=atan(p.y,p.x);for (float i = 0.;i<60.;i++) c = c*.98 + (sin(i+vec4(5,3,2,1))*.5+.5)*smoothstep(.99, 1., sin(log(r+i*.05)-t-i+sin(a +=t*.01)));fragColor = c*r;}", "2TweetsChallenge", "2TweetsChallenge.glsl");
 			createShaderFboFromString("void main(void){vec2 p = -1.0+2.0*fragCoord.xy/iResolution.xy;float w = sin(iGlobalTime+6.5*sqrt(dot(p,p))*cos(p.x));float x = cos(int(iRatio*10.0)*atan(p.y,p.x) + 1.8*w);vec3 col = iColor*15.0;fragColor = vec4(col*x,1.0);}", "gstnSmoke", "gunstonSmoke.glsl");
@@ -927,6 +937,7 @@ namespace VideoDromm {
 			fboXml.setAttribute("shadername", aName);
 			// 20180328 fboXml.setAttribute("inputtextureindex", math<int>::min(rtn, mTextureList.size() - 1));
 			fboXml.setAttribute("inputtextureindex", 0);
+
 			f->fromXml(fboXml);
 			f->setShaderIndex(shaderId);
 			f->setFragmentShader(shaderId, mShaderList[shaderId]->getFragmentString(), aName);
@@ -1023,7 +1034,7 @@ namespace VideoDromm {
 						{
 							if (!mShaderList[i]->isActive()) rtn = i;
 						}
-					} 
+					}
 				}
 				// if we found an available slot
 				if (rtn > 0) {
@@ -1037,7 +1048,7 @@ namespace VideoDromm {
 				else {
 					// no slot available, create new shader
 					// problem to investigate :
-					rtn = createShaderFboFromString(loadString(loadFile(mFragFile)), aShaderFilename, fName); 
+					rtn = createShaderFboFromString(loadString(loadFile(mFragFile)), aShaderFilename, fName);
 				} */
 				//mFboList[rtn]->updateThumbFile();
 			}
