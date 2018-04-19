@@ -115,7 +115,7 @@ void VDUITextures::Run(const char* title) {
 				}
 				speeds[t] = mVDSession->getSpeed(t);
 				sprintf(buf, "speed##spd%d", t);
-				if (ImGui::SliderFloat(buf, &speeds[t], 0.0f, 1.0f))
+				if (ImGui::DragFloat(buf, &speeds[t], 0.001f, 0.0f, 0.01f))
 				{
 					mVDSession->setSpeed(t, speeds[t]);
 				}
