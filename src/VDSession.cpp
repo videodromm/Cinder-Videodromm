@@ -443,8 +443,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				//mVDAnimation->currentScene++;
 				//if (mMovie) { if (mMovie->isPlaying()) mMovie->stop(); else mMovie->play(); }
 				break;
-			case KeyEvent::KEY_0:
-				break;
+
 			case KeyEvent::KEY_l:
 				mVDAnimation->load();
 				//mLoopVideo = !mLoopVideo;
