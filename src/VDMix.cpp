@@ -350,7 +350,7 @@ namespace VideoDromm {
 	}
 	void VDMix::update() {
 		// update audio texture
-		updateAudio();
+		if (mVDSettings->mUseAudio) updateAudio();
 
 		// check if xFade changed
 		/*if (mVDSettings->xFadeChanged) {

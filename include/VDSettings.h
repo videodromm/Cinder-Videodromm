@@ -177,6 +177,7 @@ namespace VideoDromm {
 		ColorA						ColorPurple;
 		// audio
 		bool						mIsPlaying;
+		bool						mUseAudio;
 		bool						mUseLineIn;
 		int							iBeat;
 		int							mFftSize;

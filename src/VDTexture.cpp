@@ -936,11 +936,13 @@ namespace VideoDromm {
 				mLineIn->enable();
 			}
 #endif
-			// also initialize wave monitor
-			auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize * 2).windowSize(mVDAnimation->mWindowSize);
-			mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
+			if (mVDAnimation->getUseAudio()) {
+				// also initialize wave monitor
+				auto scopeWaveFmt = audio::MonitorSpectralNode::Format().fftSize(mVDAnimation->mWindowSize * 2).windowSize(mVDAnimation->mWindowSize);
+				mMonitorWaveSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeWaveFmt));
 
-			ctx->enable();
+				ctx->enable();
+			}
 			mLineInInitialized = true;
 		}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
@@ -949,15 +951,17 @@ namespace VideoDromm {
 		}
 		else {
 #endif
-			if (mVDAnimation->isAudioBuffered()) {
-				if (mBufferPlayerNode) {
-					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+			if (mVDAnimation->getUseAudio()) {
+				if (mVDAnimation->isAudioBuffered()) {
+					if (mBufferPlayerNode) {
+						mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+					}
 				}
-			}
-			else {
-				if (mSamplePlayerNode) {
-					mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
-					mPosition = mSamplePlayerNode->getReadPosition();
+				else {
+					if (mSamplePlayerNode) {
+						mMagSpectrum = mMonitorWaveSpectralNode->getMagSpectrum();
+						mPosition = mSamplePlayerNode->getReadPosition();
+					}
 				}
 			}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))

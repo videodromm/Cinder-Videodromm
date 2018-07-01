@@ -90,6 +90,9 @@ namespace VideoDromm
 		float							iFreqs[mWindowSize];
 		void							preventLineInCrash(); // at next launch
 		void							saveLineIn();
+		bool							getUseAudio() {
+			return mVDSettings->mUseAudio;
+		};
 		bool							getUseLineIn() {
 			return mVDSettings->mUseLineIn;
 		};
