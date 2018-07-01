@@ -203,7 +203,7 @@ void VDAnimation::loadUniforms(const ci::DataSourceRef &source) {
 	if (json.hasChild("uniforms")) {
 		JsonTree u(json.getChild("uniforms"));
 
-		// iterate warps
+		// iterate uniforms
 		for (size_t i = 0; i < u.getNumChildren(); i++) {
 			JsonTree child(u.getChild(i));
 
