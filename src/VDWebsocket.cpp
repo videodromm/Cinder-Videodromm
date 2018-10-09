@@ -160,6 +160,10 @@ void VDWebsocket::parseMessage(string msg) {
 								mVDMix->setWarpBShaderIndex(receivedWarpIndex, receivedShaderIndex);
 							}
 							break;
+						case 2:
+							// change tempo
+							mVDAnimation->setBpm(jsonElement->getChild("tempo").getValue<float>());
+							break;
 						default:
 							break;
 						}
