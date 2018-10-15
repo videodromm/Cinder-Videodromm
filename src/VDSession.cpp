@@ -326,6 +326,7 @@ void VDSession::blendRenderEnable(bool render) {
 
 void VDSession::fileDrop(FileDropEvent event) {
 	string ext = "";
+	string fileName = "";
 
 	unsigned int index = (int)(event.getX() / (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin));
 	int y = (int)(event.getY());
@@ -336,33 +337,37 @@ void VDSession::fileDrop(FileDropEvent event) {
 	int dotIndex = absolutePath.find_last_of(".");
 	int slashIndex = absolutePath.find_last_of("\\");
 
-	if (dotIndex != std::string::npos && dotIndex > slashIndex) ext = absolutePath.substr(absolutePath.find_last_of(".") + 1);
+	if (dotIndex != std::string::npos && dotIndex > slashIndex) {
+		ext = absolutePath.substr(dotIndex + 1);
+		fileName = absolutePath.substr(slashIndex + 1, dotIndex - slashIndex - 1);
 
-	if (ext == "wav" || ext == "mp3") {
-		loadAudioFile(absolutePath);
-	}
-	else if (ext == "png" || ext == "jpg") {
-		if (index < 1) index = 1;
-		if (index > 3) index = 3;
-		loadImageFile(absolutePath, index);
-	}
-	else if (ext == "glsl" || ext == "frag") {
-		if (index < 1) index = 1;
-		if (index > getFboListSize() - 1) index = getFboListSize() - 1;
-		loadFragmentShader(absolutePath, index);
-	}
-	else if (ext == "xml") {
-	}
-	else if (ext == "mov") {
-		loadMovie(absolutePath, index);
-	}
-	else if (ext == "txt") {
-	}
-	else if (ext == "") {
-		// try loading image sequence from dir
-		if (!loadImageSequence(absolutePath, index)) {
-			// try to load a folder of shaders
-			loadShaderFolder(absolutePath);
+
+		if (ext == "wav" || ext == "mp3") {
+			loadAudioFile(absolutePath);
+		}
+		else if (ext == "png" || ext == "jpg") {
+			if (index < 1) index = 1;
+			if (index > 3) index = 3;
+			loadImageFile(absolutePath, index);
+		}
+		else if (ext == "glsl" || ext == "frag") {
+			if (index < 1) index = 1;
+			if (index > getFboListSize() - 1) index = getFboListSize() - 1;
+			loadFragmentShader(absolutePath, index);
+		}
+		else if (ext == "xml") {
+		}
+		else if (ext == "mov") {
+			loadMovie(absolutePath, index);
+		}
+		else if (ext == "txt") {
+		}
+		else if (ext == "") {
+			// try loading image sequence from dir
+			if (!loadImageSequence(absolutePath, index)) {
+				// try to load a folder of shaders
+				loadShaderFolder(absolutePath);
+			}
 		}
 	}
 }
