@@ -681,7 +681,12 @@ namespace VideoDromm {
 						}
 						else if (texturetype == "shared") {
 							// TODO CHECK USELESS? #if defined( CINDER_MSW )
+							/* disabled for SpoutIn/Out problem in same app
 							TextureSharedRef t(new TextureShared());
+							t->fromXml(detailsXml);
+							mTextureList.push_back(t);*/
+							// TODO texturetype = textureChild->setAttribute("texturetype", "image");
+							TextureImageRef t(TextureImage::create());
 							t->fromXml(detailsXml);
 							mTextureList.push_back(t);
 							//#endif
