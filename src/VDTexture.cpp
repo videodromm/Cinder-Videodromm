@@ -729,7 +729,7 @@ namespace VideoDromm {
 		printDevices();
 
 		try {
-			mCapture = Capture::create(640, 480);
+			mCapture = Capture::create(mWidth, mHeight);
 			mCapture->start();
 		}
 		catch (ci::Exception &exc) {
