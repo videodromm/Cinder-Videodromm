@@ -159,6 +159,15 @@ namespace VideoDromm
 		bool							getBoolUniformValueByName(string aName) {
 			return shaderUniforms[aName].boolValue;
 		}
+		vec2							getVec2UniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].vec2Value;
+		};
+		vec3							getVec3UniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].vec3Value;
+		};
+		vec4							getVec4UniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].vec4Value;
+		};
 		float							getFloatUniformValueByIndex(unsigned int aIndex) {
 			return shaderUniforms[getUniformNameForIndex(aIndex)].floatValue;
 		}
