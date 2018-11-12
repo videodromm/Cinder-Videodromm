@@ -30,6 +30,7 @@ namespace VideoDromm {
 		static const int			IFA = 4;
 		static const int			ISTEPS = 10;
 		static const int			IRATIO = 11;
+		static const int			IZOOM = 12;
 		static const int			IEXPOSURE = 14;
 		static const int			IPIXELATE = 15;
 		static const int			ITRIXELS = 16;
@@ -37,9 +38,9 @@ namespace VideoDromm {
 		static const int			IXFADE = 18;
 		static const int			IWEIGHT0 = 19;
 		static const int			IPARAM1 = 20;
-		static const int			IPARAM2 = 21;
 		static const int			ISOBEL = 22;
 		static const int			IWEIGHT1 = 23;
+		static const int			IPARAM2 = 24;
 		static const int			IFPS = 25;
 		static const int			IWEIGHT2 = 27;
 		static const int			IRESX = 29;

@@ -82,7 +82,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// ratio
 		createFloatUniform("iRatio", mVDSettings->IRATIO, 1.0f, 0.01f, 1.0f); // 11
 		// zoom
-		createFloatUniform("iZoom", 12, 1.0f, 0.95f, 1.0f);
+		createFloatUniform("iZoom", mVDSettings->IZOOM, 1.0f, 0.95f, 1.0f);
 		// Audio multfactor 
 		createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
 		// exposure
@@ -100,12 +100,12 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
 		// slitscan (or other) Param1 
 		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 20
-		// slitscan (or other) Param2 
-		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 21
 		// gstnsmk
 		createFloatUniform("iSobel", mVDSettings->ISOBEL, 0.02f, 0.02f, 1.0f); // 22
 		// weight texture 1
 		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
+		// slitscan (or other) Param2 
+		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 24
 		// weight texture 2
 		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.0f); // 27
 		// weight texture 3
