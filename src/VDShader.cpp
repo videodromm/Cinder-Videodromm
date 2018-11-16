@@ -9,7 +9,7 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	mValid = false;
 	mActive = true;
 	// shadertoy include
-	shaderInclude = loadString(loadAsset("shadertoy.inc"));
+	shaderInclude = loadString(loadAsset("shadertoy.min"));
 	mVDSettings = aVDSettings;
 	mVDAnimation = aVDAnimation;
 	mError = "";
@@ -78,10 +78,10 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		std::regex pattern{ "mainImage" };
 		std::string replacement{ "main" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		pattern = { " out vec4 fragColor," };
+		pattern = { "out vec4 fragColor," };
 		replacement = { "void" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		pattern = { " in vec2 fragCoord" };
+		pattern = { "in vec2 fragCoord" };
 		replacement = { "" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { " vec2 fragCoord" };
@@ -105,7 +105,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		replacement = { "iM" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { "u_time" };
-		replacement = { "iGlobalTime" };
+		replacement = { "iTime" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { "u_" };
 		replacement = { "i" };
@@ -138,10 +138,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		std::regex ISFPattern{ "iResolution" };
 		std::string ISFReplacement{ "RENDERSIZE" };
 		mISFString = std::regex_replace(mISFString, ISFPattern, ISFReplacement);
+
 		ISFPattern = { "iTime" };
-		ISFReplacement = { "TIME" };
-		mISFString = std::regex_replace(mISFString, ISFPattern, ISFReplacement);
-		ISFPattern = { "iGlobalTime" };
 		ISFReplacement = { "TIME" };
 		mISFString = std::regex_replace(mISFString, ISFPattern, ISFReplacement);
 
@@ -354,7 +352,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		}
 		mCurrentUniformsString += "// active uniforms end\n";
 		// save .frag file to migrate old shaders
-		// doubles iGlobalTime 20180304 mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
+		// doubles iTime 20180304 mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
 		mProcessedShaderString = mNotFoundUniformsString + mCurrentUniformsString + mOriginalFragmentString;
 		fileName = aName + ".frag";
 		fs::path processedFile = getAssetPath("") / "glsl" / "processed" / aName;

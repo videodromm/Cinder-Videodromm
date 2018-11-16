@@ -130,7 +130,7 @@ void VDUIShaders::Run(const char* title) {
 				static char mShaderText[MAX] =
 					"uniform vec3 iResolution;\n"
 					"uniform vec3 iColor;\n"
-					"uniform float iGlobalTime;\n"
+					"uniform float iTime;\n"
 					"uniform sampler2D iChannel0;\n"
 					"uniform sampler2D iChannel1;\n"
 					"uniform sampler2D iChannel2;\n"
@@ -142,7 +142,7 @@ void VDUIShaders::Run(const char* title) {
 					"\tvec4 t0 = texture(iChannel0, uv);\n"
 					"\tvec4 t1 = texture(iChannel1, uv);\n"
 					"\tvec4 t2 = texture(iChannel2, uv);\n"
-					"\toColor = vec4(t0.x, t1.y, cos(iGlobalTime), 1.0);\n"
+					"\toColor = vec4(t0.x, t1.y, cos(iTime), 1.0);\n"
 					"}\n";
 				// check if shader text needs to be loaded in the editor
 				if (mVDSettings->shaderEditIndex != shaderToEdit) {

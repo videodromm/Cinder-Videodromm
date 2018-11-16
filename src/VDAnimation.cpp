@@ -54,7 +54,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	}
 	else {
 		// global time in seconds
-		createFloatUniform("iGlobalTime", mVDSettings->ITIME, 0.0f);
+		createFloatUniform("iTime", mVDSettings->ITIME, 0.0f);
 		// sliders
 		// red
 		createFloatUniform("iFR", mVDSettings->IFR, 1.0f);
@@ -496,7 +496,7 @@ void VDAnimation::resetAutoAnimation(unsigned int aIndex) {
 
 bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue) {
 	bool rtn = false;
-	// we can't change iGlobalTime at index 0
+	// we can't change iTime at index 0
 	if (aIndex > 0) {
 		/*if (aIndex ==  mVDSettings->IXFADE) {
 			CI_LOG_V("v18 old value " + toString(shaderUniforms[getUniformNameForIndex(aIndex)].floatValue) + " newvalue " + toString(aValue));
@@ -659,16 +659,16 @@ void VDAnimation::update() {
 	mVDSettings->iChannelTime[1] = getElapsedSeconds() - 1;
 	mVDSettings->iChannelTime[2] = getElapsedSeconds() - 2;
 	mVDSettings->iChannelTime[3] = getElapsedSeconds() - 3;
-	// iGlobalTime
+	// iTime
 	if (mUseTimeWithTempo)
 	{
-		shaderUniforms["iGlobalTime"].floatValue = shaderUniforms["iTempoTime"].floatValue*iTimeFactor;
+		shaderUniforms["iTime"].floatValue = shaderUniforms["iTempoTime"].floatValue*iTimeFactor;
 	}
 	else
 	{
-		shaderUniforms["iGlobalTime"].floatValue = getElapsedSeconds();
+		shaderUniforms["iTime"].floatValue = getElapsedSeconds();
 	}
-	shaderUniforms["iGlobalTime"].floatValue *= mVDSettings->iSpeedMultiplier;
+	shaderUniforms["iTime"].floatValue *= mVDSettings->iSpeedMultiplier;
 	// iDate
 	time_t now = time(0);
 	tm *   t = gmtime(&now);

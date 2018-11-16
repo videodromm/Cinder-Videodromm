@@ -203,7 +203,7 @@ namespace VideoDromm {
 			CI_LOG_V("SPout" + mInputTextureIndex);
 		}
 		gl::ScopedGlslProg glslScope(mFboTextureShader);
-		/* test on 20180326, useless, no better mFboTextureShader->uniform("iGlobalTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
+		/* test on 20180326, useless, no better mFboTextureShader->uniform("iTime", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME));
 		mFboTextureShader->uniform("iResolution", vec3(mVDSettings->mFboWidth, mVDSettings->mFboHeight, 1.0));
 		mFboTextureShader->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
 		mFboTextureShader->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));

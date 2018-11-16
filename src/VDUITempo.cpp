@@ -35,7 +35,7 @@ void VDUITempo::Run(const char* title) {
 		ImGui::SameLine();
 		ImGui::Text("beats/bar %d ", mVDSession->getIntUniformValueByName("iBeatsPerBar"));
 
-		ImGui::Text("Time %.2f", mVDSession->getFloatUniformValueByName("iGlobalTime"));
+		ImGui::Text("Time %.2f", mVDSession->getFloatUniformValueByName("iTime"));
 		ImGui::SameLine();
 		ImGui::Text("Tempo Time %.2f", mVDSession->getFloatUniformValueByName("iTempoTime"));
 
