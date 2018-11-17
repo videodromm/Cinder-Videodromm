@@ -162,8 +162,8 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		ISFPattern = { "void main" };
 		ISFReplacement = { "dirtyhack mainImage" }; //dirty hack!
 		mISFString = std::regex_replace(mISFString, ISFPattern, ISFReplacement);
-		ISFPattern = { "void" };
-		ISFReplacement = { "out vec4 fragColor, in vec2 fragCoord" };
+		//ISFPattern = { "void" };
+		//ISFReplacement = { "out vec4 fragColor, in vec2 fragCoord" };
 		mISFString = std::regex_replace(mISFString, ISFPattern, ISFReplacement);
 		ISFPattern = { "dirtyhack mainImage" };
 		ISFReplacement = { "void mainImage" }; //dirty hack!
