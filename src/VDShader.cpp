@@ -9,7 +9,7 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	mValid = false;
 	mActive = true;
 	// shadertoy include
-	shaderInclude = loadString(loadAsset("shadertoy.min"));
+	shaderInclude = loadString(loadAsset("shadertoy.inc"));
 	mVDSettings = aVDSettings;
 	mVDAnimation = aVDAnimation;
 	mError = "";
