@@ -28,6 +28,7 @@ VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWeb
 	mSelectedWarp = 0;
 	mSelectedFboA = 1;
 	mSelectedFboB = 2;
+	midiSticky = false;
 }
 /* void VDRouter::setupOSCSender() {
 	// OSC sender with broadcast
@@ -299,25 +300,25 @@ void VDRouter::midiSetup() {
 
 void VDRouter::openMidiInPort(int i) {
 
-		stringstream ss;
-		if (i < mMidiIn0.getNumPorts()) {
-			if (i == 0) {
-				mMidiIn0.openPort(i);
-				mMidiIn0.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
-			}
-			if (i == 1) {
-				mMidiIn1.openPort(i);
-				mMidiIn1.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
-			}
-			if (i == 2) {
-				mMidiIn2.openPort(i);
-				mMidiIn2.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
-			}
+	stringstream ss;
+	if (i < mMidiIn0.getNumPorts()) {
+		if (i == 0) {
+			mMidiIn0.openPort(i);
+			mMidiIn0.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
 		}
-		mMidiInputs[i].isConnected = true;
-		ss << "Opening MIDI in port " << i << " " << mMidiInputs[i].portName << std::endl;
-		mVDSettings->mMsg = ss.str();
-		mVDSettings->mNewMsg = true;
+		if (i == 1) {
+			mMidiIn1.openPort(i);
+			mMidiIn1.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
+		}
+		if (i == 2) {
+			mMidiIn2.openPort(i);
+			mMidiIn2.midiSignal.connect(std::bind(&VDRouter::midiListener, this, std::placeholders::_1));
+		}
+	}
+	mMidiInputs[i].isConnected = true;
+	ss << "Opening MIDI in port " << i << " " << mMidiInputs[i].portName << std::endl;
+	mVDSettings->mMsg = ss.str();
+	mVDSettings->mNewMsg = true;
 }
 void VDRouter::closeMidiInPort(int i) {
 
@@ -448,13 +449,30 @@ void VDRouter::midiListener(midi::Message msg) {
 		//midiVelocity = msg.velocity;
 		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		midiPitch = msg.pitch;
+
+		if (midiPitch == 27) midiSticky = true;
+		if (midiSticky) {
+			midiStickyPrevIndex = midiPitch;
+			midiStickyPrevValue = mVDAnimation->getBoolUniformValueByIndex(midiPitch + 80);
+		}
 		mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, true);
 		ss << "MIDI noteon Chn: " << midiChannel << " Pitch: " << midiPitch << std::endl;
 		CI_LOG_V("Midi: " + ss.str());
 		break;
 	case MIDI_NOTE_OFF:
 		midiPitch = msg.pitch;
-		mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, false);
+		if (midiPitch == 27) {
+			midiStickyPrevIndex = 0;
+			midiSticky = false;
+		}
+		if (!midiSticky) {
+			mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, false);
+		}
+		else {
+			if (midiPitch == midiStickyPrevIndex) {
+				mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, !midiStickyPrevValue);
+			}
+		}
 		ss << "MIDI noteoff Chn: " << midiChannel << " Pitch: " << midiPitch << std::endl;
 		CI_LOG_V("Midi: " + ss.str());
 		// was for OSC midiControlType = "/off";
@@ -776,5 +794,5 @@ void VDRouter::colorWrite()
 	ss << std::endl;
 	mVDSettings->mWebSocketsNewMsg = true;
 	mVDSettings->mWebSocketsMsg = ss.str();
-	
+
 }*/
