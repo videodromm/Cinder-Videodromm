@@ -550,7 +550,6 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 			mVDSettings->xFade = farg1;
 			mVDSettings->xFadeChanged = true;
 		}
-		mVDWebsocket->wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 
 	}
 	// buttons
@@ -566,6 +565,10 @@ void VDRouter::updateParams(int iarg0, float farg1) {
 	if (iarg0 > 40 && iarg0 < 49) {
 		// low row 
 		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
+	}
+	if (iarg0 > 0 && iarg0 < 49) {
+		// float values 
+		mVDWebsocket->wsWrite("{\"params\" :[{ \"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 	}
 }
 /*void VDRouter::sendOSCIntMessage(string controlType, int iarg0, int iarg1, int iarg2, int iarg3, int iarg4, int iarg5) {
