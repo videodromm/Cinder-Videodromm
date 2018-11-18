@@ -401,8 +401,8 @@ namespace VideoDromm {
 		mGlslMix->uniform("iRedMultiplier", mVDAnimation->getFloatUniformValueByName("iRedMultiplier"));
 		mGlslMix->uniform("iGreenMultiplier", mVDAnimation->getFloatUniformValueByName("iGreenMultiplier"));
 		mGlslMix->uniform("iBlueMultiplier", mVDAnimation->getFloatUniformValueByName("iBlueMultiplier"));
-		mGlslMix->uniform("iFlipV", mVDAnimation->isFlipV());
-		mGlslMix->uniform("iFlipH", mVDAnimation->isFlipH());
+		mGlslMix->uniform("iFlipV", (int)mVDAnimation->getBoolUniformValueByIndex(mVDSettings->IFLIPV));
+		mGlslMix->uniform("iFlipH", (int)mVDAnimation->getBoolUniformValueByIndex(mVDSettings->IFLIPH));
 		mGlslMix->uniform("iParam1", mVDAnimation->getFloatUniformValueByName("iParam1"));
 		mGlslMix->uniform("iParam2", mVDAnimation->getFloatUniformValueByName("iParam2"));
 		mGlslMix->uniform("iXorY", mVDSettings->iXorY);
@@ -474,8 +474,8 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iRedMultiplier", mVDAnimation->getFloatUniformValueByName("iRedMultiplier"));
 			mGlslBlend->uniform("iGreenMultiplier", mVDAnimation->getFloatUniformValueByName("iGreenMultiplier"));
 			mGlslBlend->uniform("iBlueMultiplier", mVDAnimation->getFloatUniformValueByName("iBlueMultiplier"));
-			mGlslBlend->uniform("iFlipH", 0);
-			mGlslBlend->uniform("iFlipV", 0);
+			mGlslBlend->uniform("iFlipH", (int)mVDAnimation->getBoolUniformValueByIndex(mVDSettings->IFLIPH));
+			mGlslBlend->uniform("iFlipV", (int)mVDAnimation->getBoolUniformValueByIndex(mVDSettings->IFLIPV));
 			mGlslBlend->uniform("iParam1", mVDAnimation->getFloatUniformValueByName("iParam1"));
 			mGlslBlend->uniform("iParam2", mVDAnimation->getFloatUniformValueByName("iParam2"));
 			mGlslBlend->uniform("iXorY", mVDSettings->iXorY);

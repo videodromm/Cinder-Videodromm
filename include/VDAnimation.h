@@ -194,10 +194,10 @@ namespace VideoDromm
 		};
 
 		// mix fbo
-		bool							isFlipH() { return mFlipH; };
-		bool							isFlipV() { return mFlipV; };
-		void							flipH() { mFlipH = !mFlipH; };
-		void							flipV() { mFlipV = !mFlipV; };
+		bool							isFlipH() { return getBoolUniformValueByIndex(mVDSettings->IFLIPH); };
+		bool							isFlipV() { return getBoolUniformValueByIndex(mVDSettings->IFLIPV); };
+		void							flipH() { setBoolUniformValueByIndex(mVDSettings->IFLIPH, !getBoolUniformValueByIndex(mVDSettings->IFLIPH)); };
+		void							flipV() { setBoolUniformValueByIndex(mVDSettings->IFLIPV, !getBoolUniformValueByIndex(mVDSettings->IFLIPV)); };
 		unsigned int					getBlendModesCount() { return mBlendModes; };
 		bool							renderBlend() { return mBlendRender; };
 
@@ -260,8 +260,8 @@ namespace VideoDromm
 		void							saveAnimation();
 
 		std::unordered_map<int, float>	mBadTV;
-		bool							mFlipH;
-		bool							mFlipV;
+		//bool							mFlipH;
+		//bool							mFlipV;
 		bool							mBlendRender;
 		// timed animation
 		float							mBpm;

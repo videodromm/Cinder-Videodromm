@@ -299,9 +299,6 @@ void VDRouter::midiSetup() {
 
 void VDRouter::openMidiInPort(int i) {
 
-	// HACK Push2 has 2 midi ports, we keep the internal one not useable 
-	// Push2 sold if (mMidiIn0.getPortName(i) != "Ableton Push 2 1") {
-
 		stringstream ss;
 		if (i < mMidiIn0.getNumPorts()) {
 			if (i == 0) {
@@ -321,8 +318,6 @@ void VDRouter::openMidiInPort(int i) {
 		ss << "Opening MIDI in port " << i << " " << mMidiInputs[i].portName << std::endl;
 		mVDSettings->mMsg = ss.str();
 		mVDSettings->mNewMsg = true;
-	// }
-
 }
 void VDRouter::closeMidiInPort(int i) {
 
@@ -450,22 +445,21 @@ void VDRouter::midiListener(midi::Message msg) {
 	case MIDI_NOTE_ON:
 		// only used for akai midimix
 		// was for OSC midiControlType = "/on";
-		midiPitch = msg.pitch;
 		//midiVelocity = msg.velocity;
 		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
+		midiPitch = msg.pitch;
 		mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, true);
 		ss << "MIDI noteon Chn: " << midiChannel << " Pitch: " << midiPitch << std::endl;
 		CI_LOG_V("Midi: " + ss.str());
 		break;
 	case MIDI_NOTE_OFF:
-		// only used for akai midimix
-		// was for OSC midiControlType = "/off";
 		midiPitch = msg.pitch;
-		//midiVelocity = msg.velocity;
-		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		mVDAnimation->setBoolUniformValueByIndex(midiPitch + 80, false);
 		ss << "MIDI noteoff Chn: " << midiChannel << " Pitch: " << midiPitch << std::endl;
 		CI_LOG_V("Midi: " + ss.str());
+		// was for OSC midiControlType = "/off";
+		//midiVelocity = msg.velocity;
+		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		break;
 	default:
 		CI_LOG_V("Midi unknown");

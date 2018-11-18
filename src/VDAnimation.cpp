@@ -5,8 +5,8 @@ using namespace VideoDromm;
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
 	// mix fbo flip
-	mFlipH = false;
-	mFlipV = false;
+	/*mFlipH = false;
+	mFlipV = false;*/
 	mBlendRender = false;
 	//audio
 	mAudioBuffered = false;
@@ -65,11 +65,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// Alpha 
 		createFloatUniform("iAlpha", mVDSettings->IFA, 1.0f);
 		// red multiplier 
-		createFloatUniform("iRedMultiplier", 5, 1.0f, 0.0f, 3.0f);
+		createFloatUniform("iRedMultiplier", mVDSettings->IFRX, 1.0f, 0.0f, 3.0f); // 5
 		// green multiplier 
-		createFloatUniform("iGreenMultiplier", 6, 1.0f, 0.0f, 3.0f);
+		createFloatUniform("iGreenMultiplier", mVDSettings->IFGX, 1.0f, 0.0f, 3.0f); // 6 
 		// blue multiplier 
-		createFloatUniform("iBlueMultiplier", 7, 1.0f, 0.0f, 3.0f);
+		createFloatUniform("iBlueMultiplier", mVDSettings->IFBX, 1.0f, 0.0f, 3.0f); // 7 
 		// bad tv
 		createFloatUniform("iBadTv", 8, 0.0f, 0.0f, 5.0f);
 
@@ -174,21 +174,47 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 
 		// boolean
 		// glitch
-		createBoolUniform("iGlitch", mVDSettings->IGLITCH); // was 45
-		// toggle
-		createBoolUniform("iToggle", mVDSettings->ITOGGLE); // was 46
+		createBoolUniform("iGlitch", mVDSettings->IGLITCH); // 81
 		// vignette
-		createBoolUniform("iVignette", 84); // was 47
+		createBoolUniform("iVignette", mVDSettings->IVIGN); // 82 toggle
+		// toggle
+		createBoolUniform("iToggle", mVDSettings->ITOGGLE); // 83
 		// invert
-		createBoolUniform("iInvert", mVDSettings->IINVERT); // 86 was 48
-		createBoolUniform("iXorY", 87); // was 83
-		createBoolUniform("iFlipH", 90); // was 81
-		createBoolUniform("iFlipV", 92); // was 82
+		createBoolUniform("iInvert", mVDSettings->IINVERT); // 86
+		createBoolUniform("iXorY", mVDSettings->IXORY); // 101 was 87
+		createBoolUniform("iFlipH", mVDSettings->IFLIPH); // 100 toggle was 90
+		createBoolUniform("iFlipV", mVDSettings->IFLIPV); // 103 toggle was 92
 	}
+	// vec4 kinect2
+	createVec4Uniform("iSpineBase", 200, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("SpineMid", 201, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("Neck", 202, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("Head", 203, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("ShldrL", 204, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("ElbowL", 205, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("WristL", 206, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("HandL", 207, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("ShldrR", 208, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("ElbowR", 209, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("WristR", 210, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("HandR", 211, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("HipL", 212, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("KneeL", 213, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("AnkleL", 214, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("FootL", 215, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("HipR", 216, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("KneeR", 217, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("AnkleR", 218, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("FootR", 219, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("SpineShldr", 220, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("HandTipL", 221, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("ThumbL", 222, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("HandTipR", 223, vec4(320.0f, 240.0f, 0.0f, 0.0f));
+	createVec4Uniform("ThumbR", 224, vec4(320.0f, 240.0f, 0.0f, 0.0f));
 	// textures
 	for (size_t i = 0; i < 8; i++)
 	{
-		createSampler2DUniform("iChannel" + toString(i), 100 + i, i);// TODO verify doesn't mess up type (uint!)
+		createSampler2DUniform("iChannel" + toString(i), 300 + i, i);// TODO verify doesn't mess up type (uint!)
 	}
 	load();
 	loadAnimation();
