@@ -54,103 +54,104 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	}
 	else {
 		// global time in seconds
-		createFloatUniform("iTime", mVDSettings->ITIME, 0.0f);
+		createFloatUniform("iTime", mVDSettings->ITIME, 0.0f); // 0
 		// sliders
 		// red
-		createFloatUniform("iFR", mVDSettings->IFR, 1.0f);
+		createFloatUniform("iFR", mVDSettings->IFR, 1.0f); // 1
 		// green
-		createFloatUniform("iFG", mVDSettings->IFG, 0.3f);
+		createFloatUniform("iFG", mVDSettings->IFG, 0.3f); // 2
 		// blue
-		createFloatUniform("iFB", mVDSettings->IFB, 0.0f);
+		createFloatUniform("iFB", mVDSettings->IFB, 0.0f); // 3
 		// Alpha 
-		createFloatUniform("iAlpha", mVDSettings->IFA, 1.0f);
+		createFloatUniform("iAlpha", mVDSettings->IFA, 1.0f); // 4
 		// red multiplier 
 		createFloatUniform("iRedMultiplier", mVDSettings->IFRX, 1.0f, 0.0f, 3.0f); // 5
 		// green multiplier 
 		createFloatUniform("iGreenMultiplier", mVDSettings->IFGX, 1.0f, 0.0f, 3.0f); // 6 
 		// blue multiplier 
 		createFloatUniform("iBlueMultiplier", mVDSettings->IFBX, 1.0f, 0.0f, 3.0f); // 7 
+		// gstnsmk
+		createFloatUniform("iSobel", mVDSettings->ISOBEL, 0.02f, 0.02f, 1.0f); // 8
 		// bad tv
-		createFloatUniform("iBadTv", 8, 0.0f, 0.0f, 5.0f);
-
-		// RotationSpeed
-		createFloatUniform("iRotationSpeed", 9, 0.0f, -2.0f, 2.0f);
+		createFloatUniform("iBadTv", mVDSettings->IBADTV, 0.0f, 0.0f, 5.0f); // 9
 		// Steps
-		createFloatUniform("iSteps", mVDSettings->ISTEPS, 16.0f, 1.0f, 128.0f);
+		createFloatUniform("iSteps", mVDSettings->ISTEPS, 16.0f, 1.0f, 128.0f); // 10
 
 		// rotary
 		// ratio
 		createFloatUniform("iRatio", mVDSettings->IRATIO, 1.0f, 0.01f, 1.0f); // 11
 		// zoom
-		createFloatUniform("iZoom", mVDSettings->IZOOM, 1.0f, 0.95f, 1.0f);
+		createFloatUniform("iZoom", mVDSettings->IZOOM, 1.0f, 0.95f, 1.0f); // 12
 		// Audio multfactor 
-		createFloatUniform("iAudioMult", 13, 1.0f, 0.01f, 12.0f);
+		createFloatUniform("iAudioMult", mVDSettings->IAUDIOX, 1.0f, 0.01f, 12.0f); // 13
 		// exposure
-		createFloatUniform("iExposure", mVDSettings->IEXPOSURE, 1.0f, 0.0f, 3.0f);
+		createFloatUniform("iExposure", mVDSettings->IEXPOSURE, 1.0f, 0.0f, 3.0f); // 14
 		// Pixelate
-		createFloatUniform("iPixelate", mVDSettings->IPIXELATE, 1.0f, 0.01f);
+		createFloatUniform("iPixelate", mVDSettings->IPIXELATE, 1.0f, 0.01f); // 15
 		// Trixels
-		createFloatUniform("iTrixels", mVDSettings->ITRIXELS, 0.0f);
+		createFloatUniform("iTrixels", mVDSettings->ITRIXELS, 0.0f); // 16
 		// iChromatic
-		createFloatUniform("iChromatic", mVDSettings->ICHROMATIC, 0.0f, 0.000000001f);
+		createFloatUniform("iChromatic", mVDSettings->ICHROMATIC, 0.0f, 0.000000001f); // 17
 		// iCrossfade
-		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f);
-		// akai faders: 19,23,27,31,49,53,57,61,master:62
-		// weight mix fbo texture 0
-		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 19
+		createFloatUniform("iCrossfade", mVDSettings->IXFADE, 1.0f); // 18
+		// tempo time
+		createFloatUniform("iTempoTime", mVDSettings->ITEMPOTIME, 0.1f); // 19
+		// fps
+		createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f); // 20
+		
+		// iBpm 
+		createFloatUniform("iBpm", mVDSettings->IBPM, 165.0f, 0.000000001f, 400.0f); // 21
+		// Speed 
+		createFloatUniform("iSpeed", mVDSettings->ISPEED, 12.0f, 0.01f, 12.0f); // 22
 		// slitscan (or other) Param1 
-		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 20
-		// gstnsmk
-		createFloatUniform("iSobel", mVDSettings->ISOBEL, 0.02f, 0.02f, 1.0f); // 22
-		// weight texture 1
-		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 23
+		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 23
 		// slitscan (or other) Param2 
 		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 24
-		// weight texture 2
-		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.0f); // 27
-		// weight texture 3
-		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 31
-		// weight texture 4
-		createFloatUniform("iWeight4", mVDSettings->IWEIGHT4, 0.0f); // 49
-
-		// top row 21 to 28
-		// Speed 
-		createFloatUniform("iSpeed", mVDSettings->ISPEED, 12.0f, 0.01f, 12.0f); // 32
-		// tempo time
-		createFloatUniform("iTempoTime", 24, 0.1f);
-		// fps 25
-		createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f);
-		// contour
-		createFloatUniform("iContour", 26, 0.0f, 0.0f, 0.5f);
-		// iResolutionX (should be fbowidth) 
-		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f);
-		// iResolutionY (should be fboheight)  
-		createFloatUniform("iResolutionY", mVDSettings->IRESY, mVDSettings->mFboHeight, 0.01f, 800.0f);
-		// nanokontrol middle row 31 to 38, bottom row 41 to 88
 		// iFreq0  
-		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f); // 25
 		// iFreq1  
-		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 26
 		// iFreq2  
-		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f);
+		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); // 27
 		// iFreq3  
-		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f);
-		// iMouseX  
-		createFloatUniform("iMouseX", 35, (float)mVDSettings->mFboWidth / 2, 0.0f, mVDSettings->mFboWidth);
-		// iMouseY  
-		createFloatUniform("iMouseY", 36, (float)mVDSettings->mFboHeight / 2, 0.0f, mVDSettings->mFboHeight);
-		// iMouseZ  
-		createFloatUniform("iMouseZ", 37, 0.0f, 0.0f, 1.0f);
-		// vignette amount
-		createFloatUniform("iVAmount", 38, 0.91f, 0.0f, 1.0f);
-		// vignette falloff
-		createFloatUniform("iVFallOff", 39, 0.31f, 0.0f, 1.0f);
+		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); // 28
+		// iResolutionX (should be fbowidth) 
+		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f); // 29
+		// iResolutionY (should be fboheight)  
+		createFloatUniform("iResolutionY", mVDSettings->IRESY, mVDSettings->mFboHeight, 0.01f, 800.0f); // 30
+		// weight mix fbo texture 0
+		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 31
+		// weight texture 1
+		createFloatUniform("iWeight1", mVDSettings->IWEIGHT1, 0.0f); // 32
+		// weight texture 2
+		createFloatUniform("iWeight2", mVDSettings->IWEIGHT2, 0.0f); // 33
+		// weight texture 3
+		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 34
+		// weight texture 4
+		createFloatUniform("iWeight4", mVDSettings->IWEIGHT4, 0.0f); // 35
 		// background red
-		createFloatUniform("iBR", mVDSettings->IBR, 0.1f); 
+		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);  // 36
 		// background green
-		createFloatUniform("iBG", mVDSettings->IBG, 0.5f);
+		createFloatUniform("iBG", mVDSettings->IBG, 0.5f); // 37
 		// background blue
-		createFloatUniform("iBB", mVDSettings->IBB, 0.1f);
+		createFloatUniform("iBB", mVDSettings->IBB, 0.1f); // 38
+		// TODO: double background alpha
+		createFloatUniform("iBA", mVDSettings->IBA, 0.2f); // 39
+		// contour
+		createFloatUniform("iContour", mVDSettings->ICONTOUR, 0.0f, 0.0f, 0.5f); // 40
+		// RotationSpeed
+		createFloatUniform("iRotationSpeed", mVDSettings->IROTATIONSPEED, 0.0f, -2.0f, 2.0f); // 41
+		
+		// iMouseX  
+		createFloatUniform("iMouseX", mVDSettings->IMOUSEX, (float)mVDSettings->mFboWidth / 2, 0.0f, mVDSettings->mFboWidth); // 42
+		// iMouseY  
+		createFloatUniform("iMouseY", mVDSettings->IMOUSEY, (float)mVDSettings->mFboHeight / 2, 0.0f, mVDSettings->mFboHeight); // 43
+		// iMouseZ  
+		createFloatUniform("iMouseZ", mVDSettings->IMOUSEZ, 0.0f, 0.0f, 1.0f); // 44
+		// vignette amount
+		createFloatUniform("iVAmount", mVDSettings->IVAMOUNT, 0.91f, 0.0f, 1.0f); // 45
+		// vignette falloff
+		createFloatUniform("iVFallOff", mVDSettings->IVFALLOFF, 0.31f, 0.0f, 1.0f); // 46
 
 		// int
 		// blend mode 
@@ -158,7 +159,8 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// greyscale 
 		createIntUniform("iGreyScale", 51, 0);
 		// current beat
-		createIntUniform("iBeat", 52, 1);
+		createIntUniform("iPhase", mVDSettings->IPHASE, 0); // 52
+
 		// beats per bar 
 		createIntUniform("iBeatsPerBar", 53, 4);
 
@@ -715,8 +717,8 @@ void VDAnimation::update() {
 		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
 		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
 		{
-			if (shaderUniforms["iBeat"].intValue > shaderUniforms["iBeatsPerBar"].intValue ) shaderUniforms["iBeat"].intValue = 0;
-			shaderUniforms["iBeat"].intValue++;
+			if (shaderUniforms["iPhase"].intValue > shaderUniforms["iBeatsPerBar"].intValue ) shaderUniforms["iPhase"].intValue = 0;
+			shaderUniforms["iPhase"].intValue++;
 		}
 		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
 	}
@@ -727,7 +729,7 @@ void VDAnimation::update() {
 		if (shaderUniforms["iTempoTime"].floatValue < previousTime)
 		{
 			//iBar++;
-			if (mAutoBeatAnimation) mVDSettings->iBeat++;
+			if (mAutoBeatAnimation) mVDSettings->iPhase++;
 		}
 		previousTime = shaderUniforms["iTempoTime"].floatValue;
 
@@ -769,7 +771,7 @@ void VDAnimation::update() {
 		// background color vec3 update
 		shaderUniforms["iBackgroundColor"].vec3Value = vec3(shaderUniforms[getUniformNameForIndex(mVDSettings->IBR)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IBG)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IBB)].floatValue);
 		// mouse vec4 update
-		shaderUniforms["iMouse"].vec4Value = vec4(shaderUniforms[getUniformNameForIndex(35)].floatValue, shaderUniforms[getUniformNameForIndex(36)].floatValue, shaderUniforms[getUniformNameForIndex(37)].floatValue, 0.0f);
+		shaderUniforms["iMouse"].vec4Value = vec4(shaderUniforms[getUniformNameForIndex(mVDSettings->IMOUSEX)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IMOUSEY)].floatValue, shaderUniforms[getUniformNameForIndex(mVDSettings->IMOUSEZ)].floatValue, 0.0f);
 		// TODO migrate:
 		if (mVDSettings->autoInvert)
 		{

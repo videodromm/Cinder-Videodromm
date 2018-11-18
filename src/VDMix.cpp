@@ -372,7 +372,7 @@ namespace VideoDromm {
 		mGlslMix->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2")); // texture
 		mGlslMix->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3")); // texture
 		mGlslMix->uniform("iWeight4", mVDAnimation->getFloatUniformValueByName("iWeight4")); // texture
-		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
+		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEX), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEY), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEZ)));
 		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mGlslMix->uniform("iChannel0", 0); // fbo shader 
 		mGlslMix->uniform("iChannel1", 1); // fbo shader
@@ -425,7 +425,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2"));
 			mGlslBlend->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3"));
 			mGlslBlend->uniform("iWeight4", mVDAnimation->getFloatUniformValueByName("iWeight4"));
-			mGlslBlend->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(35), mVDAnimation->getFloatUniformValueByIndex(36), mVDAnimation->getFloatUniformValueByIndex(37)));
+			mGlslBlend->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEX), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEY), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEZ)));
 			mGlslBlend->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 			mGlslBlend->uniform("iChannel0", 0); // fbo shader 
 			mGlslBlend->uniform("iChannel1", 1); // fbo shader
@@ -469,7 +469,7 @@ namespace VideoDromm {
 			mGlslBlend->uniform("iTempoTime", mVDAnimation->getFloatUniformValueByName("iTempoTime"));
 			mGlslBlend->uniform("iGlitch", (int)mVDAnimation->getBoolUniformValueByName("iGlitch"));
 			mGlslBlend->uniform("iTrixels", mVDAnimation->getFloatUniformValueByName("iTrixels"));
-			mGlslBlend->uniform("iBeat", mVDSettings->iBeat);
+			mGlslBlend->uniform("iPhase", mVDSettings->iPhase);
 			mGlslBlend->uniform("iSeed", mVDSettings->iSeed);
 			mGlslBlend->uniform("iRedMultiplier", mVDAnimation->getFloatUniformValueByName("iRedMultiplier"));
 			mGlslBlend->uniform("iGreenMultiplier", mVDAnimation->getFloatUniformValueByName("iGreenMultiplier"));

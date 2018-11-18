@@ -564,8 +564,8 @@ namespace VideoDromm {
 			else {
 				if (mSyncToBeat) {
 					//newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
-					// TODO newPosition = (int)(((int)(mVDSettings->iBeat / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
-					newPosition = (int)(mVDAnimation->getIntUniformValueByName("iBeat") % mSequenceTextures.size());
+					// TODO newPosition = (int)(((int)(mVDSettings->iPhase / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
+					newPosition = (int)(mVDAnimation->getIntUniformValueByName("iPhase") % mSequenceTextures.size());
 				}
 				else {
 					newPosition = mPosition;

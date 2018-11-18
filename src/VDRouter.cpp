@@ -86,13 +86,13 @@ void VDRouter::setupOSCReceiver() {
 	mOSCReceiver->setListener("/live/beat",
 		[&](const osc::Message &msg) {
 		mVDAnimation->setAutoBeatAnimation(false);
-		mVDSettings->iBeat = msg[0].int32();
+		mVDSettings->iPhase = msg[0].int32();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	// artcraft
 	mOSCReceiver->setListener("/bar",
 		[&](const osc::Message &msg) {
-		mVDSettings->iBeat = msg[0].int32();
+		mVDSettings->iPhase = msg[0].int32();
 		if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	});
 	//mOSCReceiver->setListener("/live/tempo",
@@ -449,7 +449,7 @@ void VDRouter::midiListener(midi::Message msg) {
 		//midiVelocity = msg.velocity;
 		//midiNormalizedValue = lmap<float>(midiVelocity, 0.0, 127.0, 0.0, 1.0);
 		midiPitch = msg.pitch;
-
+		// midimix solo mode
 		if (midiPitch == 27) midiSticky = true;
 		if (midiSticky) {
 			midiStickyPrevIndex = midiPitch;
@@ -461,6 +461,7 @@ void VDRouter::midiListener(midi::Message msg) {
 		break;
 	case MIDI_NOTE_OFF:
 		midiPitch = msg.pitch;
+		// midimix solo mode
 		if (midiPitch == 27) {
 			midiStickyPrevIndex = 0;
 			midiSticky = false;

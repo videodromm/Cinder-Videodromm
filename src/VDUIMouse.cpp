@@ -32,24 +32,24 @@ void VDUIMouse::Run(const char* title) {
 			mVDSettings->mRenderPosXY.y = ImGui::GetIO().MousePos.y;
 		} */
 		// mouse
-		mouseX = getValue(35);
+		mouseX = getValue(mVDSettings->IMOUSEX);
 		if (ImGui::SliderFloat("MouseX", &mouseX, 0.0f, mVDSettings->mFboWidth, "%.4f", 3.0f))
 		{
-			setValue(35, mouseX);
+			setValue(mVDSettings->IMOUSEX, mouseX);
 		}
-		mouseY = getValue(36);
+		mouseY = getValue(mVDSettings->IMOUSEY);
 		if (ImGui::SliderFloat("MouseY", &mouseY, 0.0f, mVDSettings->mFboHeight, "%.4f", 0.3f))
 		{
-			setValue(36, mouseY);
+			setValue(mVDSettings->IMOUSEY, mouseY);
 		}
 		mouseZ ^= ImGui::Button("mouse click");
 		if (mouseZ)
 		{
-			setValue(37, 1.0f);
+			setValue(mVDSettings->IMOUSEZ, 1.0f);
 		}
 		else
 		{
-			setValue(37, 0.0f);
+			setValue(mVDSettings->IMOUSEZ, 0.0f);
 		}
 	}
 	ImGui::End();

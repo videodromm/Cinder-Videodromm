@@ -124,7 +124,8 @@ namespace VideoDromm
 		float						midiNormalizedValue;
 		int							midiValue;
 		int							midiChannel;
-		bool						midiSticky; // midimix solo
+		// midimix solo mode
+		bool						midiSticky;
 		bool						midiStickyPrevValue;
 		int							midiStickyPrevIndex;
 

@@ -23,15 +23,15 @@ void VDUITempo::Run(const char* title) {
 		ImGui::SameLine();
 		ImGui::SliderFloat("speed x", &mVDSettings->iSpeedMultiplier, 0.01f, 5.0f, "%.1f");
 		/* TODO
-		ImGui::Text("Beat %d ", mVDSettings->iBeat);
+		ImGui::Text("Beat %d ", mVDSettings->iPhase);
 		ImGui::SameLine();
 		ImGui::Text("Beat Idx %d ", mVDAnimation->iBeatIndex);
 		//ImGui::SameLine();
 		//ImGui::Text("Bar %d ", mVDAnimation->iBar);
-		if (ImGui::Button("x##bpbx")) { mVDSession->setControlValue("iBeat", 1); }
+		if (ImGui::Button("x##bpbx")) { mVDSession->setControlValue("iPhase", 1); }
 		ImGui::SameLine();
  */
-		ImGui::Text("beat %d ", mVDSession->getIntUniformValueByName("iBeat"));
+		ImGui::Text("beat %d ", mVDSession->getIntUniformValueByName("iPhase"));
 		ImGui::SameLine();
 		ImGui::Text("beats/bar %d ", mVDSession->getIntUniformValueByName("iBeatsPerBar"));
 
