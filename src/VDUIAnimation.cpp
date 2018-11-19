@@ -196,7 +196,7 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// zoom
-			ctrl = 12;
+			ctrl = mVDSettings->IZOOM;
 			if (ImGui::Button("a##zoom"))
 			{
 				toggleAuto(ctrl);
@@ -222,7 +222,7 @@ void VDUIAnimation::Run(const char* title) {
 			ImGui::DragFloat("maxzm", &maxZoom, 0.1f, getMinUniformValueByIndex(ctrl), getMaxUniformValueByIndex(ctrl));
 
 			// rotation speed 
-			ctrl = 9;
+			ctrl = mVDSettings->IROTATIONSPEED;
 			if (ImGui::Button("a##rotationspeed")) { toggleAuto(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("f##rotationspeed")) { toggleTempo(ctrl); }
@@ -235,7 +235,7 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// badTv
-			ctrl = 8;
+			ctrl = mVDSettings->IBADTV;
 			if (ImGui::Button("a##badtv")) { toggleAuto(ctrl); }
 			ImGui::SameLine();
 			if (ImGui::Button("f##badtv")) { toggleTempo(ctrl); }
@@ -278,7 +278,7 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// pixelate
-			ctrl = 15;
+			ctrl = mVDSettings->IPIXELATE;
 			if (ImGui::Button("x##pixelate")) { localValues[ctrl] = 1.0f; setValue(ctrl, localValues[ctrl]);}
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);
@@ -287,7 +287,7 @@ void VDUIAnimation::Run(const char* title) {
 				setValue(ctrl, localValues[ctrl]);
 			}
 			// trixels
-			ctrl = 16;
+			ctrl = mVDSettings->ITRIXELS;
 			if (ImGui::Button("x##trixels")) { localValues[ctrl] = 0.0f; setValue(ctrl, localValues[ctrl]);}
 			ImGui::SameLine();
 			localValues[ctrl] = mVDSession->getFloatUniformValueByIndex(ctrl);

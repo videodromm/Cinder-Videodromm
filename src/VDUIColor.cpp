@@ -73,7 +73,7 @@ void VDUIColor::Run(const char* title) {
 		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 		// color multipliers
 		// red x
-		ctrl = 5;
+		ctrl = mVDSettings->IFRX;
 		if (ImGui::Button("a##redx")) { toggleAuto(ctrl); }
 		ImGui::SameLine();
 		if (ImGui::Button("t##redx")) { toggleTempo(ctrl); }
@@ -86,7 +86,7 @@ void VDUIColor::Run(const char* title) {
 			setValue(ctrl, localValues[ctrl]);
 		}
 		// green x
-		ctrl = 6;
+		ctrl = mVDSettings->IFGX;
 		if (ImGui::Button("a##greenx")) { toggleAuto(ctrl); }
 		ImGui::SameLine();
 		if (ImGui::Button("t##greenx")) { toggleTempo(ctrl); }
@@ -99,7 +99,7 @@ void VDUIColor::Run(const char* title) {
 			setValue(ctrl, localValues[ctrl]);
 		}
 		// blue x
-		ctrl = 7;
+		ctrl = mVDSettings->IFBX;
 		if (ImGui::Button("a##bluex")) { toggleAuto(ctrl); }
 		ImGui::SameLine();
 		if (ImGui::Button("t##bluex")) { toggleTempo(ctrl); }

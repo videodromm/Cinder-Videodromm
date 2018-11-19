@@ -78,13 +78,13 @@ void VDUIRender::Run(const char* title) {
 		}
 		ImGui::PopStyleColor(3);
 		hue++;
-		ctrl = 38;
+		ctrl = mVDSettings->IVAMOUNT;
 		iVAmount = mVDSession->getFloatUniformValueByIndex(ctrl);
 		if (ImGui::DragFloat("Amount", &iVAmount, 0.001f, 0.0f, 1.0f))
 		{
 			setValue(ctrl, iVAmount);
 		}
-		ctrl = 39;
+		ctrl = mVDSettings->IVFALLOFF;
 		iVFallOff = mVDSession->getFloatUniformValueByIndex(ctrl);
 		if (ImGui::DragFloat("FallOff", &iVFallOff, 0.001f, 0.0f, 0.99f))
 		{
@@ -92,7 +92,7 @@ void VDUIRender::Run(const char* title) {
 		}
 
 		// iContour
-		ctrl = 26;
+		ctrl = mVDSettings->ICONTOUR;
 		if (ImGui::Button("a##contour")) { toggleAuto(ctrl); }
 		ImGui::SameLine();
 		if (ImGui::Button("t##contour")) { toggleTempo(ctrl); }
