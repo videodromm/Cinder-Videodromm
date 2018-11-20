@@ -42,12 +42,24 @@ namespace VideoDromm {
 		{
 			mBlendFbos[i] = gl::Fbo::create(mVDSettings->mPreviewFboWidth, mVDSettings->mPreviewFboHeight, fboFmt);
 		}
-
+		try
+		{
 		mGlslMix = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getMixFragmentShaderString());
 		// 20161209 problem on Mac mGlslMix->setLabel("mixfbo");
 		mGlslBlend = gl::GlslProg::create(mVDSettings->getDefaultVextexShaderString(), mVDSettings->getMixFragmentShaderString());
 		// 20161209 problem on Mac mGlslBlend->setLabel("blend mixfbo");
-
+	}
+		catch (gl::GlslProgCompileExc &exc)
+		{
+			mError = "mix error:" + string(exc.what());
+			CI_LOG_V("setFragmentString, unable to compile live fragment shader:" + mError);
+		}
+		catch (const std::exception &e)
+		{
+			mError = "mix error:" + string(e.what());
+			CI_LOG_V("setFragmentString, error on live fragment shader:" + mError);
+		}
+		mVDSettings->mMsg = mError;
 		// shared output
 		mSharedOutputActive = false;
 		mSharedFboIndex = 0;
@@ -367,13 +379,13 @@ namespace VideoDromm {
 		mGlslMix->uniform("iResolution", vec3(mVDAnimation->getFloatUniformValueByName("iResolutionX"), mVDAnimation->getFloatUniformValueByName("iResolutionY"), 1.0));
 		//mGlslMix->uniform("iChannelResolution", mVDSettings->iChannelResolution, 4);
 		// 20180318 mGlslMix->uniform("iMouse", mVDAnimation->getVec4UniformValueByName("iMouse"));
+		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEX), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEY), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEZ)));
+		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mGlslMix->uniform("iWeight0", mVDAnimation->getFloatUniformValueByName("iWeight0")); // fbo mix
 		mGlslMix->uniform("iWeight1", mVDAnimation->getFloatUniformValueByName("iWeight1")); // texture
 		mGlslMix->uniform("iWeight2", mVDAnimation->getFloatUniformValueByName("iWeight2")); // texture
 		mGlslMix->uniform("iWeight3", mVDAnimation->getFloatUniformValueByName("iWeight3")); // texture
 		mGlslMix->uniform("iWeight4", mVDAnimation->getFloatUniformValueByName("iWeight4")); // texture
-		mGlslMix->uniform("iMouse", vec3(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEX), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEY), mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IMOUSEZ)));
-		mGlslMix->uniform("iDate", mVDAnimation->getVec4UniformValueByName("iDate"));
 		mGlslMix->uniform("iChannel0", 0); // fbo shader 
 		mGlslMix->uniform("iChannel1", 1); // fbo shader
 		mGlslMix->uniform("iChannel2", 2); // texture 1

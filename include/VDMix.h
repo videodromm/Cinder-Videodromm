@@ -217,6 +217,7 @@ namespace VideoDromm
 		map<int, ci::gl::FboRef>		mBlendFbos;
 		int								mCurrentBlend;
 		gl::GlslProgRef					mGlslMix, mGlslBlend, mGlslFeedback;
+		string							mError;
 		// render
 		void							renderMix();
 		void							renderBlend();
