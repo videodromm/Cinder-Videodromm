@@ -934,6 +934,7 @@ namespace VideoDromm {
 				mMonitorLineInSpectralNode = ctx->makeNode(new audio::MonitorSpectralNode(scopeLineInFmt));
 				mLineIn >> mMonitorLineInSpectralNode;
 				mLineIn->enable();
+				mLineInInitialized = true;
 			}
 #endif
 			if (mVDAnimation->getUseAudio()) {
@@ -943,7 +944,6 @@ namespace VideoDromm {
 
 				ctx->enable();
 			}
-			mLineInInitialized = true;
 		}
 #if (defined( CINDER_MSW ) || defined( CINDER_MAC ))
 		if (mVDAnimation->getUseLineIn()) {
