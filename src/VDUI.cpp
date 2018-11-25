@@ -34,24 +34,8 @@ VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	// UIRender
 	mUIRender = VDUIRender::create(mVDSettings, mVDSession);
 	// imgui
-	margin = 3;
-	inBetween = 3;
-	// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15 mPreviewWidth = 160;mPreviewHeight = 120;
-	w = mVDSettings->mPreviewFboWidth + margin;
-	h = mVDSettings->mPreviewFboHeight * 2.3;
-	largeW = (mVDSettings->mPreviewFboWidth + margin) * 4;
-	largeH = (mVDSettings->mPreviewFboHeight + margin) * 5;
-	largePreviewW = mVDSettings->mPreviewWidth + margin;
-	largePreviewH = (mVDSettings->mPreviewHeight + margin) * 2.4;
-	displayHeight = mVDSettings->mMainWindowHeight - 50;
-	yPosRow1 = 100 + margin;
-	yPosRow2 = yPosRow1 + largePreviewH + margin;
-	yPosRow3 = yPosRow2 + h*1.4 + margin;
-
 	mouseGlobal = false;
-	
 	mIsResizing = true;
-
 }
 
 void VDUI::resize() {
@@ -131,10 +115,10 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	}
 
 #pragma endregion menu
-	mVDSettings->uiXPos = mVDSettings->uiMargin;
+	
 	//ImGui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth - 20, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(800, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiXPos, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 	sprintf(buf, "Videodromm Fps %c %d###fps", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], fps);
 	ImGui::Begin(buf);
 	{

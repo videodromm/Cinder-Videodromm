@@ -113,23 +113,6 @@ namespace VideoDromm
 		// imgui
 		float						color[4];
 		float						backcolor[4];
-
-		// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15
-		/*int							w;
-		int							h;
-		int							displayHeight;
-		int							xPos;
-		int							yPos;
-		int							yPosRow1;
-		int							yPosRow2;
-		int							yPosRow3;
-		int							largeW;
-		int							largeH;
-		int							largePreviewW;
-		int							largePreviewH;
-		int							margin;
-		int							inBetween;*/
-
 		bool						mouseGlobal;
 	};
 }

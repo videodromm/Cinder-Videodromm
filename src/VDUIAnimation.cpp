@@ -54,7 +54,7 @@ float VDUIAnimation::getMaxUniformValueByIndex(unsigned int aIndex) {
 }
 void VDUIAnimation::Run(const char* title) {
 
-	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH + 100), ImGuiSetCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
 	ImGui::Begin("Animation", NULL, ImVec2(0, 0), ImGui::GetStyle().Alpha, ImGuiWindowFlags_NoSavedSettings);
 	{
