@@ -128,7 +128,9 @@ namespace VideoDromm
 		void							setIntUniformValueByIndex(unsigned int aIndex, int aValue) {
 			shaderUniforms[getUniformNameForIndex(aIndex)].intValue = aValue;
 		}
-
+		void							setFloatUniformValueByName(string aName, float aValue) {
+			shaderUniforms[aName].floatValue = aValue;
+		}
 		void setVec2UniformValueByName(string aName, vec2 aValue) {
 			shaderUniforms[aName].vec2Value = aValue;
 		}

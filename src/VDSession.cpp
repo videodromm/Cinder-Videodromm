@@ -174,10 +174,10 @@ void VDSession::update(unsigned int aClassIndex) {
 	// all cases
 	mVDWebsocket->update();
 	if (mFreqWSSend) {
-		mVDWebsocket->changeFloatValue(31, getFreq(0), true);
-		mVDWebsocket->changeFloatValue(32, getFreq(1), true);
-		mVDWebsocket->changeFloatValue(33, getFreq(2), true);
-		mVDWebsocket->changeFloatValue(34, getFreq(3), true);
+		mVDWebsocket->changeFloatValue(mVDSettings->IFREQ0, getFreq(0), true);
+		mVDWebsocket->changeFloatValue(mVDSettings->IFREQ1, getFreq(1), true);
+		mVDWebsocket->changeFloatValue(mVDSettings->IFREQ2, getFreq(2), true);
+		mVDWebsocket->changeFloatValue(mVDSettings->IFREQ3, getFreq(3), true);
 	}
 	//mSelectedWarp = mVDRouter->selectedWarp();
 	/* TODO CHECK if needed? send a lot of ws msgs setWarpAFboIndex(0, mVDRouter->selectedFboA());
