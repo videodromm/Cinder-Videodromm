@@ -115,7 +115,7 @@ namespace VideoDromm
 		float						backcolor[4];
 
 		// mPreviewFboWidth 80 mPreviewFboHeight 60 margin 10 inBetween 15
-		int							w;
+		/*int							w;
 		int							h;
 		int							displayHeight;
 		int							xPos;
@@ -128,7 +128,7 @@ namespace VideoDromm
 		int							largePreviewW;
 		int							largePreviewH;
 		int							margin;
-		int							inBetween;
+		int							inBetween;*/
 
 		bool						mouseGlobal;
 	};

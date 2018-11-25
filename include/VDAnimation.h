@@ -70,7 +70,7 @@ namespace VideoDromm
 		bool							mUseTimeWithTempo;
 		float							iTempoTimeBeatPerBar;
 		float							getBpm() { return mBpm; };
-		void							setBpm(float aBpm) { iDeltaTime = 60 / mBpm; mBpm = aBpm; };
+		void							setBpm(float aBpm) { mBpm = aBpm; iDeltaTime = 60 / mBpm; };
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
 		int								getEndFrame() { return mEndFrame; };

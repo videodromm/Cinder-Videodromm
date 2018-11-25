@@ -274,16 +274,20 @@ namespace VideoDromm {
 		int							uiElementWidth;
 		int							uiElementHeight;
 
-		int							uiXPos;
+		//int							uiXPos;
 		int							uiXPosCol1;
 		int							uiXPosCol2;
 		int							uiXPosCol3;
-		int							uiYPos;
+		//int							uiYPos;
 		int							uiYPosRow1;
 		int							uiYPosRow2;
 		int							uiYPosRow3;
+		int							uiYPosRow4;
+		int							uiYPosRow5;
+		int							uiYPosRow6;
 		int							uiLargeW;
 		int							uiLargeH;
+		int							uiSmallH;
 		int							uiLargePreviewW;
 		int							uiLargePreviewH;
 		int							uiPreviewH;
