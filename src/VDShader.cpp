@@ -9,7 +9,38 @@ VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, strin
 	mValid = false;
 	mActive = true;
 	// shadertoy include
-	shaderInclude = loadString(loadAsset("shadertoy.inc"));
+	//shaderInclude = loadString(loadAsset("shadertoy.inc"));
+	shaderInclude = "#version 150\n"
+		"// shadertoy specific\n"
+		"uniform vec3      	iResolution;\n"
+		"uniform float     	iTime;\n"
+		"uniform vec4      	iMouse;\n"
+		"uniform sampler2D 	iChannel0;\n"
+		"uniform sampler2D 	iChannel1;\n"
+		"uniform sampler2D 	iChannel2;\n"
+		"uniform sampler2D 	iChannel3;\n"
+		"uniform vec4      	iDate;\n"
+		"// videodromm specific\n"
+		"uniform vec3       iBackgroundColor;\n"
+		"uniform vec3       iColor;\n"
+		"uniform int        iSteps;\n"
+		"uniform float      iRatio;\n"
+		"uniform vec2       iRenderXY;\n"
+		"uniform float      iZoom;\n"
+		"uniform float      iCrossfade;\n"
+		"uniform float      iAlpha;\n"
+		"uniform bool       iFlipH;\n"
+		"uniform bool       iFlipV;\n"
+		"uniform float      iFreq0;\n"
+		"uniform float      iFreq1;\n"
+		"uniform float      iFreq2;\n"
+		"uniform float      iFreq3;\n"
+		"uniform vec3 		spectrum;\n"
+		"uniform int        iInvert;\n"
+		"uniform float		iFps;\n"
+		"out vec4 fragColor;\n"
+		"vec2  fragCoord = gl_FragCoord.xy; // keep the 2 spaces between vec2 and fragCoord\n"
+		"float time = iTime;\n";
 	mVDSettings = aVDSettings;
 	mVDAnimation = aVDAnimation;
 	mError = "";
