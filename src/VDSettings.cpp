@@ -8,11 +8,11 @@ using namespace ci;
 using namespace std;
 using namespace VideoDromm;
 
-VDSettings::VDSettings()
+VDSettings::VDSettings(string filename)
 {
 	// reset no matter what, so we don't miss anything
 	reset();
-
+	settingsFileName = "VD" + filename + ".xml";
 	// check to see if Settings.xml file exists and restore if it does
 	fs::path params = getAppPath() / settingsFileName;
 	if (fs::exists(params))
@@ -25,9 +25,9 @@ VDSettings::VDSettings()
 	}
 }
 
-VDSettingsRef VDSettings::create()
+VDSettingsRef VDSettings::create(string filename)
 {
-	return shared_ptr<VDSettings>(new VDSettings());
+	return shared_ptr<VDSettings>(new VDSettings(filename));
 }
 
 bool VDSettings::save()

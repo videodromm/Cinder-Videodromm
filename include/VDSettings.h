@@ -18,8 +18,8 @@ namespace VideoDromm {
 	class VDSettings
 	{
 	public:
-		VDSettings();
-		static VDSettingsRef create();
+		VDSettings(string filename);
+		static VDSettingsRef create(string filename);
 
 		//! maximum number of fbos, shaders, textures
 		static const int			MAX = 14;
@@ -295,7 +295,7 @@ namespace VideoDromm {
 		std::string					getDefaultFragmentShaderString() { return mDefaultFragmentShaderString; };
 		std::string					getMixFragmentShaderString() { return mMixFragmentShaderString; };
 	private:
-		const string settingsFileName = "VDSettings.xml";
+		std::string settingsFileName = "VD";
 		//! default vertex shader
 		std::string						mDefaultVextexShaderString;
 		std::string						mDefaultFragmentShaderString;
