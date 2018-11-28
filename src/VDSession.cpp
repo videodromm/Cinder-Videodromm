@@ -591,7 +591,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
-				mVDWebsocket->changeFloatValue(12, 1.0f);
+				mVDWebsocket->changeFloatValue(mVDSettings->IZOOM, 1.0f);
 				break;
 			default:
 				handled = false;
