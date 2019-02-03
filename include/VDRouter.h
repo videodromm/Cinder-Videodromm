@@ -12,8 +12,7 @@
 // Midi
 #include "MidiIn.h"
 // OSC
-// #include "Osc.h"
-// #define USE_UDP 1
+#include "cinder/osc/Osc.h"
 
 
 using namespace ci;
@@ -21,12 +20,11 @@ using namespace ci::app;
 using namespace std;
 using namespace asio;
 using namespace asio::ip; 
+
 using namespace VideoDromm;
-/* #if USE_UDP
+using Receiver = osc::ReceiverUdp;
 using protocol = asio::ip::udp;
-#else
-using protocol = asio::ip::tcp;
-#endif */
+
 namespace VideoDromm
 {
 	// stores the pointer to the VDRouter instance
@@ -136,6 +134,9 @@ namespace VideoDromm
 		// ReceiverRef					mOSCReceiver;
 
 		// SenderRef					mOSCSender;
+		shared_ptr<osc::ReceiverUdp>			mOscReceiver;
+		std::map<uint64_t, protocol::endpoint>	mConnections;
+		void						setupOSCReceiver();
 		static const int			MAX = 16;
 		// ableton liveOSC
 		string						tracks[MAX];
