@@ -214,8 +214,10 @@ void VDRouter::setupOSCReceiver() {
 				}
 			}
 			if (found) {
+				stringstream ss;
+				ss << addr << " " << f;
 				CI_LOG_I("OSC: " << ctrl << " addr: " << addr);
-				mVDSettings->mOSCMsg = addr;
+				mVDSettings->mOSCMsg = ss.str();
 			}
 			else {
 				CI_LOG_E("not handled: " << msg.getNumArgs() << " addr: " << addr);
