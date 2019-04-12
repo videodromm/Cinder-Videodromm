@@ -69,6 +69,18 @@ void VDRouter::setupOSCReceiver() {
 			}
 			if (!found)
 			{
+				// ableton link tempo from ofx abletonLinkToWebsocket
+				ctrl = "/live/tempo";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+					mVDAnimation->setAutoBeatAnimation(false);
+					mVDAnimation->setBpm(msg[0].flt());
+				}
+			}
+			if (!found)
+			{
 				int page = 0;
 				try {
 					page = std::stoi(addr.substr(1, 1)); // 1 to 4
@@ -300,7 +312,7 @@ void VDRouter::setupOSCReceiver() {
 	//	[&](const osc::Message &msg) {
 	//	mVDAnimation->setAutoBeatAnimation(false);
 		// Animation
-	//	mVDSession->setBpm(msg[0].flt());
+	//	mVDSession->setBpm(msg[0].flt());mVDAnimion->setBpm(float aBpm)
 	//	if (mVDSettings->mIsOSCSender && mVDSettings->mOSCDestinationPort != 9000) mOSCSender->send(msg);
 	//	});
 		// artcraft
@@ -822,11 +834,13 @@ void VDRouter::colorWrite()
 	}*/
 #if defined( CINDER_MSW )
 	// lights4events
-	char col[8];
-	int r = mVDAnimation->getFloatUniformValueByIndex(1) * 255;
-	int g = mVDAnimation->getFloatUniformValueByIndex(2) * 255;
-	int b = mVDAnimation->getFloatUniformValueByIndex(3) * 255;
-	sprintf(col, "#%02X%02X%02X", r, g, b);
+	char col[97];
+	int r = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) * 255);
+	int g = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) * 255);
+	int b = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) * 255);
+	int a = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFA) * 255);
+	//sprintf(col, "#%02X%02X%02X", r, g, b);
+	sprintf(col, "{\"type\":\"action\", \"parameters\":{\"name\":\"FC\",\"parameters\":{\"color\":\"#%02X%02X%02X%02X\",\"fading\":\"NONE\"}}}", a, r, g, b);
 	mVDWebsocket->wsWrite(col);
 #endif
 }

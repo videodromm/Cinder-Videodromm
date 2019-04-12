@@ -381,7 +381,12 @@ void VDWebsocket::wsClientConnect()
 {
 
 	stringstream s;
-	s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
+	if (mVDSettings->mWebSocketsPort == 80) {
+		s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost;
+	}
+	else {
+		s << mVDSettings->mWebSocketsProtocol << mVDSettings->mWebSocketsHost << ":" << mVDSettings->mWebSocketsPort;
+	}
 	mClient.connect(s.str());
 
 }
@@ -512,13 +517,14 @@ void VDWebsocket::colorWrite()
 {
 
 	// lights4events
-	char col[8];
+	char col[97];
 	int r = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) * 255);
 	int g = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) * 255);
 	int b = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) * 255);
-	sprintf(col, "#%02X%02X%02X", r, g, b);
+	int a = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFA) * 255);
+	//sprintf(col, "#%02X%02X%02X", r, g, b);
+	sprintf(col, "{\"type\":\"action\", \"parameters\":{\"name\":\"FC\",\"parameters\":{\"color\":\"#%02X%02X%02X%02X\",\"fading\":\"NONE\"}}}", a, r, g, b);
 	wsWrite(col);
-
 }
 
 void VDWebsocket::update() {
