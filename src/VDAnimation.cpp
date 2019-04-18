@@ -633,9 +633,9 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 		// save animation
 		save();
 		break;
-	case KeyEvent::KEY_a:
+	case KeyEvent::KEY_u:
 		// save badtv keyframe
-		mBadTV[getElapsedFrames() - 10] = 1.0f;
+		// not uused for now mBadTV[getElapsedFrames() - 10] = 1.0f;
 		//iBadTvRunning = true;
 		// duration = 0.2
 		shaderUniforms["iBadTv"].floatValue = 5.0f;
@@ -662,7 +662,7 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 {
 	bool handled = true;
 	switch (event.getCode()) {
-	case KeyEvent::KEY_a:
+	case KeyEvent::KEY_u:
 		// save badtv keyframe
 		mBadTV[getElapsedFrames()] = 0.001f;
 		shaderUniforms["iBadTv"].floatValue = 0.0f;

@@ -539,10 +539,12 @@ void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool for
 		}
 		else {
 			// toggle
-			newValue = mVDAnimation->getFloatUniformValueByIndex(aControl);
-			if (newValue > 0.0f) { newValue = 0.0f; }
-			else { newValue = 1.0f; } // Check for max instead?
-			aValue = newValue;
+			if (toggle) {
+				newValue = mVDAnimation->getFloatUniformValueByIndex(aControl);
+				if (newValue > 0.0f) { newValue = 0.0f; }
+				else { newValue = 1.0f; } // Check for max instead?
+				aValue = newValue;
+			}
 		}
 	}
 	// check if changed
