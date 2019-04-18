@@ -77,6 +77,7 @@ namespace VideoDromm
 		// Web socket client
 		bool						clientConnected;
 		void						wsClientConnect();
+		//void						wsL4EClientConnect();
 		void						wsClientDisconnect();
 		int							receivedType;
 		int							receivedWarpIndex;
@@ -85,6 +86,7 @@ namespace VideoDromm
 		int							receivedSlot;
 
 		WebSocketClient				mClient;
+		//WebSocketClient				mL4EClient;
 		/*void						onWsConnect();
 		void						onWsDisconnect();
 		void						onWsError(std::string err);

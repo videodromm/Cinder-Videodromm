@@ -68,6 +68,8 @@ namespace VideoDromm
 		float							iDeltaTime;
 		float							iTimeFactor;
 		bool							mUseTimeWithTempo;
+		void							toggleUseTimeWithTempo() { mUseTimeWithTempo = !mUseTimeWithTempo; };
+		void							useTimeWithTempo() { mUseTimeWithTempo = true; };
 		float							iTempoTimeBeatPerBar;
 		float							getBpm() { return mBpm; };
 		void							setBpm(float aBpm) { mBpm = aBpm; iDeltaTime = 60 / mBpm; };

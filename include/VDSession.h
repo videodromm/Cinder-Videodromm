@@ -127,6 +127,8 @@ namespace VideoDromm {
 		float							getBpm() { return mVDAnimation->getBpm(); };
 		void							setBpm(float aBpm) { mVDAnimation->setBpm(aBpm); };
 		void							tapTempo() { mVDAnimation->tapTempo(); };
+		void							toggleUseTimeWithTempo() { mVDAnimation->toggleUseTimeWithTempo(); };
+		void							useTimeWithTempo() { mVDAnimation->useTimeWithTempo(); };
 		// audio
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
 		float *							getFreqs() { return mVDAnimation->iFreqs; };

@@ -162,14 +162,22 @@ void VDWebsocket::parseMessage(string msg) {
 							break;
 						case 2:
 							// change tempo
+							mVDAnimation->useTimeWithTempo();
 							mVDAnimation->setBpm(jsonElement->getChild("tempo").getValue<float>());
+							
+							break;
+						case 3:
+							// change beat
+							mVDAnimation->setFloatUniformValueByIndex(mVDSettings->ITIME, jsonElement->getChild("beat").getValue<float>());
+							break;
+						case 4:
+							// change phase
+							mVDAnimation->setFloatUniformValueByIndex(mVDSettings->ITEMPOTIME, jsonElement->getChild("phase").getValue<float>());
 							break;
 						default:
 							break;
 						}
-
 					}
-
 				}
 			}
 			catch (cinder::JsonTree::Exception exception) {
@@ -375,7 +383,45 @@ void VDWebsocket::wsConnect() {
 	}
 	mVDSettings->mAreWebSocketsEnabledAtStartup = true;
 	clientConnected = true;
-
+	// light4vents
+	/* mL4EClient.connectOpenEventHandler([&]() {
+		mVDSettings->mOSCMsg = "Connected";
+		mVDSettings->mOSCNewMsg = true;
+	});
+	mL4EClient.connectCloseEventHandler([&]() {
+		clientConnected = false;
+		mVDSettings->mOSCMsg = "Disconnected";
+		mVDSettings->mOSCNewMsg = true;
+	});
+	mL4EClient.connectFailEventHandler([&](string err) {
+		mVDSettings->mOSCMsg = "WS Error";
+		mVDSettings->mOSCNewMsg = true;
+		if (!err.empty()) {
+			mVDSettings->mOSCMsg += ": " + err;
+		}
+	});
+	mL4EClient.connectInterruptEventHandler([&]() {
+		mVDSettings->mOSCMsg = "WS Interrupted";
+		mVDSettings->mOSCNewMsg = true;
+	});
+	mL4EClient.connectPingEventHandler([&](string msg) {
+		mVDSettings->mOSCMsg = "WS Ponged";
+		mVDSettings->mOSCNewMsg = true;
+		if (!msg.empty())
+		{
+			mVDSettings->mOSCMsg += ": " + msg;
+		}
+	});
+	mL4EClient.connectMessageEventHandler([&](string msg) {
+		// parseMessage(msg);
+	});
+	wsL4EClientConnect();
+}
+void VDWebsocket::wsL4EClientConnect()
+{
+	stringstream s;
+	s << mVDSettings->mWebSocketsProtocol << "light4eventsws.herokuapp.com/bruce";
+	mL4EClient.connect(s.str()); */
 }
 void VDWebsocket::wsClientConnect()
 {
@@ -390,6 +436,7 @@ void VDWebsocket::wsClientConnect()
 	mClient.connect(s.str());
 
 }
+
 void VDWebsocket::wsClientDisconnect()
 {
 
@@ -515,7 +562,14 @@ void VDWebsocket::changeFragmentShader(string aFragmentShaderText) {
 }
 void VDWebsocket::colorWrite()
 {
-
+	/* remove apache untick proxy mode in nginx
+	location /ws {
+	proxy_pass http://domain;
+	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection "Upgrade";
+	}
+	*/
 	// lights4events
 	char col[97];
 	int r = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) * 255);
@@ -525,6 +579,7 @@ void VDWebsocket::colorWrite()
 	//sprintf(col, "#%02X%02X%02X", r, g, b);
 	sprintf(col, "{\"type\":\"action\", \"parameters\":{\"name\":\"FC\",\"parameters\":{\"color\":\"#%02X%02X%02X%02X\",\"fading\":\"NONE\"}}}", a, r, g, b);
 	wsWrite(col);
+	//mL4EClient.write(col);
 }
 
 void VDWebsocket::update() {

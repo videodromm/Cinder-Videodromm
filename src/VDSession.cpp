@@ -496,7 +496,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				// pixelate
 				mVDWebsocket->changeFloatValue(mVDSettings->IPIXELATE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IPIXELATE) + 0.05f);
 				break;
-			case KeyEvent::KEY_t:
+			case KeyEvent::KEY_y:
 				// glitch
 				mVDWebsocket->changeBoolValue(mVDSettings->IGLITCH, true);
 				break;
@@ -506,7 +506,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				break;
 			case KeyEvent::KEY_o:
 				// toggle
-				mVDWebsocket->toggleValue(mVDSettings->ITOGGLE);
+				mVDWebsocket->changeBoolValue(mVDSettings->ITOGGLE, true);
 				break;
 			case KeyEvent::KEY_z:
 				// zoom
@@ -565,7 +565,7 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 		if (!mVDAnimation->handleKeyUp(event)) {
 			// Animation did not handle the key, so handle it here
 			switch (event.getCode()) {
-			case KeyEvent::KEY_g:
+			case KeyEvent::KEY_y:
 				// glitch
 				mVDWebsocket->changeBoolValue(mVDSettings->IGLITCH, false);
 				break;

@@ -543,6 +543,10 @@ bool VDAnimation::setFloatUniformValueByIndex(unsigned int aIndex, float aValue)
 			rtn = true;
 		}*/
 	}
+	else {
+		// no max 
+		if (aIndex == 0) shaderUniforms[getUniformNameForIndex(aIndex)].floatValue = aValue;
+	}
 	return rtn;
 }
 
@@ -573,7 +577,7 @@ void VDAnimation::save() {
 }
 void VDAnimation::saveAnimation() {
 	// save 
-	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+	/*fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
 	JsonTree doc;
 	JsonTree badtv = JsonTree::makeArray("badtv");
 
@@ -586,11 +590,11 @@ void VDAnimation::saveAnimation() {
 	// backup save
 	string fileName = "animation" + toString(getElapsedFrames()) + ".json";
 	mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / fileName;
-	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions());
+	doc.write(writeFile(mJsonFilePath), JsonTree::WriteOptions()); */
 }
 void VDAnimation::loadAnimation() {
 
-	fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
+	/*fs::path mJsonFilePath = app::getAssetPath("") / mVDSettings->mAssetsPath / "animation.json";
 	// Create json file if it doesn't already exist.
 	if (!fs::exists(mJsonFilePath)) {
 		std::ofstream oStream(mJsonFilePath.string());
@@ -611,7 +615,7 @@ void VDAnimation::loadAnimation() {
 	}
 	catch (const JsonTree::ExcJsonParserError&) {
 		CI_LOG_W("Failed to parse json file.");
-	}
+	} */
 }
 
 void VDAnimation::setExposure(float aExposure) {
@@ -690,7 +694,9 @@ void VDAnimation::update() {
 	// iTime
 	if (mUseTimeWithTempo)
 	{
-		shaderUniforms["iTime"].floatValue = shaderUniforms["iTempoTime"].floatValue*iTimeFactor;
+		//shaderUniforms["iTime"].floatValue = shaderUniforms["iTempoTime"].floatValue*iTimeFactor;
+
+		//shaderUniforms["iTime"].floatValue = getFloatUniformValueByName("iTime");
 	}
 	else
 	{

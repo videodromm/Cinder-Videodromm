@@ -45,7 +45,7 @@ void VDUITempo::Run(const char* title) {
 		ImGui::Text("Tempo %.2f ", mVDSession->getBpm());
 
 		if (ImGui::Button("Tap tempo")) { mVDSession->tapTempo(); }
-		// TODO if (ImGui::Button("Time tempo")) { mVDAnimation->mUseTimeWithTempo = !mVDAnimation->mUseTimeWithTempo; }
+		if (ImGui::Button("Time tempo")) { mVDSession->toggleUseTimeWithTempo(); }
 
 		// TODO ImGui::SliderFloat("time x", &mVDAnimation->iTimeFactor, 0.0001f, 1.0f, "%.01f");
 		ImGui::SameLine();
