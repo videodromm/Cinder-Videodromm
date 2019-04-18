@@ -519,12 +519,35 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 	sendJSON(strParams);
 }
 
-void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool forceSend) {
+void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool forceSend, bool toggle, bool increase, bool decrease) {
 	/*if (aControl == mVDSettings->IXFADE) {
 		CI_LOG_V("mVDSettings->IXFADE old value " + toString(mVDAnimation->getFloatUniformValueByIndex(aControl)) + " newvalue " + toString(aValue));
 	}*/
+	float newValue;
+	if (increase) {
+		// increase
+		newValue = mVDAnimation->getFloatUniformValueByIndex(aControl) + 0.1f;
+		if (newValue > 1.0f) newValue = 1.0f;
+		aValue = newValue;
+	}
+	else {
+		// decrease
+		if (decrease) {
+			newValue = mVDAnimation->getFloatUniformValueByIndex(aControl) - 0.1f;
+			if (newValue < 0.0f) newValue = 0.0f;
+			aValue = newValue;
+		}
+		else {
+			// toggle
+			newValue = mVDAnimation->getFloatUniformValueByIndex(aControl);
+			if (newValue > 0.0f) { newValue = 0.0f; }
+			else { newValue = 1.0f; } // Check for max instead?
+			aValue = newValue;
+		}
+	}
 	// check if changed
 	if ( (mVDAnimation->setFloatUniformValueByIndex(aControl, aValue) && aControl != mVDSettings->IFPS) || forceSend) {
+		
 		stringstream sParams;
 		// update color vec3
 		if (aControl > 0 && aControl < 4) {

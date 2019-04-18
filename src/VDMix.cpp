@@ -559,7 +559,7 @@ namespace VideoDromm {
 				fileWarpsName = "warps" + toString(getElapsedFrames()) + ".json";
 				Warp::save(mWarps, writeFile(mWarpJson));
 				break;
-			case KeyEvent::KEY_n:
+			case KeyEvent::KEY_x:
 				createWarp();
 				// TODO? Warp::handleResize(mWarps);
 				break;

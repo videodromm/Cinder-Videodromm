@@ -429,6 +429,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 {
 	bool handled = true;
 	float newValue;
+#if defined( CINDER_COCOA )
+	bool isModDown = event.isMetaDown();
+#else // windows
+	bool isModDown = event.isControlDown();
+#endif
+	bool isShiftDown = event.isShiftDown();
+
+	CI_LOG_V("session keydown: " + toString(event.getCode()) + " ctrl: " + toString(isModDown) + " shift: " + toString(isShiftDown));
 
 	// pass this key event to the warp editor first
 	if (!mVDMix->handleKeyDown(event)) {
@@ -459,34 +467,13 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				mVDWebsocket->changeFloatValue(mVDSettings->ITRIXELS, mVDAnimation->getFloatUniformValueByIndex(16) + 0.05f);
 				break;
 			case KeyEvent::KEY_r:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) + 0.1f;
-				if (newValue > 1.0f) newValue = 0.0f;
-				mVDWebsocket->changeFloatValue(mVDSettings->IFR, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFR, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR), false, true, isShiftDown, isModDown);
 				break;
 			case KeyEvent::KEY_g:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) + 0.1f;
-				if (newValue > 1.0f) newValue = 0.0f;
-				mVDWebsocket->changeFloatValue(mVDSettings->IFG, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFG, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG), false, true, isShiftDown, isModDown);
 				break;
 			case KeyEvent::KEY_b:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) + 0.1f;
-				if (newValue > 1.0f) newValue = 0.0f;
-				mVDWebsocket->changeFloatValue(mVDSettings->IFB, newValue);
-				break;
-			case KeyEvent::KEY_e:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFR) - 0.1f;
-				if (newValue < 0.0f) newValue = 1.0;
-				mVDWebsocket->changeFloatValue(mVDSettings->IFR, newValue);
-				break;
-			case KeyEvent::KEY_f:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFG) - 0.1f;
-				if (newValue < 0.0f) newValue = 1.0;
-				mVDWebsocket->changeFloatValue(mVDSettings->IFG, newValue);
-				break;
-			case KeyEvent::KEY_v:
-				newValue = mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB) - 0.1f;
-				if (newValue < 0.0f) newValue = 1.0;
-				mVDWebsocket->changeFloatValue(mVDSettings->IFB, newValue);
+				mVDWebsocket->changeFloatValue(mVDSettings->IFB, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFB), false, true, isShiftDown, isModDown);
 				break;
 			case KeyEvent::KEY_c:
 				// chromatic
