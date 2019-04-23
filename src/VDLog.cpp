@@ -14,6 +14,6 @@ VDLog::VDLog()
 	log::makeLogger<log::LoggerFileRotating>(path.string(), "videodromm.%Y.%m.%d.txt", false);*/
 	log::makeLogger<log::LoggerFileRotating>("/tmp/videodromm", "videodromm.%Y.%m.%d.txt", false);
 #else
-	
+	log::makeLogger<log::LoggerFileRotating>("/tmp/videodromm", "videodromm.%Y.%m.%d.txt", false);
 #endif  // _DEBUG
 }

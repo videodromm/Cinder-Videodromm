@@ -444,8 +444,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 		if (!mVDAnimation->handleKeyDown(event)) {
 			switch (event.getCode()) {
 			case KeyEvent::KEY_w:
-				// toggle warp edit mode
-				Warp::enableEditMode(!Warp::isEditModeEnabled());
+				CI_LOG_V("wsConnect");
+				if (isModDown) {
+					wsConnect();
+				}
+				else {
+					// toggle warp edit mode
+					Warp::enableEditMode(!Warp::isEditModeEnabled());
+				}
 				break;
 			case KeyEvent::KEY_n:
 				createWarpMix();
@@ -526,11 +532,13 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 					if (mVDAnimation->getFloatUniformValueByIndex(21) < 1.0f) mVDWebsocket->changeFloatValue(21, mVDAnimation->getFloatUniformValueByIndex(21) + 0.1f);
 					break;*/
 			case KeyEvent::KEY_PAGEDOWN:
+			case KeyEvent::KEY_RIGHT:
 				// crossfade right
 				//CI_LOG_V("KEY_PAGEDOWN" + toString( mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)));
 				if (mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) < 1.0f) mVDWebsocket->changeFloatValue(mVDSettings->IXFADE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) + 0.03f);
 				break;
 			case KeyEvent::KEY_PAGEUP:
+			case KeyEvent::KEY_LEFT:
 				// crossfade left
 				//CI_LOG_V("KEY_PAGEUP" + toString(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)));
 
