@@ -49,9 +49,10 @@ namespace VideoDromm {
 		static const int			IPARAM1 = 23;
 		static const int			IPARAM2 = 24;
 		static const int			IFREQ0 = 25;
-		static const int			IFREQ1 = 26;
-		static const int			IFREQ2 = 27;
-		static const int			IFREQ3 = 28;
+		static const int			IBR = 26;
+		static const int			IBG = 27;
+		static const int			IBB = 28;
+
 		static const int			IRESX = 29;
 		static const int			IRESY = 30;
 		static const int			IWEIGHT0 = 31;
@@ -59,10 +60,12 @@ namespace VideoDromm {
 		static const int			IWEIGHT2 = 33;
 		static const int			IWEIGHT3 = 34;
 		static const int			IWEIGHT4 = 35;
-		static const int			IBR = 36;
-		static const int			IBG = 37;
-		static const int			IBB = 38;
-		static const int			IBA = 39;
+		static const int			IWEIGHT5 = 36;
+		static const int			IWEIGHT6 = 37;
+		static const int			IWEIGHT7 = 38;
+		static const int			IFREQ1 = 39;
+
+		//static const int			IBA = 39;
 		static const int			ICONTOUR = 40;
 		static const int			IROTATIONSPEED = 41;
 		static const int			IMOUSEX = 42;
@@ -70,6 +73,8 @@ namespace VideoDromm {
 		static const int			IMOUSEZ = 44;
 		static const int			IVAMOUNT = 45;
 		static const int			IVFALLOFF = 46;
+		static const int			IFREQ2 = 49;
+		static const int			IFREQ3 = 50;
 		// int
 		static const int			IPHASE = 52;
 		// booleans 80 to 110

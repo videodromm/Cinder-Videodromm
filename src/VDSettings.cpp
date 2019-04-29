@@ -584,7 +584,7 @@ void VDSettings::reset()
 	mAreWebSocketsEnabledAtStartup = true;
 	mIsWebSocketsServer = false;
 	mWebSocketsProtocol = "ws://";
-	mWebSocketsHost = "localhost";
+	mWebSocketsHost = "127.0.0.1";
 	mWebSocketsPort = 8088;
 	// Blendmode 
 	iBlendmode = 0;

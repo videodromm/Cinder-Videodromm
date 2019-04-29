@@ -109,12 +109,16 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 24
 		// iFreq0  
 		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f); // 25
-		// iFreq1  
-		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 26
-		// iFreq2  
-		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); // 27
-		// iFreq3  
-		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); // 28
+		// background red
+		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);  // 26 was 36
+		// background green
+		createFloatUniform("iBG", mVDSettings->IBG, 0.5f); // 27 was 37
+		// background blue
+		createFloatUniform("iBB", mVDSettings->IBB, 0.1f); // 28 was 38
+		// TODO: double background alpha
+		//createFloatUniform("iBA", mVDSettings->IBA, 0.2f); // 39
+
+
 		// iResolutionX (should be fbowidth) 
 		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f); // 29
 		// iResolutionY (should be fboheight)  
@@ -129,14 +133,17 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iWeight3", mVDSettings->IWEIGHT3, 0.0f); // 34
 		// weight texture 4
 		createFloatUniform("iWeight4", mVDSettings->IWEIGHT4, 0.0f); // 35
-		// background red
-		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);  // 36
-		// background green
-		createFloatUniform("iBG", mVDSettings->IBG, 0.5f); // 37
-		// background blue
-		createFloatUniform("iBB", mVDSettings->IBB, 0.1f); // 38
-		// TODO: double background alpha
-		createFloatUniform("iBA", mVDSettings->IBA, 0.2f); // 39
+		// weight texture 
+		createFloatUniform("iWeight5", mVDSettings->IWEIGHT5, 0.0f);  // 36
+		// weight texture 
+		createFloatUniform("iWeight6", mVDSettings->IWEIGHT6, 0.0f); // 37
+		// weight texture 
+		createFloatUniform("iWeight7", mVDSettings->IWEIGHT7, 0.0f); // 38
+
+
+				// iFreq1  
+		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 39 was  26
+
 		// contour
 		createFloatUniform("iContour", mVDSettings->ICONTOUR, 0.0f, 0.0f, 0.5f); // 40
 		// RotationSpeed
@@ -152,6 +159,10 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iVAmount", mVDSettings->IVAMOUNT, 0.91f, 0.0f, 1.0f); // 45
 		// vignette falloff
 		createFloatUniform("iVFallOff", mVDSettings->IVFALLOFF, 0.31f, 0.0f, 1.0f); // 46
+		// iFreq2  
+		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); // 49 was  27
+		// iFreq3  
+		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); // 50 was  28
 
 		// int
 		// blend mode 
