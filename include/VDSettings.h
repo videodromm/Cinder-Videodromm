@@ -48,7 +48,6 @@ namespace VideoDromm {
 		static const int			ISPEED = 22;
 		static const int			IPARAM1 = 23;
 		static const int			IPARAM2 = 24;
-		static const int			IFREQ0 = 25;
 		static const int			IBR = 26;
 		static const int			IBG = 27;
 		static const int			IBB = 28;
@@ -63,7 +62,6 @@ namespace VideoDromm {
 		static const int			IWEIGHT5 = 36;
 		static const int			IWEIGHT6 = 37;
 		static const int			IWEIGHT7 = 38;
-		static const int			IFREQ1 = 39;
 
 		//static const int			IBA = 39;
 		static const int			ICONTOUR = 40;
@@ -73,8 +71,7 @@ namespace VideoDromm {
 		static const int			IMOUSEZ = 44;
 		static const int			IVAMOUNT = 45;
 		static const int			IVFALLOFF = 46;
-		static const int			IFREQ2 = 49;
-		static const int			IFREQ3 = 50;
+
 		// int
 		static const int			IPHASE = 52;
 		// booleans 80 to 110
@@ -85,6 +82,10 @@ namespace VideoDromm {
 		static const int			IFLIPH = 100;
 		static const int			IXORY = 101;
 		static const int			IFLIPV = 103;
+		static const int			IFREQ0 = 140;
+		static const int			IFREQ1 = 141;
+		static const int			IFREQ2 = 142;
+		static const int			IFREQ3 = 143;
 		// texture modes
 		static const int			TEXTUREMODEMIX = 0;				// mix two shaders
 		static const int			TEXTUREMODEAUDIO = 1;			// audio spectrum

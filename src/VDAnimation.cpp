@@ -81,7 +81,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// ratio
 		createFloatUniform("iRatio", mVDSettings->IRATIO, 1.0f, 0.01f, 1.0f); // 11
 		// zoom
-		createFloatUniform("iZoom", mVDSettings->IZOOM, 1.0f, 0.95f, 1.0f); // 12
+		createFloatUniform("iZoom", mVDSettings->IZOOM, 1.0f, 0.95f, 1.1f); // 12
 		// Audio multfactor 
 		createFloatUniform("iAudioMult", mVDSettings->IAUDIOX, 1.0f, 0.01f, 12.0f); // 13
 		// exposure
@@ -98,7 +98,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iTempoTime", mVDSettings->ITEMPOTIME, 0.1f); // 19
 		// fps
 		createFloatUniform("iFps", mVDSettings->IFPS, 60.0f, 0.0f, 500.0f); // 20
-		
+
 		// iBpm 
 		createFloatUniform("iBpm", mVDSettings->IBPM, 165.0f, 0.000000001f, 400.0f); // 21
 		// Speed 
@@ -107,8 +107,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 23
 		// slitscan (or other) Param2 
 		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 24
-		// iFreq0  
-		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f); // 25
+
 		// background red
 		createFloatUniform("iBR", mVDSettings->IBR, 0.1f);  // 26 was 36
 		// background green
@@ -141,14 +140,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iWeight7", mVDSettings->IWEIGHT7, 0.0f); // 38
 
 
-				// iFreq1  
-		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 39 was  26
-
 		// contour
 		createFloatUniform("iContour", mVDSettings->ICONTOUR, 0.0f, 0.0f, 0.5f); // 40
 		// RotationSpeed
 		createFloatUniform("iRotationSpeed", mVDSettings->IROTATIONSPEED, 0.0f, -2.0f, 2.0f); // 41
-		
+
 		// iMouseX  
 		createFloatUniform("iMouseX", mVDSettings->IMOUSEX, (float)mVDSettings->mFboWidth / 2, 0.0f, mVDSettings->mFboWidth); // 42
 		// iMouseY  
@@ -159,10 +155,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iVAmount", mVDSettings->IVAMOUNT, 0.91f, 0.0f, 1.0f); // 45
 		// vignette falloff
 		createFloatUniform("iVFallOff", mVDSettings->IVFALLOFF, 0.31f, 0.0f, 1.0f); // 46
-		// iFreq2  
-		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); // 49 was  27
-		// iFreq3  
-		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); // 50 was  28
 
 		// int
 		// blend mode 
@@ -197,6 +189,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createBoolUniform("iXorY", mVDSettings->IXORY); // 101 was 87
 		createBoolUniform("iFlipH", mVDSettings->IFLIPH); // 100 toggle was 90
 		createBoolUniform("iFlipV", mVDSettings->IFLIPV); // 103 toggle was 92
+		// iFreq0  
+		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f); //  140 was 25
+		// iFreq1  
+		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 141 was  39 was  26
+		// iFreq2  
+		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); //  142 was 49 was  27
+		// iFreq3  
+		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); //  143 was 50 was  28
+
 	}
 	// vec4 kinect2
 	createVec4Uniform("iSpineBase", 200, vec4(320.0f, 240.0f, 0.0f, 0.0f));
@@ -726,7 +727,7 @@ void VDAnimation::update() {
 	if (mAutoBeatAnimation) mVDSettings->liveMeter = maxVolume * 2;
 
 	int time = (currentTime - startTime)*1000000.0;
-	int elapsed = iDeltaTime*1000000.0;
+	int elapsed = iDeltaTime * 1000000.0;
 	int elapsedBeatPerBar = iDeltaTime / shaderUniforms["iBeatsPerBar"].intValue*1000000.0;
 	if (elapsedBeatPerBar > 0)
 	{
@@ -734,7 +735,7 @@ void VDAnimation::update() {
 		iTempoTimeBeatPerBar = (float)moduloBeatPerBar;
 		if (iTempoTimeBeatPerBar < previousTimeBeatPerBar)
 		{
-			if (shaderUniforms["iPhase"].intValue > shaderUniforms["iBeatsPerBar"].intValue ) shaderUniforms["iPhase"].intValue = 0;
+			if (shaderUniforms["iPhase"].intValue > shaderUniforms["iBeatsPerBar"].intValue) shaderUniforms["iPhase"].intValue = 0;
 			shaderUniforms["iPhase"].intValue++;
 		}
 		previousTimeBeatPerBar = iTempoTimeBeatPerBar;
