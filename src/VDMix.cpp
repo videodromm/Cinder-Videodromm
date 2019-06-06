@@ -326,9 +326,10 @@ namespace VideoDromm {
 		mFboList[mWarps[warpMixToRender]->getAFboIndex()]->getRenderedTexture()->bind(0);
 		mFboList[mWarps[warpMixToRender]->getBFboIndex()]->getRenderedTexture()->bind(1);
 		if (mTextureList.size() > 2) mTextureList[2]->getTexture()->bind(2);
+		/* TODO 20190606 temp disabled because if FLICKERING!!
 		if (mTextureList.size() > 3) mTextureList[3]->getTexture()->bind(3);
 		if (mTextureList.size() > 4) mTextureList[4]->getTexture()->bind(4);
-		if (mTextureList.size() > 5) mTextureList[5]->getTexture()->bind(5);
+		if (mTextureList.size() > 5) mTextureList[5]->getTexture()->bind(5); */
 		gl::ScopedGlslProg glslScope(mGlslMix);
 		mGlslMix->uniform("iCrossfade", mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE)); // mWarps[warpMixToRender]->ABCrossfade);
 
