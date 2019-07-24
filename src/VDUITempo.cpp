@@ -1,6 +1,6 @@
 #include "VDUITempo.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUITempo::VDUITempo(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

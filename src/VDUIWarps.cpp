@@ -1,6 +1,6 @@
 #include "VDUIWarps.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIWarps::VDUIWarps(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

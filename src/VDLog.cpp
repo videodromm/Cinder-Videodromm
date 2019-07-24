@@ -1,6 +1,6 @@
 #include "VDLog.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDLog::VDLog()
 {

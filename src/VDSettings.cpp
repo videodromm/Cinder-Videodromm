@@ -6,7 +6,7 @@
 
 using namespace ci;
 using namespace std;
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDSettings::VDSettings(string filename)
 {

@@ -1,6 +1,6 @@
 #include "VDAnimation.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;

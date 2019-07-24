@@ -11,7 +11,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-namespace VideoDromm {
+namespace videodromm {
 
 	typedef std::shared_ptr<class VDSettings> VDSettingsRef;
 

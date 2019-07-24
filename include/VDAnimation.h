@@ -15,7 +15,7 @@ using namespace ci::app;
 using namespace std;
 using namespace live;
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDAnimation instance
 	typedef std::shared_ptr<class VDAnimation> VDAnimationRef;

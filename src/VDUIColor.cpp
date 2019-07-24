@@ -1,6 +1,6 @@
 #include "VDUIColor.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIColor::VDUIColor(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

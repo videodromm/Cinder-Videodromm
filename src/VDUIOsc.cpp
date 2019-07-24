@@ -1,6 +1,6 @@
 #include "VDUIOsc.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIOsc::VDUIOsc(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

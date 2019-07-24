@@ -31,9 +31,9 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 using namespace ph::warping;
-using namespace VideoDromm;
+using namespace videodromm;
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDMix instance
 	typedef std::shared_ptr<class VDMix> 	VDMixRef;

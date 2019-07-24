@@ -15,7 +15,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDUIAnimation instance
 	typedef std::shared_ptr<class VDUIAnimation> VDUIAnimationRef;

@@ -1,6 +1,6 @@
 #include "VDUIShaders.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIShaders::VDUIShaders(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

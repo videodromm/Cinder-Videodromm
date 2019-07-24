@@ -49,7 +49,7 @@ using namespace ci::app;
 using namespace std;
 
 
-namespace VideoDromm
+namespace videodromm
 {
 	/*
 	** ---- Texture parent class ------------------------------------------------

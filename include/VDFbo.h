@@ -24,9 +24,9 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
-using namespace VideoDromm;
+using namespace videodromm;
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDFbo instance
 	typedef std::shared_ptr<class VDFbo> 			VDFboRef;

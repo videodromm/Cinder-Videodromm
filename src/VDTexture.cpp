@@ -6,7 +6,7 @@
 using namespace ci;
 using namespace ci::app;
 
-namespace VideoDromm {
+namespace videodromm {
 	VDTexture::VDTexture(TextureType aType)
 		: mPath("")
 		, mName("")
@@ -789,7 +789,7 @@ namespace VideoDromm {
 		mType = SHARED;
 #if defined( CINDER_MAC )
 		mClientSyphon.setup();
-		mClientSyphon.setServerName("Videodromm client");
+		mClientSyphon.setServerName("videodromm client");
 		mClientSyphon.bind();
 #endif
 	}
@@ -1080,4 +1080,4 @@ namespace VideoDromm {
 	}
 	TextureStream::~TextureStream(void) {
 	}
-} // namespace VideoDromm
+} // namespace videodromm

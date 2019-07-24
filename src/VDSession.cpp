@@ -4,7 +4,7 @@
 
 #include "VDSession.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDSession::VDSession(VDSettingsRef aVDSettings)
 {

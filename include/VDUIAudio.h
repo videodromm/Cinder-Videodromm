@@ -13,7 +13,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDUIAudio instance
 	typedef std::shared_ptr<class VDUIAudio> VDUIAudioRef;

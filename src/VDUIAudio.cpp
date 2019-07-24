@@ -1,6 +1,6 @@
 #include "VDUIAudio.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIAudio::VDUIAudio(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

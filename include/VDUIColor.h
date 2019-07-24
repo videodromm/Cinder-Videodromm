@@ -13,7 +13,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDUIColor instance
 	typedef std::shared_ptr<class VDUIColor> VDUIColorRef;

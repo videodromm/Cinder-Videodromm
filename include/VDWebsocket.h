@@ -22,7 +22,7 @@ using namespace std;
 using namespace asio;
 //using namespace asio::ip; 
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDWebsocket instance
 	typedef std::shared_ptr<class VDWebsocket> VDWebsocketRef;

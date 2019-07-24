@@ -1,6 +1,6 @@
 #include "VDRouter.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDRouter::VDRouter(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDWebsocketRef aVDWebsocket) {
 	mVDSettings = aVDSettings;

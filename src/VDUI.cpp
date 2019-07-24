@@ -1,6 +1,6 @@
 #include "VDUI.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUI::VDUI(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;
@@ -119,7 +119,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	//ImGui::SetNextWindowSize(ImVec2(mVDSettings->mRenderWidth - 20, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(800, mVDSettings->uiYPosRow2 - mVDSettings->uiYPosRow1 - mVDSettings->uiMargin), ImGuiSetCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
-	sprintf(buf, "Videodromm Fps %c %d###fps", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], fps);
+	sprintf(buf, "videodromm Fps %c %d###fps", "|/-\\"[(int)(ImGui::GetTime() / 0.25f) & 3], fps);
 	ImGui::Begin(buf);
 	{
 		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);

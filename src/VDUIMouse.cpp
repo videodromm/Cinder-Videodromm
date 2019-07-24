@@ -1,6 +1,6 @@
 #include "VDUIMouse.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIMouse::VDUIMouse(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

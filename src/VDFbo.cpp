@@ -6,7 +6,7 @@
 using namespace ci;
 using namespace ci::app;
 
-namespace VideoDromm {
+namespace videodromm {
 	VDFbo::VDFbo(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation)
 		: mFilePathOrText("")
 		, mFboName("fbo")
@@ -229,5 +229,5 @@ namespace VideoDromm {
 		}
 	}
 
-} // namespace VideoDromm
+} // namespace videodromm
 

@@ -1,6 +1,6 @@
 #include "VDUIAnimation.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIAnimation::VDUIAnimation(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

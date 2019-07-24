@@ -1,6 +1,6 @@
 #include "VDUIFbos.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIFbos::VDUIFbos(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

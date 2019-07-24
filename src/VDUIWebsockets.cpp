@@ -1,6 +1,6 @@
 #include "VDUIWebsockets.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIWebsockets::VDUIWebsockets(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

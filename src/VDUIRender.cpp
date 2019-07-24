@@ -1,6 +1,6 @@
 #include "VDUIRender.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIRender::VDUIRender(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

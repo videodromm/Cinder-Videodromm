@@ -1,6 +1,6 @@
 #include "VDUIBlend.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIBlend::VDUIBlend(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

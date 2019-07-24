@@ -1,6 +1,6 @@
 #include "VDUIMidi.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIMidi::VDUIMidi(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

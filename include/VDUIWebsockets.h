@@ -15,7 +15,7 @@ using namespace std;
 
 #define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
-namespace VideoDromm
+namespace videodromm
 {
 	// stores the pointer to the VDUIWebsockets instance
 	typedef std::shared_ptr<class VDUIWebsockets> VDUIWebsocketsRef;

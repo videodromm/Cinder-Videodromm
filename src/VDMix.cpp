@@ -6,7 +6,7 @@
 using namespace ci;
 using namespace ci::app;
 
-namespace VideoDromm {
+namespace videodromm {
 
 	VDMix::VDMix(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation)
 		: mFlipV(false)
@@ -64,7 +64,7 @@ namespace VideoDromm {
 		mSharedOutputActive = false;
 		mSharedFboIndex = 0;
 		mSpoutInitialized = false;
-		strcpy(mSenderName, "Videodromm Sender"); // we have to set a sender name first
+		strcpy(mSenderName, "videodromm Sender"); // we have to set a sender name first
 		mWarpAnimationActive = false;
 		mWarpActiveIndex = 0;
 		mSolo = -1;
@@ -1078,4 +1078,4 @@ namespace VideoDromm {
 		}
 		return rtn;
 	}
-} // namespace VideoDromm
+} // namespace videodromm

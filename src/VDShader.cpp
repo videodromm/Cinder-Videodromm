@@ -1,6 +1,6 @@
 #include "VDShader.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDShader::VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString, string aName) {
 	mFragmentShaderFilePath = aFragmentShaderFilePath;

@@ -1,6 +1,6 @@
 #include "VDUIChannels.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUIChannels::VDUIChannels(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

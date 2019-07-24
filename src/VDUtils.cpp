@@ -1,6 +1,6 @@
 #include "VDUtils.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUtils::VDUtils(VDSettingsRef aVDSettings)
 {

@@ -1,6 +1,6 @@
 #include "VDUITextures.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDUITextures::VDUITextures(VDSettingsRef aVDSettings, VDSessionRef aVDSession) {
 	mVDSettings = aVDSettings;

@@ -1,6 +1,6 @@
 #include "VDWebsocket.h"
 
-using namespace VideoDromm;
+using namespace videodromm;
 
 VDWebsocket::VDWebsocket(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, VDMixRef aVDMix) {
 	mVDSettings = aVDSettings;
