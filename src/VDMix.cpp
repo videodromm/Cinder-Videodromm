@@ -1013,7 +1013,7 @@ namespace videodromm {
 	}
 
 
-	unsigned int VDMix::createShaderFbo(string aShaderFilename, unsigned int aInputTextureIndex, unsigned int aIndex) {
+	unsigned int VDMix::createShaderFbo(string aShaderFilename, unsigned int aFboShaderIndex) {
 		// initialize rtn to 0 to force creation
 		unsigned int rtn = 0;
 		string fName = aShaderFilename;
@@ -1024,11 +1024,11 @@ namespace videodromm {
 				mFragFile = aShaderFilename;
 			}
 			if (fs::exists(mFragFile)) {
-				if (aIndex < mFboList.size()) {
-					if (mShaderList[aIndex]->loadFragmentStringFromFile(mFragFile.string())) {
-						mFboList[aIndex]->setFragmentShader(aIndex, mShaderList[aIndex]->getFragmentString(), mShaderList[aIndex]->getName());
-						mFboList[aIndex]->setInputTextureIndex(aInputTextureIndex);
-						rtn = aIndex;
+				if (aFboShaderIndex < mFboList.size()) {
+					if (mShaderList[aFboShaderIndex]->loadFragmentStringFromFile(mFragFile.string())) {
+						mFboList[aFboShaderIndex]->setFragmentShader(aFboShaderIndex, mShaderList[aFboShaderIndex]->getFragmentString(), mShaderList[aFboShaderIndex]->getName());
+						mFboList[aFboShaderIndex]->setInputTextureIndex(0);
+						rtn = aFboShaderIndex;
 					}
 				}
 				// check if mShaderList contains a shader

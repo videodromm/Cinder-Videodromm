@@ -330,7 +330,7 @@ void VDSession::fileDrop(FileDropEvent event) {
 
 	unsigned int index = (int)(event.getX() / (mVDSettings->uiLargePreviewW + mVDSettings->uiMargin));
 	int y = (int)(event.getY());
-	if (index < 2 || y < mVDSettings->uiYPosRow3 || y > mVDSettings->uiYPosRow3 + mVDSettings->uiPreviewH) index = 0;
+	//if (index < 2 || y < mVDSettings->uiYPosRow3 || y > mVDSettings->uiYPosRow3 + mVDSettings->uiPreviewH) index = 0;
 	ci::fs::path mPath = event.getFile(event.getNumFiles() - 1);
 	string absolutePath = mPath.string();
 	// use the last of the dropped files
@@ -350,7 +350,7 @@ void VDSession::fileDrop(FileDropEvent event) {
 			if (index > 3) index = 3;
 			loadImageFile(absolutePath, index);
 		}
-		else if (ext == "glsl" || ext == "frag") {
+		else if (ext == "glsl" || ext == "frag" || ext == "fs") {
 			if (index < 1) index = 1;
 			if (index > getFboListSize() - 1) index = getFboListSize() - 1;
 			loadFragmentShader(absolutePath, index);
@@ -667,10 +667,10 @@ void VDSession::flipV() {
 ci::gl::TextureRef VDSession::getMixTexture(unsigned int aMixFboIndex) {
 	return mVDMix->getMixTexture(aMixFboIndex);
 }
-int VDSession::loadFragmentShader(string aFilePath, unsigned int aIndex) {
+int VDSession::loadFragmentShader(string aFilePath, unsigned int aFboShaderIndex) {
 	int rtn = -1;
 	CI_LOG_V("loadFragmentShader " + aFilePath);
-	rtn = mVDMix->createShaderFbo(aFilePath, 0, aIndex);
+	rtn = mVDMix->createShaderFbo(aFilePath, aFboShaderIndex);
 
 	return rtn;
 }
