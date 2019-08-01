@@ -460,8 +460,8 @@ void VDSettings::resetSomeParams() {
 void VDSettings::reset()
 {
 	// parameters exposed in XML
-	mMIDIOpenAllInputPorts = mAutoLayout = mShowUI = mCursorVisible = true;
-	mRenderThumbs = mStandalone = mSplitWarpH = mSplitWarpV = mSpoutSender = false;
+	mMIDIOpenAllInputPorts = mAutoLayout = mShowUI = mCursorVisible = mSpoutSender = true;
+	mRenderThumbs = mStandalone = mSplitWarpH = mSplitWarpV = false;
 	//mOutputVideoResolution = 1024;
 	mInfo = "";
 	mTrackName = "";

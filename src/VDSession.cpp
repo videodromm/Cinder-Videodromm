@@ -499,10 +499,10 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 			case KeyEvent::KEY_a:
 				mVDWebsocket->changeFloatValue(mVDSettings->IFA, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IFA), false, true, isShiftDown, isModDown);
 				break;
-			case KeyEvent::KEY_c:
+			/*case KeyEvent::KEY_c:
 				// chromatic
 				mVDWebsocket->changeFloatValue(mVDSettings->ICHROMATIC, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ICHROMATIC) + 0.05f);
-				break;
+				break; */
 			case KeyEvent::KEY_p:
 				// pixelate
 				mVDWebsocket->changeFloatValue(mVDSettings->IPIXELATE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IPIXELATE) + 0.05f);
@@ -560,7 +560,19 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 //				// mouseY
 //				mVDWebsocket->changeFloatValue(36, mVDAnimation->getFloatUniformValueByIndex(36) - 0.05f);
 //				break;
+			case KeyEvent::KEY_h:
+				// ui visibility
+				toggleUI();
+				break;
+			case KeyEvent::KEY_s:
 
+				if (isAltDown) {
+					setSpeed(0, getSpeed(0) - 0.01f);
+				}
+				else {
+					setSpeed(0, getSpeed(0) + 0.01f);
+				}
+				break;
 			default:
 				handled = false;
 				break;
@@ -590,10 +602,10 @@ bool VDSession::handleKeyUp(KeyEvent &event) {
 				// invert
 				mVDWebsocket->changeBoolValue(mVDSettings->IINVERT, false);
 				break;
-			case KeyEvent::KEY_c:
+			/*case KeyEvent::KEY_c:
 				// chromatic
 				mVDWebsocket->changeFloatValue(mVDSettings->ICHROMATIC, 0.0f);
-				break;
+				break; */
 			case KeyEvent::KEY_p:
 				// pixelate
 				mVDWebsocket->changeFloatValue(mVDSettings->IPIXELATE, 1.0f);

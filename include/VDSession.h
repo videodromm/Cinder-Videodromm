@@ -297,7 +297,8 @@ namespace videodromm {
 		int								getCmd() { int rtn = cmd; cmd = -1; return rtn; };
 		// utils
 		float							formatFloat(float f) { return mVDUtils->formatFloat(f); };
-
+		void							toggleUI() { mShowUI = !mShowUI; };
+		bool							showUI() { return mShowUI; };
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
@@ -361,6 +362,7 @@ namespace videodromm {
 		void							updateStream(string * aStringPtr) { mVDMix->updateStream(aStringPtr); };
 		//! window management
 		int								cmd;
+		bool							mShowUI = false;
 	};
 
 }
