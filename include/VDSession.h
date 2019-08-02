@@ -269,6 +269,18 @@ namespace videodromm {
 		void							reverse(unsigned int aTextureIndex) { return mVDMix->reverse(aTextureIndex); };
 		float							getSpeed(unsigned int aTextureIndex) { return mVDMix->getSpeed(aTextureIndex); };
 		void							setSpeed(unsigned int aTextureIndex, float aSpeed) { mVDMix->setSpeed(aTextureIndex, aSpeed); };
+		void							incrementSequencePosition() {
+			for (unsigned int i = 0; i < getInputTexturesCount() - 1; i++)
+			{
+				setPlayheadPosition(i, getPosition(i) + 1);
+			}
+		}
+		void							decrementSequencePosition() {
+			for (unsigned int i = 0; i < getInputTexturesCount() - 1; i++)
+			{
+				setPlayheadPosition(i, getPosition(i) - 1);
+			}
+		}
 		int								getPosition(unsigned int aTextureIndex) { return mVDMix->getPosition(aTextureIndex); };
 		void							setPlayheadPosition(unsigned int aTextureIndex, int aPosition) { mVDMix->setPlayheadPosition(aTextureIndex, aPosition); };
 		int								getMaxFrame(unsigned int aTextureIndex) { return mVDMix->getMaxFrame(aTextureIndex); };

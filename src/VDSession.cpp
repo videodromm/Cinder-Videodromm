@@ -544,6 +544,14 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 
 				if (mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) > 0.0f) mVDWebsocket->changeFloatValue(mVDSettings->IXFADE, mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE) - 0.03f);
 				break;
+			case KeyEvent::KEY_UP:
+				// imgseq next
+				incrementSequencePosition();
+				break;
+			case KeyEvent::KEY_DOWN:
+				// imgseq next
+				decrementSequencePosition();
+				break;
 //case KeyEvent::KEY_u:
 //				// mouseX
 //				mVDWebsocket->changeFloatValue(35, mVDAnimation->getFloatUniformValueByIndex(35) + 0.05f);
