@@ -46,6 +46,7 @@ namespace videodromm
 		// change a control value and update network clients
 		void						changeFloatValue(unsigned int aControl, float aValue, bool forceSend = false, bool toggle = false, bool increase = false, bool decrease = false);
 		void						changeBoolValue(unsigned int aControl, bool aValue);
+		void						changeIntValue(unsigned int aControl, int aValue);
 		void						toggleAuto(unsigned int aIndex);
 		void						toggleValue(unsigned int aIndex);
 		void						toggleTempo(unsigned int aIndex);

@@ -164,15 +164,18 @@ void VDWebsocket::parseMessage(string msg) {
 							// change tempo
 							mVDAnimation->useTimeWithTempo();
 							mVDAnimation->setBpm(jsonElement->getChild("tempo").getValue<float>());
-							
+							CI_LOG_I("tempo:" + toString(mVDAnimation->getBpm()));
 							break;
 						case 3:
 							// change beat
 							mVDAnimation->setFloatUniformValueByIndex(mVDSettings->ITIME, jsonElement->getChild("beat").getValue<float>());
+							CI_LOG_I("time:" + toString(mVDSettings->ITIME) + " " + toString(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITIME)));
 							break;
 						case 4:
 							// change phase
 							mVDAnimation->setFloatUniformValueByIndex(mVDSettings->ITEMPOTIME, jsonElement->getChild("phase").getValue<float>());
+							CI_LOG_I("beat:" + toString(mVDSettings->ITEMPOTIME) + " " + toString(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITEMPOTIME)));
+							mVDAnimation->setIntUniformValueByIndex(mVDSettings->IBEAT, (int)jsonElement->getChild("phase").getValue<float>());
 							break;
 						default:
 							break;
@@ -518,7 +521,9 @@ void VDWebsocket::changeBoolValue(unsigned int aControl, bool aValue) {
 	string strParams = sParams.str();
 	sendJSON(strParams);
 }
-
+void VDWebsocket::changeIntValue(unsigned int aControl, int aValue) {
+	mVDAnimation->setIntUniformValueByIndex(aControl, aValue);
+}
 void VDWebsocket::changeFloatValue(unsigned int aControl, float aValue, bool forceSend, bool toggle, bool increase, bool decrease) {
 	/*if (aControl == mVDSettings->IXFADE) {
 		CI_LOG_V("mVDSettings->IXFADE old value " + toString(mVDAnimation->getFloatUniformValueByIndex(aControl)) + " newvalue " + toString(aValue));

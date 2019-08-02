@@ -81,6 +81,20 @@ void VDRouter::setupOSCReceiver() {
 			}
 			if (!found)
 			{
+				ctrl = "link";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+					double d0 = msg[0].dbl(); // tempo
+					mVDAnimation->setBpm(d0);
+					double d1 = msg[1].dbl();
+					int d2 = msg[2].int32();
+					mVDWebsocket->changeIntValue(mVDSettings->IBEAT, d2);
+				}
+			}
+			if (!found)
+			{
 				int page = 0;
 				try {
 					page = std::stoi(addr.substr(1, 1)); // 1 to 4

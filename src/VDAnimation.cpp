@@ -155,17 +155,29 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iVAmount", mVDSettings->IVAMOUNT, 0.91f, 0.0f, 1.0f); // 45
 		// vignette falloff
 		createFloatUniform("iVFallOff", mVDSettings->IVFALLOFF, 0.31f, 0.0f, 1.0f); // 46
-
+		// hydra time
+		createFloatUniform("time", mVDSettings->TIME, 0.0f); // 47
 		// int
 		// blend mode 
-		createIntUniform("iBlendmode", 50, 0);
+		createIntUniform("iBlendmode", mVDSettings->IBLENDMODE, 0);
 		// greyscale 
 		createIntUniform("iGreyScale", 51, 0);
 		// current beat
 		createIntUniform("iPhase", mVDSettings->IPHASE, 0); // 52
-
 		// beats per bar 
 		createIntUniform("iBeatsPerBar", 53, 4);
+		// fbo A
+		createIntUniform("iFboA", mVDSettings->IFBOA, 0); // 54
+		// fbo B
+		createIntUniform("iFboB", mVDSettings->IFBOB, 1); // 55
+		// iOutW
+		createIntUniform("iOutW", mVDSettings->IOUTW, mVDSettings->mRenderWidth); // 56
+		// iOutH  
+		createIntUniform("iOutH", mVDSettings->IOUTH, mVDSettings->mRenderHeight); // 57
+		// beat 
+		createIntUniform("iBeat", mVDSettings->IBEAT, 1); // 58
+		// bar 
+		createIntUniform("iBar", mVDSettings->IBAR, 0); // 59
 
 		// vec3
 		createVec3Uniform("iResolution", 60, vec3(getFloatUniformValueByName("iResolutionX"), getFloatUniformValueByName("iResolutionY"), 1.0));

@@ -70,6 +70,7 @@ namespace videodromm
 		bool							mUseTimeWithTempo;
 		void							toggleUseTimeWithTempo() { mUseTimeWithTempo = !mUseTimeWithTempo; };
 		void							useTimeWithTempo() { mUseTimeWithTempo = true; };
+		bool							getUseTimeWithTempo() {return mUseTimeWithTempo; };
 		float							iTempoTimeBeatPerBar;
 		float							getBpm() { return mBpm; };
 		void							setBpm(float aBpm) { mBpm = aBpm; iDeltaTime = 60 / mBpm; };
@@ -78,8 +79,7 @@ namespace videodromm
 		int								getEndFrame() { return mEndFrame; };
 		void							setEndFrame(int frame) { mEndFrame = frame; };
 
-		//int							iBar;
-		//int								iBeatIndex; //1 to beatsperbar
+		int								mLastBeat = 0;
 		// animation
 		int								currentScene;
 		//int							getBadTV(int frame);
@@ -128,6 +128,12 @@ namespace videodromm
 			shaderUniforms[aName].intValue = aValue;
 		};
 		void							setIntUniformValueByIndex(unsigned int aIndex, int aValue) {
+			if (mVDSettings->IBEAT == aIndex) {
+				if (aValue != mLastBeat) {
+					mLastBeat = aValue;
+					if (aValue == 0) setIntUniformValueByIndex(mVDSettings->IBAR, getIntUniformValueByIndex(mVDSettings->IBAR) + 1);
+				}
+			}
 			shaderUniforms[getUniformNameForIndex(aIndex)].intValue = aValue;
 		}
 		void							setFloatUniformValueByName(string aName, float aValue) {
@@ -177,6 +183,9 @@ namespace videodromm
 		}
 		float							getFloatUniformDefaultValueByIndex(unsigned int aIndex) {
 			return shaderUniforms[getUniformNameForIndex(aIndex)].defaultValue;
+		}
+		int								getIntUniformValueByIndex(unsigned int aIndex) {
+			return shaderUniforms[getUniformNameForIndex(aIndex)].intValue;
 		}
 		int								getSampler2DUniformValueByName(string aName) {
 			return shaderUniforms[aName].textureIndex;

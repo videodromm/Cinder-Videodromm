@@ -106,6 +106,9 @@ namespace videodromm {
 		int								getIntUniformValueByName(string aName) {
 			return mVDAnimation->getIntUniformValueByName(aName);
 		};
+		int								getIntUniformValueByIndex(unsigned int aCtrl) {
+			return mVDAnimation->getIntUniformValueByIndex(aCtrl);
+		};
 		bool							getBoolUniformValueByName(string aName) {
 			return mVDAnimation->getBoolUniformValueByName(aName);
 		};
@@ -129,6 +132,7 @@ namespace videodromm {
 		void							tapTempo() { mVDAnimation->tapTempo(); };
 		void							toggleUseTimeWithTempo() { mVDAnimation->toggleUseTimeWithTempo(); };
 		void							useTimeWithTempo() { mVDAnimation->useTimeWithTempo(); };
+		bool							getUseTimeWithTempo() { return mVDAnimation->getUseTimeWithTempo(); };
 		// audio
 		float							getMaxVolume() { return mVDAnimation->maxVolume; };
 		float *							getFreqs() { return mVDAnimation->iFreqs; };
