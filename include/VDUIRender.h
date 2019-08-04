@@ -43,11 +43,13 @@ namespace videodromm
 		void							resetAutoAnimation(unsigned int aCtrl);
 		float							getMinUniformValueByIndex(unsigned int aIndex);
 		float							getMaxUniformValueByIndex(unsigned int aIndex);
-
+		void							setIntValue(unsigned int aCtrl, int aValue);
+		int								getIntValue(unsigned int aCtrl);
 		// imgui
 		int								ctrl;
 		float							contour, iVAmount, iVFallOff, iWeight0, iWeight1, iWeight2, iWeight3, iWeight4;
 		int								iResolutionX, iResolutionY;
+		int								iOutW, iOutH;
 		// contour
 		float							minContour;
 		float							maxContour;

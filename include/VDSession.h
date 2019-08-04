@@ -125,6 +125,13 @@ namespace videodromm {
 			// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
 			mVDWebsocket->changeFloatValue(aCtrl, aValue);
 		};
+		void							setIntUniformValueByIndex(unsigned int aCtrl, int aValue) {
+			mVDWebsocket->changeIntValue(aCtrl, aValue);
+		};
+		void							setBoolUniformValueByIndex(unsigned int aCtrl, float aValue) {
+			// done in router mVDAnimation->changeFloatValue(aCtrl, aValue);
+			mVDWebsocket->changeBoolValue(aCtrl, aValue);
+		};
 		int								getEndFrame() { return mVDAnimation->getEndFrame(); };
 		// tempo
 		float							getBpm() { return mVDAnimation->getBpm(); };

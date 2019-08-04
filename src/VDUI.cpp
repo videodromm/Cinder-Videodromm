@@ -263,6 +263,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		{
 			mVDSession->setCrossfade(xFade);
 		}
+		ImGui::SameLine();
 		// loop on the fbos
 		for (unsigned int b = 0; b < mVDSession->getFboListSize(); b++) {
 			if (b > 0) ImGui::SameLine();
@@ -292,8 +293,7 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		ImGui::RadioButton("Osc", &currentWindowRow1, 6);  ImGui::SameLine();
 		ImGui::RadioButton("WS", &currentWindowRow1, 7);  ImGui::SameLine();
 		ImGui::RadioButton("Render", &currentWindowRow1, 8);  ImGui::SameLine();
-		ImGui::RadioButton("Blend", &currentWindowRow1, 9); ImGui::SameLine();
-		ImGui::RadioButton("Warps", &currentWindowRow1, 10);
+		ImGui::RadioButton("Warps", &currentWindowRow1, 9);
 
 #pragma region Info
 		ctrl = mVDSettings->IWEIGHT0;
@@ -402,13 +402,11 @@ void VDUI::Run(const char* title, unsigned int fps) {
 		break;
 	case 8:
 		// Render
-		mUIRender->Run("Render");
-		break;
-	case 9:
+		mUIRender->Run("Render");	
 		// Blend
 		mUIBlend->Run("Blend");
 		break;
-	case 10:
+	case 9:
 		// Warps
 		mUIWarps->Run("Warps");
 		break;	
@@ -418,6 +416,6 @@ void VDUI::Run(const char* title, unsigned int fps) {
 	mUIShaders->Run("Shaders");
 
 
-	mVDSession->blendRenderEnable(currentWindowRow1 == 9);
+	mVDSession->blendRenderEnable(currentWindowRow1 == 8);
 
 }
