@@ -41,9 +41,9 @@ void VDWebsocket::updateParams(int iarg0, float farg1) {
 		// rotary 
 		mVDAnimation->setFloatUniformValueByIndex(iarg0, farg1);
 		// audio multfactor
-		if (iarg0 == 13) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
+		if (iarg0 == mVDSettings->IAUDIOX) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * 10);
 		// exposure
-		if (iarg0 == mVDSettings->IEXPOSURE) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(14));
+		if (iarg0 == mVDSettings->IEXPOSURE) mVDAnimation->setFloatUniformValueByIndex(iarg0, (farg1 + 0.01) * mVDAnimation->getMaxUniformValueByIndex(iarg0));
 
 		wsWrite("{\"params\" :[{\"name\":" + toString(iarg0) + ",\"value\":" + toString(mVDAnimation->getFloatUniformValueByIndex(iarg0)) + "}]}");
 

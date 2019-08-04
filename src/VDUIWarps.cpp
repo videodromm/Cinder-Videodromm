@@ -67,7 +67,7 @@ void VDUIWarps::Run(const char* title) {
 				mVDSession->setWarpCrossfade(w, xFade);
 			}
 			// nodes
-			if (currentNode == w) {
+			/*if (currentNode == w) {
 				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.8f, 1.0f, 0.5f));
 			}
 			else {
@@ -154,12 +154,13 @@ void VDUIWarps::Run(const char* title) {
 			}
 			ImGui::PopStyleColor(3);
 			if (ImGui::IsItemHovered()) ImGui::SetTooltip("Toggle Delete Warp");
-
+*/
 			ImGui::PopID();
 			ImGui::PopItemWidth();
 		}
 
 #pragma region Nodes
+		/*
 		if (currentNode == w) {
 			// A (left)
 			int t = 0;
@@ -241,7 +242,7 @@ void VDUIWarps::Run(const char* title) {
 			ImGui::Text("WxH %dx%d", mVDSession->getInputTexture(inputTexture)->getWidth(), mVDSession->getInputTexture(inputTexture)->getHeight());
 			ImGui::Text("tx B %s", mVDSession->getInputTextureName(inputTexture).c_str());
 			ImGui::End();
-		}
+		} */
 #pragma endregion Nodes
 
 		ImGui::End();

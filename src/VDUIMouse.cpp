@@ -17,7 +17,7 @@ void VDUIMouse::setValue(unsigned int aCtrl, float aValue) {
 }
 void VDUIMouse::Run(const char* title) {
 	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 	// Mouse
 #pragma region mouse
 

@@ -14,7 +14,7 @@ void VDUIBlend::Run(const char* title) {
 	const char* blendModes[] = { "mix", "multiply", "colorBurn", "linearBurn", "darkerColor", "lighten", "screen", "colorDodge", "linearDodge", "lighterColor", "overlay", "softLight", "hardLight", "vividLight", "linearLight", "pinLight", "hardMix", "difference", "exclusion", "subtract", "divide", "hue", "color", "saturation", "luminosity", "darken", "left", "right" };
 
 	xPos = mVDSettings->uiMargin;
-	yPos = mVDSettings->uiYPosRow3;
+	yPos = mVDSettings->uiYPosRow4;
 	for (int s = 0; s < mVDSession->getFboBlendCount(); s++) {
 		ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargePreviewW, mVDSettings->uiPreviewH + 10.0f), ImGuiSetCond_Once);
 		ImGui::SetNextWindowPos(ImVec2(xPos, yPos), ImGuiSetCond_Once);

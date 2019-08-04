@@ -92,6 +92,38 @@ void VDUIShaders::Run(const char* title) {
 			sprintf(buf, "WS##ws%d", s);
 			if (ImGui::Button(buf)) mVDSession->sendFragmentShader(s);
 
+			for (unsigned int t = 0; t < mVDSession->getInputTexturesCount(); t++) {
+				if (t > 0 && (t % 6 != 0)) ImGui::SameLine();
+				if (mVDSession->getFboInputTextureIndex(s) == t) {
+					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(t / 7.0f, 1.0f, 1.0f));
+				}
+				else {
+					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(t / 7.0f, 0.1f, 0.1f));
+				}
+				sprintf(buf, "%d##fboit%d%d", t, s, t);
+				if (ImGui::Button(buf)) mVDSession->setFboInputTexture(s, t);
+
+				sprintf(buf, "Set input texture to %s", mVDSession->getInputTextureName(t).c_str());
+				if (ImGui::IsItemHovered()) ImGui::SetTooltip(buf);
+				ImGui::PopStyleColor(1);
+			}
+			if (mVDSession->isFboFlipV(s)) {
+				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(s / 7.0f, 1.0f, 1.0f));
+			}
+			else {
+				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(s / 7.0f, 0.1f, 0.1f));
+			}
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(s / 7.0f, 0.7f, 0.7f));
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(s / 7.0f, 0.8f, 0.8f));
+			sprintf(buf, "FlipV##fboflipv%d", s);
+			if (ImGui::Button(buf)) mVDSession->fboFlipV(s);
+			ImGui::PopStyleColor(3);
+			ImGui::SameLine();
+			sprintf(buf, "T##fboupd%d", s);
+			if (ImGui::Button(buf)) mVDSession->updateShaderThumbFile(s);
+			ImGui::Text("wh %dx%d", mVDSession->getFboRenderedTexture(s)->getWidth(), mVDSession->getFboRenderedTexture(s)->getHeight());
+
+			/*
 			for (unsigned int f = 0; f < mVDSession->getFboListSize(); f++) {
 				if (f > 0 && (f % 6 != 0)) ImGui::SameLine();
 				if (mVDSession->getFboFragmentShaderIndex(f) == s) {
@@ -106,7 +138,7 @@ void VDUIShaders::Run(const char* title) {
 				if (ImGui::Button(buf)) mVDSession->setFboFragmentShaderIndex(f, s);
 				if (ImGui::IsItemHovered()) ImGui::SetTooltip("Set shader to fbo");
 				ImGui::PopStyleColor(3);
-			}
+			} */
 			ImGui::PopID();
 			ImGui::PopItemWidth();
 		}
@@ -147,14 +179,14 @@ void VDUIShaders::Run(const char* title) {
 				// check if shader text needs to be loaded in the editor
 				if (mVDSettings->shaderEditIndex != shaderToEdit) {
 					/* ptr error
-					
+					*/
 					mFboTextureFragmentShaderString = mVDSession->getFragmentShaderString(shaderToEdit);
 					mVDSettings->shaderEditIndex = shaderToEdit;
 					// delete content
 					memset(&mShaderText[0], 0, sizeof(mShaderText));
 					// copy content from string
 					std::copy(mFboTextureFragmentShaderString.begin(), (mFboTextureFragmentShaderString.size() >= MAX ? mFboTextureFragmentShaderString.begin() + MAX : mFboTextureFragmentShaderString.end()), mShaderText);
-				*/
+				
 				}
 
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));

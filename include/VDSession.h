@@ -150,7 +150,12 @@ namespace videodromm {
 		bool							getFreqWSSend() { return mFreqWSSend; };
 		void							toggleFreqWSSend() { mFreqWSSend = !mFreqWSSend; };
 		// uniforms
-		//void							setCrossfade(float aCrossfade); // TODO use setControlValue
+		float							getCrossfade() {
+			return mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IXFADE);
+		};
+		void							setCrossfade(float aCrossfade) {
+			mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IXFADE, aCrossfade);
+		};
 
 		void							setFboFragmentShaderIndex(unsigned int aFboIndex, unsigned int aFboShaderIndex) { mVDMix->setFboFragmentShaderIndex(aFboIndex, aFboShaderIndex); };
 		unsigned int					getFboFragmentShaderIndex(unsigned int aFboIndex) { return mVDMix->getFboFragmentShaderIndex(aFboIndex); };

@@ -12,7 +12,7 @@ VDUIAudio::~VDUIAudio() {
 
 void VDUIAudio::Run(const char* title) {
 	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 	sprintf(buf, "%s##inpt", mVDSession->getInputTextureName(0).c_str());
 	ImGui::Begin(buf);
 	{

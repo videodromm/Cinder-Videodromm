@@ -13,7 +13,7 @@ VDUIWebsockets::~VDUIWebsockets() {
 void VDUIWebsockets::Run(const char* title) {
 	#if (defined(  CINDER_MSW) ) || (defined( CINDER_MAC ))
 	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 	ImGui::Begin("Websockets");
 	{
 		// websockets

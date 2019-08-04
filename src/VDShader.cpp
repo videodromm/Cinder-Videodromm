@@ -147,7 +147,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		pattern = { "iAudio0" };
 		replacement = { "iChannel0" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
-		pattern = { "iFreq0" };
+		/* pattern = { "iFreq0" };
 		replacement = { "iChannel0.x" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { "iFreq1" };
@@ -155,7 +155,7 @@ bool VDShader::setFragmentString(string aFragmentShaderString, string aName) {
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
 		pattern = { "iFreq2" };
 		replacement = { "iChannel0.x" };
-		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);
+		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement); */
 		pattern = { "iRenderXY.x" };
 		replacement = { "0.0" };
 		mOriginalFragmentString = std::regex_replace(mOriginalFragmentString, pattern, replacement);

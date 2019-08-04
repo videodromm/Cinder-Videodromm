@@ -108,11 +108,18 @@ namespace videodromm
 		VDUIRenderRef				mUIRender;
 		bool						showUIRender;
 		
+		float						getMinUniformValueByIndex(unsigned int aIndex);
+		float						getMaxUniformValueByIndex(unsigned int aIndex);
+		// imgui
 		char						buf[64];
 		bool						mIsResizing;
-		// imgui
 		float						color[4];
 		float						backcolor[4];
+		float						multx;
 		bool						mouseGlobal;
+		int							ctrl;
+		float						contour, iVAmount, iVFallOff, iWeight0, iWeight1, iWeight2, iWeight3, iWeight4, iWeight5, iWeight6, iWeight7;
+		void						setValue(unsigned int aCtrl, float aValue);
+
 	};
 }

@@ -48,7 +48,7 @@ float VDUIRender::getMaxUniformValueByIndex(unsigned int aIndex) {
 }
 void VDUIRender::Run(const char* title) {
 	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH + 100), ImGuiSetCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow2), ImGuiSetCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 
 	ImGui::Begin("Render");
 	{
