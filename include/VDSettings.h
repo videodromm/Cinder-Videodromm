@@ -46,8 +46,8 @@ namespace videodromm {
 		static const int			IFPS = 20;
 		static const int			IBPM = 21;
 		static const int			ISPEED = 22;
-		static const int			IPARAM1 = 23;
-		static const int			IPARAM2 = 24;
+		static const int			IPIXELX = 23;
+		static const int			IPIXELY = 24;
 		static const int			IDELTATIME = 25;
 		static const int			IBR = 26;
 		static const int			IBG = 27;
@@ -90,6 +90,22 @@ namespace videodromm {
 		static const int			IFLIPH = 100;
 		static const int			IXORY = 101;
 		static const int			IFLIPV = 103;
+		// global flip
+		bool						mFlipV;
+		bool						mFlipH;
+		/*static const int			IRHANDX = 110;
+		static const int			IRHANDY = 111;
+		static const int			IRHANDZ = 112;
+		static const int			ILHANDX = 113;
+		static const int			ILHANDY = 114;
+		static const int			ILHANDZ = 115;*/
+		// vec2
+		static const int			RESOLUTION = 120;
+		// srcarea
+		static const int			SRCXLEFT = 130;
+		static const int			SRCXRIGHT = 131;
+		static const int			SRCYLEFT = 132;
+		static const int			SRCYRIGHT = 133;
 		static const int			IFREQ0 = 140;
 		static const int			IFREQ1 = 141;
 		static const int			IFREQ2 = 142;
@@ -162,8 +178,6 @@ namespace videodromm {
 		bool						iFade;
 		bool						iRepeat;
 		int							iBlendmode;
-		//float						iParam1;
-		//float						iParam2;
 		bool						iXorY;
 		//ci::Anim<float> 			iBadTv;
 		ci::Anim<float> 			iAlpha;

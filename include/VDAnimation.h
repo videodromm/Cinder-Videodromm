@@ -169,6 +169,12 @@ namespace videodromm
 		float							getMaxUniformValueByIndex(unsigned int aIndex) {
 			return shaderUniforms[getUniformNameForIndex(aIndex)].maxValue;
 		}
+		float							getMinUniformValueByName(string aName) {
+			return shaderUniforms[aName].minValue;
+		}
+		float							getMaxUniformValueByName(string aName) {
+			return shaderUniforms[aName].maxValue;
+		}
 		bool							getBoolUniformValueByName(string aName) {
 			return shaderUniforms[aName].boolValue;
 		}
@@ -194,7 +200,13 @@ namespace videodromm
 			return shaderUniforms[aName].textureIndex;
 		}
 		float							getFloatUniformValueByName(string aName) {
-			return shaderUniforms[aName].floatValue;
+			if (aName.length() > 0) {
+				return shaderUniforms[aName].floatValue;
+			}
+			else {
+				CI_LOG_V("getFloatUniformValueByName name empty");
+				return 1.0f;
+			}
 		}
 		vec2							getVec2UniformValueByName(string aName) {
 			return shaderUniforms[aName].vec2Value;
@@ -210,21 +222,27 @@ namespace videodromm
 		};
 
 		// mix fbo
+		/* bool							isFlipH() { return mFlipH; };
+		bool							isFlipV() { return mFlipV; };
+		void							flipH() { mFlipH = !mFlipH; };
+		void							flipV() { mFlipV = !mFlipV; }; */
 		bool							isFlipH() { return getBoolUniformValueByIndex(mVDSettings->IFLIPH); };
 		bool							isFlipV() { return getBoolUniformValueByIndex(mVDSettings->IFLIPV); };
 		void							flipH() { setBoolUniformValueByIndex(mVDSettings->IFLIPH, !getBoolUniformValueByIndex(mVDSettings->IFLIPH)); };
 		void							flipV() { setBoolUniformValueByIndex(mVDSettings->IFLIPV, !getBoolUniformValueByIndex(mVDSettings->IFLIPV)); };
+		
 		unsigned int					getBlendModesCount() { return mBlendModes; };
 		bool							renderBlend() { return mBlendRender; };
 
 		// timed animation
 		int								mEndFrame;
-		//int								iBeatsPerBar;
 		int								getFreqIndexSize() { return freqIndexes.size(); };
 		int								getFreqIndex(unsigned int aFreqIndex) { return freqIndexes[aFreqIndex]; };
 		void							setFreqIndex(unsigned int aFreqIndex, unsigned int aFreq) { freqIndexes[aFreqIndex] = aFreq; };
 		//float							getFreq(unsigned int aFreqIndex) { return iFreqs[freqIndexes[aFreqIndex]]; };
-
+		// public for hydra
+		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f, float aMin = 0.0f, float aMax = 1.0f);
+		void							createSampler2DUniform(string aName, int aCtrlIndex, int aTextureIndex = 0);
 	private:
 		// Settings
 		VDSettingsRef					mVDSettings;
@@ -250,8 +268,7 @@ namespace videodromm
 		void							boolFromJson(const ci::JsonTree &json);
 		fs::path						mUniformsJson;
 
-		void							createFloatUniform(string aName, int aCtrlIndex, float aValue = 0.01f, float aMin = 0.0f, float aMax = 1.0f);
-		void							createSampler2DUniform(string aName, int aCtrlIndex, int aTextureIndex = 0);
+
 		void							createVec2Uniform(string aName, int aCtrlIndex, vec2 aValue = vec2(0.0));
 		void							createVec3Uniform(string aName, int aCtrlIndex, vec3 aValue = vec3(0.0));
 		void							createVec4Uniform(string aName, int aCtrlIndex, vec4 aValue = vec4(0.0));

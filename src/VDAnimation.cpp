@@ -4,9 +4,7 @@ using namespace videodromm;
 
 VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mVDSettings = aVDSettings;
-	// mix fbo flip
-	/*mFlipH = false;
-	mFlipV = false;*/
+
 	mBlendRender = false;
 	//audio
 	mAudioBuffered = false;
@@ -42,6 +40,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	mTimer.start();
 	startTime = currentTime = mTimer.getSeconds();
 	//mBpm = 166;
+	//setFloatUniformValueByIndex(mVDSettings->IBPM, 166.0f);
 	setFloatUniformValueByIndex(mVDSettings->IDELTATIME, 60.0f / 166.0f);
 
 	mUniformsJson = getAssetPath("") / mVDSettings->mAssetsPath / "uniforms.json";
@@ -53,11 +52,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iTime", mVDSettings->ITIME, 0.0f); // 0
 		// sliders
 		// red
-		createFloatUniform("iFR", mVDSettings->IFR, 1.0f); // 1
+		createFloatUniform("r", mVDSettings->IFR, 1.0f); // 1
 		// green
-		createFloatUniform("iFG", mVDSettings->IFG, 0.3f); // 2
+		createFloatUniform("g", mVDSettings->IFG, 0.3f); // 2
 		// blue
-		createFloatUniform("iFB", mVDSettings->IFB, 0.0f); // 3
+		createFloatUniform("b", mVDSettings->IFB, 0.0f); // 3
 		// Alpha 
 		createFloatUniform("iAlpha", mVDSettings->IFA, 1.0f); // 4
 		// red multiplier 
@@ -76,6 +75,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// rotary
 		// ratio
 		createFloatUniform("iRatio", mVDSettings->IRATIO, 1.0f, 0.01f, 1.0f); // 11
+		//createFloatUniform("iRatio", mVDSettings->IRATIO, 20.0f, 0.00000000001f, 20.0f); // 11
 		// zoom
 		createFloatUniform("iZoom", mVDSettings->IZOOM, 1.0f, 0.95f, 1.1f); // 12
 		// Audio multfactor 
@@ -98,11 +98,16 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// iBpm 
 		createFloatUniform("iBpm", mVDSettings->IBPM, 165.0f, 0.000000001f, 400.0f); // 21
 		// Speed 
-		createFloatUniform("iSpeed", mVDSettings->ISPEED, 12.0f, 0.01f, 12.0f); // 22
+		//createFloatUniform("iSpeed", mVDSettings->ISPEED, 12.0f, 0.01f, 12.0f); // 22
 		// slitscan (or other) Param1 
-		createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 23
+		//createFloatUniform("iParam1", mVDSettings->IPARAM1, 1.0f, 0.01f, 100.0f); // 23
 		// slitscan (or other) Param2 
-		createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 24
+		//createFloatUniform("iParam2", mVDSettings->IPARAM2, 1.0f, 0.01f, 100.0f); // 24
+		createFloatUniform("speed", mVDSettings->ISPEED, 0.01f, 0.01f, 12.0f); // 22
+		// slitscan (or other) Param1 
+		createFloatUniform("pixelX", mVDSettings->IPIXELX, 1.0f, 0.01f, 100.0f); // 23
+		// slitscan (or other) Param2 
+		createFloatUniform("pixelY", mVDSettings->IPIXELY, 1.0f, 0.01f, 100.0f); // 24
 		// delta time in seconds
 		createFloatUniform("iDeltaTime", mVDSettings->IDELTATIME, 0.0f); // 25
 		// background red
@@ -112,11 +117,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		// background blue
 		createFloatUniform("iBB", mVDSettings->IBB, 0.1f); // 28
 
+		// iResolutionX (should be fbowidth?) 
+		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mRenderWidth, 320.01f, 4280.0f); // 29
+		// iResolutionY (should be fboheight?)  
+		createFloatUniform("iResolutionY", mVDSettings->IRESY, mVDSettings->mRenderHeight, 240.01f, 2160.0f); // 30
 
-		// iResolutionX (should be fbowidth) 
-		createFloatUniform("iResolutionX", mVDSettings->IRESX, mVDSettings->mFboWidth, 0.01f, 1280.0f); // 29
-		// iResolutionY (should be fboheight)  
-		createFloatUniform("iResolutionY", mVDSettings->IRESY, mVDSettings->mFboHeight, 0.01f, 800.0f); // 30
 		// weight mix fbo texture 0
 		createFloatUniform("iWeight0", mVDSettings->IWEIGHT0, 1.0f); // 31
 		// weight texture 1
@@ -143,9 +148,9 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createFloatUniform("iRotationSpeed", mVDSettings->IROTATIONSPEED, 0.0f, -2.0f, 2.0f); // 41
 
 		// iMouseX  
-		createFloatUniform("iMouseX", mVDSettings->IMOUSEX, (float)mVDSettings->mFboWidth / 2, 0.0f, mVDSettings->mFboWidth); // 42
+		createFloatUniform("iMouseX", mVDSettings->IMOUSEX, 320.0f, 0.0f, 1280.0f); // 42
 		// iMouseY  
-		createFloatUniform("iMouseY", mVDSettings->IMOUSEY, (float)mVDSettings->mFboHeight / 2, 0.0f, mVDSettings->mFboHeight); // 43
+		createFloatUniform("iMouseY", mVDSettings->IMOUSEY, 240.0f, 0.0f, 800.0f); // 43
 		// iMouseZ  
 		createFloatUniform("iMouseZ", mVDSettings->IMOUSEZ, 0.0f, 0.0f, 1.0f); // 44
 		// vignette amount
@@ -161,8 +166,6 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createIntUniform("iBlendmode", mVDSettings->IBLENDMODE, 0);
 		// greyscale 
 		createIntUniform("iGreyScale", 51, 0);
-		// current beat
-		createIntUniform("iPhase", mVDSettings->IPHASE, 0); // 52
 		// beats per bar 
 		createIntUniform("iBeatsPerBar", 53, 4);
 		// fbo A
@@ -186,7 +189,7 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 
 		// vec4
 		createVec4Uniform("iMouse", 70, vec4(320.0f, 240.0f, 0.0f, 0.0f));
-		createVec4Uniform("iDate", 71, vec4(2016.0f, 12.0f, 1.0f, 5.0f));
+		createVec4Uniform("iDate", 71, vec4(2019.0f, 12.0f, 1.0f, 5.0f));
 
 		// boolean
 		// glitch
@@ -197,17 +200,27 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createBoolUniform("iToggle", mVDSettings->ITOGGLE); // 83
 		// invert
 		createBoolUniform("iInvert", mVDSettings->IINVERT); // 86
-		createBoolUniform("iXorY", mVDSettings->IXORY); // 101 was 87
-		createBoolUniform("iFlipH", mVDSettings->IFLIPH); // 100 toggle was 90
-		createBoolUniform("iFlipV", mVDSettings->IFLIPV); // 103 toggle was 92
+		createBoolUniform("iXorY", mVDSettings->IXORY); // 101
+		createBoolUniform("iFlipH", mVDSettings->IFLIPH); // 100
+		createBoolUniform("iFlipV", mVDSettings->IFLIPV); // 103
+
+		// vec2
+		createVec2Uniform("resolution", mVDSettings->RESOLUTION, vec2(1280.0f, 720.0f)); // 120
+		// floats for warps
+		// srcArea 
+		createFloatUniform("srcXLeft", mVDSettings->SRCXLEFT, 0.0f, 0.0f, 4280.0f); // 130
+		createFloatUniform("srcXRight", mVDSettings->SRCXRIGHT, mVDSettings->mRenderWidth, 320.01f, 4280.0f); // 131
+		createFloatUniform("srcYLeft", mVDSettings->SRCYLEFT, 0.0f, 0.0f, 1024.0f); // 132
+		createFloatUniform("srcYRight", mVDSettings->SRCYRIGHT, mVDSettings->mRenderHeight, 0.0f, 1024.0f); // 133
+
 		// iFreq0  
-		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f); //  140 was 25
+		createFloatUniform("iFreq0", mVDSettings->IFREQ0, 0.0f, 0.01f, 256.0f); // 140
 		// iFreq1  
-		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 141 was  39 was  26
+		createFloatUniform("iFreq1", mVDSettings->IFREQ1, 0.0f, 0.01f, 256.0f); // 141
 		// iFreq2  
-		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); //  142 was 49 was  27
+		createFloatUniform("iFreq2", mVDSettings->IFREQ2, 0.0f, 0.01f, 256.0f); //  142
 		// iFreq3  
-		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); //  143 was 50 was  28
+		createFloatUniform("iFreq3", mVDSettings->IFREQ3, 0.0f, 0.01f, 256.0f); //  143
 
 	}
 	// vec4 kinect2
@@ -241,6 +254,15 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 	{
 		createSampler2DUniform("iChannel" + toString(i), 300 + i, i);// TODO verify doesn't mess up type (uint!)
 	}
+	// iRHandX  
+	//createFloatUniform("iRHandX", mVDSettings->IRHANDX, 320.0f, 0.0f, 1280.0f);
+	//// iRHandY  
+	//createFloatUniform("iRHandY", mVDSettings->IRHANDY, 240.0f, 0.0f, 800.0f);
+	//// iLHandX  
+	//createFloatUniform("iLHandX", mVDSettings->ILHANDX, 320.0f, 0.0f, 1280.0f);
+	//// iLHandY  
+	//createFloatUniform("iLHandY", mVDSettings->ILHANDY, 240.0f, 0.0f, 800.0f);
+
 	load();
 	loadAnimation();
 
@@ -379,6 +401,7 @@ void VDAnimation::boolFromJson(const ci::JsonTree &json) {
 //! uniform to json
 JsonTree VDAnimation::uniformToJson(int i)
 {
+	stringstream svec4;
 	JsonTree		json;
 	string s = controlIndexes[i];
 
@@ -400,6 +423,12 @@ JsonTree VDAnimation::uniformToJson(int i)
 		// sampler2d
 		u.addChild(ci::JsonTree("textureindex", shaderUniforms[s].textureIndex));
 		break;
+	case 4:
+		// vec4
+		svec4 << toString(shaderUniforms[s].vec4Value.x) << "," << toString(shaderUniforms[s].vec4Value.y);
+		svec4 << "," << toString(shaderUniforms[s].vec4Value.z) << "," << toString(shaderUniforms[s].vec4Value.w);
+		u.addChild(ci::JsonTree("value", svec4.str()));
+		break;
 	case 5:
 		// int
 		u.addChild(ci::JsonTree("value", shaderUniforms[s].intValue));
@@ -418,13 +447,13 @@ JsonTree VDAnimation::uniformToJson(int i)
 void VDAnimation::saveUniforms()
 {
 	string jName;
-	int jCtrlIndex;
+	int ctrlSize = math<int>::min(310, controlIndexes.size());
 	float jMin, jMax;
 	JsonTree		json;
 	// create uniforms json
 	JsonTree uniformsJson = JsonTree::makeArray("uniforms");
 
-	for (unsigned i = 0; i < controlIndexes.size(); ++i) {
+	for (unsigned i = 0; i < ctrlSize; ++i) {
 		JsonTree		u(uniformToJson(i));
 		// create <uniform>
 		uniformsJson.pushBack(u);
@@ -650,7 +679,7 @@ void VDAnimation::setAutoBeatAnimation(bool aAutoBeatAnimation) {
 bool VDAnimation::handleKeyDown(KeyEvent &event)
 {
 	//float newValue;
-	bool handled = true;
+	/*bool handled = true;
 	switch (event.getCode()) {
 	case KeyEvent::KEY_s:
 		// save animation
@@ -677,8 +706,8 @@ bool VDAnimation::handleKeyDown(KeyEvent &event)
 	default:
 		handled = false;
 	}
-	event.setHandled(handled);
-
+	event.setHandled(handled); */
+	event.setHandled(false);
 	return event.isHandled();
 }
 bool VDAnimation::handleKeyUp(KeyEvent &event)
@@ -687,7 +716,7 @@ bool VDAnimation::handleKeyUp(KeyEvent &event)
 	switch (event.getCode()) {
 	case KeyEvent::KEY_u:
 		// save badtv keyframe
-		mBadTV[getElapsedFrames()] = 0.001f;
+		//mBadTV[getElapsedFrames()] = 0.001f;
 		shaderUniforms["iBadTv"].floatValue = 0.0f;
 		break;
 
