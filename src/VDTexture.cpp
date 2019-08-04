@@ -563,13 +563,15 @@ namespace videodromm {
 			}
 			else {
 				if (mSyncToBeat) {
-					//newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
-					// TODO newPosition = (int)(((int)(mVDSettings->iPhase / mVDAnimation->iBeatIndex)) % mSequenceTextures.size());
-					newPosition = (int)(mVDAnimation->getIntUniformValueByName("iPhase") % mSequenceTextures.size());
+					//newPosition = (int)(((int)(mVDAnimation->iBar / mVDAnimation->iPhaseIndex)) % mSequenceTextures.size());
+					// TODO newPosition = (int)(((int)(mVDSettings->iPhase / mVDAnimation->iPhaseIndex)) % mSequenceTextures.size());
+					//newPosition = (int)(mVDAnimation->getIntUniformValueByName("iPhase") % mSequenceTextures.size());
+					// TODO CHECK 20190803 newPosition = (int)(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IBEAT) % mSequenceTextures.size());
 				}
 				else {
 					newPosition = mPosition;
 				}
+				
 			}
 			mPosition = max(0, min(newPosition, (int)mSequenceTextures.size() - 1));
 		}

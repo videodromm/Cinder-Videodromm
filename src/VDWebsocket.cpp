@@ -173,9 +173,11 @@ void VDWebsocket::parseMessage(string msg) {
 							break;
 						case 4:
 							// change phase
-							mVDAnimation->setFloatUniformValueByIndex(mVDSettings->ITEMPOTIME, jsonElement->getChild("phase").getValue<float>());
-							CI_LOG_I("beat:" + toString(mVDSettings->ITEMPOTIME) + " " + toString(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->ITEMPOTIME)));
+							mVDAnimation->setFloatUniformValueByIndex(mVDSettings->IPHASE, jsonElement->getChild("phase").getValue<float>());
 							mVDAnimation->setIntUniformValueByIndex(mVDSettings->IBEAT, (int)jsonElement->getChild("phase").getValue<float>());
+							CI_LOG_I("phase:" + toString(mVDSettings->IPHASE) + " " + toString(mVDAnimation->getFloatUniformValueByIndex(mVDSettings->IPHASE))
+								+ "beat:" + toString(mVDSettings->IBEAT) + " " + toString(mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBEAT))
+							);
 							break;
 						default:
 							break;

@@ -65,15 +65,18 @@ namespace videodromm
 		const int						mBlendModes = 28;
 		void							blendRenderEnable(bool render) { mBlendRender = render; };
 		// tap tempo
-		float							iDeltaTime;
-		float							iTimeFactor;
 		bool							mUseTimeWithTempo;
 		void							toggleUseTimeWithTempo() { mUseTimeWithTempo = !mUseTimeWithTempo; };
 		void							useTimeWithTempo() { mUseTimeWithTempo = true; };
 		bool							getUseTimeWithTempo() {return mUseTimeWithTempo; };
 		float							iTempoTimeBeatPerBar;
-		float							getBpm() { return mBpm; };
-		void							setBpm(float aBpm) { mBpm = aBpm; iDeltaTime = 60 / mBpm; };
+		float							getBpm() { return getFloatUniformValueByIndex(mVDSettings->IBPM); };
+		void							setBpm(float aBpm) {
+			if(aBpm > 0.0f) {
+				setFloatUniformValueByIndex(mVDSettings->IBPM, aBpm);
+				setFloatUniformValueByIndex(mVDSettings->IDELTATIME, 60 / aBpm);
+			}
+		};
 		void							tapTempo();
 		void							setTimeFactor(const int &aTimeFactor);
 		int								getEndFrame() { return mEndFrame; };
@@ -277,7 +280,7 @@ namespace videodromm
 		//bool							mFlipV;
 		bool							mBlendRender;
 		// timed animation
-		float							mBpm;
+		//float							mBpm;
 
 	};
 }
