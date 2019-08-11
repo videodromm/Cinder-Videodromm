@@ -172,7 +172,8 @@ namespace videodromm {
 		string						mImageFile;
 
 		// shader uniforms	
-		float						iSpeedMultiplier;        // speed multiplier
+		float						iSpeedMultiplier;   // speed multiplier
+		float						iStart = 0.0f;		// start adjustment
 		float						iTimeFactor;
 		float						iChannelTime[4];
 		bool						iFade;

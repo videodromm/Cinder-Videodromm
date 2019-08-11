@@ -81,6 +81,67 @@ void VDRouter::setupOSCReceiver() {
 			}
 			if (!found)
 			{
+				// int32 0 or 1 play from Transthor
+				ctrl = "/play";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+				}
+			}
+			if (!found)
+			{
+				// float ticks from Transthor
+				ctrl = "/ticks";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+					mVDAnimation->useTimeWithTempo();
+					mVDAnimation->setFloatUniformValueByIndex(mVDSettings->ITIME, msg[0].flt());
+				}
+			}
+			if (!found)
+			{
+				// float tempo from Transthor
+				ctrl = "/tempo";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+					mVDAnimation->useTimeWithTempo();
+					mVDAnimation->setBpm(msg[0].flt());
+					CI_LOG_I("tempo:" + toString(mVDAnimation->getBpm()));
+				}
+			}
+			if (!found)
+			{
+				// int32 1 to 4 beat from Transthor
+				ctrl = "/beat";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+
+					mVDAnimation->setIntUniformValueByIndex(mVDSettings->IBEAT, msg[0].int32());
+					CI_LOG_I("beat:" + toString(mVDSettings->IBEAT) + " " + toString(mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBEAT)));
+
+				}
+			}
+			if (!found)
+			{
+				// int32 bar from Transthor
+				ctrl = "/bar";
+				index = addr.find(ctrl);
+				if (index != std::string::npos)
+				{
+					found = true;
+					mVDAnimation->setIntUniformValueByIndex(mVDSettings->IBAR, msg[0].int32());
+				}
+			}
+
+			if (!found)
+			{
 				ctrl = "link";
 				index = addr.find(ctrl);
 				if (index != std::string::npos)
@@ -95,10 +156,11 @@ void VDRouter::setupOSCReceiver() {
 			}
 			if (!found)
 			{
+				// touchosc
 				int page = 0;
 				try {
+					// CHECK exception if not integer
 					page = std::stoi(addr.substr(1, 1)); // 1 to 4
-
 
 					int lastSlashIndex = addr.find_last_of("/"); // 0 2
 					// if not a page selection
@@ -240,7 +302,7 @@ void VDRouter::setupOSCReceiver() {
 				}
 			}
 			if (found) {
-				stringstream ss;
+
 				ss << addr << " " << f;
 				CI_LOG_I("OSC: " << ctrl << " addr: " << addr);
 				mVDSettings->mOSCMsg = ss.str();

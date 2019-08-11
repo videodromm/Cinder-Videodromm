@@ -1256,7 +1256,7 @@ void VDSettings::reset()
 		"// vignette \n"
 		"if (iVignette> 0.01) {\n"
 		"	float dist = distance(uv, vec2(0.5));\n"
-		"	col *= smoothstep(0.8, iVFallOff * 0.8, dist * (iVAmount + iVFallOff));\n"
+		"	col *= smoothstep(0.8, iVFallOff * 0.8, dist * (iVAmount * 2.0 + iVFallOff));\n"
 		"}\n"
 
 		"oColor = iAlpha * vec4(col, 1.0);\n"
