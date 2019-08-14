@@ -36,7 +36,7 @@ void VDUITempo::Run(const char* title) {
 		ImGui::SameLine();
 		ImGui::Text("bar %d ", mVDSession->getIntUniformValueByIndex(mVDSettings->IBAR));
 		ImGui::SameLine();
-		ImGui::Text("phase %.2f ", mVDSession->getFloatUniformValueByIndex(mVDSettings->IPHASE));
+		ImGui::Text("bb %d ", mVDSession->getIntUniformValueByIndex(mVDSettings->IBARBEAT));
 
 		ImGui::Text("Time %.2f", mVDSession->getFloatUniformValueByIndex(mVDSettings->ITIME));
 		ImGui::SameLine();
@@ -48,6 +48,9 @@ void VDUITempo::Run(const char* title) {
 		//			ImGui::Checkbox("Playing", &mVDSettings->mIsPlaying);
 		ImGui::Text("Tempo %.2f ", mVDSession->getBpm());
 		ImGui::Text("Elapsed %.2f", mVDSession->getFloatUniformValueByIndex(mVDSettings->IELAPSED));
+		ImGui::SameLine();
+		ImGui::Text("phase %.2f ", mVDSession->getFloatUniformValueByIndex(mVDSettings->IPHASE));
+
 		// BUG taptempo
 		if (ImGui::Button("Tap toggle")) { toggleSpinalTap(); }
 		if (spinalTap) {

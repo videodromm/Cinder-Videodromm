@@ -122,9 +122,12 @@ void VDRouter::setupOSCReceiver() {
 				if (index != std::string::npos)
 				{
 					found = true;
-
 					mVDAnimation->setIntUniformValueByIndex(mVDSettings->IBEAT, msg[0].int32());
-					CI_LOG_I("beat:" + toString(mVDSettings->IBEAT) + " " + toString(mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBEAT)));
+					mVDAnimation->setIntUniformValueByIndex(
+						mVDSettings->IBARBEAT,
+						mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBAR) * 4 + mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBEAT));
+
+					//CI_LOG_I("beat:" + toString(mVDSettings->IBEAT) + " " + toString(mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBEAT)));
 
 				}
 			}
@@ -137,6 +140,10 @@ void VDRouter::setupOSCReceiver() {
 				{
 					found = true;
 					mVDAnimation->setIntUniformValueByIndex(mVDSettings->IBAR, msg[0].int32());
+					mVDAnimation->setIntUniformValueByIndex(
+						mVDSettings->IBARBEAT,
+						mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBAR) * 4 + mVDAnimation->getIntUniformValueByIndex(mVDSettings->IBEAT));
+
 				}
 			}
 
@@ -298,11 +305,14 @@ void VDRouter::setupOSCReceiver() {
 					}
 				}
 				catch (const std::exception& e) {
+					stringstream ss;
+					ss << addr << " not integer";
+					mVDSettings->mOSCMsg = ss.str();
 					CI_LOG_E("not integer: " << addr);
 				}
 			}
 			if (found) {
-
+				stringstream ss;
 				ss << addr << " " << f;
 				CI_LOG_I("OSC: " << ctrl << " addr: " << addr);
 				mVDSettings->mOSCMsg = ss.str();

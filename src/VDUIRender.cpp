@@ -54,7 +54,7 @@ float VDUIRender::getMaxUniformValueByIndex(unsigned int aIndex) {
 	return mVDSession->getMaxUniformValueByIndex(aIndex);
 }
 void VDUIRender::Run(const char* title) {
-	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH + 100), ImGuiSetCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mVDSettings->uiLargeW, mVDSettings->uiLargeH * 1.76), ImGuiSetCond_Once);
 	ImGui::SetNextWindowPos(ImVec2(mVDSettings->uiMargin, mVDSettings->uiYPosRow1), ImGuiSetCond_Once);
 
 	ImGui::Begin("Render");
@@ -63,14 +63,14 @@ void VDUIRender::Run(const char* title) {
 		ImGui::PushItemWidth(mVDSettings->mPreviewFboWidth);
 		// output resolution
 		ctrl = mVDSettings->IOUTW;
-		if (ImGui::Button("x##ioutw")) { setIntValue(ctrl, 1280); }
+		if (ImGui::Button("x##ioutw")) { iOutW = 1280; setIntValue(ctrl, 1280); }
 		ImGui::SameLine();
 		if (ImGui::SliderInt("iOutW", &iOutW, 320, 5000))
 		{
 			setIntValue(ctrl, iOutW);
 		}
 		ctrl = mVDSettings->IOUTH;
-		if (ImGui::Button("x##iouth")) { setIntValue(ctrl, 800); }
+		if (ImGui::Button("x##iouth")) { iOutH = 800; setIntValue(ctrl, 800); }
 		ImGui::SameLine();
 		if (ImGui::SliderInt("iOutH", &iOutH, 240, 2000))
 		{
@@ -79,14 +79,14 @@ void VDUIRender::Run(const char* title) {
 		// iResolution
 		ctrl = mVDSettings->IRESX;
 		//iResolutionX = getValueByName("iResolutionX");
-		if (ImGui::Button("x##iresx")) { setValue(ctrl, 1280); }
+		if (ImGui::Button("x##iresx")) { iResolutionX = 1280; setValue(ctrl, 1280); }
 		ImGui::SameLine();
 		if (ImGui::DragInt("iResolutionX", &iResolutionX, 1.0f, (int)getMinUniformValueByIndex(ctrl), (int)getMaxUniformValueByIndex(ctrl)))
 		{
 			setValue(ctrl, (float)iResolutionX);
 		}
 		ctrl = mVDSettings->IRESY;
-		if (ImGui::Button("x##iresy")) { setValue(ctrl, 800); }
+		if (ImGui::Button("x##iresy")) { iResolutionY = 720; setValue(ctrl, 720); }
 		ImGui::SameLine();
 		//iResolutionY = getValueByName("iResolutionY");
 		if (ImGui::DragInt("iResolutionY", &iResolutionY, 1.0f, (int)getMinUniformValueByIndex(ctrl), (int)getMaxUniformValueByIndex(ctrl)))
