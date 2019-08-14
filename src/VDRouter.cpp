@@ -57,6 +57,7 @@ void VDRouter::setupOSCReceiver() {
 			int index = -1;
 			int i = 0;
 			float f = 1.0f;
+			stringstream ss;
 			vec2 vv = vec2(0.0f);
 			string addr = msg.getAddress();
 			// handle all msg without page integer first
@@ -304,18 +305,15 @@ void VDRouter::setupOSCReceiver() {
 						}
 					}
 				}
-				catch (const std::exception& e) {
-					stringstream ss;
+				catch (const std::exception& e) {					
 					ss << addr << " not integer";
 					mVDSettings->mOSCMsg = ss.str();
 					CI_LOG_E("not integer: " << addr);
 				}
 			}
 			if (found) {
-				stringstream ss;
-				ss << addr << " " << f;
-				CI_LOG_I("OSC: " << ctrl << " addr: " << addr);
-				mVDSettings->mOSCMsg = ss.str();
+				mVDSettings->mOSCMsg = addr;
+				// nope too much disk io CI_LOG_I("OSC: " << ctrl << " addr: " << addr);
 			}
 			else {
 				CI_LOG_E("not handled: " << msg.getNumArgs() << " addr: " << addr);
