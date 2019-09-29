@@ -572,7 +572,7 @@ bool VDSession::handleKeyDown(KeyEvent &event)
 				// ui visibility
 				toggleUI();
 				break;
-			case KeyEvent::KEY_s:
+			case KeyEvent::KEY_d:
 
 				if (isAltDown) {
 					setSpeed(0, getSpeed(0) - 0.01f);

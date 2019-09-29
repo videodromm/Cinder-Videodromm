@@ -28,7 +28,49 @@ void VDUtils::setup()
 {
 	
 }
+int VDUtils::getWindowsResolution()
+{
+	mVDSettings->mDisplayCount = 0;
+	for (auto display : Display::getDisplays())
+	{
+		//CI_LOG_V("VDUtils Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
+		mVDSettings->mDisplayCount++;
+	}
+	int w = Display::getMainDisplay()->getWidth();
+	int h = Display::getMainDisplay()->getHeight();
+	// Display sizes
+	if (mVDSettings->mAutoLayout)
+	{
+		mVDSettings->mRenderX = 0;
+		mVDSettings->mRenderY = 0;
+		mVDSettings->mMainWindowWidth = w;
+		mVDSettings->mMainWindowHeight = h;
+		// in case only one screen, render from x = 0
+		if (mVDSettings->mDisplayCount == 1) {
+			mVDSettings->mRenderX = 0;
+			mVDSettings->mRenderWidth = mVDSettings->mMainWindowWidth;
+			mVDSettings->mRenderHeight = mVDSettings->mMainWindowHeight;
+		}
+		else {
+			mVDSettings->mRenderX = mVDSettings->mMainWindowWidth;
+			// TODO for MODE_MIX and triplehead(or doublehead), we might only want 1/3 of the screen centered	
+			for (auto display : Display::getDisplays())
+			{
+				//CI_LOG_V("VDUtils Window #" + toString(mVDSettings->mDisplayCount) + ": " + toString(display->getWidth()) + "x" + toString(display->getHeight()));
 
+				mVDSettings->mRenderWidth += display->getWidth();
+				mVDSettings->mRenderHeight = display->getHeight();
+
+			}
+			mVDSettings->mRenderWidth -= mVDSettings->mMainWindowWidth;
+		}
+
+
+	}
+	splitWarp(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
+	return w;
+}
+/* before 20190929
 int VDUtils::getWindowsResolution()
 {
 	mVDSettings->mDisplayCount = 0;
@@ -65,17 +107,16 @@ int VDUtils::getWindowsResolution()
 		}
 	}
 	mVDSettings->mRenderY = 0;
-
+	 
 	//CI_LOG_V("VDUtils mMainDisplayWidth:" + toString(mVDSettings->mMainWindowWidth) + " mMainDisplayHeight:" + toString(mVDSettings->mMainWindowHeight));
 	//CI_LOG_V("VDUtils mRenderWidth:" + toString(mVDSettings->mRenderWidth) + " mRenderHeight:" + toString(mVDSettings->mRenderHeight));
 	//CI_LOG_V("VDUtils mRenderX:" + toString(mVDSettings->mRenderX) + " mRenderY:" + toString(mVDSettings->mRenderY));
 	//mVDSettings->mRenderResoXY = vec2(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 	// in case only one screen , render from x = 0
 	if (mVDSettings->mDisplayCount == 1) mVDSettings->mRenderX = 0;
-	splitWarp(mVDSettings->mFboWidth, mVDSettings->mFboHeight);
-	
+	splitWarp(mVDSettings->mFboWidth, mVDSettings->mFboHeight);	
 	return w;
-}
+}*/
 void VDUtils::splitWarp(int fboWidth, int fboHeight) {
 
 	x1LeftOrTop = x1RightOrBottom = 0;
