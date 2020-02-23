@@ -203,9 +203,11 @@ VDAnimation::VDAnimation(VDSettingsRef aVDSettings) {
 		createBoolUniform("iToggle", mVDSettings->ITOGGLE); // 83
 		// invert
 		createBoolUniform("iInvert", mVDSettings->IINVERT); // 86
-		createBoolUniform("iXorY", mVDSettings->IXORY); // 101
-		createBoolUniform("iFlipH", mVDSettings->IFLIPH); // 100
-		createBoolUniform("iFlipV", mVDSettings->IFLIPV); // 103
+		createBoolUniform("iXorY", mVDSettings->IXORY); // 100
+		createBoolUniform("iFlipH", mVDSettings->IFLIPH); // 101
+		createBoolUniform("iFlipV", mVDSettings->IFLIPV); // 102
+		createBoolUniform("iFlipPostH", mVDSettings->IFLIPPOSTH); // 103
+		createBoolUniform("iFlipPostV", mVDSettings->IFLIPPOSTV); // 104
 
 		// vec2
 		createVec2Uniform("resolution", mVDSettings->RESOLUTION, vec2(1280.0f, 720.0f)); // 120

@@ -34,11 +34,11 @@ namespace videodromm
 
 	class VDShader {
 	public:
-		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString = "", string aName = "");
+		VDShader(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFileNameWithExtension, string aFragmentShaderString = "", string aName = "");
 		//void update();
-		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFragmentShaderFilePath, string aFragmentShaderString = "", string aName = "")
+		static VDShaderRef	create(VDSettingsRef aVDSettings, VDAnimationRef aVDAnimation, string aFileNameWithExtension, string aFragmentShaderString = "", string aName = "")
 		{
-			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFragmentShaderFilePath, aFragmentShaderString, aName));
+			return shared_ptr<VDShader>(new VDShader(aVDSettings, aVDAnimation, aFileNameWithExtension, aFragmentShaderString, aName));
 		}
 		//void fromXml(const XmlTree &xml);
 		gl::GlslProgRef					getShader();
@@ -72,7 +72,7 @@ namespace videodromm
         bool							mValid;
 		//! fragment shader
 		std::string						mFragmentShaderString;
-		std::string						mFragmentShaderFilePath;
+		std::string						mFileNameWithExtension;
 		fs::path						mFragFile;
 		// include shader lines
 		std::string						shaderInclude;
